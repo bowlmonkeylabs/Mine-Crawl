@@ -6,7 +6,7 @@ def write_json(source_file, target_file):
 
     # Load data from source
     with open(source_file, 'r+') as file:
-        source_date = json.load(file)
+        source_data = json.load(file)
 
      # Update target with source
     with open(target_file, 'r+') as file:
