@@ -10,6 +10,9 @@ namespace BML.Scripts.Player
         [SerializeField] private IntReference _health;
         [SerializeField] private GameEvent _onTakeDamage;
         [SerializeField] private GameEvent _onDeath;
+        [SerializeField] private Transform _mainCamera;
+        [SerializeField] private float _interactDistance = 5f;
+        [SerializeField] private LayerMask _interactMask;
 
         public void TakeDamage(int damage)
         {
@@ -21,6 +24,23 @@ namespace BML.Scripts.Player
         private void OnDeath()
         {
             // Do something
+        }
+
+        private void OnPrimary()
+        {
+            TryUsePickaxe();
+        }
+
+        private void TryUsePickaxe()
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance, _interactMask, QueryTriggerInteraction.Collide))
+            {
+                InteractionReceiver interactionReceiver = hit.collider.GetComponent<InteractionReceiver>();
+                if (interactionReceiver == null) return;
+
+                interactionReceiver.ReceiveInteraction();
+            }
         }
     }
 }
