@@ -1,6 +1,8 @@
 //PlayerInputProcessor.cs extends the StartAssetsInput.cs from Unity's Starter Assets - First Person Character Controller
 //https://assetstore.unity.com/packages/essentials/starter-assets-first-person-character-controller-196525
 
+using System;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -23,11 +25,28 @@ namespace BML.Scripts.Player
 		[Header("Mouse Cursor Settings")]
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
-		
 		[SerializeField] private FloatReference _mouseSensitivity;
+		
+		[Header("Pause settings")]
 		[SerializeField] private BoolReference _isPaused;
+		[SerializeField] private GameEvent _onUnpause;
 		
 		[SerializeField] private PlayerInput playerInput;
+
+		private void OnEnable()
+		{
+			_onUnpause.Subscribe(InvokeUnpause);
+		}
+
+		private void OnDisable()
+		{
+			_onUnpause.Unsubscribe(InvokeUnpause);
+		}
+
+		private void OnDestroy()
+		{
+			_onUnpause.Unsubscribe(InvokeUnpause);
+		}
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 		public void OnMove(InputValue value)
@@ -58,21 +77,17 @@ namespace BML.Scripts.Player
 		{
 			if (_isPaused != null)
 			{
-				_isPaused.Value = !_isPaused.Value;
-				if (_isPaused.Value == true)
-				{
-					playerInput.SwitchCurrentActionMap("UI");
-					SetCursorState(false);
-				}
-				else
-				{
-					playerInput.SwitchCurrentActionMap("Player");
-					SetCursorState(true);
-				}
+				_isPaused.Value = false;
+				playerInput.SwitchCurrentActionMap("UI");
+				SetCursorState(false);
 			}
 		}
 #endif
-
+		public void InvokeUnpause()
+		{
+			playerInput.SwitchCurrentActionMap("Player");
+			SetCursorState(cursorLocked);
+		}
 
 		public void MoveInput(Vector2 newMoveDirection)
 		{
@@ -102,6 +117,7 @@ namespace BML.Scripts.Player
 		private void SetCursorState(bool newState)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+			Debug.Log($"Cursor state: {Cursor.lockState}, Action map: {playerInput.currentActionMap.name}");
 		}
 	}
 	

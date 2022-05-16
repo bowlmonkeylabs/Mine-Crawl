@@ -1,4 +1,5 @@
 ﻿using System;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -29,6 +30,7 @@ namespace BML.Scripts.UI
         [TitleGroup("UI Events")]
         [SerializeField] private UnityEvent _onSubmit;
         [SerializeField] private UnityEvent _onCancel;
+        [SerializeField] private UnityEvent _onClose;
         [SerializeField] private Button.ButtonClickedEvent _onClickBackdrop;
 
         public void LogMessage(string message)
