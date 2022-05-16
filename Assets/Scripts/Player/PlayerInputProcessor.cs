@@ -77,9 +77,9 @@ namespace BML.Scripts.Player
 		{
 			if (_isPaused != null)
 			{
-				_isPaused.Value = false;
-				playerInput.SwitchCurrentActionMap("UI");
-				SetCursorState(false);
+				// _isPaused.Value = false;
+				// playerInput.SwitchCurrentActionMap("UI");
+				// SetCursorState(false);
 			}
 		}
 #endif
