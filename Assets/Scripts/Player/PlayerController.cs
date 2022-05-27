@@ -8,9 +8,6 @@ namespace BML.Scripts.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private IntReference _health;
-        [SerializeField] private GameEvent _onTakeDamage;
-        [SerializeField] private GameEvent _onDeath;
         [SerializeField] private GameEvent _onUsePickaxe;
         [SerializeField] private Transform _mainCamera;
         [SerializeField] private float _interactDistance = 5f;
@@ -25,20 +22,6 @@ namespace BML.Scripts.Player
         }
 
         #endregion
-        
-        public void TakeDamage(int damage)
-        {
-            _health.Value -= 1;
-            if (_health.Value <= 0)
-            {
-                OnDeath();
-            }
-        }
-
-        private void OnDeath()
-        {
-            // Do something
-        }
 
         private void OnPrimary(InputValue value)
         {
