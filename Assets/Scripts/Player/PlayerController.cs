@@ -40,26 +40,36 @@ namespace BML.Scripts.Player
             // Do something
         }
 
-        private void OnPrimary()
+        private void OnPrimary(InputValue value)
         {
-            TryUsePickaxe();
+            if (value.isPressed)
+            {
+                _interactCooldown.SubscribeFinished(TryUsePickaxe);
+                TryUsePickaxe();
+            }
+            else
+            {
+                _interactCooldown.UnsubscribeFinished(TryUsePickaxe);
+            }
         }
 
         private void TryUsePickaxe()
         {
             RaycastHit hit;
-            if ((_interactCooldown.IsStopped || _interactCooldown.IsFinished)
-                && Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance, _interactMask, QueryTriggerInteraction.Collide))
-            {
-                InteractionReceiver interactionReceiver = hit.collider.GetComponent<InteractionReceiver>();
-                if (interactionReceiver == null) return;
-
-                interactionReceiver.ReceiveInteraction();
-                
-                _interactCooldown.RestartTimer();
-            }
             
-            _onUsePickaxe.Raise();
+            if ((_interactCooldown.IsStopped || _interactCooldown.IsFinished))
+            {
+                _onUsePickaxe.Raise();
+                _interactCooldown.RestartTimer();
+                
+                if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
+                    _interactMask, QueryTriggerInteraction.Collide))
+                {
+                    InteractionReceiver interactionReceiver = hit.collider.GetComponent<InteractionReceiver>();
+                    if (interactionReceiver == null) return;
+                    interactionReceiver.ReceiveInteraction();
+                }
+            }
         }
     }
 }
