@@ -49,13 +49,22 @@ namespace BML.Scripts.UI
                 lastSelected = _defaultSelected.gameObject;
             }
 
+            // if (_isOpen != null)
+            // {
+            //     TryOpenPage();
+            //     _isOpen?.Subscribe(TryOpenPage);
+            // }
+            
+            InitializeBackdrop();
+        }
+
+        private void Start()
+        {
             if (_isOpen != null)
             {
                 TryOpenPage();
                 _isOpen?.Subscribe(TryOpenPage);
             }
-            
-            InitializeBackdrop();
         }
 
         private void OnDestroy()

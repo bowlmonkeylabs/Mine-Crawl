@@ -5,6 +5,7 @@ using System;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using UnityEngine;
+using UnityEngine.Serialization;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -22,30 +23,30 @@ namespace BML.Scripts.Player
 		[Header("Movement Settings")]
 		public bool analogMovement;
 
-		[Header("Mouse Cursor Settings")]
-		public bool cursorLocked = true;
+		[FormerlySerializedAs("cursorLocked")] [Header("Mouse Cursor Settings")]
+		public bool playerCursorLocked = true;
 		public bool cursorInputForLook = true;
 		[SerializeField] private FloatReference _mouseSensitivity;
 		
 		[Header("Pause settings")]
 		[SerializeField] private BoolReference _isPaused;
-		[SerializeField] private GameEvent _onUnpause;
 		
 		[SerializeField] private PlayerInput playerInput;
 
 		private void OnEnable()
 		{
-			_onUnpause.Subscribe(InvokeUnpause);
+			_isPaused.Subscribe(ApplyPauseState);
+			ApplyPauseState();
 		}
 
 		private void OnDisable()
 		{
-			_onUnpause.Unsubscribe(InvokeUnpause);
+			_isPaused.Unsubscribe(ApplyPauseState);
 		}
 
 		private void OnDestroy()
 		{
-			_onUnpause.Unsubscribe(InvokeUnpause);
+			_isPaused.Unsubscribe(ApplyPauseState);
 		}
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -77,16 +78,26 @@ namespace BML.Scripts.Player
 		{
 			if (_isPaused != null)
 			{
-				// _isPaused.Value = false;
+				_isPaused.Value = true;
+				// The action map switching should now be handled by a subscription to value changes of _isPaused
 				// playerInput.SwitchCurrentActionMap("UI");
 				// SetCursorState(false);
 			}
 		}
 #endif
-		public void InvokeUnpause()
+		public void ApplyPauseState()
 		{
-			playerInput.SwitchCurrentActionMap("Player");
-			SetCursorState(cursorLocked);
+			// Debug.Log($"Apply Pause State: {_isPaused?.Value}");
+			if (_isPaused != null && _isPaused.Value)
+			{
+				playerInput.SwitchCurrentActionMap("UI");
+				SetCursorState(false);
+			}
+			else
+			{
+				playerInput.SwitchCurrentActionMap("Player");
+				SetCursorState(playerCursorLocked);
+			}
 		}
 
 		public void MoveInput(Vector2 newMoveDirection)
@@ -111,13 +122,13 @@ namespace BML.Scripts.Player
 		
 		private void OnApplicationFocus(bool hasFocus)
 		{
-			SetCursorState(cursorLocked);
+			// SetCursorState(playerCursorLocked);
+			ApplyPauseState();
 		}
 
 		private void SetCursorState(bool newState)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
-			Debug.Log($"Cursor state: {Cursor.lockState}, Action map: {playerInput.currentActionMap.name}");
 		}
 	}
 	
