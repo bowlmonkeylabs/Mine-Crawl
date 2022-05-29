@@ -80,6 +80,11 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             this.OnUpdateDelta -= callback;
         }
 
+        public void SetValue(T value)
+        {
+            Value = value;
+        }
+
         public void Reset() => runtimeValue = defaultValue;
 
         public bool Save(string folderPath, string name = "")

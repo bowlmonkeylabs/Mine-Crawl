@@ -1015,7 +1015,7 @@ MonoBehaviour:
   jump: 0
   sprint: 0
   analogMovement: 0
-  cursorLocked: 1
+  playerCursorLocked: 1
   cursorInputForLook: 1
   _mouseSensitivity:
     UseConstant: 0
@@ -1031,7 +1031,13 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 3975cff0b522fb945a1344e66029a983, type: 2}
-  _onUnpause: {fileID: 11400000, guid: 75a9be7fc5ed203419a68583902e3313, type: 2}
+  _isGameOver:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 8ed3ee76d426bc14887f854d668acfc0, type: 2}
   playerInput: {fileID: 2719825288227953964}
 --- !u!114 &6318842967923595271
 MonoBehaviour:
@@ -1128,6 +1134,19 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 8ed3ee76d426bc14887f854d668acfc0, type: 2}
+        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.Variable`1[[System.Boolean,
+          mscorlib
+        m_MethodName: SetValue
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!1 &4405881634553532875
 GameObject:

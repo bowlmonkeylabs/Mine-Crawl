@@ -28,25 +28,30 @@ namespace BML.Scripts.Player
 		public bool cursorInputForLook = true;
 		[SerializeField] private FloatReference _mouseSensitivity;
 		
-		[Header("Pause settings")]
 		[SerializeField] private BoolReference _isPaused;
+		[SerializeField] private BoolReference _isGameOver;
+		private bool isUsingUi => (_isPaused != null && _isPaused.Value) ||
+		                         (_isGameOver != null && _isGameOver.Value);
 		
 		[SerializeField] private PlayerInput playerInput;
 
 		private void OnEnable()
 		{
-			_isPaused.Subscribe(ApplyPauseState);
-			ApplyPauseState();
+			_isPaused.Subscribe(ApplyUiState);
+			_isGameOver.Subscribe(ApplyUiState);
+			ApplyUiState();
 		}
 
 		private void OnDisable()
 		{
-			_isPaused.Unsubscribe(ApplyPauseState);
+			_isPaused.Unsubscribe(ApplyUiState);
+			_isGameOver.Unsubscribe(ApplyUiState);
 		}
 
 		private void OnDestroy()
 		{
-			_isPaused.Unsubscribe(ApplyPauseState);
+			_isPaused.Unsubscribe(ApplyUiState);
+			_isGameOver.Unsubscribe(ApplyUiState);
 		}
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -85,10 +90,10 @@ namespace BML.Scripts.Player
 			}
 		}
 #endif
-		public void ApplyPauseState()
+		public void ApplyUiState()
 		{
 			// Debug.Log($"Apply Pause State: {_isPaused?.Value}");
-			if (_isPaused != null && _isPaused.Value)
+			if (isUsingUi)
 			{
 				playerInput.SwitchCurrentActionMap("UI");
 				SetCursorState(false);
@@ -123,7 +128,7 @@ namespace BML.Scripts.Player
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			// SetCursorState(playerCursorLocked);
-			ApplyPauseState();
+			ApplyUiState();
 		}
 
 		private void SetCursorState(bool newState)
