@@ -6,6 +6,7 @@ using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts
 {
@@ -19,13 +20,15 @@ namespace BML.Scripts
 
         [TitleGroup("Reset Variables")]
         [SerializeField] private BoolVariable _isPaused;
-        [SerializeField] private BoolVariable _isGameOver;
+        [SerializeField] private BoolVariable _isGameLost;
+        [SerializeField] private BoolVariable _isGameWon;
         [SerializeField] private IntVariable _playerHealth;
 
         private void ResetVariables()
         {
             _isPaused.Reset();
-            _isGameOver.Reset();
+            _isGameLost.Reset();
+            _isGameWon.Reset();
             _playerHealth.Reset();
         }
         

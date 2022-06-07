@@ -29,29 +29,34 @@ namespace BML.Scripts.Player
 		[SerializeField] private FloatReference _mouseSensitivity;
 		
 		[SerializeField] private BoolReference _isPaused;
-		[SerializeField] private BoolReference _isGameOver;
+		[SerializeField] private BoolReference _isGameLost;
+		[SerializeField] private BoolReference _isGameWon;
 		private bool isUsingUi => (_isPaused != null && _isPaused.Value) ||
-		                         (_isGameOver != null && _isGameOver.Value);
+		                          (_isGameLost != null && _isGameLost.Value) ||
+		                          (_isGameWon != null && _isGameWon.Value);
 		
 		[SerializeField] private PlayerInput playerInput;
 
 		private void OnEnable()
 		{
 			_isPaused.Subscribe(ApplyUiState);
-			_isGameOver.Subscribe(ApplyUiState);
+			_isGameLost.Subscribe(ApplyUiState);
+			_isGameWon.Subscribe(ApplyUiState);
 			ApplyUiState();
 		}
 
 		private void OnDisable()
 		{
 			_isPaused.Unsubscribe(ApplyUiState);
-			_isGameOver.Unsubscribe(ApplyUiState);
+			_isGameLost.Unsubscribe(ApplyUiState);
+			_isGameWon.Unsubscribe(ApplyUiState);
 		}
 
 		private void OnDestroy()
 		{
 			_isPaused.Unsubscribe(ApplyUiState);
-			_isGameOver.Unsubscribe(ApplyUiState);
+			_isGameLost.Unsubscribe(ApplyUiState);
+			_isGameWon.Unsubscribe(ApplyUiState);
 		}
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
