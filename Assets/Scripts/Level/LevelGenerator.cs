@@ -4,6 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Level
@@ -11,13 +12,44 @@ namespace BML.Scripts.Level
     [ExecuteInEditMode]
     public class LevelGenerator : MonoBehaviour
     {
-        [SerializeField] private List<LevelRoom> _roomPrefabs;
-        [SerializeField] private List<LevelRoom> _roomLayout;
-        [SerializeField] private int _seed;
-        [SerializeField] private bool _lockSeed;
-
-        private List<LevelRoom> _level;
+        #region Inspector
         
+        [FoldoutGroup("Seed")]
+        [SerializeField] private int _seed;
+        [FoldoutGroup("Seed")]
+        [SerializeField] private bool _lockSeed;
+        
+        [FoldoutGroup("Layout")]
+        [PropertySpace(SpaceAfter = 10)]
+        [FormerlySerializedAs("_roomLayout")]
+        [SerializeField] private List<LevelRoom> _manualRoomLayout;
+        [FoldoutGroup("Layout")]
+        [FormerlySerializedAs("_roomPrefabs")]
+        [SerializeField] private List<LevelRoom> _randomRoomPrefabs;
+
+        #endregion
+        
+        private List<LevelRoom> _level;
+
+        #region Unity lifecycle
+
+        #if UNITY_EDITOR
+        private void Awake()
+        {
+            var levels = GetComponentsInChildren<LevelRoom>();
+            if (levels != null && levels.Length > 0)
+            {
+                _level = new List<LevelRoom>();
+                foreach (var levelRoom in levels)
+                {
+                    _level.Add(levelRoom);
+                }
+            }
+        }
+        #endif
+
+        #endregion
+
         [Button]
         private void Generate()
         {
@@ -29,22 +61,22 @@ namespace BML.Scripts.Level
             }
             Random.InitState(_seed);
 
-            if (_roomLayout?.Count == 0)
+            if (_manualRoomLayout?.Count == 0)
             {
                 return;
             }
             _level = new List<LevelRoom>();
-            for (int i = 0; i < _roomLayout.Count; i++)
+            for (int i = 0; i < _manualRoomLayout.Count; i++)
             {
-                if (_roomLayout[i] == null)
+                if (_manualRoomLayout[i] == null)
                 {
-                    var randomIndex = Random.Range(0, _roomPrefabs.Count);
-                    var randomRoomPrefab = _roomPrefabs[randomIndex];
+                    var randomIndex = Random.Range(0, _randomRoomPrefabs.Count);
+                    var randomRoomPrefab = _randomRoomPrefabs[randomIndex];
                     AppendRoom(randomRoomPrefab);
                 }
                 else
                 {
-                    AppendRoom(_roomLayout[i]);
+                    AppendRoom(_manualRoomLayout[i]);
                 }
             }
         }
