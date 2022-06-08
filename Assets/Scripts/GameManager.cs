@@ -63,5 +63,10 @@ namespace BML.Scripts
         }
 
         #endregion
+
+        public void DebugLog(string message)
+        {
+            Debug.Log(message);
+        }
     }
 }

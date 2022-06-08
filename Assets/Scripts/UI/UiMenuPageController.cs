@@ -24,6 +24,7 @@ namespace BML.Scripts.UI
         [TitleGroup("Optional Controls")]
         [SerializeField] private BoolVariable _isOpen;
         [SerializeField] private GameObject _backdropButtonPrefab;
+        [SerializeField] private Transform _backdropParent;
 
         private GameObject backdropButtonInstance;
         
@@ -208,7 +209,7 @@ namespace BML.Scripts.UI
         private void InitializeBackdrop()
         {
             if (_backdropButtonPrefab == null) return;
-            var backdropParent = _root?.transform ?? this.transform;
+            var backdropParent = (!_backdropParent.SafeIsUnityNull() ? _backdropParent : (!_root.SafeIsUnityNull() ? _root.transform : this.transform));
             backdropButtonInstance = GameObject.Instantiate(_backdropButtonPrefab, backdropParent);
             backdropButtonInstance.transform.SetAsFirstSibling();
             var button = backdropButtonInstance.GetComponent<Button>();
