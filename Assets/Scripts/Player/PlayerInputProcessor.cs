@@ -94,6 +94,11 @@ namespace BML.Scripts.Player
 				// SetCursorState(false);
 			}
 		}
+		
+		public void OnUnlockCursor()
+		{
+			SetCursorState(false);
+		}
 #endif
 		public void ApplyUiState()
 		{
