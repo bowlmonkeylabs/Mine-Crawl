@@ -208,7 +208,8 @@ namespace BML.Scripts.UI
         private void InitializeBackdrop()
         {
             if (_backdropButtonPrefab == null) return;
-            backdropButtonInstance = GameObject.Instantiate(_backdropButtonPrefab, this.transform);
+            var backdropParent = _root?.transform ?? this.transform;
+            backdropButtonInstance = GameObject.Instantiate(_backdropButtonPrefab, backdropParent);
             backdropButtonInstance.transform.SetAsFirstSibling();
             var button = backdropButtonInstance.GetComponent<Button>();
             button.onClick = _onClickBackdrop;
