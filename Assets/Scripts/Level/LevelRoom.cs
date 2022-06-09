@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Level
 {
+    [ExecuteInEditMode]
     public class LevelRoom : MonoBehaviour
     {
         [SerializeField] private Transform _startPoint;
@@ -25,7 +26,7 @@ namespace BML.Scripts.Level
         {
             Destroy();
 
-            if (_gridBounds.SafeIsUnityNull())
+            if (_gridBounds.SafeIsUnityNull() || _objectsParent.SafeIsUnityNull())
             {
                 return;
             }
@@ -42,7 +43,7 @@ namespace BML.Scripts.Level
             
             // Debug.Log($"Generate room: {min} {max} {minX} {maxX} {minY} {maxY} {minZ} {maxZ}");
 
-            _gameObjects = new GameObject[maxX-minX+1, maxY-minY+1, maxZ-minZ+1];
+            _gameObjects = new GameObject[maxX-minX, maxY-minY, maxZ-minZ];
             
             for (int x = minX; x < maxX; x++)
             {
@@ -85,12 +86,18 @@ namespace BML.Scripts.Level
 
         private void Awake()
         {
-            var objectInstances = _objectsParent.GetComponentsInChildren<GameObject>();
-            if (objectInstances != null)
+            if (_objectsParent != null)
             {
-                foreach (var objectInstance in objectInstances)
+                var objectInstances = _objectsParent.GetComponentsInChildren<Transform>();
+                if (objectInstances != null)
                 {
-                    GameObject.Destroy(objectInstance);
+                    foreach (var objectInstance in objectInstances)
+                    {
+                        if (objectInstance != _objectsParent.transform)
+                        {
+                            GameObject.DestroyImmediate(objectInstance.gameObject);
+                        }
+                    }
                 }
             }
 
