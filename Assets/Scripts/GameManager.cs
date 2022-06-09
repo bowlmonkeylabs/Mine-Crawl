@@ -22,6 +22,7 @@ namespace BML.Scripts
         [SerializeField] private BoolVariable _isPaused;
         [SerializeField] private BoolVariable _isGameLost;
         [SerializeField] private BoolVariable _isGameWon;
+        [SerializeField] private BoolVariable _isMenuOpenStore;
         [SerializeField] private IntVariable _playerHealth;
         [SerializeField] private TimerVariable _levelTimer;
 
@@ -40,6 +41,7 @@ namespace BML.Scripts
             _isPaused.Reset();
             _isGameLost.Reset();
             _isGameWon.Reset();
+            _isMenuOpenStore.Reset();
             _playerHealth.Reset();
             _levelTimer.ResetTimer();
         }

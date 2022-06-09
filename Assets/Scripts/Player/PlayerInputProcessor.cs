@@ -31,9 +31,11 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolReference _isPaused;
 		[SerializeField] private BoolReference _isGameLost;
 		[SerializeField] private BoolReference _isGameWon;
+		[SerializeField] private BoolReference _isMenuOpenStore;
 		private bool isUsingUi => (_isPaused != null && _isPaused.Value) ||
 		                          (_isGameLost != null && _isGameLost.Value) ||
-		                          (_isGameWon != null && _isGameWon.Value);
+		                          (_isGameWon != null && _isGameWon.Value) ||
+		                          (_isMenuOpenStore != null && _isMenuOpenStore.Value);
 		
 		[SerializeField] private PlayerInput playerInput;
 
@@ -42,6 +44,7 @@ namespace BML.Scripts.Player
 			_isPaused.Subscribe(ApplyUiState);
 			_isGameLost.Subscribe(ApplyUiState);
 			_isGameWon.Subscribe(ApplyUiState);
+			_isMenuOpenStore.Subscribe(ApplyUiState);
 			ApplyUiState();
 		}
 
@@ -50,6 +53,7 @@ namespace BML.Scripts.Player
 			_isPaused.Unsubscribe(ApplyUiState);
 			_isGameLost.Unsubscribe(ApplyUiState);
 			_isGameWon.Unsubscribe(ApplyUiState);
+			_isMenuOpenStore.Unsubscribe(ApplyUiState);
 		}
 
 		private void OnDestroy()
@@ -57,6 +61,7 @@ namespace BML.Scripts.Player
 			_isPaused.Unsubscribe(ApplyUiState);
 			_isGameLost.Unsubscribe(ApplyUiState);
 			_isGameWon.Unsubscribe(ApplyUiState);
+			_isMenuOpenStore.Unsubscribe(ApplyUiState);
 		}
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
