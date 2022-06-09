@@ -15,9 +15,11 @@ namespace BML.Scripts
 
         [SerializeField] private UnityEvent _onDeath;
 
-        public void DoDamage(int damage)
+        public void DoDamage(System.Object damage)
         {
-            _health -= damage;
+            int dmg = (int) damage;
+            
+            _health -= dmg;
             _onDamageFeedbacks.PlayFeedbacks();
             if (_health <= 0)
             {

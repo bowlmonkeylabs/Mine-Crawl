@@ -13,6 +13,7 @@ namespace BML.Scripts.Player
         [SerializeField] private float _interactDistance = 5f;
         [SerializeField] private LayerMask _interactMask;
         [SerializeField] private TimerReference _interactCooldown;
+        [SerializeField] private IntReference _pickaxeDamage;
 
         #region Unity lifecycle
 
@@ -50,7 +51,7 @@ namespace BML.Scripts.Player
                 {
                     InteractionReceiver interactionReceiver = hit.collider.GetComponent<InteractionReceiver>();
                     if (interactionReceiver == null) return;
-                    interactionReceiver.ReceiveInteraction();
+                    interactionReceiver.ReceiveInteraction(_pickaxeDamage.Value);
                 }
             }
         }
