@@ -107,6 +107,7 @@ namespace BML.Scripts.Level
             
             var roomInstance = GameObject.Instantiate(roomPrefab, this.transform);
             roomInstance.transform.position = appendPosition;
+            roomInstance.GetComponent<LevelRoom>().Generate();
             
             _level.Add(roomInstance);
 
