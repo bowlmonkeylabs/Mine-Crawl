@@ -23,6 +23,17 @@ namespace BML.Scripts
         [SerializeField] private BoolVariable _isGameLost;
         [SerializeField] private BoolVariable _isGameWon;
         [SerializeField] private IntVariable _playerHealth;
+        [SerializeField] private TimerVariable _levelTimer;
+
+        private void Awake()
+        {
+            ResetVariables();
+        }
+
+        private void Start()
+        {
+            _levelTimer.StartTimer();
+        }
 
         private void ResetVariables()
         {
@@ -30,10 +41,16 @@ namespace BML.Scripts
             _isGameLost.Reset();
             _isGameWon.Reset();
             _playerHealth.Reset();
+            _levelTimer.ResetTimer();
         }
         
         #region Public interface
 
+        public void LoseGame()
+        {
+            _isGameLost.Value = true;
+        }
+        
         public void RestartGame()
         {
             ResetVariables();
@@ -52,14 +69,21 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
+            _levelTimer.SubscribeFinished(LoseGame);
             _restartGame.Subscribe(RestartGame);
             _quitGame.Subscribe(QuitGame);
         }
 
         private void OnDisable()
         {
+            _levelTimer.UnsubscribeFinished(LoseGame);
             _restartGame.Unsubscribe(RestartGame);
             _quitGame.Unsubscribe(QuitGame);
+        }
+
+        private void FixedUpdate()
+        {
+            _levelTimer.UpdateTime();
         }
 
         #endregion

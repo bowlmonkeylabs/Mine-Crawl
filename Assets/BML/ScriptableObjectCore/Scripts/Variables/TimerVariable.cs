@@ -36,7 +36,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         [NonSerialized]
         private bool isStopped = true;
-        
+
         public void StartTimer()
         {
             isStopped = false;
@@ -49,6 +49,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isStopped = true;
             isFinished = false;
             startTime = Time.time;
+            remainingTime = Duration;
         }
 
         public void StopTimer()
@@ -212,6 +213,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isConstantStopped = false;
             isConstantFinished = false;
             startTime = Time.time;
+            ConstantRemainingTime = Duration;
         }
 
         public void ResetTimer()
@@ -220,6 +222,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isConstantStopped = true;
             isConstantFinished = false;
             startTime = Time.time;
+            ConstantRemainingTime = Duration;
         }
 
         public void StopTimer()
