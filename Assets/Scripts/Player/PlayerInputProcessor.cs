@@ -2,6 +2,7 @@
 //https://assetstore.unity.com/packages/essentials/starter-assets-first-person-character-controller-196525
 
 using System;
+using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using UnityEngine;
@@ -29,39 +30,35 @@ namespace BML.Scripts.Player
 		[SerializeField] private FloatReference _mouseSensitivity;
 		
 		[SerializeField] private BoolReference _isPaused;
-		[SerializeField] private BoolReference _isGameLost;
-		[SerializeField] private BoolReference _isGameWon;
-		[SerializeField] private BoolReference _isMenuOpenStore;
-		private bool isUsingUi => (_isPaused != null && _isPaused.Value) ||
-		                          (_isGameLost != null && _isGameLost.Value) ||
-		                          (_isGameWon != null && _isGameWon.Value) ||
-		                          (_isMenuOpenStore != null && _isMenuOpenStore.Value);
-		
+
+		[SerializeField] private VariableContainer _containerUiMenuStates;
+
+		private bool isUsingUi
+		{
+			get
+			{
+				return _containerUiMenuStates
+					.GetBoolVariables()
+					.Any(b => (b != null && b.Value));
+			}
+		}
+
 		[SerializeField] private PlayerInput playerInput;
 
 		private void OnEnable()
 		{
-			_isPaused.Subscribe(ApplyUiState);
-			_isGameLost.Subscribe(ApplyUiState);
-			_isGameWon.Subscribe(ApplyUiState);
-			_isMenuOpenStore.Subscribe(ApplyUiState);
 			ApplyUiState();
+			_containerUiMenuStates.GetBoolVariables().ForEach(b => b.Subscribe(ApplyUiState));
 		}
 
 		private void OnDisable()
 		{
-			_isPaused.Unsubscribe(ApplyUiState);
-			_isGameLost.Unsubscribe(ApplyUiState);
-			_isGameWon.Unsubscribe(ApplyUiState);
-			_isMenuOpenStore.Unsubscribe(ApplyUiState);
+			_containerUiMenuStates.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyUiState));
 		}
 
 		private void OnDestroy()
 		{
-			_isPaused.Unsubscribe(ApplyUiState);
-			_isGameLost.Unsubscribe(ApplyUiState);
-			_isGameWon.Unsubscribe(ApplyUiState);
-			_isMenuOpenStore.Unsubscribe(ApplyUiState);
+			_containerUiMenuStates.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyUiState));
 		}
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -107,7 +104,7 @@ namespace BML.Scripts.Player
 #endif
 		public void ApplyUiState()
 		{
-			// Debug.Log($"Apply Pause State: {_isPaused?.Value}");
+			Debug.Log($"Apply Ui State: {isUsingUi} => {playerInput.currentActionMap.name} {Cursor.lockState}");
 			if (isUsingUi)
 			{
 				playerInput.SwitchCurrentActionMap("UI");
@@ -118,6 +115,7 @@ namespace BML.Scripts.Player
 				playerInput.SwitchCurrentActionMap("Player");
 				SetCursorState(playerCursorLocked);
 			}
+			Debug.Log($"Updated to: {playerInput.currentActionMap.name} {Cursor.lockState}");
 		}
 
 		public void MoveInput(Vector2 newMoveDirection)

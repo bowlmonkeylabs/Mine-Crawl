@@ -18,34 +18,14 @@ namespace BML.Scripts
         [SerializeField] private MMF_Player _restartFeedbacks;
         [SerializeField] private MMF_Player _quitFeedbacks;
 
-        [TitleGroup("Reset Variables")]
-        [SerializeField] private BoolVariable _isPaused;
         [SerializeField] private BoolVariable _isGameLost;
-        [SerializeField] private BoolVariable _isGameWon;
-        [SerializeField] private BoolVariable _isMenuOpenStore;
-        [SerializeField] private IntVariable _playerHealth;
         [SerializeField] private TimerVariable _levelTimer;
-
-        private void Awake()
-        {
-            ResetVariables();
-        }
 
         private void Start()
         {
             _levelTimer.StartTimer();
         }
 
-        private void ResetVariables()
-        {
-            _isPaused.Reset();
-            _isGameLost.Reset();
-            _isGameWon.Reset();
-            _isMenuOpenStore.Reset();
-            _playerHealth.Reset();
-            _levelTimer.ResetTimer();
-        }
-        
         #region Public interface
 
         public void LoseGame()
@@ -55,13 +35,11 @@ namespace BML.Scripts
         
         public void RestartGame()
         {
-            ResetVariables();
             _restartFeedbacks.PlayFeedbacks();
         }
 
         public void QuitGame()
         {
-            ResetVariables();
             _quitFeedbacks.PlayFeedbacks();
         }
         
