@@ -17,8 +17,8 @@ namespace BML.Scripts.Cave.MarchingCubesModified
 
         private float[] TetrahedronValue { get; set; }
 
-        public MarchingTertrahedron(float surface = 0.0f)
-            : base(surface)
+        public MarchingTertrahedron(Grid grid, float surface = 0.0f)
+            : base(grid, surface)
         {
             EdgeVertex = new Vector3[6];
             CubePosition = new Vector3[8];
@@ -29,7 +29,7 @@ namespace BML.Scripts.Cave.MarchingCubesModified
         /// <summary>
         /// MarchCubeTetrahedron performs the Marching Tetrahedrons algorithm on a single cube
         /// </summary>
-        protected override void March(float x, float y, float z, float[] cube, IList<Vector3> vertList, IList<int> indexList)
+        protected override void March(int x, int y, int z, float[] cube, IList<Vector3> vertList, IList<int> indexList)
         {
             int i, j, vertexInACube;
 

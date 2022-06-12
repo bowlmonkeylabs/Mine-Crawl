@@ -25,6 +25,11 @@ namespace BML.Scripts.Cave.DirectedGraph
         {
             return _nodes.Values;
         }
+        
+        public IEnumerable<NodeConnection> GetAllNodeConnectionsUnordered()
+        {
+            return _nodeConnections.ToList();
+        }
 
         public bool AddNode(Node node)
         {

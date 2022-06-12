@@ -26,6 +26,7 @@ namespace BML.Scripts.Cave
 
         private readonly Bounds bounds;
         private readonly float radius2; // radius squared
+        private readonly float radius; // radius squared
         private readonly float cellSize;
         private Vector3[,,] grid;
         private List<Vector3> activeSamples = new List<Vector3>();
@@ -38,6 +39,7 @@ namespace BML.Scripts.Cave
         {
             var halfSize = size / 2;
             this.bounds = new Bounds(halfSize, size);
+            this.radius = radius;
             radius2 = radius * radius;
             cellSize = radius / Mathf.Sqrt(2);
             grid = new Vector3[Mathf.CeilToInt(size.x / cellSize),
@@ -70,7 +72,7 @@ namespace BML.Scripts.Cave
                     float angle = 2 * Mathf.PI * Random.value;
                     float r = Mathf.Sqrt(Random.value * 3 * radius2 +
                                        radius2); // See: http://stackoverflow.com/questions/9048095/create-random-number-within-an-annulus/9048443#9048443
-                    Vector3 candidate = sample + Random.onUnitSphere;
+                    Vector3 candidate = sample + Random.onUnitSphere * radius;
 
                     // Accept candidates if it's inside the rect and farther than 2 * radius to any existing sample.
                     if (bounds.Contains(candidate) && IsFarEnough(candidate))

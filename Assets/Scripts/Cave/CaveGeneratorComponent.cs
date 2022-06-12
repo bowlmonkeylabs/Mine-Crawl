@@ -11,12 +11,18 @@ using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 using Node = BML.Scripts.Cave.DirectedGraph.DirectedGraph<UnityEngine.Vector3, BML.Scripts.Cave.DirectedGraph.CaveNodeData, BML.Scripts.Cave.DirectedGraph.CaveNodeConnectionData>.Node;
 using NodeConnection = BML.Scripts.Cave.DirectedGraph.DirectedGraph<UnityEngine.Vector3, BML.Scripts.Cave.DirectedGraph.CaveNodeData, BML.Scripts.Cave.DirectedGraph.CaveNodeConnectionData>.NodeConnection;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Cave
 {
     public class CaveGeneratorComponent : MonoBehaviour
     {
         #region Inspector
+        
+        [FoldoutGroup("Seed")]
+        [SerializeField] private int _seed;
+        [FoldoutGroup("Seed")]
+        [SerializeField] private bool _lockSeed;
         
         [TitleGroup("Dependencies")]
         [SerializeField] private Grid _grid;
@@ -26,7 +32,11 @@ namespace BML.Scripts.Cave
         [TitleGroup("Poisson parameters")]
         [SerializeField] private float _minRadius = 1f;
         [TitleGroup("Poisson parameters")]
-        [SerializeField] private float _gizmoRadius = 1f;
+        [SerializeField] private float _graphPadding = 1f;
+        [TitleGroup("Poisson parameters")]
+        [SerializeField] private float _nodeSizeMin = 0.1f;
+        [TitleGroup("Poisson parameters")]
+        [SerializeField] private float _nodeSizeMax = 0.5f;
         
         [TitleGroup("Marching cubes parameters")]
         [SerializeField] private float _surfaceValue = 0.5f;
@@ -35,6 +45,8 @@ namespace BML.Scripts.Cave
         [TitleGroup("Marching cubes parameters")]
         [SerializeField] private Material _material;
 
+        [TitleGroup("Debug")]
+        [SerializeField] private bool _drawGridGizmos = false;
         [TitleGroup("Debug")]
         [SerializeField] private Transform _gridProbe;
         
@@ -52,11 +64,12 @@ namespace BML.Scripts.Cave
         private List<GameObject> _meshes = new List<GameObject>();
 
         [Button]
-        private void TestGridProbe()
+        private void PrintGridProbePosition()
         {
             var cellPosition = _grid.WorldToCell(_gridProbe.position);
             var cellCenter = _grid.GetCellCenterWorld(cellPosition);
-            Debug.Log($"{_gridProbe.position} | {cellPosition} | {cellCenter}");
+            var cellIndex = _grid.CellToBoundsRelativeCell(_gridBounds.bounds, cellPosition);
+            Debug.Log($"World: {_gridProbe.position} | Cell: {cellPosition} | Cell center: {cellCenter} | Cell index: {cellIndex}");
         }
         
         #region Unity lifecycle
@@ -81,6 +94,11 @@ namespace BML.Scripts.Cave
             if (_caveGraph != null)
             {
                 _caveGraph.OnDrawGizmos(this.gameObject);
+            }
+
+            if (_drawGridGizmos && _grid != null && _gridBounds != null)
+            {
+                _grid.OnDrawGizmos(this.gameObject, _gridBounds.bounds);
             }
         }
         
@@ -121,24 +139,37 @@ namespace BML.Scripts.Cave
         }
 
         [Button]
-        private void GetSamples()
+        private void Generate()
         {
+            Debug.ClearDeveloperConsole();
+            
             Destroy();
+            
+            if (!_lockSeed)
+            {
+                _seed = Random.Range(Int32.MinValue, Int32.MaxValue);
+            }
+            Random.InitState(_seed);
             
             // Compute generation bounds
             var boundsMin = _gridBounds.bounds.min;
             var boundsMax = _gridBounds.bounds.max;
             
             // Generate starting sample points
-            _poissonDiscSampler = new PoissonDiscSampler3D(boundsMax - boundsMin, _minRadius);
+            var poissonSize = (boundsMax - boundsMin) - (Vector3.one * _graphPadding);
+            var poissonMinOffset = (_gridBounds.center - (poissonSize / 2)) - boundsMin;
+            _poissonDiscSampler = new PoissonDiscSampler3D(poissonSize, _minRadius);
             _poissonDiskSamples = _poissonDiscSampler.Samples().ToList();
 
             // Initialize cave graph from sample points
-            _caveGraph = new CaveGraph(_gridBounds.bounds);
+            _caveGraph = new CaveGraph(_gridBounds.bounds, _gridBounds.transform);
             foreach (var samplePosition in _poissonDiskSamples)
             {
-                var nodeData = new CaveNodeData(samplePosition, 0.1f);
-                var node = new Node(nodeData.Position, nodeData);
+                var localPosition = samplePosition + poissonMinOffset;
+                var nodeSize = Random.Range(_nodeSizeMin, _nodeSizeMax);
+                var nodeData = new CaveNodeData(localPosition, nodeSize);
+                // Debug.Log($"Create node: Local: {nodeData.LocalPosition} | Size: {nodeData.Size}");
+                var node = new Node(nodeData.LocalPosition, nodeData);
                 _caveGraph.AddNode(node);
             }
             
@@ -164,7 +195,7 @@ namespace BML.Scripts.Cave
             var voxelArray = new VoxelArray(voxelValues);
             
             // Create mesh from voxels (Marching cubes)
-            _marching = new MarchingCubes(_surfaceValue);
+            _marching = new MarchingCubes(_grid, _surfaceValue);
             _marching.Surface = _surfaceValue;
             
             List<Vector3> verts = new List<Vector3>();
@@ -196,9 +227,14 @@ namespace BML.Scripts.Cave
                 _marchingNormalRenderer.Load(verts, normals);
             }
             
-            var position = new Vector3(-_caveVoxels.GetLength(0) / 2, -_caveVoxels.GetLength(1) / 2, -_caveVoxels.GetLength(2) / 2);
-
-            CreateMesh32(verts, normals, indices, position + _gridBounds.center);
+            var offset = new Vector3(
+                -1 * (float)_caveVoxels.GetLength(0) / 2, 
+                -1 * (float)_caveVoxels.GetLength(1) / 2, 
+                -1 * (float)_caveVoxels.GetLength(2) / 2
+            );
+            offset = _grid.CellToLocalInterpolated(offset);
+            var position = _gridBounds.center + offset;
+            CreateMesh32(verts, normals, indices, position);
         }
         
         private void CreateMesh32(List<Vector3> verts, List<Vector3> normals, List<int> indices, Vector3 position)

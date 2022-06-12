@@ -8,6 +8,8 @@ namespace BML.Scripts.Cave.MarchingCubesModified
 {
     public abstract class Marching
     {
+        public Grid Grid { get; set; }
+        
         /// <summary>
         /// The surface value in the voxels. Normally set to 0. 
         /// </summary>
@@ -27,8 +29,9 @@ namespace BML.Scripts.Cave.MarchingCubesModified
         /// 
         /// </summary>
         /// <param name="surface"></param>
-        public Marching(float surface)
+        public Marching(Grid grid, float surface)
         {
+            Grid = grid;
             Surface = surface;
             Cube = new float[8];
             WindingOrder = new int[] { 0, 1, 2 };
@@ -51,20 +54,24 @@ namespace BML.Scripts.Cave.MarchingCubesModified
 
             int x, y, z, i;
             int ix, iy, iz;
-            for (x = 0; x < width - 1; x++)
+            for (x = 0; x <= width - 1; x++)
             {
-                for (y = 0; y < height - 1; y++)
+                for (y = 0; y <= height - 1; y++)
                 {
-                    for (z = 0; z < depth - 1; z++)
+                    for (z = 0; z <= depth - 1; z++)
                     {
                         //Get the values in the 8 neighbours which make up a cube
                         for (i = 0; i < 8; i++)
                         {
                             ix = x + VertexOffset[i, 0];
+                            ix = Math.Min(ix, width - 1);
                             iy = y + VertexOffset[i, 1];
+                            iy = Math.Min(iy, height - 1);
                             iz = z + VertexOffset[i, 2];
+                            iz = Math.Min(iz, depth - 1);
 
-                            Cube[i] = voxels[ix, iy, iz];
+                            var value = voxels[ix, iy, iz];
+                            Cube[i] = value;
                         }
 
                         //Perform algorithm
@@ -86,16 +93,17 @@ namespace BML.Scripts.Cave.MarchingCubesModified
         /// <param name="indices"></param>
         public virtual void Generate(IList<float> voxels, int width, int height, int depth, IList<Vector3> verts, IList<int> indices)
         {
+            Debug.Log($"Generate: {width} {height} {depth}");
 
             UpdateWindingOrder();
 
             int x, y, z, i;
             int ix, iy, iz;
-            for (x = 0; x < width - 1; x++)
+            for (x = 0; x <= width - 1; x++)
             {
-                for (y = 0; y < height - 1; y++)
+                for (y = 0; y <= height - 1; y++)
                 {
-                    for (z = 0; z < depth - 1; z++)
+                    for (z = 0; z <= depth - 1; z++)
                     {
                         //Get the values in the 8 neighbours which make up a cube
                         for (i = 0; i < 8; i++)
@@ -138,7 +146,7 @@ namespace BML.Scripts.Cave.MarchingCubesModified
          /// <summary>
         /// MarchCube performs the Marching algorithm on a single cube
         /// </summary>
-        protected abstract void March(float x, float y, float z, float[] cube, IList<Vector3> vertList, IList<int> indexList);
+        protected abstract void March(int x, int y, int z, float[] cube, IList<Vector3> vertList, IList<int> indexList);
 
         /// <summary>
         /// GetOffset finds the approximate point of intersection of the surface

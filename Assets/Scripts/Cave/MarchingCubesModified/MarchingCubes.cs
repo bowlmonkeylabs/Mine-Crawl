@@ -11,7 +11,7 @@ namespace BML.Scripts.Cave.MarchingCubesModified
 
         private Vector3[] EdgeVertex { get; set; }
 
-        public MarchingCubes(float surface = 0.0f) : base(surface)
+        public MarchingCubes(Grid grid, float surface = 0.0f) : base(grid, surface)
         {
             EdgeVertex = new Vector3[12];
         }
@@ -19,7 +19,7 @@ namespace BML.Scripts.Cave.MarchingCubesModified
         /// <summary>
         /// MarchCube performs the Marching Cubes algorithm on a single cube
         /// </summary>
-        protected override void March(float x, float y, float z, float[] cube, IList<Vector3> vertList, IList<int> indexList)
+        protected override void March(int x, int y, int z, float[] cube, IList<Vector3> vertList, IList<int> indexList)
         {
             int i, j, vert, idx;
             int flagIndex = 0;
@@ -41,10 +41,21 @@ namespace BML.Scripts.Cave.MarchingCubesModified
                 if ((edgeFlags & (1 << i)) != 0)
                 {
                     offset = GetOffset(cube[EdgeConnection[i, 0]], cube[EdgeConnection[i, 1]]);
+                    
+                    var cellPosition = new Vector3Int(x, y, z);
+                    
+                    float GetPositionHelper(int axisIndex)
+                    {
+	                    return cellPosition[axisIndex] + VertexOffset[EdgeConnection[i, 0], axisIndex] + offset * EdgeDirection[i, axisIndex];
+                    }
 
-                    EdgeVertex[i].x = x + (VertexOffset[EdgeConnection[i, 0], 0] + offset * EdgeDirection[i, 0]);
-                    EdgeVertex[i].y = y + (VertexOffset[EdgeConnection[i, 0], 1] + offset * EdgeDirection[i, 1]);
-                    EdgeVertex[i].z = z + (VertexOffset[EdgeConnection[i, 0], 2] + offset * EdgeDirection[i, 2]);
+                    EdgeVertex[i].x = GetPositionHelper(0);
+                    EdgeVertex[i].y = GetPositionHelper(1);
+                    EdgeVertex[i].z = GetPositionHelper(2);
+                    EdgeVertex[i] = Grid.CellToLocalInterpolated(EdgeVertex[i]);
+                    // EdgeVertex[i].x = x + (VertexOffset[EdgeConnection[i, 0], 0] + offset * EdgeDirection[i, 0]);
+                    // EdgeVertex[i].y = y + (VertexOffset[EdgeConnection[i, 0], 1] + offset * EdgeDirection[i, 1]);
+                    // EdgeVertex[i].z = z + (VertexOffset[EdgeConnection[i, 0], 2] + offset * EdgeDirection[i, 2]);
                 }
             }
 

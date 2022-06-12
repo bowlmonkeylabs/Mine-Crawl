@@ -4,12 +4,12 @@ namespace BML.Scripts.Cave.DirectedGraph
 {
     public class CaveNodeData
     {
-        public Vector3 Position { get; private set; }
+        public Vector3 LocalPosition { get; private set; }
         public float Size { get; private set; }
 
-        public CaveNodeData(Vector3 position, float size)
+        public CaveNodeData(Vector3 localPosition, float size)
         {
-            Position = position;
+            LocalPosition = localPosition;
             Size = size;
         }
     }
