@@ -82,6 +82,15 @@ namespace BML.Scripts.Utils
             ret.z = ret.z.RoundNearZero();
             return ret;
         }
+
+        public static Vector3Int FloorToInt(this Vector3 vec)
+        {
+            var ret = new Vector3Int();
+            ret.x = Mathf.FloorToInt(vec.x);
+            ret.y = Mathf.FloorToInt(vec.y);
+            ret.z = Mathf.FloorToInt(vec.z);
+            return ret;
+        }
         
         public static Vector3 RotatePointAroundPivot(this Vector3 point, Vector3 pivot, Quaternion rotation) {
             var dir = point - pivot;
@@ -90,11 +99,17 @@ namespace BML.Scripts.Utils
             return point;
         }
 
+        /// <summary>
+        /// Inverts a scale vector by dividing 1 by each component
+        /// </summary>
         public static Vector3 Inverse(this Vector3 vec)
         {
             return new Vector3(1/vec.x, 1/vec.y, 1/vec.z);
         }
         
+        /// <summary>
+        /// Inverts a scale vector by dividing 1 by each component
+        /// </summary>
         public static Vector2 Inverse(this Vector2 vec)
         {
             return new Vector2(1/vec.x, 1/vec.y);
