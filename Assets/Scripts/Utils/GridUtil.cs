@@ -1,8 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using BML.ScriptableObjectCore.Scripts.Variables;
+using Mono.CSharp;
 using PlasticPipe.PlasticProtocol.Messages;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Utils
 {
@@ -114,11 +118,13 @@ namespace BML.Scripts.Utils
             return boundsMaxCell - boundsMinCell;
         }
 
+        // WIP
         public static IEnumerable<Vector3Int> GetCellsOverlappingLine(this Grid grid, Vector3 to, Vector3 from, float radius)
         {
             return null;
         }
 
+        // WIP
         public static IEnumerable<Vector3Int> GetCellsOverlappingCollider(this Grid grid, Collider collider)
         {
             foreach (var cellPosition in GetCellsOverlapping(grid, collider.bounds))
@@ -135,6 +141,67 @@ namespace BML.Scripts.Utils
             }
 
             // return null;
+        }
+        
+        // WIP
+        public static IEnumerable<Vector3Int> GetRandomPathBetween(this Grid grid, Vector3Int from, Vector3Int to)
+        {
+            Debug.Log($"Path Between: From: {from} | To: {to}");
+            Vector3Int curr = from;
+            int guard = 30;
+            while (curr != to && guard > 0)
+            {
+                var remainingMoves = to - curr;
+                int randomAxisIndex = Random.Range(0, 3);
+                curr[randomAxisIndex] += 1 * Math.Sign(remainingMoves[randomAxisIndex]);
+                Debug.Log($"Curr: {curr}");
+                guard--;
+                yield return curr;
+            }
+        }
+        
+        // WIP
+        public static IEnumerable<Vector3Int> GetLineBetween(this Grid grid, Vector3Int from, Vector3Int to)
+        {
+            var diff = to - from;
+            int dx = Math.Abs(diff.x), sx = Math.Sign(diff.x);
+            int dy = Math.Abs(diff.y), sy = Math.Sign(diff.y);
+            int dz = Math.Abs(diff.z), sz = Math.Sign(diff.z);
+            int dm = Math.Max(dx, Math.Max(dy, dz)), i = dm; /* maximum difference */
+            // to.x = to.y = to.z = dm/2; /* error offset */
+
+            Debug.Log($"Line between: From: {from} | To: {to} | DM: {dm}");
+            // yield return from;
+
+            Vector3Int curr = from;
+            Vector3Int dest = to;
+            for(;;) {  /* loop */
+                yield return curr;
+                if (i-- == 0) break;
+                dest.x -= dx; if (dest.x < 0) { dest.x += dm; curr.x += sx; } 
+                dest.y -= dy; if (dest.y < 0) { dest.y += dm; curr.y += sy; } 
+                dest.z -= dz; if (dest.x < 0) { dest.z += dm; curr.z += sz; } 
+            }
+        }
+        
+        // WIP
+        public static IEnumerable<Vector3Int> GetLineBetween(this Grid grid, Vector3Int from, Vector3Int to, float width)
+        {
+            Debug.Log($"Line between: From: {from} | To: {to} | DM: {width}");
+            var sqrWidth = width * width;
+            var diff = to - from;
+            var bounds = new Bounds(to + diff / 2, diff);
+            foreach (var cellPosition in grid.GetCellsOverlapping(bounds))
+            {
+                var cellCenter = grid.GetCellCenterWorld(cellPosition);
+                var cellDiff = cellCenter - from;
+                var sqrDistFromLine = (cellDiff - Vector3.Project(cellDiff, diff)).sqrMagnitude;
+                if (sqrDistFromLine <= sqrWidth)
+                {
+                    yield return cellPosition;
+                }
+            }
+            
         }
 
         #endregion

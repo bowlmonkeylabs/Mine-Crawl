@@ -16,6 +16,11 @@ namespace BML.Scripts.Cave.DirectedGraph
     
     public class CaveNodeConnectionData
     {
-        
+        public float Radius { get; private set; }
+
+        public CaveNodeConnectionData(float radius)
+        {
+            Radius = radius;
+        }
     }
 }

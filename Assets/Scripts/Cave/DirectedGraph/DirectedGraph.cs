@@ -54,7 +54,7 @@ namespace BML.Scripts.Cave.DirectedGraph
 
         public bool SetStartNode(Node node)
         {
-            if (Start != null)
+            if (Start != null || node == null)
             {
                 return false;
             }
@@ -117,6 +117,8 @@ namespace BML.Scripts.Cave.DirectedGraph
                 FromNode = fromNode;
                 ToNode = toNode;
                 Data = data;
+                FromNode.Connections.Add(this);
+                ToNode.Connections.Add(this);
             }
         }
         

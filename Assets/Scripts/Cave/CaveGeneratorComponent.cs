@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.Cave.DirectedGraph;
 using BML.Scripts.Cave.MarchingCubesModified;
 using BML.Scripts.Utils;
+using Clayxels;
 using Common.Unity.Drawing;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
@@ -28,6 +31,8 @@ namespace BML.Scripts.Cave
         [SerializeField] private Grid _grid;
         [TitleGroup("Dependencies")]
         [SerializeField] private BoxCollider _gridBounds;
+        [TitleGroup("Dependencies")]
+        [SerializeField] private Transform _player;
         
         [TitleGroup("Poisson parameters")]
         [SerializeField] private float _minRadius = 1f;
@@ -37,6 +42,9 @@ namespace BML.Scripts.Cave
         [SerializeField] private float _nodeSizeMin = 0.1f;
         [TitleGroup("Poisson parameters")]
         [SerializeField] private float _nodeSizeMax = 0.5f;
+        
+        [TitleGroup("Cave graph")]
+        [SerializeField] private int _connectNeighbors = 2;
         
         [TitleGroup("Marching cubes parameters")]
         [SerializeField] private float _surfaceValue = 0.5f;
@@ -50,6 +58,21 @@ namespace BML.Scripts.Cave
         [TitleGroup("Debug")]
         [SerializeField] private Transform _gridProbe;
         
+        [TitleGroup("Clayxels")]
+        [SerializeField] private ClayContainer _clayContainer;
+        [TitleGroup("Clayxels")]
+        [SerializeField] [Range(0f, 100f)] private float _nodeBlend = 100f;
+        [TitleGroup("Clayxels")]
+        [SerializeField] [Range(0f, 100f)] private float _connectionBlend = 100f;
+        [TitleGroup("Clayxels")]
+        [SerializeField] private bool _renderOutside = true;
+        [TitleGroup("Clayxels")]
+        [SerializeField] private bool _generateCollisionMesh = true;
+        [TitleGroup("Clayxels")]
+        [SerializeField] private bool _renderLiveClayxels = false;
+        [TitleGroup("Clayxels")]
+        [SerializeField] private GameObject _clayObjectPrefab;
+
         #endregion
 
         private PoissonDiscSampler3D _poissonDiscSampler;
@@ -124,6 +147,7 @@ namespace BML.Scripts.Cave
                 _poissonDiskSamples.Clear();
             }
 
+            _caveGraph?.DestroyClayxels(_clayContainer);
             _caveGraph = null;
 
             _caveVoxels = null;
@@ -173,8 +197,25 @@ namespace BML.Scripts.Cave
                 _caveGraph.AddNode(node);
             }
             
+            // Pick start node
+            var startNode = _caveGraph.GetAllNodesUnordered().FirstOrDefault();
+            _caveGraph.SetStartNode(startNode);
+            
+            // Move player to start
+            if (!_player.SafeIsUnityNull())
+            {
+                _player.position = _caveGraph.NodeLocalToWorld(startNode.Data.LocalPosition);
+            }
+            
             // Connect some cave nodes to each other
-            _caveGraph.ConnectNearestNeighbors(3);
+            _caveGraph.ConnectNearestNeighbors(_connectNeighbors);
+            
+            
+            // EXPERIMENTAL: Render cave graph with Clayxels
+            _caveGraph.GetClayxels(_clayContainer, _nodeBlend, _connectionBlend, _renderOutside, _clayObjectPrefab, _generateCollisionMesh, _renderLiveClayxels);
+            
+            return;
+            
             
             // Render cave graph to voxels
             _caveVoxels = _caveGraph.GetVoxels(_grid);
