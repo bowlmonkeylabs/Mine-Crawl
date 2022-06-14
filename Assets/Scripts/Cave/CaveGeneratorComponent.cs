@@ -45,6 +45,8 @@ namespace BML.Scripts.Cave
         
         [TitleGroup("Cave graph")]
         [SerializeField] private int _connectNeighbors = 2;
+
+        [SerializeField] private Collider _traverseCheckCollider = null;
         
         [TitleGroup("Marching cubes parameters")]
         [SerializeField] private float _surfaceValue = 0.5f;
@@ -57,6 +59,12 @@ namespace BML.Scripts.Cave
         [SerializeField] private bool _drawGridGizmos = false;
         [TitleGroup("Debug")]
         [SerializeField] private Transform _gridProbe;
+        [TitleGroup("Debug")]
+        [SerializeField] private GameObject _enemyPrefab;
+        [TitleGroup("Debug")]
+        [SerializeField] private Transform _enemyContainer;
+        [TitleGroup("Debug")]
+        [SerializeField] private LayerMask _levelLayerMask;
         
         [TitleGroup("Clayxels")]
         [SerializeField] private ClayContainer _clayContainer;
@@ -66,6 +74,8 @@ namespace BML.Scripts.Cave
         [SerializeField] [Range(0f, 100f)] private float _connectionBlend = 100f;
         [TitleGroup("Clayxels")]
         [SerializeField] private bool _renderOutside = true;
+        [TitleGroup("Clayxels")]
+        [SerializeField] private bool _generateClayxels = false;
         [TitleGroup("Clayxels")]
         [SerializeField] private bool _generateCollisionMesh = true;
         [TitleGroup("Clayxels")]
@@ -160,6 +170,15 @@ namespace BML.Scripts.Cave
                 GameObject.DestroyImmediate(mesh);
             }
             _meshes.Clear();
+
+            foreach (var childTransform in _enemyContainer.GetComponentsInChildren<Transform>())
+            {
+                if (childTransform == _enemyContainer.transform)
+                {
+                    continue;
+                }
+                GameObject.DestroyImmediate(childTransform.gameObject);
+            }
         }
 
         [Button]
@@ -186,7 +205,7 @@ namespace BML.Scripts.Cave
             _poissonDiskSamples = _poissonDiscSampler.Samples().ToList();
 
             // Initialize cave graph from sample points
-            _caveGraph = new CaveGraph(_gridBounds.bounds, _gridBounds.transform);
+            _caveGraph = new CaveGraph(_gridBounds.bounds, _gridBounds.transform, _traverseCheckCollider);
             foreach (var samplePosition in _poissonDiskSamples)
             {
                 var localPosition = samplePosition + poissonMinOffset;
@@ -212,7 +231,32 @@ namespace BML.Scripts.Cave
             
             
             // EXPERIMENTAL: Render cave graph with Clayxels
-            _caveGraph.GetClayxels(_clayContainer, _nodeBlend, _connectionBlend, _renderOutside, _clayObjectPrefab, _generateCollisionMesh, _renderLiveClayxels);
+            if (_generateClayxels)
+            {
+                _caveGraph.GetClayxels(_clayContainer, _nodeBlend, _connectionBlend, _renderOutside, _clayObjectPrefab,
+                    _generateCollisionMesh, _renderLiveClayxels);
+                foreach (var node in _caveGraph.GetAllNodesUnordered())
+                {
+                    if (node.Key == _caveGraph.Start.Key)
+                    {
+                        continue;
+                    }
+                    
+                    var angle = Random.Range(0, 4) * 90f;
+                    var rotation = Quaternion.AngleAxis(angle, Vector3.up);
+
+                    var worldPosition = _caveGraph.NodeLocalToWorld(node.Data.LocalPosition);
+                    var ray = new Ray(worldPosition, Vector3.down);
+                    var didHit = Physics.Raycast(ray, out var hitInfo, 30f, _levelLayerMask);
+                    if (didHit)
+                    {
+                        worldPosition = hitInfo.point;
+                        rotation = Quaternion.AngleAxis(angle, hitInfo.normal);
+                    }
+                    
+                    GameObject.Instantiate(_enemyPrefab, worldPosition, rotation, _enemyContainer);
+                }
+            }
             
             return;
             

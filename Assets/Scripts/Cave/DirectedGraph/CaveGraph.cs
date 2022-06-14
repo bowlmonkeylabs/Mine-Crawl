@@ -12,11 +12,16 @@ namespace BML.Scripts.Cave.DirectedGraph
     {
         private Bounds _voxelBounds;
         private Transform _voxelBoundsTransform;
+        private Collider _traverseCheckCollider;
+
+        private float _traverseMinSize;
         
-        public CaveGraph(Bounds voxelBounds, Transform voxelBoundsTransform)
+        public CaveGraph(Bounds voxelBounds, Transform voxelBoundsTransform, Collider traverseCheckCollider)
         {
             _voxelBounds = voxelBounds;
             _voxelBoundsTransform = voxelBoundsTransform;
+            _traverseCheckCollider = traverseCheckCollider;
+            _traverseMinSize = _traverseCheckCollider.bounds.extents.magnitude * 2;
         }
 
         public Vector3 NodeLocalToWorld(Vector3 nodeLocal)
@@ -49,6 +54,7 @@ namespace BML.Scripts.Cave.DirectedGraph
                 {
                     // var connectionRadius = Math.Max(node.node.Data.Size, neighbor.otherNode.Data.Size);
                     var connectionRadius = Math.Min(node.node.Data.Size, neighbor.otherNode.Data.Size) * 0.5f;
+                    connectionRadius = Math.Max(connectionRadius, _traverseMinSize);
                     var connectionData = new CaveNodeConnectionData(connectionRadius);
                     this.AddConnection(node.node, neighbor.otherNode, connectionData);
                 }
