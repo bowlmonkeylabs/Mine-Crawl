@@ -6,7 +6,7 @@ using BML.Scripts.Cave.DirectedGraph;
 using BML.Scripts.Cave.MarchingCubesModified;
 using BML.Scripts.Utils;
 using Clayxels;
-using Common.Unity.Drawing;
+// using Common.Unity.Drawing;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -93,7 +93,7 @@ namespace BML.Scripts.Cave
         private CaveGraph.VoxelData[,,] _caveVoxels;
         
         private Marching _marching;
-        private NormalRenderer _marchingNormalRenderer;
+        // private NormalRenderer _marchingNormalRenderer;
         private List<GameObject> _meshes = new List<GameObject>();
 
         [Button]
@@ -137,13 +137,13 @@ namespace BML.Scripts.Cave
         
         private void OnRenderObject()
         {
-            if(_marchingNormalRenderer != null && _meshes.Count > 0 && _drawNormals)
-            {
-                var m = _meshes[0].transform.localToWorldMatrix;
-
-                _marchingNormalRenderer.LocalToWorld = m;
-                _marchingNormalRenderer.Draw();
-            }
+            // if(_marchingNormalRenderer != null && _meshes.Count > 0 && _drawNormals)
+            // {
+            //     var m = _meshes[0].transform.localToWorldMatrix;
+            //
+            //     _marchingNormalRenderer.LocalToWorld = m;
+            //     _marchingNormalRenderer.Draw();
+            // }
             
         }
 
@@ -163,7 +163,7 @@ namespace BML.Scripts.Cave
             _caveVoxels = null;
 
             _marching = null;
-            _marchingNormalRenderer = null;
+            // _marchingNormalRenderer = null;
             
             foreach (var mesh in _meshes)
             {
@@ -306,10 +306,10 @@ namespace BML.Scripts.Cave
                     normals.Add(n);
                 }
 
-                _marchingNormalRenderer = new NormalRenderer();
-                _marchingNormalRenderer.DefaultColor = Color.red;
-                _marchingNormalRenderer.Length = 0.25f;
-                _marchingNormalRenderer.Load(verts, normals);
+                // _marchingNormalRenderer = new NormalRenderer();
+                // _marchingNormalRenderer.DefaultColor = Color.red;
+                // _marchingNormalRenderer.Length = 0.25f;
+                // _marchingNormalRenderer.Load(verts, normals);
             }
             
             var offset = new Vector3(
