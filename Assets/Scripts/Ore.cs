@@ -19,6 +19,7 @@ namespace BML.Scripts
 
         [SerializeField] private MMF_Player _onDamageFeedbacks;
         [SerializeField] private MMF_Player _onDeathFeedbacks;
+        [SerializeField] private MMF_Player _onCritFeedbacks;
 
         [SerializeField] private UnityEvent _onDeath;
         
@@ -43,6 +44,7 @@ namespace BML.Scripts
             if (distToCrit <= _critHitRadius && _critMarker.activeSelf)
             {
                 damage *= 2;
+                _onCritFeedbacks.PlayFeedbacks();
             }
 
             _health -= damage;
@@ -59,7 +61,6 @@ namespace BML.Scripts
         {
             _onDeath.Invoke();
             _onDeathFeedbacks.PlayFeedbacks();
-            Destroy(this.gameObject);
         }
         
         private void MoveCritMarker(Vector3 hitPosition)
