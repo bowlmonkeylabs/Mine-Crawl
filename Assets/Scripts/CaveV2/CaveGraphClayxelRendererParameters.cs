@@ -14,6 +14,8 @@ namespace BML.Scripts.CaveV2
         #region Inspector
 
         [SerializeField] public GameObject StartRoomPrefab;
+        [SerializeField] public GameObject EndRoomPrefab;
+        [SerializeField] public GameObject TunnelPrefab;
         
         [Serializable]
         private class RoomOption

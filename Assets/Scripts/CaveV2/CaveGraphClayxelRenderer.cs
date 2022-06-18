@@ -4,6 +4,7 @@ using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph;
 using UnityEngine;
 using Clayxels;
+using Mono.CSharp;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
@@ -32,7 +33,18 @@ namespace BML.Scripts.CaveV2
 
         [SerializeField] private bool _retopo = false;
 
-        [SerializeField] private bool _generateCollisionMesh = true;
+        [SerializeField, OnValueChanged("OnValueChangedGenerateCollisionMesh")] private bool _generateCollisionMesh = true;
+        private void OnValueChangedGenerateCollisionMesh()
+        {
+            if (!_generateCollisionMesh)
+            {
+                var meshCollider = _clayContainer.GetComponent<MeshCollider>();
+                if (meshCollider != null)
+                {
+                    GameObject.DestroyImmediate(meshCollider);
+                }
+            }
+        }
 
         [InlineEditor]
         [Required, SerializeField] private CaveGraphClayxelRendererParameters _caveGraphRenderParams;
@@ -76,7 +88,10 @@ namespace BML.Scripts.CaveV2
                 else
                 {
                     var meshCollider = _clayContainer.GetComponent<MeshCollider>();
-                    GameObject.DestroyImmediate(meshCollider);
+                    if (meshCollider != null)
+                    {
+                        GameObject.DestroyImmediate(meshCollider);
+                    }
                 }
             }
         }
@@ -90,7 +105,7 @@ namespace BML.Scripts.CaveV2
             CaveGraphClayxelRenderer.DestroyClayxels(clayContainer);
 
             var localOrigin = clayContainer.transform.position;
-            
+
             // Spawn "rooms" at each cave node
             foreach (var caveNodeData in caveGraph.Vertices)
             {
@@ -101,6 +116,11 @@ namespace BML.Scripts.CaveV2
                 {
                     roomPrefab = renderParams.StartRoomPrefab;
                 }
+                else if (caveNodeData == caveGraph.EndNode &&
+                         !renderParams.EndRoomPrefab.SafeIsUnityNull())
+                {
+                    roomPrefab = renderParams.EndRoomPrefab;
+                }
                 else
                 {
                     // TODO systematically choose which rooms to spawn
@@ -109,6 +129,7 @@ namespace BML.Scripts.CaveV2
 
                 // Spawn room
                 GameObject newGameObject;
+                #if UNITY_EDITOR
                 if (instanceAsPrefabs)
                 {
                     var newObject = PrefabUtility.InstantiatePrefab(roomPrefab, clayContainer.transform);
@@ -118,7 +139,38 @@ namespace BML.Scripts.CaveV2
                 {
                     newGameObject = GameObject.Instantiate(roomPrefab, clayContainer.transform);
                 }
+                #else
+                newGameObject = GameObject.Instantiate(roomPrefab, clayContainer.transform);
+                #endif
                 newGameObject.transform.position = localOrigin + caveNodeData.LocalPosition;
+                newGameObject.transform.localScale = Vector3.one * caveNodeData.Size;
+            }
+            
+            // Spawn "tunnel" on each edge to ensure nodes are connected
+            foreach (var caveNodeConnectionData in caveGraph.Edges)
+            {
+                // Spawn room
+                GameObject newGameObject;
+#if UNITY_EDITOR
+                if (instanceAsPrefabs)
+                {
+                    var newObject = PrefabUtility.InstantiatePrefab(renderParams.TunnelPrefab, clayContainer.transform);
+                    newGameObject = newObject as GameObject;
+                }
+                else
+                {
+                    newGameObject = GameObject.Instantiate(renderParams.TunnelPrefab, clayContainer.transform);
+                }
+#else
+                newGameObject = GameObject.Instantiate(roomPrefab, clayContainer.transform);
+#endif
+                var edgeDiff = (caveNodeConnectionData.Target.LocalPosition -
+                                caveNodeConnectionData.Source.LocalPosition);
+                var edgeMidPosition = caveNodeConnectionData.Source.LocalPosition + edgeDiff / 2;
+                var edgeRotation = Quaternion.LookRotation(edgeDiff);
+                var localScale = new Vector3(1f, 1f, caveNodeConnectionData.Length);
+                newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
+                newGameObject.transform.localScale = localScale;
             }
 
             // TODO find out how to update the Clayxels without the game object selected; none of the below seem to update it
@@ -153,6 +205,12 @@ namespace BML.Scripts.CaveV2
                 {
                     GameObject.DestroyImmediate(clayObject.gameObject);
                 }
+            }
+
+            var meshCollider = clayContainer.GetComponent<MeshCollider>();
+            if (meshCollider != null)
+            {
+                GameObject.DestroyImmediate(meshCollider);
             }
         }
 
