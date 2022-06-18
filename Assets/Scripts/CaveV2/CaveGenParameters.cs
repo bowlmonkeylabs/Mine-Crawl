@@ -34,19 +34,23 @@ namespace BML.Scripts.CaveV2
         [ValueDropdown("rollbackSeedDropdownValues")]
         [OnValueChanged("RollbackSeed")]
         [SerializeField] private int _rollbackSeed;
-        private int[] rollbackSeedDropdownValues => seedValuesHist.ToArray();
-        private Queue<int> seedValuesHist = new System.Collections.Generic.Queue<int>();
+        private int[] rollbackSeedDropdownValues => _seedValuesHist.ToArray();
+        [SerializeField, HideInInspector]
+        private List<int> _seedValuesHist = new List<int>(_SeedValuesHistCapacity);
+        private static readonly int _SeedValuesHistCapacity = 10;
         private void LogSeedHist()
         {
-            seedValuesHist.Enqueue(_seed);
-            while (seedValuesHist.Count > 10)
+            if (_seedValuesHist.Count >= _SeedValuesHistCapacity)
             {
-                seedValuesHist.Dequeue();
+                var removeCount = Math.Max(0, _seedValuesHist.Count - _SeedValuesHistCapacity) + 1;
+                _seedValuesHist.RemoveRange(0, removeCount);
             }
+            _seedValuesHist.Add(_seed);
         }
         private void RollbackSeed()
         {
-            Seed = _rollbackSeed;
+            // Purposefully avoid the public setter, so that rolling back to a seed does not log it to hist again.
+            _seed = _rollbackSeed;
         }
 
         [TitleGroup("Poisson")]
@@ -70,6 +74,13 @@ namespace BML.Scripts.CaveV2
         {
             Inner, Outer
         }
+        
+        [TitleGroup("Graph processing")]
+        public float MaxEdgeLengthFactor = 0.25f;
+        
+        [TitleGroup("Graph processing")]
+        [Range(1, 90)]
+        public int MaxEdgeSteepnessAngle = 30;
         
         #endregion
 

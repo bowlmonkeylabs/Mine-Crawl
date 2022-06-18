@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using BML.Scripts.CaveV2.CaveGraph;
@@ -72,7 +73,7 @@ namespace BML.Scripts.CaveV2
             var vertices = samplePoints.Select(point =>
             {
                 var pointRelativeToBoundsCenter = (point - poissonBoundsWithPadding.size / 2);
-                var size = Random.Range(1f, 3f); // TODO parameterize
+                var size = Random.Range(0.5f, 1.5f); // TODO parameterize
                 var node = new CaveNodeData(pointRelativeToBoundsCenter, size);
                 return node;
             });
@@ -81,6 +82,43 @@ namespace BML.Scripts.CaveV2
             // Assign random start node
             var startNode = caveGraph.GetRandomVertex();
             caveGraph.StartNode = startNode;
+            
+            // Assign random end node
+            var endNode = caveGraph.GetRandomVertex(new List<CaveNodeData> { startNode });
+            caveGraph.EndNode = endNode;
+            
+            // Add an edge between every possible combination of nodes, and calculate the distance/cost
+            var numVertices = caveGraph.Vertices.Count();
+            if (numVertices > 100)
+            {
+                throw new Exception($"Cave graph has too many vertices ({numVertices}) for our inefficient adjacency calculation; consider revising this code in order to continue!");
+            }
+            var vertexCombinations =
+                from v1 in caveGraph.Vertices
+                from v2 in caveGraph.Vertices
+                where v1 != v2
+                select new {v1, v2};
+            foreach (var vertexPair in vertexCombinations)
+            {
+                // Skip ndoes which are already connected
+                var foundInEdge = caveGraph.TryGetEdge(vertexPair.v1, vertexPair.v2, out var inEdge);
+                var foundOutEdge = caveGraph.TryGetEdge(vertexPair.v2, vertexPair.v1, out var outEdge);
+                if (foundInEdge || foundOutEdge)
+                {
+                    continue;
+                }
+                var edgeRadius = Math.Max(vertexPair.v1.Size, vertexPair.v2.Size);
+                var edge = new CaveNodeConnectionData(vertexPair.v1, vertexPair.v2, edgeRadius);
+                caveGraph.AddEdge(edge);
+            }
+            
+            // Remove long edges
+            var maxLength = bounds.size.magnitude * caveGenParams.MaxEdgeLengthFactor;
+            caveGraph.RemoveEdgeIf(edge => edge.Length >= maxLength);
+            
+            // Remove steep edges
+            var maxAngle = caveGenParams.MaxEdgeSteepnessAngle;
+            caveGraph.RemoveEdgeIf(edge => edge.SteepnessAngle >= maxAngle);
 
             return caveGraph;
         }
