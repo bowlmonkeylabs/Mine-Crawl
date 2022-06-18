@@ -19,7 +19,10 @@ namespace BML.Scripts.CaveV2
 
         [SerializeField] private bool _generateOnChange;
         
-        [SerializeField] private Bounds _caveGenBounds = new Bounds(Vector3.zero, new Vector3(10,6,10));
+        [SerializeField, DisableIf("$_notOverrideBounds")] private Bounds _caveGenBounds = new Bounds(Vector3.zero, new Vector3(10,6,10));
+        [SerializeField] private bool _overrideBounds = false;
+        private bool _notOverrideBounds => !_overrideBounds;
+        public Bounds CaveGenBounds => (_overrideBounds ? _caveGenBounds : _caveGenParams.PoissonBounds);
         
         [Required] [InlineEditor]
         [SerializeField] private CaveGenParameters _caveGenParams;
@@ -50,7 +53,7 @@ namespace BML.Scripts.CaveV2
             {
                 _caveGenParams.UpdateRandomSeed();
             }
-            _caveGraph = GenerateCaveGraph(_caveGenParams, _caveGenBounds);
+            _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
             
         }
 
@@ -148,16 +151,16 @@ namespace BML.Scripts.CaveV2
         {
             // Draw generation bounds
             Gizmos.color = Color.white;
-            var outerBounds = _caveGenParams.GetBoundsWithPadding(_caveGenBounds, CaveGenParameters.PaddingType.Outer);
+            var outerBounds = _caveGenParams.GetBoundsWithPadding(CaveGenBounds, CaveGenParameters.PaddingType.Outer);
             Gizmos.DrawWireCube(outerBounds.center, outerBounds.size);
             Gizmos.color = Color.gray;
-            var poissonBoundsWithPadding = _caveGenParams.GetBoundsWithPadding(_caveGenBounds, CaveGenParameters.PaddingType.Inner);
+            var poissonBoundsWithPadding = _caveGenParams.GetBoundsWithPadding(CaveGenBounds, CaveGenParameters.PaddingType.Inner);
             Gizmos.DrawWireCube(poissonBoundsWithPadding.center, poissonBoundsWithPadding.size);
             
             // Draw cave graph
             if (_caveGraph != null)
             {
-                _caveGraph.DrawGizmos(LocalOrigin);    
+                _caveGraph.DrawGizmos(LocalOrigin);
             }
             
             #if UNITY_EDITOR
@@ -171,7 +174,7 @@ namespace BML.Scripts.CaveV2
 
         #region Utils
 
-        public Vector3 LocalOrigin => this.transform.position + _caveGenBounds.center;
+        public Vector3 LocalOrigin => this.transform.position + CaveGenBounds.center;
         
         public Vector3 LocalToWorld(Vector3 localPosition)
         {

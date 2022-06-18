@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Vector3 = UnityEngine.Vector3;
 
 namespace BML.Scripts.CaveV2
 {
@@ -59,6 +60,10 @@ namespace BML.Scripts.CaveV2
         public float PoissonSampleRadius = 1f;
         
         [TitleGroup("Poisson")]
+        [LabelText("Bounds")]
+        public Bounds PoissonBounds = new Bounds(Vector3.zero, Vector3.one * 5);
+    
+        [TitleGroup("Poisson")]
         // [HorizontalGroup("PoissonBoundsPadding", LabelWidth = 0.3f)]
         [LabelText("Bounds Padding")]
         [MinValue("Vector3.zero")]
@@ -76,6 +81,7 @@ namespace BML.Scripts.CaveV2
         }
         
         [TitleGroup("Graph processing")]
+        [Range(0f, 1f)]
         public float MaxEdgeLengthFactor = 0.25f;
         
         [TitleGroup("Graph processing")]
