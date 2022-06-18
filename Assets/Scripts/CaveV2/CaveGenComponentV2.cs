@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.Util;
+using CaveV2.Clayxel;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using Random = UnityEngine.Random;
