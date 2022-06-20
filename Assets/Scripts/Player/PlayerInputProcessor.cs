@@ -130,6 +130,7 @@ namespace BML.Scripts.Player
 
 		public void JumpInput(bool newJumpState)
 		{
+			Debug.Log($"Jump input {newJumpState}");
 			jump = newJumpState;
 		}
 
