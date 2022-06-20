@@ -51,7 +51,13 @@ namespace BML.Scripts.Player
                 {
                     InteractionReceiver interactionReceiver = hit.collider.GetComponent<InteractionReceiver>();
                     if (interactionReceiver == null) return;
-                    interactionReceiver.ReceiveInteraction(_pickaxeDamage.Value);
+
+                    Ore.OreHitInfo oreHitInfo = new Ore.OreHitInfo()
+                    {
+                        Damage = _pickaxeDamage.Value,
+                        HitPositon = hit.point
+                    };
+                    interactionReceiver.ReceiveInteraction(oreHitInfo);
                 }
             }
         }
