@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using BML.Scripts.CaveV2.CaveGraph;
+using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.CaveV2.Util;
 using CaveV2.Clayxel;
 using Sirenix.OdinInspector;
@@ -31,7 +32,18 @@ namespace BML.Scripts.CaveV2
         [SerializeField] private CaveGraphClayxelRenderer _caveGraphClayxelRenderer;
 
         [Required] [InlineEditor]
+        [SerializeField] private CaveGraphMudBunRenderer _caveGraphMudBunRenderer;
+
+        [Required] [InlineEditor]
         [SerializeField] private LevelObjectSpawner _levelObjectSpawner;
+        
+        #endregion
+        
+        #region Events
+        
+        public delegate void AfterGenerate();
+
+        public AfterGenerate OnAfterGenerate;
         
         #endregion
 
@@ -55,6 +67,7 @@ namespace BML.Scripts.CaveV2
             }
             _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
             
+            OnAfterGenerate?.Invoke();
         }
 
         [PropertyOrder(-1)]

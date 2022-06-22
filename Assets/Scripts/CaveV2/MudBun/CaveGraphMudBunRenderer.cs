@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BML.Scripts.CaveV2;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.Utils;
@@ -10,11 +11,13 @@ using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 
-namespace CaveV2.MudBun
+namespace BML.Scripts.CaveV2.MudBun
 {
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     public class CaveGraphMudBunRenderer : MudBunGenerator
     {
+        #region Inspector
+
         [Required, SerializeField]
         private CaveGenComponentV2 _caveGenerator;
         private CaveGraphV2 _caveGraph => _caveGenerator.CaveGraph; 
@@ -22,9 +25,19 @@ namespace CaveV2.MudBun
         [Required, InlineEditor, SerializeField]
         private CaveGraphClayxelRendererParameters _caveGraphRenderParams;
 
+        #endregion
+        
         #region Unity lifecycle
 
-        
+        private void OnEnable()
+        {
+            _caveGenerator.OnAfterGenerate += TryGenerateWithCooldown;
+        }
+
+        private void OnDisable()
+        {
+            _caveGenerator.OnAfterGenerate -= TryGenerateWithCooldown;
+        }
 
         #endregion
 

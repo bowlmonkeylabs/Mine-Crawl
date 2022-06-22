@@ -11,11 +11,17 @@ using UnityEditor;
 using UnityEngine;
 using MeshUtils = BML.Scripts.Utils.MeshUtils;
 
-namespace CaveV2.MudBun
+namespace BML.Scripts.CaveV2.MudBun
 {
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     public class MudBunGenerator : MonoBehaviour
     {
+        #region Inspector
+        
+        [SerializeField] private bool _generateOnChange;
+        [SerializeField] private int _maxGeneratesPerSecond = 1;
+        private float _generateMinCooldownSeconds => 1f / (float) _maxGeneratesPerSecond;
+        
         [Required, SerializeField] private MudRenderer _mudRenderer;
         
         [SerializeField] private bool _invertNormals = false;
@@ -26,42 +32,69 @@ namespace CaveV2.MudBun
         private bool _instanceAsPrefabs = false;
         #endif
 
+        #endregion
+        
+        #region Events
+
+        public delegate void AfterGenerate();
+
+        public AfterGenerate OnAfterGenerate;
+
+        public delegate void AfterLockMesh();
+
+        public AfterLockMesh OnAfterLockMesh;
+        
+        #endregion
+        
         #region Unity lifecycle
 
-        private void OnEnable()
+        private void Start()
         {
-            _mudRenderer.OnAfterLockMesh += OnAfterLockMesh;
+            _mudRenderer.OnAfterLockMesh += OnAfterLockMeshCallback;
             _mudRenderer.OnAfterAddCollider += OnAfterAddCollider;
         }
         
-        private void OnDisable()
+        private void OnDestroy()
         {
-            _mudRenderer.OnAfterLockMesh -= OnAfterLockMesh;
+            _mudRenderer.OnAfterLockMesh -= OnAfterLockMeshCallback;
             _mudRenderer.OnAfterAddCollider -= OnAfterAddCollider;
+        }
+        
+        private void OnValidate()
+        {
+            TryGenerateWithCooldown();
         }
 
         #endregion
 
         #region MudBun
 
-        protected void OnAfterLockMesh()
+        protected void OnAfterLockMeshCallback()
         {
-            Debug.Log($"On After Lock Mesh: Invert normals {_invertNormals}");
+            // Debug.Log($"On After Lock Mesh: Invert normals {_invertNormals}");
             // Invert mesh normals
             if (_invertNormals)
             {
                 var meshFilter = _mudRenderer.GetComponent<MeshFilter>();
-                if (!meshFilter.SafeIsUnityNull())
+                var meshCollider = _mudRenderer.GetComponent<MeshCollider>();
+                if (!meshFilter.SafeIsUnityNull() &&
+                    (meshCollider.SafeIsUnityNull() ||
+                     meshCollider.sharedMesh != meshFilter.sharedMesh))
                 {
-                    Debug.Log($"On After Lock Mesh: Invert Mesh Filter");
                     meshFilter.sharedMesh.InvertNormals();
+                    
+                    var meshTemp = meshFilter.sharedMesh;
+                    meshFilter.sharedMesh = null;
+                    meshFilter.sharedMesh = meshTemp;
                 }
             }
+            
+            OnAfterLockMesh?.Invoke();
         }
 
         protected void OnAfterAddCollider()
         {
-            Debug.Log($"On After Add Collider: Invert normals {_invertNormals}");
+            // Debug.Log($"On After Add Collider: Invert normals {_invertNormals}");
             // Invert mesh normals
             if (_invertNormals)
             {
@@ -69,10 +102,28 @@ namespace CaveV2.MudBun
                 var meshCollider = _mudRenderer.GetComponent<MeshCollider>();
                 // Debug.Log($"Mesh collider: {meshCollider} | {meshCollider?.name} | {meshCollider?.sharedMesh?.name}");
                 if (!meshCollider.SafeIsUnityNull() &&
-                    meshCollider.sharedMesh != meshFilter.sharedMesh)
+                    (meshFilter.SafeIsUnityNull() ||
+                    meshCollider.sharedMesh != meshFilter.sharedMesh))
                 {
-                    Debug.Log($"On After Add Collider: Invert Mesh Collider");
                     meshCollider.sharedMesh.InvertNormals();
+
+                    var meshTemp = meshCollider.sharedMesh;
+                    meshCollider.sharedMesh = null;
+                    meshCollider.sharedMesh = meshTemp;
+                }
+            }
+        }
+        
+        private float lastGenerateTime;
+        protected void TryGenerateWithCooldown()
+        {
+            if (_generateOnChange)
+            {
+                var elapsedTime = (Time.time - lastGenerateTime);
+                if (elapsedTime >= _generateMinCooldownSeconds)
+                {
+                    lastGenerateTime = Time.time;
+                    this.GenerateMudBun();
                 }
             }
         }
@@ -81,6 +132,8 @@ namespace CaveV2.MudBun
         public void GenerateMudBun()
         {
             this.GenerateMudBun(_mudRenderer, _instanceAsPrefabs);
+            
+            OnAfterGenerate?.Invoke();
         }
 
         protected virtual void GenerateMudBun(
