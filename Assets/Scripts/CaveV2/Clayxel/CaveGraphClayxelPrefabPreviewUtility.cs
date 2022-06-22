@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace CaveV2.Clayxel
 {
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     [RequireComponent(typeof(Grid))]
     public class CaveGraphClayxelPrefabPreviewUtility : ClayxelGenerator
     {

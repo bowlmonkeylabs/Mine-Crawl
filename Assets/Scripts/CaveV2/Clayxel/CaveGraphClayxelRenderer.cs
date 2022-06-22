@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace CaveV2.Clayxel
 {
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     public class CaveGraphClayxelRenderer : ClayxelGenerator
     {
         [Required, SerializeField]
