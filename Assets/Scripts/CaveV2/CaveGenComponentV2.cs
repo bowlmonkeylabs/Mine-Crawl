@@ -77,7 +77,7 @@ namespace BML.Scripts.CaveV2
             var vertices = samplePoints.Select(point =>
             {
                 var pointRelativeToBoundsCenter = (point - poissonBoundsWithPadding.size / 2);
-                var size = Random.Range(0.5f, 1.5f); // TODO parameterize
+                var size = Random.Range(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y);
                 var node = new CaveNodeData(pointRelativeToBoundsCenter, size);
                 return node;
             });
