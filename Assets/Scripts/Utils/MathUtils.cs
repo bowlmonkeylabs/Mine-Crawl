@@ -27,5 +27,18 @@ namespace BML.Scripts.Utils
             var remapped = (value - from1) / (to1 - from1) * (to2 - from2) + from2;
             return clamp ? Mathf.Clamp(remapped, from2, to2) : remapped;
         }
+
+        /// <summary>
+        /// Get a random number in a range that is reflected about 0
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public static float GetRandomInRangeReflected(float min, float max)
+        {
+            float randInRange = Random.Range(min, max);
+            float randInReflectedRange = Random.Range(-max, -min);
+            return Random.Range(0, 2) == 0 ? randInRange : randInReflectedRange;
+        }
     }
 }

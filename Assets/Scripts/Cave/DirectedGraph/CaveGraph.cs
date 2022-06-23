@@ -2,9 +2,7 @@
 using System.Linq;
 using BML.Scripts.Utils;
 using Clayxels;
-using Sirenix.OdinInspector.Editor;
 using UnityEngine;
-using Object = System.Object;
 
 namespace BML.Scripts.Cave.DirectedGraph
 {

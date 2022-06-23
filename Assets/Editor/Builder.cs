@@ -11,7 +11,7 @@ namespace BML.Build
 {
     public static class Builder
     {
-        private static string _buildsFolder = @"./Builds";
+        public static string BuildsFolder = @"./Builds";
 
         private struct BuildTargetInfo
         {
@@ -24,10 +24,10 @@ namespace BML.Build
             new Dictionary<BuildTarget, BuildTargetInfo> {
                 { BuildTarget.StandaloneWindows, new BuildTargetInfo(".exe") },
                 { BuildTarget.StandaloneWindows64, new BuildTargetInfo(".exe") },
+                { BuildTarget.WebGL, new BuildTargetInfo("") },
                 // TODO below this line I do not know the correct extensions
                 // { BuildTarget.StandaloneLinux64, (extension:"") },
                 // { BuildTarget.StandaloneOSX, (extension:"") },
-                // { BuildTarget.WebGL, (extension:"") },
             };
 
         #region Build methods
@@ -49,10 +49,10 @@ namespace BML.Build
                 throw new System.Exception("I don't know how to handle this build target. Please update the Builder script to suppport this.");
             }
 
-            var buildName = GenerateBuildName(_buildsFolder, buildTarget);
+            var buildName = GenerateBuildName(BuildsFolder, buildTarget);
 
             // Check if build name already exists
-            bool alreadyExists = UnityEngine.Windows.File.Exists(buildName.fullPath);
+            bool alreadyExists = UnityEngine.Windows.File.Exists(buildName.executablePath);
             // var currentDirectory = System.IO.Directory.GetCurrentDirectory();
             if (alreadyExists)
             {
@@ -65,7 +65,7 @@ namespace BML.Build
                     // Delete the old folder
                     // TODO change this to build to a temp path, and only overwrite the old build if new one succeeds
                     // var tempPath = UnityEditor.FileUtil.GetUniqueTempPathInProject();
-                    var deleted = UnityEditor.FileUtil.DeleteFileOrDirectory(buildName.fullPath);
+                    var deleted = UnityEditor.FileUtil.DeleteFileOrDirectory(buildName.executablePath);
                     break;
                 case OverwriteMode.Increment:
                     throw new NotImplementedException("OverwriteMode.Increment is not yet implemented.");
@@ -79,7 +79,7 @@ namespace BML.Build
             {
                 scenes = scenes, 
                 target = buildTarget,
-                locationPathName = buildName.fullPath,
+                locationPathName = buildName.executablePath,
                 options = buildOptions,
             };
 
@@ -89,6 +89,7 @@ namespace BML.Build
             if (summary.result == BuildResult.Succeeded)
             {
                 Debug.Log("Build succeeded: " + summary.totalSize + " bytes");
+                System.Diagnostics.Process.Start("explorer.exe", buildName.folderPath);
             }
 
             if (summary.result == BuildResult.Failed)
@@ -158,7 +159,7 @@ namespace BML.Build
         #endregion
 
         #region Helpers
-        private static (string folderName, string executableName, string fullPath) GenerateBuildName(
+        private static (string folderName, string folderPath, string executableName, string executablePath) GenerateBuildName(
             string rootBuildFolder, BuildTarget buildTarget
         ) {
             var projectName = Application.productName;
@@ -168,10 +169,14 @@ namespace BML.Build
             var executableExtension = buildTargetInfo[buildTarget].extension;
             var executableName = $"{projectName}_{projectVersion}{executableExtension}";
 
-            var pathParts = new string[] { rootBuildFolder, folderName, executableName };
-            var fullPath = System.IO.Path.Combine(pathParts);
+            var pathParts = new string[] { Application.dataPath, "../", rootBuildFolder, folderName };
+            var folderPath = System.IO.Path.Combine(pathParts);
+            folderPath = System.IO.Path.GetFullPath(folderPath);
+            pathParts = new string[] { folderPath, executableName };
+            var executablePath = System.IO.Path.Combine(pathParts);
+            executablePath = System.IO.Path.GetFullPath(executablePath);
 
-            return (folderName, executableName, fullPath);
+            return (folderName, folderPath, executableName, executablePath);
         }
 
         private static void Shout(string message)

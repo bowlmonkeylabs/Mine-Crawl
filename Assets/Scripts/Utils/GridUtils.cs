@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using BML.ScriptableObjectCore.Scripts.Variables;
-using Mono.CSharp;
-using PlasticPipe.PlasticProtocol.Messages;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
