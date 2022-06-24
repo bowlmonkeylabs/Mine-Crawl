@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 namespace CaveV2.Clayxel
 {
-    [CreateAssetMenu(fileName = "CaveGenClayxelRenderParams", menuName = "BML/CaveGenClayxelRenderParams", order = 0)]
+    [CreateAssetMenu(fileName = "CaveGenClayxelRenderParams", menuName = "BML/Cave Gen/CaveGenClayxelRenderParams", order = 0)]
     public class CaveGraphClayxelRendererParameters : ScriptableObject
     {
         #region Inspector

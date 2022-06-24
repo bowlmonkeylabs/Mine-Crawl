@@ -26,7 +26,7 @@ namespace BML.Scripts.CaveV2.MudBun
         
         [SerializeField] private bool _invertNormals = false;
 
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         [SerializeField] private bool _instanceAsPrefabs = true;
         #else
         private bool _instanceAsPrefabs = false;

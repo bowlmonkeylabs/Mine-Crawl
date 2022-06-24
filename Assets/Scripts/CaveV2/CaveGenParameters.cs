@@ -7,7 +7,7 @@ using Vector3 = UnityEngine.Vector3;
 
 namespace BML.Scripts.CaveV2
 {
-    [CreateAssetMenu(fileName = "CaveGenParams", menuName = "BML/CaveGenParams", order = 0)]
+    [CreateAssetMenu(fileName = "CaveGenParams", menuName = "BML/Cave Gen/CaveGenParams", order = 0)]
     public class CaveGenParameters : ScriptableObject
     {
         #region Inspector

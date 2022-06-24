@@ -4,6 +4,7 @@ using BML.Scripts.CaveV2;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.Utils;
 using CaveV2.Clayxel;
+using CaveV2.MudBun;
 using Clayxels;
 using MudBun;
 using Sirenix.OdinInspector;
@@ -23,7 +24,7 @@ namespace BML.Scripts.CaveV2.MudBun
         private CaveGraphV2 _caveGraph => _caveGenerator.CaveGraph; 
         
         [Required, InlineEditor, SerializeField]
-        private CaveGraphClayxelRendererParameters _caveGraphRenderParams;
+        private CaveGraphMudBunRendererParameters _caveGraphRenderParams;
 
         #endregion
         
