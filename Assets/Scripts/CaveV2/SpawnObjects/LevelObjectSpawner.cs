@@ -18,7 +18,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private bool _generateOnLockMudBunMesh;
         [SerializeField] private MudBunGenerator _mudBunGenerator;
         
-        [SerializeField, ReadOnly] private bool _generateOnChange;
+        [InfoBox("DO NOT LEAVE ON IN PLAY MODE!", InfoMessageType.Error, "_generateOnChange")]
+        [SerializeField] private bool _generateOnChange;
         [SerializeField] private int _maxGeneratesPerSecond = 1;
         private float _generateMinCooldownSeconds => 1f / (float) _maxGeneratesPerSecond;
         
