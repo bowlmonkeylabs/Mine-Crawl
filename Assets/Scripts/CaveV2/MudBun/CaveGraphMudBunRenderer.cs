@@ -26,16 +26,18 @@ namespace BML.Scripts.CaveV2.MudBun
         
         #region Unity lifecycle
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
             base.OnEnable();
             _caveGenerator.OnAfterGenerate += TryGenerateWithCooldown;
+            _caveGraphRenderParams.OnValidateEvent += TryGenerateWithCooldown;
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
             base.OnDisable();
             _caveGenerator.OnAfterGenerate -= TryGenerateWithCooldown;
+            _caveGraphRenderParams.OnValidateEvent -= TryGenerateWithCooldown;
         }
 
         #endregion
@@ -84,23 +86,27 @@ namespace BML.Scripts.CaveV2.MudBun
             // Spawn "tunnel" on each edge to ensure nodes are connected
             foreach (var caveNodeConnectionData in _caveGraph.Edges)
             {
-                // Spawn room
-                GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
-                var edgeDiff = (caveNodeConnectionData.Target.LocalPosition -
-                                caveNodeConnectionData.Source.LocalPosition);
+                // Calculate tunnel position
+                var sourceTargetDiff = (caveNodeConnectionData.Target.LocalPosition -
+                                        caveNodeConnectionData.Source.LocalPosition);
+                var sourceTargetDiffProjectedToGroundNormalized = Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
+                var sourceEdgePosition = caveNodeConnectionData.Source.LocalPosition +
+                                         (caveNodeConnectionData.Source.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * sourceTargetDiffProjectedToGroundNormalized);
+                var targetEdgePosition = caveNodeConnectionData.Target.LocalPosition +
+                                         (caveNodeConnectionData.Target.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * -1 * sourceTargetDiffProjectedToGroundNormalized);
+                
+                var edgeDiff = (targetEdgePosition - sourceEdgePosition);
                 var edgeMidPosition = caveNodeConnectionData.Source.LocalPosition + edgeDiff / 2;
                 var edgeRotation = Quaternion.LookRotation(edgeDiff);
-                var localScale = new Vector3(1f, 1f, caveNodeConnectionData.Length);
+                var edgeLength = edgeDiff.magnitude;
+                var localScale = new Vector3(1f, 1f, edgeLength);
+                // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
+
+                // Spawn tunnel
+                GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
                 newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 newGameObject.transform.localScale = localScale;
             }
-
-            // TODO find out how to update the Clayxels without the game object selected; none of the below seem to update it
-            // clayContainer.needsUpdate = true;
-            // clayContainer.scanClayObjectsHierarchy();
-            // clayContainer.forceUpdateAllSolids();
-            // clayContainer.solidUpdated(0);
-            // clayContainer.computeClay();
         }
 
         #endregion

@@ -89,9 +89,9 @@ namespace BML.Scripts.CaveV2
         public int MaxEdgeSteepnessAngle = 30;
         
         [TitleGroup("Mesh generation")]
-        [MinMaxSlider(0.1f, 3f)]
+        [MinMaxSlider(0.1f, 10f)]
         public Vector2 RoomScaling = Vector2.one;
-        
+
         #endregion
 
         #region Buttons

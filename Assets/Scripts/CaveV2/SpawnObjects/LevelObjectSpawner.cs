@@ -79,7 +79,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         public void SpawnLevelObjects()
         {
             DestroyLevelObjects();
-            
+
             SpawnPlayer(_caveGenerator, this.transform, _player);
             SpawnObjectsAtTags(_levelObjectSpawnerParams, this.transform);
         }
@@ -111,15 +111,19 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private static void SpawnPlayer(CaveGenComponentV2 caveGenerator, Transform parent, GameObject player)
         {
+            // Debug.Log($"Call SpawnPlayer");
             // Place player at the level start
             if (caveGenerator.CaveGraph.StartNode != null)
             {
                 var startWorldPosition = caveGenerator.LocalToWorld(caveGenerator.CaveGraph.StartNode.LocalPosition);
                 var playerInThisScene = (player.scene.handle != 0 && player.scene.handle == parent.gameObject.scene.handle);
+                // Debug.Log($"Call SpawnPlayer: Position {startWorldPosition} | Player in scene {playerInThisScene}");
                 if (playerInThisScene)
                 {
-                    // Debug.Log($"Moved player to level start...");
+                    // var prevPosition = player.transform.position;
                     player.transform.position = startWorldPosition;
+                    // player.transform.SetPositionAndRotation(startWorldPosition, Quaternion.identity);
+                    // Debug.Log($"Moved player to level start... (prev: {prevPosition}, curr: {player.transform.position})");
                 }
                 else
                 {

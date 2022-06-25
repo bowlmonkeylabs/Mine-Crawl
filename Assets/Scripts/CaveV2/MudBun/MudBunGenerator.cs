@@ -50,19 +50,19 @@ namespace BML.Scripts.CaveV2.MudBun
         
         #region Unity lifecycle
 
-        protected void OnEnable()
+        protected virtual void OnEnable()
         {
             _mudRenderer.OnAfterLockMesh += OnAfterLockMeshCallback;
             _mudRenderer.OnAfterAddCollider += OnAfterAddColliderCallback;
         }
         
-        protected void OnDisable()
+        protected virtual void OnDisable()
         {
             _mudRenderer.OnAfterLockMesh -= OnAfterLockMeshCallback;
             _mudRenderer.OnAfterAddCollider -= OnAfterAddColliderCallback;
         }
         
-        protected void OnValidate()
+        protected virtual void OnValidate()
         {
             TryGenerateWithCooldown();
         }
