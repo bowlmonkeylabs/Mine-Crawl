@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -20,6 +19,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             public GameObject Prefab;
         }
         public List<SpawnAtTagParameters> SpawnAtTags;
+
+        public LayerMask TerrainLayerMask;
+        
+        [Range(0f,100f)]
+        public float MaxRaycastLength = 10f;
         
         #endregion
         

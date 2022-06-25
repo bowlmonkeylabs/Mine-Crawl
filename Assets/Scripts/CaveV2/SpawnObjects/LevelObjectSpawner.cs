@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.Utils;
 using Mono.CSharp;
 using Sirenix.OdinInspector;
@@ -13,6 +14,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
     public class LevelObjectSpawner : MonoBehaviour
     {
         #region Inspector
+
+        [SerializeField] private bool _generateOnLockMudBunMesh;
+        [SerializeField] private MudBunGenerator _mudBunGenerator;
         
         [SerializeField, ReadOnly] private bool _generateOnChange;
         [SerializeField] private int _maxGeneratesPerSecond = 1;
@@ -31,12 +35,16 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private void OnEnable()
         {
+            _mudBunGenerator.OnAfterAddCollider += TrySpawnLevelObjects;
+            
             _caveGenerator.OnAfterGenerate += TrySpawnLevelObjectsWithCooldown;
             _levelObjectSpawnerParams.OnValidateEvent += TrySpawnLevelObjectsWithCooldown;
         }
 
         private void OnDisable()
         {
+            _mudBunGenerator.OnAfterAddCollider -= TrySpawnLevelObjects;
+            
             _caveGenerator.OnAfterGenerate -= TrySpawnLevelObjectsWithCooldown;
             _levelObjectSpawnerParams.OnValidateEvent -= TrySpawnLevelObjectsWithCooldown;
         }
@@ -44,6 +52,14 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         #endregion
         
         #region Generate level objects
+        
+        private void TrySpawnLevelObjects()
+        {
+            if (_generateOnLockMudBunMesh)
+            {
+                this.SpawnLevelObjects();
+            }
+        }
 
         private float lastGenerateTime;
         private void TrySpawnLevelObjectsWithCooldown()
@@ -88,7 +104,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 foreach (var go in tagged)
                 {
                     var newGameObject = GameObjectUtils.SafeInstantiate(true, spawnAtTagParameters.Prefab, parent);
-                    newGameObject.transform.position = go.transform.position;
+                    newGameObject.transform.position = GetPointUnder(go.transform.position, levelObjectSpawnerParameters.TerrainLayerMask, levelObjectSpawnerParameters.MaxRaycastLength);
                 }
             }
         }
@@ -129,9 +145,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         #region Spawn objects utility
 
-        private Vector3 GetPointUnder(Vector3 position, LayerMask layerMask)
+        private static Vector3 GetPointUnder(Vector3 position, LayerMask layerMask, float checkDistance)
         {
-            var didHit = Physics.Raycast(new Ray(position, Vector3.down), out var hitInfo, 10f, layerMask);
+            var didHit = Physics.Raycast(new Ray(position, Vector3.down), out var hitInfo, checkDistance, layerMask);
+            if (didHit)
+            {
+                return hitInfo.point;
+            }
             return position;
         }
 

@@ -42,23 +42,27 @@ namespace BML.Scripts.CaveV2.MudBun
 
         public AfterLockMesh OnAfterLockMesh;
         
+        public delegate void AfterAddCollider();
+
+        public AfterAddCollider OnAfterAddCollider;
+        
         #endregion
         
         #region Unity lifecycle
 
-        private void Start()
+        protected void OnEnable()
         {
             _mudRenderer.OnAfterLockMesh += OnAfterLockMeshCallback;
-            _mudRenderer.OnAfterAddCollider += OnAfterAddCollider;
+            _mudRenderer.OnAfterAddCollider += OnAfterAddColliderCallback;
         }
         
-        private void OnDestroy()
+        protected void OnDisable()
         {
             _mudRenderer.OnAfterLockMesh -= OnAfterLockMeshCallback;
-            _mudRenderer.OnAfterAddCollider -= OnAfterAddCollider;
+            _mudRenderer.OnAfterAddCollider -= OnAfterAddColliderCallback;
         }
         
-        private void OnValidate()
+        protected void OnValidate()
         {
             TryGenerateWithCooldown();
         }
@@ -87,7 +91,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 }
             }
             
-            // Debug.Log($"On After Add Collider: Shadow casting mode {_mudRenderer.CastShadows}");
+            // Debug.Log($"On After Lock Mesh: Shadow casting mode {_mudRenderer.CastShadows}");
             if (_mudRenderer.CastShadows != ShadowCastingMode.On
                 || _mudRenderer.ReceiveShadows != true)
             {
@@ -102,7 +106,7 @@ namespace BML.Scripts.CaveV2.MudBun
             OnAfterLockMesh?.Invoke();
         }
 
-        protected void OnAfterAddCollider()
+        protected void OnAfterAddColliderCallback()
         {
             // Debug.Log($"On After Add Collider: Invert normals {_invertNormals}");
             // Invert mesh normals
@@ -122,6 +126,8 @@ namespace BML.Scripts.CaveV2.MudBun
                     meshCollider.sharedMesh = meshTemp;
                 }
             }
+
+            OnAfterAddCollider?.Invoke();
         }
         
         private float lastGenerateTime;

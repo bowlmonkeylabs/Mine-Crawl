@@ -28,11 +28,13 @@ namespace BML.Scripts.CaveV2.MudBun
 
         private void OnEnable()
         {
+            base.OnEnable();
             _caveGenerator.OnAfterGenerate += TryGenerateWithCooldown;
         }
 
         private void OnDisable()
         {
+            base.OnDisable();
             _caveGenerator.OnAfterGenerate -= TryGenerateWithCooldown;
         }
 
