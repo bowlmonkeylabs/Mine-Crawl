@@ -57,26 +57,30 @@ namespace BML.Scripts.CaveV2.MudBun
             {
                 // Select room to spawn
                 GameObject roomPrefab;
+                Vector3 roomScale;
                 if (caveNodeData == _caveGraph.StartNode &&
                     !_caveGraphRenderParams.StartRoomPrefab.SafeIsUnityNull())
                 {
                     roomPrefab = _caveGraphRenderParams.StartRoomPrefab;
+                    roomScale = Vector3.one;
                 }
                 else if (caveNodeData == _caveGraph.EndNode &&
                          !_caveGraphRenderParams.EndRoomPrefab.SafeIsUnityNull())
                 {
                     roomPrefab = _caveGraphRenderParams.EndRoomPrefab;
+                    roomScale = Vector3.one;
                 }
                 else
                 {
                     // TODO systematically choose which rooms to spawn
                     roomPrefab = _caveGraphRenderParams.GetRandomRoom();
+                    roomScale = Vector3.one * caveNodeData.Size;
                 }
 
                 // Spawn room
                 GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, roomPrefab, mudRenderer.transform);
                 newGameObject.transform.position = localOrigin + caveNodeData.LocalPosition;
-                newGameObject.transform.localScale = Vector3.one * caveNodeData.Size;
+                newGameObject.transform.localScale = roomScale;
             }
             
             // Spawn "tunnel" on each edge to ensure nodes are connected
