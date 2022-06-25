@@ -14,7 +14,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
     {
         #region Inspector
         
-        [SerializeField] private bool _generateOnChange;
+        [SerializeField, ReadOnly] private bool _generateOnChange;
         [SerializeField] private int _maxGeneratesPerSecond = 1;
         private float _generateMinCooldownSeconds => 1f / (float) _maxGeneratesPerSecond;
         
@@ -31,25 +31,31 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private void OnEnable()
         {
-            _caveGenerator.OnAfterGenerate += TrySpawnLevelObjects;
-            _levelObjectSpawnerParams.OnValidateEvent += TrySpawnLevelObjects;
+            _caveGenerator.OnAfterGenerate += TrySpawnLevelObjectsWithCooldown;
+            _levelObjectSpawnerParams.OnValidateEvent += TrySpawnLevelObjectsWithCooldown;
         }
 
         private void OnDisable()
         {
-            _caveGenerator.OnAfterGenerate -= TrySpawnLevelObjects;
-            _levelObjectSpawnerParams.OnValidateEvent -= TrySpawnLevelObjects;
+            _caveGenerator.OnAfterGenerate -= TrySpawnLevelObjectsWithCooldown;
+            _levelObjectSpawnerParams.OnValidateEvent -= TrySpawnLevelObjectsWithCooldown;
         }
 
         #endregion
         
         #region Generate level objects
 
-        private void TrySpawnLevelObjects()
+        private float lastGenerateTime;
+        private void TrySpawnLevelObjectsWithCooldown()
         {
             if (_generateOnChange)
             {
-                SpawnLevelObjects();
+                var elapsedTime = (Time.time - lastGenerateTime);
+                if (elapsedTime >= _generateMinCooldownSeconds)
+                {
+                    lastGenerateTime = Time.time;
+                    this.SpawnLevelObjects();
+                }
             }
         }
 
@@ -70,10 +76,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 .ToList();
             foreach (var childObject in children)
             {
-                if (!childObject.SafeIsUnityNull())
-                {
-                    GameObject.DestroyImmediate(childObject);
-                }
+                GameObject.DestroyImmediate(childObject);
             }
         }
 
