@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using MeshUtils = BML.Scripts.Utils.MeshUtils;
 
 namespace BML.Scripts.CaveV2.MudBun
@@ -83,6 +84,18 @@ namespace BML.Scripts.CaveV2.MudBun
                     var meshTemp = meshFilter.sharedMesh;
                     meshFilter.sharedMesh = null;
                     meshFilter.sharedMesh = meshTemp;
+                }
+            }
+            
+            // Debug.Log($"On After Add Collider: Shadow casting mode {_mudRenderer.CastShadows}");
+            if (_mudRenderer.CastShadows != ShadowCastingMode.On
+                || _mudRenderer.ReceiveShadows != true)
+            {
+                var meshRenderer = _mudRenderer.GetComponent<MeshRenderer>();
+                if (!meshRenderer.SafeIsUnityNull())
+                {
+                    meshRenderer.shadowCastingMode = _mudRenderer.CastShadows;
+                    meshRenderer.receiveShadows = _mudRenderer.ReceiveShadows;
                 }
             }
             
