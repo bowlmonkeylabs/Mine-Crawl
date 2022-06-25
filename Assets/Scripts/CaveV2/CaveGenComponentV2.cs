@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using BML.Scripts.CaveV2.CaveGraph;
+using UnityEngine;
 using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.CaveV2.Util;
-using CaveV2.Clayxel;
+using BML.Scripts.CaveV2.Clayxel;
+using BML.Scripts.CaveV2.SpawnObjects;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using Random = UnityEngine.Random;
@@ -46,6 +47,8 @@ namespace BML.Scripts.CaveV2
         public AfterGenerate OnAfterGenerate;
         
         #endregion
+        
+        #region Cave generation
 
         public CaveGraphV2 CaveGraph => _caveGraph;
         [HideInInspector, SerializeField] private CaveGraphV2 _caveGraph;
@@ -117,7 +120,7 @@ namespace BML.Scripts.CaveV2
                 select new {v1, v2};
             foreach (var vertexPair in vertexCombinations)
             {
-                // Skip ndoes which are already connected
+                // Skip nodes which are already connected
                 var foundInEdge = caveGraph.TryGetEdge(vertexPair.v1, vertexPair.v2, out var inEdge);
                 var foundOutEdge = caveGraph.TryGetEdge(vertexPair.v2, vertexPair.v1, out var outEdge);
                 if (foundInEdge || foundOutEdge)
@@ -140,6 +143,8 @@ namespace BML.Scripts.CaveV2
             return caveGraph;
         }
         
+        #endregion
+
         #region Unity lifecycle
 
         private void OnEnable()

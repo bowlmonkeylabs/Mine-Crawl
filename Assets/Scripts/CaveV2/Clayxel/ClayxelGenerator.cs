@@ -1,13 +1,11 @@
 ﻿using System.Linq;
-using BML.Scripts.CaveV2;
-using BML.Scripts.CaveV2.CaveGraph;
 using Clayxels;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 
-namespace CaveV2.Clayxel
+namespace BML.Scripts.CaveV2.Clayxel
 {
     [ExecuteInEditMode]
     public class ClayxelGenerator : MonoBehaviour

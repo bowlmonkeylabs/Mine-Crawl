@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using BML.Scripts.CaveV2;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.Utils;
 using Clayxels;
@@ -9,7 +8,7 @@ using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 
-namespace CaveV2.Clayxel
+namespace BML.Scripts.CaveV2.Clayxel
 {
     [ExecuteAlways]
     public class CaveGraphClayxelRenderer : ClayxelGenerator

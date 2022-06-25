@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 
-namespace CaveV2.Clayxel
+namespace BML.Scripts.CaveV2.Clayxel
 {
     [ExecuteAlways]
     [RequireComponent(typeof(Grid))]

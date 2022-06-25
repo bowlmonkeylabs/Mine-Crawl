@@ -5,9 +5,9 @@ using BML.Scripts.Utils;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace CaveV2.MudBun
+namespace BML.Scripts.CaveV2.MudBun
 {
-    [CreateAssetMenu(fileName = "CaveGenMudBunRenderParams", menuName = "BML/Cave Gen/CaveGenMudBunRenderParams", order = 0)]
+    [CreateAssetMenu(fileName = "CaveGenMudBunRenderParams", menuName = "BML/Cave Gen/CaveGenMudBunRenderParameters", order = 0)]
     public class CaveGraphMudBunRendererParameters : ScriptableObject
     {
         #region Inspector
