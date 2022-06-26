@@ -17,6 +17,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             public string Tag;
             public GameObject Prefab;
+            public bool InstanceAsPrefab;
+            [ReadOnly] public bool DeleteTagAfterSpawn;
+            [Range(0f, 1f)] public float SpawnProbability;
         }
         public List<SpawnAtTagParameters> SpawnAtTags;
 

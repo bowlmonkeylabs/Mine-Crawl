@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2.SpawnObjects
 {
@@ -101,12 +102,30 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             foreach (var spawnAtTagParameters in levelObjectSpawnerParameters.SpawnAtTags)
             {
-                var tagged = GameObject.FindGameObjectsWithTag(spawnAtTagParameters.Tag);
+                Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
+                
+                var tagged = GameObject.FindGameObjectsWithTag(spawnAtTagParameters.Tag).ToList();
                 foreach (var go in tagged)
                 {
-                    var newGameObject = GameObjectUtils.SafeInstantiate(true, spawnAtTagParameters.Prefab, parent);
-                    newGameObject.transform.position = GetPointUnder(go.transform.position, levelObjectSpawnerParameters.TerrainLayerMask, levelObjectSpawnerParameters.MaxRaycastLength);
+                    if (!go.SafeIsUnityNull())
+                    {
+                        bool doSpawn = (Random.value <= spawnAtTagParameters.SpawnProbability);
+                        if (doSpawn)
+                        {
+                            var newGameObject =
+                                GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
+                            newGameObject.transform.position = GetPointUnder(go.transform.position,
+                                levelObjectSpawnerParameters.TerrainLayerMask,
+                                levelObjectSpawnerParameters.MaxRaycastLength);
+
+                            if (spawnAtTagParameters.DeleteTagAfterSpawn)
+                            {
+                                GameObject.DestroyImmediate(go, false);
+                            }
+                        }
+                    }
                 }
+                
             }
         }
 
