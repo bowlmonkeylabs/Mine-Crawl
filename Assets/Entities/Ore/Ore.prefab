@@ -235,9 +235,22 @@ MonoBehaviour:
   OnInteractParam:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7225383730169331486}
-        m_TargetAssemblyTypeName: BML.Scripts.Ore, BML.Scripts
-        m_MethodName: DoDamage
+      - m_Target: {fileID: 6178964857534797343}
+        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 8345740cf54601644b686d3a0b47f18e, type: 2}
+        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Events.DynamicGameEvent,
+          ScriptableObjectSystem
+        m_MethodName: Raise
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -355,11 +368,45 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   DebugActive: 0
-  FeedbacksList: []
+  FeedbacksList:
+  - id: 0
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   references:
     version: 1
+    00000000:
+      type: {class: MMF_Destroy, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: 1563017305
+        Label: Destroy
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 3454127851599513215}
+        DebugActive: 0
+        TargetGameObject: {fileID: 7225383730169331457}
+        Mode: 0
 --- !u!1 &7225383730169331457
 GameObject:
   m_ObjectHideFlags: 0
@@ -369,7 +416,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7225383730169331487}
-  - component: {fileID: 7225383730169331486}
+  - component: {fileID: 6178964857534797343}
   m_Layer: 0
   m_Name: Ore
   m_TagString: Untagged
@@ -393,7 +440,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7225383730169331486
+--- !u!114 &6178964857534797343
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -402,15 +449,42 @@ MonoBehaviour:
   m_GameObject: {fileID: 7225383730169331457}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c36073f742e44f18d853df9b110ad55, type: 3}
+  m_Script: {fileID: 11500000, guid: 15c200b94f2141609bc296e78782fab2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _healthReference: {fileID: 0}
   _health: 3
-  _onDamageFeedbacks: {fileID: 3454127850065686866}
-  _onDeathFeedbacks: {fileID: 3454127851599513215}
-  _onDeath:
+  useHealthVariable: 0
+  OnDamage:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 3454127850065686866}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3454127851599513215}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 11400000, guid: 0165294fceb10994cb9d1f8669a4d72c, type: 2}
         m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
           ScriptableObjectSystem
