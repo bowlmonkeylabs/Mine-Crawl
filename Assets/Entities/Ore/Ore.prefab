@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 3454127850101988316}
   - component: {fileID: 3454127850101988317}
   - component: {fileID: 3454127850101988314}
-  - component: {fileID: 3454127850101988315}
+  - component: {fileID: 202682029861605475}
   m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
@@ -217,7 +217,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3454127850101988315
+--- !u!114 &202682029861605475
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -226,18 +226,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 3454127850101988312}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c62249f65907671468c51681b3c12a22, type: 3}
+  m_Script: {fileID: 11500000, guid: 96e5457f6d8871d4a9d6dc9518bc622e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnInteract:
+  OnInteractDamage:
     m_PersistentCalls:
       m_Calls: []
-  OnInteractParam:
+  OnInteractHitPoint:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6178964857534797343}
-        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
-        m_MethodName: TakeDamage
+      - m_Target: {fileID: 7349618162830680363}
+        m_TargetAssemblyTypeName: BML.Scripts.Ore, BML.Scripts
+        m_MethodName: DoDamage
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -409,7 +412,7 @@ MonoBehaviour:
         PlayEvents:
           m_PersistentCalls:
             m_Calls:
-            - m_Target: {fileID: 7225383730169331486}
+            - m_Target: {fileID: 0}
               m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
               m_MethodName: set_enabled
               m_Mode: 6
@@ -586,7 +589,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7225383730169331487}
-  - component: {fileID: 6178964857534797343}
+  - component: {fileID: 7349618162830680363}
   m_Layer: 0
   m_Name: Ore
   m_TagString: Untagged
@@ -611,7 +614,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6178964857534797343
+--- !u!114 &7349618162830680363
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -620,48 +623,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 7225383730169331457}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15c200b94f2141609bc296e78782fab2, type: 3}
+  m_Script: {fileID: 11500000, guid: 69d9c5717bc1cf34e9c84430f396b2b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _oreCollider: {fileID: 3454127850101988314}
-  _health: 10
+  _health: 3
   _critMarker: {fileID: 8234869935086948630}
-  _critHitRadius: 0.25
+  _critHitRadius: 0.5
   _critMarkerMinMaxAngle: {x: 15, y: 30}
-  _critMarkerSurfaceOffset: 0.15
+  _critMarkerSurfaceOffset: 0.05
   _onDamageFeedbacks: {fileID: 3454127850065686866}
   _onDeathFeedbacks: {fileID: 3454127851599513215}
   _onCritFeedbacks: {fileID: 5116163273417737045}
   _onDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3454127850065686866}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnDeath:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3454127851599513215}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 11400000, guid: 0165294fceb10994cb9d1f8669a4d72c, type: 2}
         m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
           ScriptableObjectSystem

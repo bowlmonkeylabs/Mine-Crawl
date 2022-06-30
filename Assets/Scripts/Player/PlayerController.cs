@@ -58,15 +58,15 @@ namespace BML.Scripts.Player
                 if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
                     _interactMask, QueryTriggerInteraction.Collide))
                 {
-                    InteractionReceiver interactionReceiver = hit.collider.GetComponent<InteractionReceiver>();
+                    PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
                     if (interactionReceiver == null) return;
 
-                    Ore.OreHitInfo oreHitInfo = new Ore.OreHitInfo()
+                    PickaxeHitInfo pickaxeHitInfo = new PickaxeHitInfo()
                     {
                         Damage = _pickaxeDamage.Value,
                         HitPositon = hit.point
                     };
-                    interactionReceiver.ReceiveInteraction(oreHitInfo);
+                    interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
                 }
             }
         }

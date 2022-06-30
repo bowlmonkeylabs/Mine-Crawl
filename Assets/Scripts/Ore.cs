@@ -4,16 +4,25 @@ using Shapes;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using BML.Scripts.Player;
 
 namespace BML.Scripts
 {
     public class Ore : MonoBehaviour
     {
         [SerializeField] private Collider _oreCollider;
+        [SerializeField] private int _health = 2;
         [SerializeField] private GameObject _critMarker;
         [SerializeField] private float _critHitRadius = .5f;
         [SerializeField] [MinMaxSlider(0, 90)] private Vector2 _critMarkerMinMaxAngle = new Vector2(15f, 30f);
         [SerializeField] private float _critMarkerSurfaceOffset = .05f;
+        public int Health => _health;
+
+        [SerializeField] private MMF_Player _onDamageFeedbacks;
+        [SerializeField] private MMF_Player _onDeathFeedbacks;
+        [SerializeField] private MMF_Player _onCritFeedbacks;
+
+        [SerializeField] private UnityEvent _onDeath;
         
         private Vector3 lastHitPos;
         private Vector3 centerToHit;
@@ -23,6 +32,34 @@ namespace BML.Scripts
         {
             public int Damage;
             public Vector3 HitPositon;
+        }
+
+        public void DoDamage(PickaxeHitInfo pickaxeHitInfo)
+        {
+            int damage = pickaxeHitInfo.Damage;
+            lastHitPos = pickaxeHitInfo.HitPositon;
+            
+            float distToCrit = Vector3.Distance(pickaxeHitInfo.HitPositon, _critMarker.transform.position);
+            if (distToCrit <= _critHitRadius && _critMarker.activeSelf)
+            {
+                damage *= 2;
+                _onCritFeedbacks.PlayFeedbacks();
+            }
+
+            _health -= damage;
+            _onDamageFeedbacks.PlayFeedbacks();
+            MoveCritMarker(pickaxeHitInfo.HitPositon);
+            
+            if (_health <= 0)
+            {
+                OnDeath();
+            }
+        }
+
+        public void OnDeath()
+        {
+            _onDeath.Invoke();
+            _onDeathFeedbacks.PlayFeedbacks();
         }
         
         private void MoveCritMarker(Vector3 hitPosition)
