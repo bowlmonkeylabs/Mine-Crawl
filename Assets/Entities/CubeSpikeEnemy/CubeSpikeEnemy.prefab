@@ -671,7 +671,7 @@ GameObject:
   - component: {fileID: 3000336961510996564}
   - component: {fileID: 3000336961510996561}
   - component: {fileID: 3000336961510996567}
-  - component: {fileID: 3000336961510996566}
+  - component: {fileID: 4123717958056756587}
   m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
@@ -755,7 +755,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3000336961510996566
+--- !u!114 &4123717958056756587
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -764,13 +764,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3000336961510996560}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c62249f65907671468c51681b3c12a22, type: 3}
+  m_Script: {fileID: 11500000, guid: 96e5457f6d8871d4a9d6dc9518bc622e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnInteract:
-    m_PersistentCalls:
-      m_Calls: []
-  OnInteractParam:
+  OnInteractDamage:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3000336959785077411}
@@ -785,6 +782,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnInteractHitPoint:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls:
       - m_Target: {fileID: 3799401582140118235}
         m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
         m_MethodName: Play

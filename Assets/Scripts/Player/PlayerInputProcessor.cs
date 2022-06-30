@@ -104,7 +104,7 @@ namespace BML.Scripts.Player
 #endif
 		public void ApplyUiState()
 		{
-			Debug.Log($"Apply Ui State: {isUsingUi} => {playerInput.currentActionMap.name} {Cursor.lockState}");
+			// Debug.Log($"Apply Ui State: {isUsingUi} => {playerInput.currentActionMap.name} {Cursor.lockState}");
 			if (isUsingUi)
 			{
 				playerInput.SwitchCurrentActionMap("UI");
@@ -115,7 +115,7 @@ namespace BML.Scripts.Player
 				playerInput.SwitchCurrentActionMap("Player");
 				SetCursorState(playerCursorLocked);
 			}
-			Debug.Log($"Updated to: {playerInput.currentActionMap.name} {Cursor.lockState}");
+			// Debug.Log($"Updated to: {playerInput.currentActionMap.name} {Cursor.lockState}");
 		}
 
 		public void MoveInput(Vector2 newMoveDirection)
@@ -130,7 +130,7 @@ namespace BML.Scripts.Player
 
 		public void JumpInput(bool newJumpState)
 		{
-			Debug.Log($"Jump input {newJumpState}");
+			// Debug.Log($"Jump input {newJumpState}");
 			jump = newJumpState;
 		}
 

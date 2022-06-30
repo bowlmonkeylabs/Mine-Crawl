@@ -73,7 +73,7 @@ namespace BML.Scripts.Player
 
         private void OnMineOre() {
             Collider[] enemyColliders = Physics.OverlapSphere(transform.position, _miningEnemyAlertRadius, _enemyLayerMask);
-            Debug.Log(enemyColliders.Length);
+            // Debug.Log(enemyColliders.Length);
 
             foreach(Collider collider in enemyColliders) {
                 collider.transform.root.GetComponentInChildren<BMLAIDestinationSetter>().enabled = true;

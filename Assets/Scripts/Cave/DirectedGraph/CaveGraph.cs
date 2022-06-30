@@ -255,7 +255,10 @@ namespace BML.Scripts.Cave.DirectedGraph
             if (generateCollisionMesh)
             {
                 // Freeze Clayxels and get collision mesh
-                clayContainer.freezeToMesh(clayContainer.getClayxelDetail());
+                clayContainer.freezeToMesh(
+                    clayContainer.getClayxelDetail(), 
+                    clayContainer.getSmoothMeshNormalAngle()
+                );
                 var meshCollider = clayContainer.GetComponent<MeshCollider>();
                 var meshFilter = clayContainer.GetComponent<MeshFilter>();
                 if (meshCollider != null && meshFilter != null)
