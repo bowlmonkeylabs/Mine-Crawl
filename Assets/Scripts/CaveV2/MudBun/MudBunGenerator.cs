@@ -45,6 +45,12 @@ namespace BML.Scripts.CaveV2.MudBun
         public delegate void AfterAddCollider();
 
         public AfterAddCollider OnAfterAddCollider;
+
+        public delegate void AfterFinished();
+
+        public AfterFinished OnAfterFinished;
+        private bool _onAfterLockMeshTriggered, _onAfterAddColliderTriggered;
+        private object _onFinishedLock = new object();
         
         #endregion
         
@@ -104,6 +110,20 @@ namespace BML.Scripts.CaveV2.MudBun
             }
             
             OnAfterLockMesh?.Invoke();
+
+            lock (_onFinishedLock)
+            {
+                if (_onAfterAddColliderTriggered)
+                {
+                    _onAfterLockMeshTriggered = false;
+                    _onAfterAddColliderTriggered = false;
+                    OnAfterFinished?.Invoke();
+                }
+                else
+                {
+                    _onAfterLockMeshTriggered = true;
+                }
+            }
         }
 
         protected void OnAfterAddColliderCallback()
@@ -128,6 +148,20 @@ namespace BML.Scripts.CaveV2.MudBun
             }
 
             OnAfterAddCollider?.Invoke();
+            
+            lock (_onFinishedLock)
+            {
+                if (_onAfterLockMeshTriggered)
+                {
+                    _onAfterLockMeshTriggered = false;
+                    _onAfterAddColliderTriggered = false;
+                    OnAfterFinished?.Invoke();
+                }
+                else
+                {
+                    _onAfterAddColliderTriggered = true;
+                }
+            }
         }
         
         private float lastGenerateTime;

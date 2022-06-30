@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.Utils;
 using Mono.CSharp;
@@ -23,6 +24,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private bool _generateOnChange;
         [SerializeField] private int _maxGeneratesPerSecond = 1;
         private float _generateMinCooldownSeconds => 1f / (float) _maxGeneratesPerSecond;
+
+        [SerializeField] private GameEvent _onAfterGenerateEvent;
         
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
         
@@ -37,7 +40,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private void OnEnable()
         {
-            _mudBunGenerator.OnAfterAddCollider += TrySpawnLevelObjects;
+            _mudBunGenerator.OnAfterFinished += TrySpawnLevelObjects;
             
             _caveGenerator.OnAfterGenerate += TrySpawnLevelObjectsWithCooldown;
             _levelObjectSpawnerParams.OnValidateEvent += TrySpawnLevelObjectsWithCooldown;
@@ -45,7 +48,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private void OnDisable()
         {
-            _mudBunGenerator.OnAfterAddCollider -= TrySpawnLevelObjects;
+            _mudBunGenerator.OnAfterFinished -= TrySpawnLevelObjects;
             
             _caveGenerator.OnAfterGenerate -= TrySpawnLevelObjectsWithCooldown;
             _levelObjectSpawnerParams.OnValidateEvent -= TrySpawnLevelObjectsWithCooldown;
@@ -84,6 +87,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
             SpawnPlayer(_caveGenerator, this.transform, _player);
             SpawnObjectsAtTags(_levelObjectSpawnerParams, this.transform);
+            
+            _onAfterGenerateEvent.Raise();
         }
 
         [Button]
@@ -102,7 +107,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             foreach (var spawnAtTagParameters in levelObjectSpawnerParameters.SpawnAtTags)
             {
-                Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
+                // Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
                 
                 var tagged = GameObject.FindGameObjectsWithTag(spawnAtTagParameters.Tag).ToList();
                 foreach (var go in tagged)
