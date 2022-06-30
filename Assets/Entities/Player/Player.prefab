@@ -1016,6 +1016,7 @@ Transform:
   m_Children:
   - {fileID: 7730667928466908284}
   - {fileID: 1797728375059188021}
+  - {fileID: 6535237234419854927}
   m_Father: {fileID: 8722278798120057416}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1210,7 +1211,7 @@ MonoBehaviour:
   _interactDistance: 5
   _interactMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 1088
   _interactCooldown:
     UseConstant: 0
     ConstantDuration: 0
@@ -1222,6 +1223,11 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 24cc2b3aa4293fb4f94460301ae1bdef, type: 2}
+  _onMineOre: {fileID: 11400000, guid: 8345740cf54601644b686d3a0b47f18e, type: 2}
+  _miningEnemyAlertRadius: 18
+  _enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!114 &1794237827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1662,6 +1668,50 @@ Transform:
   m_Father: {fileID: 8722278798120057416}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5372935151083532606
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6535237234419854927}
+  - component: {fileID: 3163137778093457544}
+  m_Layer: 9
+  m_Name: PlayerAlertRadius
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6535237234419854927
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5372935151083532606}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3383630610286495642}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &3163137778093457544
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5372935151083532606}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 6
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5433615902667458110
 GameObject:
   m_ObjectHideFlags: 0
