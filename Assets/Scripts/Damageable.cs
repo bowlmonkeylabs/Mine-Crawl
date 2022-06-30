@@ -16,14 +16,12 @@ namespace BML.Scripts
 
         public bool IsDead => useHealthVariable ? _healthReference.Value <= 0 : _health <= 0;
 
-        public void TakeDamage(System.Object damage)
+        public void TakeDamage(int damage)
         {
-            int dmg = (int) damage;
-
             if (useHealthVariable)
             {
                 if (_healthReference.Value <= 0) return;
-                _healthReference.Value -= dmg;
+                _healthReference.Value -= damage;
                 OnDamage.Invoke();
                 if (_healthReference.Value <= 0)
                 {
@@ -33,7 +31,7 @@ namespace BML.Scripts
             else
             {
                 if (_health <= 0) return;
-                _health -= dmg;
+                _health -= damage;
                 OnDamage.Invoke();
                 if (_health <= 0)
                 {

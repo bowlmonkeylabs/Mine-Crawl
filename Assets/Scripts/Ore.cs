@@ -4,6 +4,7 @@ using Shapes;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using BML.Scripts.Player;
 
 namespace BML.Scripts
 {
@@ -32,15 +33,13 @@ namespace BML.Scripts
             public int Damage;
             public Vector3 HitPositon;
         }
-        
 
-        public void DoDamage(System.Object oreHitInfo)
+        public void DoDamage(PickaxeHitInfo pickaxeHitInfo)
         {
-            OreHitInfo hitInfo = (OreHitInfo) oreHitInfo;
-            int damage = hitInfo.Damage;
-            lastHitPos = hitInfo.HitPositon;
+            int damage = pickaxeHitInfo.Damage;
+            lastHitPos = pickaxeHitInfo.HitPositon;
             
-            float distToCrit = Vector3.Distance(hitInfo.HitPositon, _critMarker.transform.position);
+            float distToCrit = Vector3.Distance(pickaxeHitInfo.HitPositon, _critMarker.transform.position);
             if (distToCrit <= _critHitRadius && _critMarker.activeSelf)
             {
                 damage *= 2;
@@ -49,7 +48,7 @@ namespace BML.Scripts
 
             _health -= damage;
             _onDamageFeedbacks.PlayFeedbacks();
-            MoveCritMarker(hitInfo.HitPositon);
+            MoveCritMarker(pickaxeHitInfo.HitPositon);
             
             if (_health <= 0)
             {
