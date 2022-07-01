@@ -22,8 +22,13 @@ namespace BML.Scripts.Player
 
         #region Unity lifecycle
 
-        private void Awake() {
+        private void OnEnable() {
             _onMineOre.Subscribe(OnMineOre);
+        }
+
+        private void OnDisable()
+        {
+            _onMineOre.Unsubscribe(OnMineOre);
         }
 
         private void FixedUpdate()
