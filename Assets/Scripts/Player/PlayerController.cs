@@ -16,14 +16,14 @@ namespace BML.Scripts.Player
         [SerializeField] private TimerReference _interactCooldown;
         [SerializeField] private IntReference _pickaxeDamage;
 
-        [SerializeField] private DynamicGameEvent _onMineOre;
+        [SerializeField] private GameEvent _onMineOre;
         [SerializeField] private float _miningEnemyAlertRadius;
         [SerializeField] private LayerMask _enemyLayerMask;
 
         #region Unity lifecycle
 
         private void Awake() {
-            _onMineOre.Subscribe((p, p2) => OnMineOre());
+            _onMineOre.Subscribe(OnMineOre);
         }
 
         private void FixedUpdate()

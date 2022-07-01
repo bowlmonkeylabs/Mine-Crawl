@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace BML.Scripts.Player
 {
-    public struct PickaxeHitInfo
+    public class PickaxeHitInfo
     {
         public int Damage;
         public Vector3 HitPositon;
