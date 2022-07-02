@@ -30,6 +30,7 @@ namespace BML.Scripts.Player
 		[SerializeField] private FloatReference _mouseSensitivity;
 		
 		[SerializeField] private BoolReference _isPaused;
+		[SerializeField] private BoolReference _isStoreOpen;
 
 		[SerializeField] private VariableContainer _containerUiMenuStates;
 
@@ -95,6 +96,11 @@ namespace BML.Scripts.Player
 				// playerInput.SwitchCurrentActionMap("UI");
 				// SetCursorState(false);
 			}
+		}
+
+		public void OnToggleStore()
+		{
+			_isStoreOpen.Value = !_isStoreOpen.Value;
 		}
 		
 		public void OnUnlockCursor()
