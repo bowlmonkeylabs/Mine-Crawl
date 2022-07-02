@@ -1,6 +1,7 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.Scripts.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Pathfinding;
@@ -9,16 +10,20 @@ namespace BML.Scripts.Player
 {
     public class PlayerController : MonoBehaviour
     {
+        [SerializeField] private UiAimReticle _uiAimReticle;
         [SerializeField] private GameEvent _onUsePickaxe;
         [SerializeField] private Transform _mainCamera;
         [SerializeField] private float _interactDistance = 5f;
         [SerializeField] private LayerMask _interactMask;
         [SerializeField] private TimerReference _interactCooldown;
         [SerializeField] private IntReference _pickaxeDamage;
+        [SerializeField] private int _hoverUpdatesPerSecond = 20;
 
         [SerializeField] private GameEvent _onMineOre;
         [SerializeField] private float _miningEnemyAlertRadius;
         [SerializeField] private LayerMask _enemyLayerMask;
+
+        private float lastHoverUpdateTime;
 
         #region Unity lifecycle
 
@@ -29,6 +34,11 @@ namespace BML.Scripts.Player
         private void OnDisable()
         {
             _onMineOre.Unsubscribe(OnMineOre);
+        }
+
+        private void Update()
+        {
+            HandleHover();
         }
 
         private void FixedUpdate()
@@ -73,6 +83,27 @@ namespace BML.Scripts.Player
                     };
                     interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
                 }
+            }
+        }
+        
+        private void HandleHover()
+        {
+            if (lastHoverUpdateTime + 1f / _hoverUpdatesPerSecond > Time.time)
+                return;
+
+            lastHoverUpdateTime = Time.time;
+            
+            RaycastHit hit;
+            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance, _interactMask, QueryTriggerInteraction.Collide))
+            {
+                PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
+                if (interactionReceiver == null) return;
+
+                _uiAimReticle.SetReticleHover(true);
+            }
+            else
+            {
+                _uiAimReticle.SetReticleHover(false);
             }
         }
 
