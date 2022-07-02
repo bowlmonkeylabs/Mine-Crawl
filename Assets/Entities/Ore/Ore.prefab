@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 3454127850101988319}
   - component: {fileID: 3454127850101988316}
   - component: {fileID: 3454127850101988317}
-  - component: {fileID: 3454127850101988314}
+  - component: {fileID: 182695390771352254}
   - component: {fileID: 202682029861605475}
   m_Layer: 6
   m_Name: Mesh
@@ -148,13 +148,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3454127850101988312}
-  m_LocalRotation: {x: -0, y: 0.70710707, z: -0, w: 0.70710653}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0.56355816, y: -0.0963473, z: -0.066398695, w: 0.8177473}
+  m_LocalPosition: {x: 0.083, y: 0.614, z: -0.202}
+  m_LocalScale: {x: 0.25889865, y: 0.27894253, z: 0.3619647}
   m_Children: []
   m_Father: {fileID: 7225383730169331487}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 65.354, y: -33.872, z: -31.388}
 --- !u!33 &3454127850101988316
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -162,7 +162,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3454127850101988312}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 7702779526387289552, guid: ac08f5c7007144b4597e00110e2c6da6, type: 3}
 --- !u!23 &3454127850101988317
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -204,8 +204,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3454127850101988314
-BoxCollider:
+--- !u!64 &182695390771352254
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -214,9 +214,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7702779526387289552, guid: ac08f5c7007144b4597e00110e2c6da6, type: 3}
 --- !u!114 &202682029861605475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,7 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d9c5717bc1cf34e9c84430f396b2b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _oreCollider: {fileID: 3454127850101988314}
+  _oreCollider: {fileID: 182695390771352254}
   _health: 3
   _critMarker: {fileID: 8234869935086948630}
   _critHitRadius: 0.5
