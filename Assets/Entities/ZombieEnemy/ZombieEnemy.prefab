@@ -325,10 +325,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad0c01c5a68415a802f73ded0a64c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 1
   _damageMask:
     serializedVersion: 2
     m_Bits: 128
+  _damage: 1
+  _damageTimer:
+    UseConstant: 0
+    ConstantDuration: 0
+    Variable: {fileID: 0}
 --- !u!1 &8446087146407053627
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,11 +543,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96e5457f6d8871d4a9d6dc9518bc622e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnInteractDamage:
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 255625626161212435}
-        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
+      - m_Target: {fileID: 1520453490479982863}
+        m_TargetAssemblyTypeName: PickaxeDamageable, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
         m_Arguments:
@@ -554,12 +561,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnInteractHitPoint:
-    m_PersistentCalls:
-      m_Calls: []
-  OnInteract:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &8446087147361510364
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,8 +572,8 @@ GameObject:
   - component: {fileID: 8446087147361510365}
   - component: {fileID: 8446087147361510360}
   - component: {fileID: 8446087147361510367}
-  - component: {fileID: 255625626161212435}
   - component: {fileID: 2778969576223554307}
+  - component: {fileID: 1520453490479982863}
   m_Layer: 0
   m_Name: ZombieEnemy
   m_TagString: Untagged
@@ -667,7 +668,22 @@ MonoBehaviour:
   funnelSimplification: 0
   slowWhenNotFacingTarget: 1
   animCompatibility: {fileID: 0}
---- !u!114 &255625626161212435
+--- !u!114 &2778969576223554307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8446087147361510364}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78e46620b563e9c4c80e44c9db977a43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  target: {fileID: 0}
+  transformSceneReference: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
+--- !u!114 &1520453490479982863
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -676,7 +692,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8446087147361510364}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15c200b94f2141609bc296e78782fab2, type: 3}
+  m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _healthReference: {fileID: 0}
@@ -712,18 +728,3 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2778969576223554307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8446087147361510364}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78e46620b563e9c4c80e44c9db977a43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  target: {fileID: 0}
-  transformSceneReference: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}

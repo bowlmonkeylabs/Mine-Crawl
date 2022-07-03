@@ -38,8 +38,6 @@ namespace BML.Scripts
                     Death();
                 }
             }
-            
-            
         }
 
         private void Death()

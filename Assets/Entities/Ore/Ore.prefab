@@ -230,19 +230,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96e5457f6d8871d4a9d6dc9518bc622e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnInteractDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  OnInteractHitPoint:
-    m_PersistentCalls:
-      m_Calls: []
   OnInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7349618162830680363}
-        m_TargetAssemblyTypeName: BML.Scripts.Ore, BML.Scripts
-        m_MethodName: DoDamage
-        m_Mode: 0
+      - m_Target: {fileID: 11400000, guid: 1d18a3528e56519478ac9fb768afcc25, type: 2}
+        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Events.GameEvent,
+          ScriptableObjectSystem
+        m_MethodName: Raise
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -251,11 +246,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 11400000, guid: 1d18a3528e56519478ac9fb768afcc25, type: 2}
-        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Events.GameEvent,
-          ScriptableObjectSystem
-        m_MethodName: Raise
-        m_Mode: 1
+  OnPickaxeInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2450872905461499138}
+        m_TargetAssemblyTypeName: OreCritHit, BML.Scripts
+        m_MethodName: CritMarkerHit
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -590,7 +587,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7225383730169331487}
-  - component: {fileID: 7349618162830680363}
+  - component: {fileID: 2450872905461499138}
+  - component: {fileID: 1425103801302272645}
   m_Layer: 0
   m_Name: Ore
   m_TagString: Untagged
@@ -615,7 +613,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7349618162830680363
+--- !u!114 &2450872905461499138
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -624,30 +622,98 @@ MonoBehaviour:
   m_GameObject: {fileID: 7225383730169331457}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69d9c5717bc1cf34e9c84430f396b2b7, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e04cd80442130c41a74a36c671de6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _critDamageMultiplier: 2
   _oreCollider: {fileID: 182695390771352254}
-  _health: 3
   _critMarker: {fileID: 8234869935086948630}
   _critHitRadius: 0.15
-  _critMarkerMinMaxAngle: {x: 15, y: 41.178303}
+  _critMarkerMinMaxAngle: {x: 15, y: 41.42908}
   _critMarkerSurfaceOffset: 0.05
-  _onDamageFeedbacks: {fileID: 3454127850065686866}
-  _onDeathFeedbacks: {fileID: 3454127851599513215}
-  _onCritFeedbacks: {fileID: 5116163273417737045}
-  _onDeath:
+  _onCritHit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11400000, guid: 0165294fceb10994cb9d1f8669a4d72c, type: 2}
-        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
-          ScriptableObjectSystem
-        m_MethodName: Increment
-        m_Mode: 3
+      - m_Target: {fileID: 1425103801302272645}
+        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
+        m_MethodName: TakeDamage
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5116163273417737045}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onHit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1425103801302272645}
+        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1425103801302272645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7225383730169331457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _healthReference: {fileID: 0}
+  _health: 3
+  useHealthVariable: 0
+  OnDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3454127850065686866}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3454127851599513215}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

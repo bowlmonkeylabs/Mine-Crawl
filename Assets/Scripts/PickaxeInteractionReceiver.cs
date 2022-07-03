@@ -4,17 +4,14 @@ using BML.Scripts.Player;
 
 namespace BML.Scripts
 {
-    public class PickaxeInteractionReceiver : MonoBehaviour
+    public class PickaxeInteractionReceiver : InteractionReceiver
     {
-        public UnityEvent<int> OnInteractDamage;
-        public UnityEvent<Vector3> OnInteractHitPoint;
-        public UnityEvent<PickaxeHitInfo> OnInteract;
+        public UnityEvent<PickaxeHitInfo> OnPickaxeInteract;
 
         public void ReceiveInteraction(PickaxeHitInfo param)
         {
-            OnInteractDamage.Invoke(param.Damage);
-            OnInteractHitPoint.Invoke(param.HitPositon);
-            OnInteract.Invoke(param);
+            OnPickaxeInteract.Invoke(param);
+            OnInteract.Invoke();
         }
     }
 }
