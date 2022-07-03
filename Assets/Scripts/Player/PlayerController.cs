@@ -127,7 +127,7 @@ namespace BML.Scripts.Player
 
             foreach(Collider collider in enemyColliders)
             {
-                collider.transform.root.GetComponentInChildren<BMLAIDestinationSetter>().enabled = true;
+                collider.transform.root.GetComponentInChildren<EnemyController>().SetAlerted(true);
             }
         }
         
