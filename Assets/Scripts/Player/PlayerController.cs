@@ -2,28 +2,43 @@
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.UI;
+using BML.Scripts.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Pathfinding;
+using Sirenix.OdinInspector;
 
 namespace BML.Scripts.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private UiAimReticle _uiAimReticle;
-        [SerializeField] private GameEvent _onUsePickaxe;
+        #region Inspector
+        
+        [TitleGroup("Interactable hover")]
         [SerializeField] private Transform _mainCamera;
+        [SerializeField] private UiAimReticle _uiAimReticle;
+        [SerializeField] private int _hoverUpdatesPerSecond = 20;
+        private float lastHoverUpdateTime;
+
+        [TitleGroup("Pickaxe")]
+        [SerializeField] private GameEvent _onUsePickaxe;
         [SerializeField] private float _interactDistance = 5f;
         [SerializeField] private LayerMask _interactMask;
         [SerializeField] private TimerReference _interactCooldown;
         [SerializeField] private IntReference _pickaxeDamage;
-        [SerializeField] private int _hoverUpdatesPerSecond = 20;
 
+        [TitleGroup("Mine ore")]
         [SerializeField] private GameEvent _onMineOre;
         [SerializeField] private float _miningEnemyAlertRadius;
         [SerializeField] private LayerMask _enemyLayerMask;
+        
+        [TitleGroup("Torch")]
+        [SerializeField] private GameObject _torchPrefab;
+        [SerializeField] private float _torchThrowForce;
+        [SerializeField] private Transform _torchInstanceContainer;
+        [SerializeField] private IntReference _inventoryTorchCount;
 
-        private float lastHoverUpdateTime;
+        #endregion
 
         #region Unity lifecycle
 
@@ -45,9 +60,16 @@ namespace BML.Scripts.Player
         {
             _interactCooldown.UpdateTime();
         }
+        
+        private void OnDrawGizmosSelected() {
+            Gizmos.color = Color.gray;
+            Gizmos.DrawWireSphere(transform.position, _miningEnemyAlertRadius);
+        }
 
         #endregion
 
+        #region Input callbacks
+        
         private void OnPrimary(InputValue value)
         {
             if (value.isPressed)
@@ -61,6 +83,18 @@ namespace BML.Scripts.Player
             }
         }
 
+        private void OnSecondary(InputValue value)
+        {
+            if (value.isPressed)
+            {
+                TryPlaceTorch();
+            }
+        }
+        
+        #endregion
+
+        #region Pickaxe
+        
         private void TryUsePickaxe()
         {
             RaycastHit hit;
@@ -86,6 +120,43 @@ namespace BML.Scripts.Player
             }
         }
         
+        private void OnMineOre()
+        {
+            Collider[] enemyColliders = Physics.OverlapSphere(transform.position, _miningEnemyAlertRadius, _enemyLayerMask);
+            // Debug.Log(enemyColliders.Length);
+
+            foreach(Collider collider in enemyColliders)
+            {
+                collider.transform.root.GetComponentInChildren<BMLAIDestinationSetter>().enabled = true;
+            }
+        }
+        
+        #endregion
+        
+        #region Torch
+
+        private void TryPlaceTorch()
+        {
+            // Check torch count
+            if (_inventoryTorchCount.Value <= 0)
+            {
+                return;
+            }
+            _inventoryTorchCount.Value -= 1;
+            
+            // Calculate throw
+            var throwDir = _mainCamera.forward;
+            var throwForce = throwDir * _torchThrowForce;
+            
+            // Instantiate torch
+            var newGameObject = GameObjectUtils.SafeInstantiate(true, _torchPrefab, _torchInstanceContainer);
+            newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
+            var newGameObjectRb = newGameObject.GetComponentInChildren<Rigidbody>();
+            newGameObjectRb.AddForce(throwForce, ForceMode.Impulse);
+        }
+        
+        #endregion
+        
         private void HandleHover()
         {
             if (lastHoverUpdateTime + 1f / _hoverUpdatesPerSecond > Time.time)
@@ -107,18 +178,5 @@ namespace BML.Scripts.Player
             }
         }
 
-        private void OnMineOre() {
-            Collider[] enemyColliders = Physics.OverlapSphere(transform.position, _miningEnemyAlertRadius, _enemyLayerMask);
-            // Debug.Log(enemyColliders.Length);
-
-            foreach(Collider collider in enemyColliders) {
-                collider.transform.root.GetComponentInChildren<BMLAIDestinationSetter>().enabled = true;
-            }
-        }
-
-        private void OnDrawGizmosSelected() {
-            Gizmos.color = Color.gray;
-            Gizmos.DrawWireSphere(transform.position, _miningEnemyAlertRadius);
-        }
     }
 }

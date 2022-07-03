@@ -928,7 +928,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1.5
+  m_Intensity: 0.7
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -937,7 +937,7 @@ Light:
     m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.5
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -1213,9 +1213,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca4d6e2609884fb4a191b404d5a30bf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiAimReticle: {fileID: 0}
-  _onUsePickaxe: {fileID: 11400000, guid: cd2dd6cf42466b9429ab57f2f7240ccb, type: 2}
   _mainCamera: {fileID: 7265003986444444711}
+  _uiAimReticle: {fileID: 0}
+  _hoverUpdatesPerSecond: 20
+  _onUsePickaxe: {fileID: 11400000, guid: cd2dd6cf42466b9429ab57f2f7240ccb, type: 2}
   _interactDistance: 5
   _interactMask:
     serializedVersion: 2
@@ -1231,12 +1232,21 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 24cc2b3aa4293fb4f94460301ae1bdef, type: 2}
-  _hoverUpdatesPerSecond: 20
   _onMineOre: {fileID: 11400000, guid: 1d18a3528e56519478ac9fb768afcc25, type: 2}
   _miningEnemyAlertRadius: 18
   _enemyLayerMask:
     serializedVersion: 2
     m_Bits: 1024
+  _torchPrefab: {fileID: 8692043269319617905, guid: edb8efafa5a40e944b6001753e059f59, type: 3}
+  _torchThrowForce: 8
+  _torchInstanceContainer: {fileID: 0}
+  _inventoryTorchCount:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: dcc1ad60fbe421843b6d6dcec22f6bd3, type: 2}
 --- !u!114 &1794237827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1870,7 +1880,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1279
+    m_Bits: 3327
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
