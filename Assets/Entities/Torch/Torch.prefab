@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8692043269319617904}
-  - component: {fileID: 8692043269319617911}
-  m_Layer: 0
+  - component: {fileID: 1549063831}
+  - component: {fileID: 7049905119064124205}
+  m_Layer: 11
   m_Name: Torch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33,7 +34,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8692043269319617911
+--- !u!54 &1549063831
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8692043269319617905}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 1
+--- !u!114 &7049905119064124205
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,241 +59,69 @@ MonoBehaviour:
   m_GameObject: {fileID: 8692043269319617905}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba3b3d20dd42f61408784f700d9e5f5b, type: 3}
+  m_Script: {fileID: 11500000, guid: 007ea1391362e4845aee91886eb0cda3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AddToContainer: 1
-  _editor_DrawSetup: 1
-  _editor_DrawOptimizeList: 1
-  _editor_DrawAddFeatures: 1
-  _editor_DrawLODLevelsSetup: 1
-  _editor_DrawExtra: 0
-  _editor_horizontal: 1
-  _editor_category: 3
-  Editor_InIsolatedScene: 0
-  Editor_JustCreated: 1
-  UseDOTS: 0
-  DOTSObstacleType: 2
-  DOTSDetection: 0
-  DOTSMeshData: []
-  DOTSOffset: {x: 0, y: 0, z: 0}
-  DOTSSize: {x: 1, y: 1, z: 1}
-  DOTSRadius: 1
-  UseMultiShape: 0
-  AutoPrecision: 0.25
-  AutoReferenceMesh: {fileID: 0}
-  DrawPositionHandles: 1
-  ScalingHandles: 1
-  Shapes: []
-  ShapePos: []
-  ShapeRadius: []
-  UseObstacleDetection: 0
-  CoveragePrecision: 1
-  CoverageScale: 1
-  CoverageMask:
+  CollisionLayerMask:
     serializedVersion: 2
-    m_Bits: 1
-  CustomCoveragePoints: 0
-  CoverageOffsets: []
-  ignoredObstacleColliders: []
-  OnlyCamCollLayer:
+    m_Bits: 8
+  OnCollisionEnterEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1549063831}
+        m_TargetAssemblyTypeName: UnityEngine.Rigidbody, UnityEngine
+        m_MethodName: set_isKinematic
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnCollisionExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollisionStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  TriggerLayerMask:
     serializedVersion: 2
     m_Bits: 0
-  LODLevels: 3
-  preLODLevels: 3
-  MaxDistance: 379.5
-  OptimizingMethod: 2
-  CullIfNotSee: 1
-  DetectionRadius: 20.784609
-  DetectionBounds: {x: 24, y: 24, z: 24}
-  Hideable: 0
-  DetectionOffset: {x: -0.00000011920929, y: 0.67300034, z: 0}
-  GizmosAlpha: 1
-  DrawGizmos: 1
-  FadeDuration: 0
-  FadeViewVisibility: 0
-  DeactivateObject: 0
-  LODPercent:
-  - 0.23513718
-  - 0.48027572
-  - 1
-  AutoDistance: 0
-  AutoDistanceFactor: 0
-  DrawAutoDistanceToggle: 1
-  HiddenCullAt: -1
-  LimitLODLevels: 0
-  UnlockFirstLOD: 0
-  DrawGeneratedPrefabInfo: 0
-  DrawDeactivateToggle: 1
-  OptimizationTypes: {fileID: 11400000, guid: 39f6d868132d2f84d8f171c264985fab, type: 2}
-  ToOptimize:
-  - constructed: 1
-    ToOptimizeIndex: 0
-    optimizer: {fileID: 8692043269319617911}
-    Component: {fileID: 8692043269805377161}
-    Version: 0
-    lockFirstLOD: 1
-    editorHeader: Optim
-    drawProperties: 1
-    ToOptimizes: []
-    ToOptimize: {fileID: 8692043269805377161}
-    LODInitial:
-      id: 0
-    LODInstances:
-    - id: 1
-    - id: 2
-    - id: 3
-    - id: 4
-    - id: 5
-    eOptimizer: {fileID: 8692043269319617911}
-  - constructed: 1
-    ToOptimizeIndex: 1
-    optimizer: {fileID: 8692043269319617911}
-    Component: {fileID: 8692043269761479811}
-    Version: 0
-    lockFirstLOD: 1
-    editorHeader: Optim
-    drawProperties: 1
-    ToOptimizes: []
-    ToOptimize: {fileID: 8692043269761479811}
-    LODInitial:
-      id: 0
-    LODInstances:
-    - id: 6
-    - id: 7
-    - id: 8
-    - id: 9
-    - id: 10
-    eOptimizer: {fileID: 8692043269319617911}
-  references:
-    version: 1
-    00000000:
-      type: {class: , ns: , asm: }
-    00000001:
-      type: {class: LODI_Light, ns: FIMSpace.FOptimizing, asm: FlmpossibleCreations.}
-      data:
-        SetDisabled: 0
-        _Locked: 0
-        cmp: {fileID: 0}
-        IntensityMul: 1
-        RangeMul: 1
-        ShadowsMode: 1
-        ShadowsStrength: 1
-        RenderMode: 0
-        ChangeIntensity: 1
-    00000002:
-      type: {class: LODI_Light, ns: FIMSpace.FOptimizing, asm: FlmpossibleCreations.}
-      data:
-        SetDisabled: 0
-        _Locked: 0
-        cmp: {fileID: 0}
-        IntensityMul: 1
-        RangeMul: 1
-        ShadowsMode: 1
-        ShadowsStrength: 1
-        RenderMode: 0
-        ChangeIntensity: 1
-    00000003:
-      type: {class: LODI_Light, ns: FIMSpace.FOptimizing, asm: FlmpossibleCreations.}
-      data:
-        SetDisabled: 0
-        _Locked: 0
-        cmp: {fileID: 0}
-        IntensityMul: 0.4
-        RangeMul: 0.5
-        ShadowsMode: 0
-        ShadowsStrength: 0
-        RenderMode: 2
-        ChangeIntensity: 1
-    00000004:
-      type: {class: LODI_Light, ns: FIMSpace.FOptimizing, asm: FlmpossibleCreations.}
-      data:
-        SetDisabled: 1
-        _Locked: 0
-        cmp: {fileID: 0}
-        IntensityMul: 0
-        RangeMul: 0
-        ShadowsMode: 0
-        ShadowsStrength: 0
-        RenderMode: 2
-        ChangeIntensity: 1
-    00000005:
-      type: {class: LODI_Light, ns: FIMSpace.FOptimizing, asm: FlmpossibleCreations.}
-      data:
-        SetDisabled: 1
-        _Locked: 0
-        cmp: {fileID: 0}
-        IntensityMul: 0.4
-        RangeMul: 0.5
-        ShadowsMode: 0
-        ShadowsStrength: 0
-        RenderMode: 2
-        ChangeIntensity: 1
-    00000006:
-      type: {class: LODI_Renderer, ns: FIMSpace.FOptimizing, asm: FlmpossibleCreations.}
-      data:
-        SetDisabled: 0
-        _version: 0
-        _Locked: 0
-        cmp: {fileID: 0}
-        UseShadows: 1
-        MotionVectors: 1
-        SkinnedQuality: 0
-        shaderParam: _Transparency
-        ColorParameter: 0
-        targetParamValue: 1
-    00000007:
-      type: {class: LODI_Renderer, ns: FIMSpace.FOptimizing, asm: FlmpossibleCreations.}
-      data:
-        SetDisabled: 0
-        _version: 0
-        _Locked: 0
-        cmp: {fileID: 0}
-        UseShadows: 1
-        MotionVectors: 0
-        SkinnedQuality: 0
-        shaderParam: _Transparency
-        ColorParameter: 0
-        targetParamValue: 1
-    00000008:
-      type: {class: LODI_Renderer, ns: FIMSpace.FOptimizing, asm: FlmpossibleCreations.}
-      data:
-        SetDisabled: 0
-        _version: 0
-        _Locked: 0
-        cmp: {fileID: 0}
-        UseShadows: 0
-        MotionVectors: 2
-        SkinnedQuality: 1
-        shaderParam: _Transparency
-        ColorParameter: 0
-        targetParamValue: 1
-    00000009:
-      type: {class: LODI_Renderer, ns: FIMSpace.FOptimizing, asm: FlmpossibleCreations.}
-      data:
-        SetDisabled: 1
-        _version: 0
-        _Locked: 0
-        cmp: {fileID: 0}
-        UseShadows: 0
-        MotionVectors: 2
-        SkinnedQuality: 1
-        shaderParam: _Transparency
-        ColorParameter: 0
-        targetParamValue: 0
-    0000000A:
-      type: {class: LODI_Renderer, ns: FIMSpace.FOptimizing, asm: FlmpossibleCreations.}
-      data:
-        SetDisabled: 1
-        _version: 0
-        _Locked: 0
-        cmp: {fileID: 0}
-        UseShadows: 0
-        MotionVectors: 2
-        SkinnedQuality: 1
-        shaderParam: _Transparency
-        ColorParameter: 0
-        targetParamValue: 0
+  OnTriggerEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  Collision2DLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  OnCollision2DEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollision2DExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollision2DStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  Trigger2DLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  OnTrigger2DEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTrigger2DExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTrigger2DStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &8692043269761479822
 GameObject:
   m_ObjectHideFlags: 0
@@ -289,7 +134,7 @@ GameObject:
   - component: {fileID: 8692043269761479810}
   - component: {fileID: 8692043269761479811}
   - component: {fileID: 8692043269761479820}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -382,7 +227,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8692043269805377162}
   - component: {fileID: 8692043269805377161}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -415,7 +260,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1.5
+  m_Intensity: 0.7
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -474,7 +319,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8692043271137078941}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
