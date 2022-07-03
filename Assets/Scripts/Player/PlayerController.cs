@@ -45,9 +45,16 @@ namespace BML.Scripts.Player
         {
             _interactCooldown.UpdateTime();
         }
+        
+        private void OnDrawGizmosSelected() {
+            Gizmos.color = Color.gray;
+            Gizmos.DrawWireSphere(transform.position, _miningEnemyAlertRadius);
+        }
 
         #endregion
 
+        #region Input callbacks
+        
         private void OnPrimary(InputValue value)
         {
             if (value.isPressed)
@@ -61,6 +68,18 @@ namespace BML.Scripts.Player
             }
         }
 
+        private void OnSecondary(InputValue value)
+        {
+            if (value.isPressed)
+            {
+                TryPlaceTorch();
+            }
+        }
+        
+        #endregion
+
+        #region Pickaxe
+        
         private void TryUsePickaxe()
         {
             RaycastHit hit;
@@ -86,6 +105,28 @@ namespace BML.Scripts.Player
             }
         }
         
+        private void OnMineOre()
+        {
+            Collider[] enemyColliders = Physics.OverlapSphere(transform.position, _miningEnemyAlertRadius, _enemyLayerMask);
+            // Debug.Log(enemyColliders.Length);
+
+            foreach(Collider collider in enemyColliders)
+            {
+                collider.transform.root.GetComponentInChildren<BMLAIDestinationSetter>().enabled = true;
+            }
+        }
+        
+        #endregion
+        
+        #region Torch
+
+        private void TryPlaceTorch()
+        {
+            
+        }
+        
+        #endregion
+        
         private void HandleHover()
         {
             if (lastHoverUpdateTime + 1f / _hoverUpdatesPerSecond > Time.time)
@@ -107,18 +148,5 @@ namespace BML.Scripts.Player
             }
         }
 
-        private void OnMineOre() {
-            Collider[] enemyColliders = Physics.OverlapSphere(transform.position, _miningEnemyAlertRadius, _enemyLayerMask);
-            // Debug.Log(enemyColliders.Length);
-
-            foreach(Collider collider in enemyColliders) {
-                collider.transform.root.GetComponentInChildren<BMLAIDestinationSetter>().enabled = true;
-            }
-        }
-
-        private void OnDrawGizmosSelected() {
-            Gizmos.color = Color.gray;
-            Gizmos.DrawWireSphere(transform.position, _miningEnemyAlertRadius);
-        }
     }
 }

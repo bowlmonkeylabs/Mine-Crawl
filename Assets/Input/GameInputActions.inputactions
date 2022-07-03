@@ -60,6 +60,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "ToggleStore",
+                    "type": "Button",
+                    "id": "f17c030a-4610-47b9-815e-6bb0f29d51be",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Primary",
                     "type": "Value",
                     "id": "90fc2c90-1653-439d-824c-a3de70d6ed9e",
@@ -69,13 +78,13 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "ToggleStore",
-                    "type": "Button",
-                    "id": "f17c030a-4610-47b9-815e-6bb0f29d51be",
-                    "expectedControlType": "Button",
+                    "name": "Secondary",
+                    "type": "Value",
+                    "id": "6f44acb7-7b4f-4c61-ad98-c3dc1be060de",
+                    "expectedControlType": "Digital",
                     "processors": "",
-                    "interactions": "Press",
-                    "initialStateCheck": false
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -373,6 +382,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "ToggleStore",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bfe1f88b-da1c-4259-b53d-9091f519b299",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Secondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "826b5d4e-0a13-4a07-a379-97fcfef207a5",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Secondary",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
