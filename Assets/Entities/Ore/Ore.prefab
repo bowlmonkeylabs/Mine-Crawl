@@ -249,9 +249,21 @@ MonoBehaviour:
   OnPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1425103801302272645}
+        m_TargetAssemblyTypeName: PickaxeDamageable, BML.Scripts
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 2450872905461499138}
-        m_TargetAssemblyTypeName: OreCritHit, BML.Scripts
-        m_MethodName: CritMarkerHit
+        m_TargetAssemblyTypeName: OreCritMarker, BML.Scripts
+        m_MethodName: MoveCritMarker
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -377,11 +389,11 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      type: {class: MMF_Destroy, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
         Active: 1
-        UniqueID: 870921421
-        Label: Events
+        UniqueID: 1380151247
+        Label: Destroy
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -407,54 +419,8 @@ MonoBehaviour:
           TargetBPM: 120
         Owner: {fileID: 3454127851599513215}
         DebugActive: 0
-        PlayEvents:
-          m_PersistentCalls:
-            m_Calls:
-            - m_Target: {fileID: 0}
-              m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-              m_MethodName: set_enabled
-              m_Mode: 6
-              m_Arguments:
-                m_ObjectArgument: {fileID: 0}
-                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-                m_IntArgument: 0
-                m_FloatArgument: 0
-                m_StringArgument: 
-                m_BoolArgument: 0
-              m_CallState: 2
-            - m_Target: {fileID: 8234869935086948630}
-              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-              m_MethodName: SetActive
-              m_Mode: 6
-              m_Arguments:
-                m_ObjectArgument: {fileID: 0}
-                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-                m_IntArgument: 0
-                m_FloatArgument: 0
-                m_StringArgument: 
-                m_BoolArgument: 0
-              m_CallState: 2
-            - m_Target: {fileID: 3454127850101988312}
-              m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-              m_MethodName: SetActive
-              m_Mode: 6
-              m_Arguments:
-                m_ObjectArgument: {fileID: 0}
-                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-                m_IntArgument: 0
-                m_FloatArgument: 0
-                m_StringArgument: 
-                m_BoolArgument: 0
-              m_CallState: 2
-        StopEvents:
-          m_PersistentCalls:
-            m_Calls: []
-        InitializationEvents:
-          m_PersistentCalls:
-            m_Calls: []
-        ResetEvents:
-          m_PersistentCalls:
-            m_Calls: []
+        TargetGameObject: {fileID: 7225383730169331457}
+        Mode: 0
 --- !u!1 &4964762735064731011
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,54 +591,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e04cd80442130c41a74a36c671de6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _critDamageMultiplier: 2
   _oreCollider: {fileID: 182695390771352254}
   _critMarker: {fileID: 8234869935086948630}
-  _critHitRadius: 0.15
   _critMarkerMinMaxAngle: {x: 15, y: 41.42908}
   _critMarkerSurfaceOffset: 0.05
-  _onCritHit:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1425103801302272645}
-        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
-        m_MethodName: TakeDamage
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 5116163273417737045}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onHit:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1425103801302272645}
-        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
-        m_MethodName: TakeDamage
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1425103801302272645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -688,6 +610,7 @@ MonoBehaviour:
   _healthReference: {fileID: 0}
   _health: 3
   useHealthVariable: 0
+  critMultiplier: 2
   OnDamage:
     m_PersistentCalls:
       m_Calls:
@@ -738,6 +661,62 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7225383730169331487}
     m_Modifications:
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1425103801302272645}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2450872905461499138}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TakeCritDamage
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: MoveCritMarker
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PickaxeDamageable, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: OreCritMarker, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286531568375988886, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5775825857291607459, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8319118897325917307, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -795,8 +774,12 @@ PrefabInstance:
       value: p_CritMarkerOrb
       objectReference: {fileID: 0}
     - target: {fileID: 8319118897326190973, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8319118897326190973, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 150b8b35ddb8e5a4b8e0798d3a18c02c, type: 3}

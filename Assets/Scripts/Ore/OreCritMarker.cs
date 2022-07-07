@@ -5,33 +5,21 @@ using BML.Scripts.Utils;
 using BML.Scripts.Player;
 using Shapes;
 
-public class OreCritHit : MonoBehaviour
+public class OreCritMarker : MonoBehaviour
 {
-    [SerializeField] private int _critDamageMultiplier = 2;
     [SerializeField] private Collider _oreCollider;
     [SerializeField] private GameObject _critMarker;
-    [SerializeField] private float _critHitRadius = .5f;
     [SerializeField] [MinMaxSlider(0, 90)] private Vector2 _critMarkerMinMaxAngle = new Vector2(15f, 30f);
     [SerializeField] private float _critMarkerSurfaceOffset = .05f;
-    [SerializeField] private UnityEvent<int> _onCritHit;
-    [SerializeField] private UnityEvent<int> _onHit;
 
     private Vector3 lastHitPos;
     private Vector3 centerToHit;
 
-    public void CritMarkerHit(PickaxeHitInfo pickaxeHitInfo)
-    {
-        float distToCrit = Vector3.Distance(pickaxeHitInfo.HitPositon, _critMarker.transform.position);
-        MoveCritMarker(pickaxeHitInfo.HitPositon);
-        if (distToCrit <= _critHitRadius && _critMarker.activeSelf)
-        {
-            _onCritHit.Invoke(pickaxeHitInfo.Damage * _critDamageMultiplier);
-        } else {
-            _onHit.Invoke(pickaxeHitInfo.Damage);
-        }
+    public void MoveCritMarker(PickaxeHitInfo pickaxeHitInfo) {
+        this.MoveCritMarker(pickaxeHitInfo.HitPositon);
     }
 
-    private void MoveCritMarker(Vector3 hitPosition)
+    public void MoveCritMarker(Vector3 hitPosition)
     {
         if (!_critMarker.activeSelf) _critMarker.SetActive(true);
 
@@ -59,9 +47,6 @@ public class OreCritHit : MonoBehaviour
         
         //Draw line from collider center to hit point
         Draw.Line(_oreCollider.bounds.center, lastHitPos, new Color(1f, 1f, 0f, a));
-        
-        //Draw hit radius for crit
-        Draw.Sphere(_critMarker.transform.position, _critHitRadius, new Color(1f, 0f, 1f, a));
 
         //Draw cones to represent the min and max angle ranges for random rotation
         float length = centerToHit.magnitude;

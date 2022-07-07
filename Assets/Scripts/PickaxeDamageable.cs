@@ -10,4 +10,9 @@ public class PickaxeDamageable : Damageable
     {
         base.TakeDamage(pickaxeHitInfo.Damage);
     }
+
+    public void TakeCritDamage(PickaxeHitInfo pickaxeHitInfo)
+    {
+        base.TakeCritDamage(pickaxeHitInfo.Damage);
+    }
 }

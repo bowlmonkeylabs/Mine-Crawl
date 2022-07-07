@@ -11,6 +11,8 @@ namespace BML.Scripts
         [SerializeField] [HideIf("useHealthVariable")] private int _health;
         [SerializeField] private bool useHealthVariable = false;
 
+        [SerializeField] private int critMultiplier = 2;
+
         [SerializeField] private UnityEvent OnDamage;
         [SerializeField] private UnityEvent OnDeath;
 
@@ -38,6 +40,10 @@ namespace BML.Scripts
                     Death();
                 }
             }
+        }
+
+        public void TakeCritDamage(int damage) {
+            this.TakeDamage(damage * this.critMultiplier);
         }
 
         private void Death()
