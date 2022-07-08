@@ -13,15 +13,23 @@ namespace BML.Scripts
         [SerializeField] private bool _useHealthVariable = false;
 
         [SerializeField] private int _critMultiplier = 2;
+        [SerializeField] private int _invincibilitySeconds = 0;
 
         [SerializeField] private UnityEvent _onDamage;
         [SerializeField] private UnityEvent _onCrit;
         [SerializeField] private UnityEvent _onDeath;
 
+        private float lastDamageTime = Mathf.NegativeInfinity;
+
         public bool IsDead => _useHealthVariable ? _healthReference.Value <= 0 : _health <= 0;
 
         public void TakeDamage(int damage)
         {
+            if (lastDamageTime + _invincibilitySeconds > Time.time)
+                return;
+
+            lastDamageTime = Time.time;
+            
             if (_useHealthVariable)
             {
                 if (_healthReference.Value <= 0) return;
