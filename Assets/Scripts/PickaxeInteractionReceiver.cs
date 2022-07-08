@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using BML.Scripts.Player;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts
 {
     public class PickaxeInteractionReceiver : InteractionReceiver
     {
-        public UnityEvent<PickaxeHitInfo> OnPickaxeInteract;
+        [SerializeField] private UnityEvent<PickaxeHitInfo> _onPickaxeInteract;
 
         public void ReceiveInteraction(PickaxeHitInfo param)
         {
-            OnPickaxeInteract.Invoke(param);
+            _onPickaxeInteract.Invoke(param);
             OnInteract.Invoke();
         }
     }

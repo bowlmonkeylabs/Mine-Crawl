@@ -291,7 +291,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnPickaxeInteract:
+  _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1425103801302272645}
@@ -826,9 +826,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthReference: {fileID: 0}
   _health: 3
-  useHealthVariable: 0
-  critMultiplier: 2
-  OnDamage:
+  _useHealthVariable: 0
+  _critMultiplier: 2
+  _onDamage:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3454127850065686866}
@@ -843,7 +843,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnCrit:
+  _onCrit:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5116163273417737045}
@@ -858,7 +858,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnDeath:
+  _onDeath:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11400000, guid: 0165294fceb10994cb9d1f8669a4d72c, type: 2}
@@ -894,11 +894,35 @@ PrefabInstance:
     m_TransformParent: {fileID: 7225383730169331487}
     m_Modifications:
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: OnInteract.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: OnInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: OnInteract.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
@@ -910,11 +934,35 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2450872905461499138}
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1425103801302272645}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2450872905461499138}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: TakeCritDamage
       objectReference: {fileID: 0}
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: MoveCritMarker
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TakeCritDamage
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: MoveCritMarker
       objectReference: {fileID: 0}
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
@@ -926,11 +974,27 @@ PrefabInstance:
       value: OreCritMarker, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PickaxeDamageable, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: OreCritMarker, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7746370747038451750, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
