@@ -299,8 +299,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthReference: {fileID: 0}
   _health: 3
-  useHealthVariable: 0
-  OnDamage:
+  _useHealthVariable: 0
+  _critMultiplier: 2
+  _invincibilitySeconds: 0
+  _onDamage:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3000336961166879906}
@@ -315,7 +317,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnDeath:
+  _onCrit:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDeath:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3000336959854452572}
@@ -534,14 +539,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad0c01c5a68415a802f73ded0a64c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _damage: 1
   _damageMask:
     serializedVersion: 2
     m_Bits: 128
-  _damage: 1
-  _damageTimer:
-    UseConstant: 0
-    ConstantDuration: 0
-    Variable: {fileID: 0}
+  _time: 2
 --- !u!1 &3000336961166879916
 GameObject:
   m_ObjectHideFlags: 0
@@ -786,21 +788,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnPickaxeInteract:
+  _onPickaxeInteract:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 9198729175416441857}
-        m_TargetAssemblyTypeName: PickaxeDamageable, BML.Scripts
-        m_MethodName: TakeDamage
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1001 &3213711351615608545
 PrefabInstance:
   m_ObjectHideFlags: 0
