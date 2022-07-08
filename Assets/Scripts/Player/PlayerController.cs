@@ -125,9 +125,10 @@ namespace BML.Scripts.Player
             Collider[] enemyColliders = Physics.OverlapSphere(transform.position, _miningEnemyAlertRadius, _enemyLayerMask);
             // Debug.Log(enemyColliders.Length);
 
-            foreach(Collider collider in enemyColliders)
+            foreach(Collider col in enemyColliders)
             {
-                collider.transform.root.GetComponentInChildren<EnemyController>().SetAlerted(true);
+                Debug.Log(col.gameObject.name);
+                col.gameObject.GetComponent<EnemyController>().SetAlerted(true);
             }
         }
         
