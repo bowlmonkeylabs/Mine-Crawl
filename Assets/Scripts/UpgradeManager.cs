@@ -13,14 +13,14 @@ namespace BML.Scripts
         [TitleGroup("Health")]
         [SerializeField] private GameEvent _onBuyHealth;
         [SerializeField] private IntVariable _playerHealth;
-        [SerializeField] private int healthIncrease = 1;
-        [SerializeField] private int healthOreCost = 5;
+        [SerializeField] private int _healthIncrease = 1;
+        [SerializeField] private int _healthOreCost = 5;
         
         [TitleGroup("Torch")]
         [SerializeField] private GameEvent _onBuyTorch;
         [SerializeField] private IntVariable _playerTorchCount;
-        [SerializeField] private int torchIncrease = 3;
-        [SerializeField] private int torchOreCost = 3;
+        [SerializeField] private int _torchIncrease = 3;
+        [SerializeField] private int _torchOreCost = 3;
 
         private void Awake()
         {
@@ -36,18 +36,18 @@ namespace BML.Scripts
 
         private void BuyHealth()
         {
-            if (_oreCount.Value < healthOreCost) return;
+            if (_oreCount.Value < _healthOreCost) return;
             
-            _playerHealth.Value += healthIncrease;
-            _oreCount.Value -= healthOreCost;
+            _playerHealth.Value += _healthIncrease;
+            _oreCount.Value -= _healthOreCost;
         }
 
         private void BuyMarkers()
         {
-            if (_oreCount.Value < torchOreCost) return;
+            if (_oreCount.Value < _torchOreCost) return;
 
-            _playerTorchCount.Value += torchIncrease;
-            _oreCount.Value -= torchOreCost;
+            _playerTorchCount.Value += _torchIncrease;
+            _oreCount.Value -= _torchOreCost;
         }
     }
 }

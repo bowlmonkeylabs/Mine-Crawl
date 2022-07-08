@@ -10,13 +10,13 @@ namespace BML.Scripts
     {
         [SerializeField] [ShowIf("_useHealthVariable")] [LabelText("health")] private IntVariable _healthReference;
         [SerializeField] [HideIf("_useHealthVariable")] private int _health;
-        [FormerlySerializedAs("useHealthVariable")] [SerializeField] private bool _useHealthVariable = false;
+        [SerializeField] private bool _useHealthVariable = false;
 
-        [FormerlySerializedAs("critMultiplier")] [SerializeField] private int _critMultiplier = 2;
+        [SerializeField] private int _critMultiplier = 2;
 
-        [FormerlySerializedAs("OnDamage")] [SerializeField] private UnityEvent _onDamage;
-        [FormerlySerializedAs("OnCrit")] [SerializeField] private UnityEvent _onCrit;
-        [FormerlySerializedAs("OnDeath")] [SerializeField] private UnityEvent _onDeath;
+        [SerializeField] private UnityEvent _onDamage;
+        [SerializeField] private UnityEvent _onCrit;
+        [SerializeField] private UnityEvent _onDeath;
 
         public bool IsDead => _useHealthVariable ? _healthReference.Value <= 0 : _health <= 0;
 
