@@ -14,6 +14,7 @@ namespace BML.Scripts
         [SerializeField] private int critMultiplier = 2;
 
         [SerializeField] private UnityEvent OnDamage;
+        [SerializeField] private UnityEvent OnCrit;
         [SerializeField] private UnityEvent OnDeath;
 
         public bool IsDead => useHealthVariable ? _healthReference.Value <= 0 : _health <= 0;
@@ -44,6 +45,7 @@ namespace BML.Scripts
 
         public void TakeCritDamage(int damage) {
             this.TakeDamage(damage * this.critMultiplier);
+            OnCrit.Invoke();
         }
 
         private void Death()
