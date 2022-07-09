@@ -80,7 +80,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
         }
 
-        [Button]
+        [Button, PropertyOrder(-1)]
         public void SpawnLevelObjects()
         {
             DestroyLevelObjects();
@@ -91,7 +91,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             _onAfterGenerateEvent.Raise();
         }
 
-        [Button]
+        [Button, PropertyOrder(-1)]
         public void DestroyLevelObjects()
         {
             var children = Enumerable.Range(0, this.transform.childCount)

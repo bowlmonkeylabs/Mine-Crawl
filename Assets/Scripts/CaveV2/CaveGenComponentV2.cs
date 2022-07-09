@@ -26,16 +26,16 @@ namespace BML.Scripts.CaveV2
         private bool _notOverrideBounds => !_overrideBounds;
         public Bounds CaveGenBounds => (_overrideBounds ? _caveGenBounds : _caveGenParams.PoissonBounds);
         
-        [Required] [InlineEditor]
+        [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGenParameters _caveGenParams;
         
-        [Required] [InlineEditor]
+        [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGraphClayxelRenderer _caveGraphClayxelRenderer;
 
-        [Required] [InlineEditor]
+        [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGraphMudBunRenderer _caveGraphMudBunRenderer;
 
-        [Required] [InlineEditor]
+        [Required] [InlineEditor, Space(10f)]
         [SerializeField] private LevelObjectSpawner _levelObjectSpawner;
         
         #endregion
