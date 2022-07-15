@@ -28,9 +28,7 @@ namespace BML.Scripts.Player
         [SerializeField] private IntReference _pickaxeDamage;
 
         [TitleGroup("Mine ore")]
-        [SerializeField] private GameEvent _onMineOre;
-        [SerializeField] private float _miningEnemyAlertRadius;
-        [SerializeField] private LayerMask _enemyLayerMask;
+        [SerializeField] private FloatReference _miningEnemyAlertRadius;
         
         [TitleGroup("Torch")]
         [SerializeField] private GameObject _torchPrefab;
@@ -41,15 +39,6 @@ namespace BML.Scripts.Player
         #endregion
 
         #region Unity lifecycle
-
-        private void OnEnable() {
-            _onMineOre.Subscribe(OnMineOre);
-        }
-
-        private void OnDisable()
-        {
-            _onMineOre.Unsubscribe(OnMineOre);
-        }
 
         private void Update()
         {
@@ -63,7 +52,7 @@ namespace BML.Scripts.Player
         
         private void OnDrawGizmosSelected() {
             Gizmos.color = Color.gray;
-            Gizmos.DrawWireSphere(transform.position, _miningEnemyAlertRadius);
+            Gizmos.DrawWireSphere(transform.position, _miningEnemyAlertRadius.Value);
         }
 
         #endregion
@@ -119,19 +108,7 @@ namespace BML.Scripts.Player
                 }
             }
         }
-        
-        private void OnMineOre()
-        {
-            Collider[] enemyColliders = Physics.OverlapSphere(transform.position, _miningEnemyAlertRadius, _enemyLayerMask);
-            // Debug.Log(enemyColliders.Length);
 
-            foreach(Collider col in enemyColliders)
-            {
-                Debug.Log(col.gameObject.name);
-                col.gameObject.GetComponent<EnemyController>().SetAlerted(true);
-            }
-        }
-        
         #endregion
         
         #region Torch
