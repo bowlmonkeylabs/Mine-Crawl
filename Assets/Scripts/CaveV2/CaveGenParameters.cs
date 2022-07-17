@@ -81,12 +81,18 @@ namespace BML.Scripts.CaveV2
         }
         
         [TitleGroup("Graph processing")]
-        [Range(0f, 1f)]
-        public float MaxEdgeLengthFactor = 0.25f;
+        [Range(0f, 10f)]
+        public float MaxEdgeLengthFactor = 1.5f;
         
         [TitleGroup("Graph processing")]
         [Range(1, 90)]
         public int MaxEdgeSteepnessAngle = 30;
+        
+        [TitleGroup("Graph processing")]
+        public bool OnlyShortestPathBetweenStartAndEnd = true;
+        
+        [TitleGroup("Graph processing")]
+        public bool RemoveOrphanNodes = true;
         
         [TitleGroup("Mesh generation")]
         [MinMaxSlider(0.1f, 10f)]

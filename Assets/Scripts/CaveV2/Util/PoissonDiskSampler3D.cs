@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2.Util
@@ -50,15 +51,25 @@ namespace BML.Scripts.CaveV2.Util
 
         /// Return a lazy sequence of samples. You typically want to call this in a foreach loop, like so:
         ///   foreach (Vector3 sample in sampler.Samples()) { ... }
-        public IEnumerable<Vector3> Samples()
+        public IEnumerable<Vector3> Samples(List<Vector3> initialSamples = null)
         {
-            // First sample is choosen randomly
-            var size = bounds.max - bounds.min;
-            yield return AddSample(
-                new Vector3(
-                    Random.value * size.x, 
-                    Random.value * size.y,
-                    Random.value * size.z));
+            if (initialSamples?.Any() ?? false)
+            {
+                foreach (var initialSample in initialSamples)
+                {
+                    yield return AddSample(initialSample + bounds.extents);
+                }
+            }
+            else
+            {
+                // First sample is choosen randomly
+                var size = bounds.max - bounds.min;
+                yield return AddSample(
+                    new Vector3(
+                        Random.value * size.x, 
+                        Random.value * size.y,
+                        Random.value * size.z));
+            }
 
             while (activeSamples.Count > 0)
             {
@@ -129,12 +140,14 @@ namespace BML.Scripts.CaveV2.Util
         }
 
         /// Adds the sample to the active samples queue and the grid before returning it
+        /// Returns the sample relative to the bounds center.
         private Vector3 AddSample(Vector3 sample)
         {
             activeSamples.Add(sample);
             GridPos pos = new GridPos(sample, cellSize);
             grid[pos.x, pos.y, pos.z] = sample;
-            return sample;
+            var sampleRelativeToBoundsCenter = sample - bounds.extents;
+            return sampleRelativeToBoundsCenter;
         }
 
         /// Helper struct to calculate the x, y, and z indices of a sample in the grid

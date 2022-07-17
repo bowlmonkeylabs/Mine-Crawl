@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 namespace BML.Scripts.CaveV2.CaveGraph
 {
     [Serializable]
-    public class CaveGraphV2 : QuikGraph.BidirectionalGraph<CaveNodeData, CaveNodeConnectionData>
+    public class CaveGraphV2 : QuikGraph.UndirectedGraph<CaveNodeData, CaveNodeConnectionData>
     {
         public CaveNodeData StartNode { get; set; }
         public CaveNodeData EndNode { get; set; }
@@ -22,6 +22,10 @@ namespace BML.Scripts.CaveV2.CaveGraph
             var vertices = (excludeVertices != null)
                 ? Vertices.Except(excludeVertices).ToList()
                 : Vertices.ToList();
+            if (!vertices.Any())
+            {
+                return null;
+            }
             int randomIndex = Random.Range(0, vertices.Count);
             var randomVertex = vertices[randomIndex];
             return randomVertex;
@@ -48,6 +52,27 @@ namespace BML.Scripts.CaveV2.CaveGraph
             return randomVertices;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <warning>Potentially expensive method invocation; Need to consider a more efficient implemntation.</warning>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public CaveNodeData GetNearestVertex(Vector3 localPosition)
+        {
+            if (!Vertices.Any()) return null;
+
+            var distances = Vertices
+                .Select(vertex => (
+                    vertex: vertex,
+                    distance: (vertex.LocalPosition - localPosition).sqrMagnitude
+                ))
+                .OrderBy(tuple => tuple.distance)
+                .AsParallel();
+            var nearestVertex = distances.FirstOrDefault().vertex;
+            return nearestVertex;
+        }
+        
         public void DrawGizmos(Vector3 localOrigin)
         {
             Gizmos.color = Color.white;
@@ -55,8 +80,12 @@ namespace BML.Scripts.CaveV2.CaveGraph
             {
                 var worldPosition = localOrigin + caveNodeData.LocalPosition;
                 var size = caveNodeData.Size;
-                var isStartNode = (caveNodeData == StartNode);
                 Color gizmoColor = Color.white;
+                if (this.IsAdjacentEdgesEmpty(caveNodeData))
+                {
+                    gizmoColor = Color.gray;
+                    gizmoColor.a = 0.4f;
+                }
                 if (caveNodeData == StartNode) gizmoColor = Color.green;
                 if (caveNodeData == EndNode) gizmoColor = Color.red;
                 Gizmos.color = gizmoColor;
