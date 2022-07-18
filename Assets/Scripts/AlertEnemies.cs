@@ -11,12 +11,16 @@ namespace BML.Scripts
         public void Alert()
         {
             Collider[] enemyColliders = Physics.OverlapSphere(transform.position, _miningEnemyAlertRadius.Value, _enemyLayerMask);
-            // Debug.Log(enemyColliders.Length);
 
             foreach(Collider col in enemyColliders)
             {
                 col.gameObject.GetComponent<EnemyController>().SetAlerted(true);
             }
+        }
+
+        private void OnDrawGizmosSelected() {
+            Gizmos.color = Color.gray;
+            Gizmos.DrawWireSphere(transform.position, _miningEnemyAlertRadius.Value);
         }
     }
 }

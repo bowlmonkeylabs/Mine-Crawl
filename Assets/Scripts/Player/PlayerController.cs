@@ -26,9 +26,6 @@ namespace BML.Scripts.Player
         [SerializeField] private LayerMask _interactMask;
         [SerializeField] private TimerReference _interactCooldown;
         [SerializeField] private IntReference _pickaxeDamage;
-
-        [TitleGroup("Mine ore")]
-        [SerializeField] private FloatReference _miningEnemyAlertRadius;
         
         [TitleGroup("Torch")]
         [SerializeField] private GameObject _torchPrefab;
@@ -48,11 +45,6 @@ namespace BML.Scripts.Player
         private void FixedUpdate()
         {
             _interactCooldown.UpdateTime();
-        }
-        
-        private void OnDrawGizmosSelected() {
-            Gizmos.color = Color.gray;
-            Gizmos.DrawWireSphere(transform.position, _miningEnemyAlertRadius.Value);
         }
 
         #endregion
