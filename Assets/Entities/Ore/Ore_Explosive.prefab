@@ -167,7 +167,7 @@ MonoBehaviour:
         SoloAllTracks: 0
         AutoUnSoloOnEnd: 0
         PanStereo: 0
-        SpatialBlend: 0
+        SpatialBlend: 1
         BypassEffects: 0
         BypassListenerEffects: 0
         BypassReverbZones: 0
@@ -388,7 +388,7 @@ MonoBehaviour:
         SoloAllTracks: 0
         AutoUnSoloOnEnd: 0
         PanStereo: 0
-        SpatialBlend: 0
+        SpatialBlend: 1
         BypassEffects: 0
         BypassListenerEffects: 0
         BypassReverbZones: 0
@@ -547,7 +547,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDamage.m_PersistentCalls.m_Calls.Array.size
@@ -555,6 +555,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
@@ -566,11 +570,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3185838449939063886}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Target
+      value: 
+      objectReference: {fileID: 9152686090143533073}
+    - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDamage.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 3185838449939063886}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
@@ -582,12 +594,20 @@ PrefabInstance:
       value: Deactivate
       objectReference: {fileID: 0}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: StopFeedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDamage.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: Activate
       objectReference: {fileID: 0}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
       value: BML.Scripts.Explosive, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
+      value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
       objectReference: {fileID: 0}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDamage.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -602,35 +622,39 @@ PrefabInstance:
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1425103801302272645, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDamage.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3454127851599513215, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.size
-      value: 7
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3454127851599513215, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
-      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[6].m_Mode
-      value: 6
+      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3454127851599513215, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
-      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[6].m_Target
+      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 8184100782394188379}
+      objectReference: {fileID: 9152686090143533073}
     - target: {fileID: 3454127851599513215, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
-      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[6].m_CallState
+      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3454127851599513215, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
-      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[6].m_MethodName
-      value: SetActive
+      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: StopFeedbacks
       objectReference: {fileID: 0}
     - target: {fileID: 3454127851599513215, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
-      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[6].m_TargetAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
       objectReference: {fileID: 0}
     - target: {fileID: 3454127851599513215, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
-      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[6].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      propertyPath: FeedbacksList.Array.data[1].PlayEvents.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7225383730169331457, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
