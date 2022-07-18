@@ -7,6 +7,8 @@ using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.CaveV2.Util;
 using BML.Scripts.CaveV2.Clayxel;
 using BML.Scripts.CaveV2.SpawnObjects;
+using BML.Scripts.Utils;
+using QuikGraph.Algorithms;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using Random = UnityEngine.Random;
@@ -26,16 +28,16 @@ namespace BML.Scripts.CaveV2
         private bool _notOverrideBounds => !_overrideBounds;
         public Bounds CaveGenBounds => (_overrideBounds ? _caveGenBounds : _caveGenParams.PoissonBounds);
         
-        [Required] [InlineEditor]
+        [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGenParameters _caveGenParams;
         
-        [Required] [InlineEditor]
+        [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGraphClayxelRenderer _caveGraphClayxelRenderer;
 
-        [Required] [InlineEditor]
+        [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGraphMudBunRenderer _caveGraphMudBunRenderer;
 
-        [Required] [InlineEditor]
+        [Required] [InlineEditor, Space(10f)]
         [SerializeField] private LevelObjectSpawner _levelObjectSpawner;
         
         #endregion
@@ -85,31 +87,50 @@ namespace BML.Scripts.CaveV2
             Random.InitState(caveGenParams.Seed);
             
             var caveGraph = new CaveGraphV2();
+            
+            var poissonBoundsWithPadding = caveGenParams.GetBoundsWithPadding(bounds, CaveGenParameters.PaddingType.Inner);
+
+            // Generate start node position
+            var startBounds = new Bounds(
+                poissonBoundsWithPadding.center + (poissonBoundsWithPadding.extents / 2),
+                poissonBoundsWithPadding.extents / 2);
+            var startPosition = RandomUtils.RandomInBounds(startBounds) + startBounds.center;
+            startPosition = poissonBoundsWithPadding.max - poissonBoundsWithPadding.extents / 4;
+            var startNode = new CaveNodeData(startPosition, 1f);
+            caveGraph.AddVertex(startNode);
+            caveGraph.StartNode = startNode;
+            
+            // Generate end node position
+            var endBounds = new Bounds(
+                poissonBoundsWithPadding.center - (poissonBoundsWithPadding.extents / 2),
+                poissonBoundsWithPadding.extents / 2);
+            var endPosition = RandomUtils.RandomInBounds(endBounds) + endBounds.center;
+            endPosition = poissonBoundsWithPadding.min + poissonBoundsWithPadding.extents / 4;
+            var endNode = new CaveNodeData(endPosition, 1f);
+            caveGraph.AddVertex(endNode);
+            caveGraph.EndNode = endNode;
+
+            var initialSamples = new List<Vector3> { startPosition, endPosition };
 
             // Generate initial points for graph nodes with poisson distribution
-            var poissonBoundsWithPadding = caveGenParams.GetBoundsWithPadding(bounds, CaveGenParameters.PaddingType.Inner);
             var poisson = new PoissonDiscSampler3D(poissonBoundsWithPadding.size, caveGenParams.PoissonSampleRadius);
-            var samplePoints = poisson.Samples();
-            var vertices = samplePoints.Select(point =>
+            var samplePoints = poisson.Samples(initialSamples);
+            var vertices = samplePoints.Where(point =>
             {
-                var pointRelativeToBoundsCenter = (point - poissonBoundsWithPadding.size / 2);
+                return !initialSamples.Contains(point);
+            }).Select(point =>
+            {
+                // var pointRelativeToBoundsCenter = (point - poissonBoundsWithPadding.size / 2);
+                var pointRelativeToBoundsCenter = point;
                 var size = Random.Range(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y);
                 var node = new CaveNodeData(pointRelativeToBoundsCenter, size);
                 return node;
             });
             caveGraph.AddVertexRange(vertices);
             
-            // Assign random start node
-            var startNode = caveGraph.GetRandomVertex();
-            caveGraph.StartNode = startNode;
-            
-            // Assign random end node
-            var endNode = caveGraph.GetRandomVertex(new List<CaveNodeData> { startNode });
-            caveGraph.EndNode = endNode;
-            
             // Add an edge between every possible combination of nodes, and calculate the distance/cost
             var numVertices = caveGraph.Vertices.Count();
-            if (numVertices > 100)
+            if (numVertices > 300)
             {
                 throw new Exception($"Cave graph has too many vertices ({numVertices}) for our inefficient adjacency calculation; consider revising this code in order to continue!");
             }
@@ -131,15 +152,46 @@ namespace BML.Scripts.CaveV2
                 var edge = new CaveNodeConnectionData(vertexPair.v1, vertexPair.v2, edgeRadius);
                 caveGraph.AddEdge(edge);
             }
+
+            caveGraph.TryGetEdge(startNode, endNode, out var startEndEdge);
+            if (startEndEdge != null)
+            {
+                caveGraph.RemoveEdge(startEndEdge);
+            }
             
             // Remove long edges
-            var maxLength = bounds.size.magnitude * caveGenParams.MaxEdgeLengthFactor;
+            var maxLength = caveGenParams.PoissonSampleRadius * caveGenParams.MaxEdgeLengthFactor;
             caveGraph.RemoveEdgeIf(edge => edge.Length >= maxLength);
             
             // Remove steep edges
             var maxAngle = caveGenParams.MaxEdgeSteepnessAngle;
             caveGraph.RemoveEdgeIf(edge => edge.SteepnessAngle >= maxAngle);
 
+            // Remove everything but the shortest path between start and end; the "main" path
+            if (caveGenParams.OnlyShortestPathBetweenStartAndEnd)
+            {
+                var shortestPathFromStartFunc = caveGraph.ShortestPathsDijkstra(edge => edge.Length, startNode);
+                shortestPathFromStartFunc(endNode, out var shortestPathFromStartToEnd);
+                shortestPathFromStartToEnd = shortestPathFromStartToEnd?.ToList();
+                if (shortestPathFromStartToEnd != null)
+                {
+                    caveGraph.RemoveEdgeIf(edge => !shortestPathFromStartToEnd.Contains(edge));
+                }
+            }
+            
+            // Remove orphaned nodes
+            if (caveGenParams.RemoveOrphanNodes)
+            {
+                caveGraph.RemoveVertexIf(vertex =>
+                {
+                    return caveGraph.IsAdjacentEdgesEmpty(vertex)
+                           && vertex != startNode && vertex != endNode;
+                });
+            }
+
+            // Check traversability
+            // TODO
+            
             return caveGraph;
         }
         

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Utils
@@ -29,6 +30,21 @@ namespace BML.Scripts.Utils
                 if (rand <= acc) return pair.value;
             }
             return choices.First().value;
+        }
+
+        /// <summary>
+        /// Returns a random position inside the bounds. 
+        /// </summary>
+        /// <param name="bounds"></param>
+        /// <returns>Position relative to the bounds center.</returns>
+        public static Vector3 RandomInBounds(Bounds bounds)
+        {
+            var size = bounds.max - bounds.min;
+            var randomPosition = new Vector3(
+                Random.value * size.x,
+                Random.value * size.y,
+                Random.value * size.z) - size / 2;
+            return randomPosition;
         }
     }
 }

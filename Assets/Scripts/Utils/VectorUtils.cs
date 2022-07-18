@@ -14,6 +14,7 @@ namespace BML.Scripts.Utils
         public static Vector2 xz(this Vector3 vec) { return new Vector2(vec.x, vec.z); }
         
         public static Vector2 xy(this Vector3 vec) { return new Vector2(vec.x, vec.y); }
+        public static Vector3 xyo(this Vector3 vec) { return new Vector3(vec.x, vec.y, 0); }
         public static Vector3 xoo(this Vector3 vec) { return new Vector3(vec.x, 0, 0); }
         public static Vector3 oyo(this Vector3 vec) { return new Vector3(0, vec.y, 0); }
         public static Vector3 ooz(this Vector3 vec) { return new Vector3(0, 0, vec.z); }
