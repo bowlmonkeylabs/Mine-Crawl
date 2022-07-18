@@ -15,7 +15,6 @@ namespace BML.Scripts
 
             foreach(Collider col in enemyColliders)
             {
-                Debug.Log(col.gameObject.name);
                 col.gameObject.GetComponent<EnemyController>().SetAlerted(true);
             }
         }
