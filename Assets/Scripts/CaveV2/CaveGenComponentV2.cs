@@ -95,12 +95,14 @@ namespace BML.Scripts.CaveV2
             OnAfterGenerate?.Invoke();
         }
 
-        private CaveGraphV2 RetryGenerateCaveGraph()
+        private CaveGraphV2 RetryGenerateCaveGraph(bool checkRetryDepth = true)
         {
-            _retryDepth++;
-            if (_retryDepth >= _maxRetryDepth)
-            {
-                throw new Exception($"Exceeded cave generation max retries ({_maxRetryDepth})");
+            if (checkRetryDepth) {
+                _retryDepth++;
+                if (_retryDepth >= _maxRetryDepth)
+                {
+                    throw new Exception($"Exceeded cave generation max retries ({_maxRetryDepth})");
+                }
             }
             
             if (_caveGenParams.LockSeed || !_retryOnFailure)
@@ -236,8 +238,18 @@ namespace BML.Scripts.CaveV2
                 if (shortestPathFromStartToEnd == null)
                 {
                     // Not traversable
-                    Debug.Log($"Seed {caveGenParams.Seed} failed traversability check, retrying cave generation.");
-                    return RetryGenerateCaveGraph();
+                    if (_showTraversabilityCheck)
+                    {
+                        Debug.LogWarning($"Seed {caveGenParams.Seed} failed traversability check, retrying cave generation.");
+                    }
+                    
+                    _retryDepth++;
+                    if (_retryDepth >= _maxRetryDepth)
+                    {
+                        Debug.LogError($"Exceeded cave generation max retries ({_maxRetryDepth})");
+                        return caveGraph;
+                    }
+                    return RetryGenerateCaveGraph(false);
                 }
             }
             
