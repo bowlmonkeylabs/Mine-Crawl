@@ -17,7 +17,6 @@ namespace BML.Scripts.CaveV2
             get => _seed;
             set
             {
-                LogSeedHist();
                 _seed = value;
             }
         }
@@ -123,10 +122,12 @@ namespace BML.Scripts.CaveV2
 
         #region Utils
 
-        public void UpdateRandomSeed()
+        public void UpdateRandomSeed(bool logSeedHist = true)
         {
             if (LockSeed) return;
-
+            
+            if (logSeedHist) LogSeedHist();
+            
             Seed = Random.Range(Int32.MinValue, Int32.MaxValue);
         }
 

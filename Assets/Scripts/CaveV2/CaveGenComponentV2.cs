@@ -23,6 +23,11 @@ namespace BML.Scripts.CaveV2
         #region Inspector
 
         [SerializeField] private bool _generateOnChange;
+
+        [SerializeField] private bool _retryOnFailure = true;
+        [SerializeField] private int _maxRetryDepth = 3;
+
+        [SerializeField] private bool _showTraversabilityCheck = false;
         
         [SerializeField, DisableIf("$_notOverrideBounds")] private Bounds _caveGenBounds = new Bounds(Vector3.zero, new Vector3(10,6,10));
         [SerializeField] private bool _overrideBounds = false;
@@ -67,10 +72,13 @@ namespace BML.Scripts.CaveV2
         public CaveGraphV2 CaveGraph => _caveGraph;
         [HideInInspector, SerializeField] private CaveGraphV2 _caveGraph;
 
+        private int _retryDepth = 0;
+        
         [PropertyOrder(-1)]
         [Button, LabelText("Generate Cave Graph")]
         private void GenerateCaveGraphButton()
         {
+            _retryDepth = 0;
             GenerateCaveGraph();
         }
         
@@ -83,8 +91,27 @@ namespace BML.Scripts.CaveV2
                 _caveGenParams.UpdateRandomSeed();
             }
             _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
-            
+
             OnAfterGenerate?.Invoke();
+        }
+
+        private CaveGraphV2 RetryGenerateCaveGraph()
+        {
+            _retryDepth++;
+            if (_retryDepth >= _maxRetryDepth)
+            {
+                throw new Exception($"Exceeded cave generation max retries ({_maxRetryDepth})");
+            }
+            
+            if (_caveGenParams.LockSeed || !_retryOnFailure)
+            {
+                throw new Exception("Cave generation failed; level is not traversable. To automatically resolve, ensure 'Retry on failure' is checked and 'Lock seed' is unchecked.");
+            }
+            else
+            {
+                _caveGenParams.UpdateRandomSeed(false);
+                return GenerateCaveGraph(_caveGenParams, CaveGenBounds);
+            }
         }
 
         [PropertyOrder(-1)]
@@ -94,7 +121,7 @@ namespace BML.Scripts.CaveV2
             _caveGraph = null;
         }
 
-        private static CaveGraphV2 GenerateCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)
+        private CaveGraphV2 GenerateCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)
         {
             Random.InitState(caveGenParams.Seed);
             
@@ -202,7 +229,17 @@ namespace BML.Scripts.CaveV2
             }
 
             // Check traversability
-            // TODO
+            {
+                var shortestPathFromStartFunc = caveGraph.ShortestPathsDijkstra(edge => edge.Length, startNode);
+                shortestPathFromStartFunc(endNode, out var shortestPathFromStartToEnd);
+                caveGraph.MainPath = shortestPathFromStartToEnd?.ToList();
+                if (shortestPathFromStartToEnd == null)
+                {
+                    // Not traversable
+                    Debug.Log($"Seed {caveGenParams.Seed} failed traversability check, retrying cave generation.");
+                    return RetryGenerateCaveGraph();
+                }
+            }
             
             return caveGraph;
         }
@@ -225,6 +262,7 @@ namespace BML.Scripts.CaveV2
         {
             if (_generateOnChange)
             {
+                _retryDepth = 0;
                 GenerateCaveGraph(false);
             }
         }
@@ -242,9 +280,9 @@ namespace BML.Scripts.CaveV2
             // Draw cave graph
             if (_caveGraph != null)
             {
-                _caveGraph.DrawGizmos(LocalOrigin);
+                _caveGraph.DrawGizmos(LocalOrigin, _showTraversabilityCheck);
             }
-            
+
             #if UNITY_EDITOR
             // Draw seed label
             Handles.Label(transform.position, _caveGenParams.Seed.ToString());

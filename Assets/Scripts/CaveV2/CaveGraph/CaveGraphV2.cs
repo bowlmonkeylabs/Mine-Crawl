@@ -11,6 +11,8 @@ namespace BML.Scripts.CaveV2.CaveGraph
     {
         public CaveNodeData StartNode { get; set; }
         public CaveNodeData EndNode { get; set; }
+        
+        public List<CaveNodeConnectionData> MainPath { get; set; }
 
         public CaveGraphV2() : base(true)
         {
@@ -73,7 +75,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
             return nearestVertex;
         }
         
-        public void DrawGizmos(Vector3 localOrigin)
+        public void DrawGizmos(Vector3 localOrigin, bool showMainPath)
         {
             Gizmos.color = Color.white;
             foreach (var caveNodeData in Vertices)
@@ -98,6 +100,17 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 var sourceWorldPosition = localOrigin + caveNodeConnectionData.Source.LocalPosition;
                 var targetWorldPosition = localOrigin + caveNodeConnectionData.Target.LocalPosition;
                 Gizmos.DrawLine(sourceWorldPosition, targetWorldPosition);
+            }
+            
+            if (showMainPath && MainPath != null)
+            {
+                Gizmos.color = Color.green;
+                foreach (var caveNodeConnectionData in MainPath)
+                {
+                    var sourceWorldPosition = localOrigin + caveNodeConnectionData.Source.LocalPosition;
+                    var targetWorldPosition = localOrigin + caveNodeConnectionData.Target.LocalPosition;
+                    Gizmos.DrawLine(sourceWorldPosition, targetWorldPosition);
+                }
             }
         }
     }
