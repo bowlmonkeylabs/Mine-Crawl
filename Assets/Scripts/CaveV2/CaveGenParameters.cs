@@ -57,7 +57,7 @@ namespace BML.Scripts.CaveV2
         [LabelText("Sample Radius")]
         [Range(2f, 50f)]
         public float PoissonSampleRadius = 1f;
-        
+
         [TitleGroup("Poisson")]
         [LabelText("Bounds")]
         public Bounds PoissonBounds = new Bounds(Vector3.zero, Vector3.one * 5);

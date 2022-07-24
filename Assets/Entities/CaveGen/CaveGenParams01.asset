@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20bdc9e74430486c481f8563e54a7, type: 3}
   m_Name: CaveGenParams01
   m_EditorClassIdentifier: 
-  _seed: -320244719
+  _seed: 243405688
   LockSeed: 0
   _rollbackSeed: 243405688
-  _seedValuesHist: f27bbd3f5764115d8da00ab0a614b09ac3731870fe04be62671304e7800101a75bbcd346fe6c5041
-  PoissonSampleRadius: 21.1
+  _seedValuesHist: 30e1b950e25a6de5a3687308dc4cd038780bc20fd1d8f6b56b8d69cb2d2d64e9b35ada7f7ab4b7de
+  PoissonSampleRadius: 12.3
   PoissonBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 50, y: 8, z: 50}
@@ -24,6 +24,11 @@ MonoBehaviour:
   PoissonBoundsPaddingInnerOuter: 0
   MaxEdgeLengthFactor: 1.5
   MaxEdgeSteepnessAngle: 20
-  OnlyShortestPathBetweenStartAndEnd: 0
-  RemoveOrphanNodes: 0
+  OnlyShortestPathBetweenStartAndEnd: 1
+  UseOffshootsFromMainPath: 1
+  NumOffshoots: 7
+  OffshootLength: 5
+  MinimumSpanningTree: 0
+  MinimumSpanningNodes: 1000
+  RemoveOrphanNodes: 1
   RoomScaling: {x: 0.80589205, y: 3.1004355}

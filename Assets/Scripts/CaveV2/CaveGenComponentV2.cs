@@ -9,6 +9,7 @@ using BML.Scripts.CaveV2.Util;
 using BML.Scripts.CaveV2.Clayxel;
 using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Utils;
+using GK;
 using QuikGraph.Algorithms;
 using Sirenix.OdinInspector;
 using UnityEditor;
@@ -261,6 +262,51 @@ namespace BML.Scripts.CaveV2
                 }
             }
             
+            // Minimum spanning tree
+            if (caveGenParams.MinimumSpanningTree)
+            {
+                var pointsOfInterest = caveGraph.GetRandomVertices(caveGenParams.MinimumSpanningNodes, false);
+                var minimumGraph = new CaveGraphV2();
+                minimumGraph.AddVertex(caveGraph.StartNode);
+                minimumGraph.AddVertex(caveGraph.EndNode);
+                minimumGraph.AddVertexRange(pointsOfInterest);
+                var test = new DelaunayCalculator();
+                var delaunayPoints = minimumGraph.Vertices.Select(v => v.LocalPosition.xz()).ToList();
+                var triangulation = test.CalculateTriangulation(delaunayPoints);
+                var triangulationCaveNodes = triangulation.Vertices
+                    .Select(v2 =>
+                        minimumGraph.Vertices.FirstOrDefault(caveNode =>
+                            Mathf.Approximately(caveNode.LocalPosition.x, v2.x)
+                            && Mathf.Approximately(caveNode.LocalPosition.z, v2.y)))
+                    .ToList();
+                var edges = new List<CaveNodeConnectionData>();
+                for (int i = 0; i < triangulation.Triangles.Count; i += 3)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        var sourceIndex = triangulation.Triangles[i+j];
+                        var targetIndex = triangulation.Triangles[i+((j+1)%3)];
+                        var sourceNode = triangulationCaveNodes[sourceIndex];
+                        var targetNode = triangulationCaveNodes[targetIndex];
+                        if (sourceNode == null || targetNode == null)
+                        {
+                            continue;
+                        }
+
+                        var edgeRadius = Math.Max(sourceNode.Size, targetNode.Size);
+                        var edge = new CaveNodeConnectionData(sourceNode, targetNode, edgeRadius);
+                        edges.Add(edge);
+                    }
+                }
+                minimumGraph.AddEdgeRange(edges);
+                var minimumSpanningTree = 
+                    minimumGraph.MinimumSpanningTreeKruskal(
+                        edge => edge.Length).ToList();
+                minimumGraph.RemoveEdgeIf(edge => !minimumSpanningTree.Contains(edge));
+                _minimumSpanningTreeGraphTEMP = minimumGraph;
+                // TODO
+            }
+            
             // Remove orphaned nodes
             if (caveGenParams.RemoveOrphanNodes)
             {
@@ -296,6 +342,8 @@ namespace BML.Scripts.CaveV2
             
             return caveGraph;
         }
+
+        private CaveGraphV2 _minimumSpanningTreeGraphTEMP;
         
         #endregion
 
@@ -333,9 +381,16 @@ namespace BML.Scripts.CaveV2
             // Draw cave graph
             if (_caveGraph != null)
             {
-                _caveGraph.DrawGizmos(LocalOrigin, _showTraversabilityCheck);
+                _caveGraph.DrawGizmos(LocalOrigin, _showTraversabilityCheck, Color.white);
             }
-
+            if (_caveGenParams.MinimumSpanningTree && _minimumSpanningTreeGraphTEMP != null)
+            {
+                _minimumSpanningTreeGraphTEMP.DrawGizmos(
+                    LocalOrigin + Vector3.up * _caveGenParams.PoissonBounds.size.y, 
+                    _showTraversabilityCheck,
+                    Color.yellow);
+            }
+            
             #if UNITY_EDITOR
             // Draw seed label
             Handles.Label(transform.position, _caveGenParams.Seed.ToString());
