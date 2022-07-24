@@ -91,6 +91,21 @@ namespace BML.Scripts.CaveV2
         public bool OnlyShortestPathBetweenStartAndEnd = true;
         
         [TitleGroup("Graph processing")]
+        public bool UseOffshootsFromMainPath = true;
+        
+        [TitleGroup("Graph processing")]
+        public int NumOffshoots = 2;
+        
+        [TitleGroup("Graph processing")]
+        public int OffshootLength = 3;
+        
+        [TitleGroup("Graph processing")]
+        public bool MinimumSpanningTree = true;
+        
+        [TitleGroup("Graph processing")]
+        public int MinimumSpanningNodes = 3;
+        
+        [TitleGroup("Graph processing")]
         public bool RemoveOrphanNodes = true;
         
         [TitleGroup("Mesh generation")]

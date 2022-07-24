@@ -213,10 +213,51 @@ namespace BML.Scripts.CaveV2
             {
                 var shortestPathFromStartFunc = caveGraph.ShortestPathsDijkstra(edge => edge.Length, startNode);
                 shortestPathFromStartFunc(endNode, out var shortestPathFromStartToEnd);
-                shortestPathFromStartToEnd = shortestPathFromStartToEnd?.ToList();
-                if (shortestPathFromStartToEnd != null)
+                var shortestPathFromStartToEndList = shortestPathFromStartToEnd?.ToList();
+                
+                if (shortestPathFromStartToEndList != null)
                 {
-                    caveGraph.RemoveEdgeIf(edge => !shortestPathFromStartToEnd.Contains(edge));
+                    var keepEdges = shortestPathFromStartToEndList;
+                    
+                    // Offshoots from main path
+                    if (caveGenParams.UseOffshootsFromMainPath)
+                    {
+                        for (int n = 0; n < caveGenParams.NumOffshoots; n++)
+                        {
+                            int randomOffshootPathIndex = Random.Range(1, shortestPathFromStartToEndList.Count - 1);
+                            CaveNodeData offshootStart = shortestPathFromStartToEndList[randomOffshootPathIndex].Source;
+
+                            for (int i = 0; i < caveGenParams.OffshootLength; i++)
+                            {
+                                var adjacentEdges = caveGraph.AdjacentEdges(offshootStart)
+                                    .Where(edge =>
+                                    {
+                                        var edgeAreadyUsed = keepEdges.Contains(edge);
+
+                                        CaveNodeData otherVertex;
+                                        if (offshootStart == edge.Source) otherVertex = edge.Target;
+                                        otherVertex = edge.Source;
+                                        var vertexAlreadyUsed = keepEdges.Any(e =>
+                                            e.Source == otherVertex || e.Target == otherVertex);
+                                        return !edgeAreadyUsed && !vertexAlreadyUsed;
+                                    })
+                                    .ToList();
+                                if (!adjacentEdges.Any())
+                                    break;
+                            
+                                int randomEdgeIndex = Random.Range(0, adjacentEdges.Count);
+                                var randomEdge = adjacentEdges[randomEdgeIndex];
+                                keepEdges.Add(randomEdge);
+
+                                if (offshootStart == randomEdge.Source) offshootStart = randomEdge.Target;
+                                else if (offshootStart == randomEdge.Target) offshootStart = randomEdge.Source;
+                                else break;
+                            }
+                        }
+                    }
+                    
+                    // Remove all edges except what we want to keep
+                    caveGraph.RemoveEdgeIf(edge => !keepEdges.Contains(edge));
                 }
             }
             
