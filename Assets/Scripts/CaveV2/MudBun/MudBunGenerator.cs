@@ -7,7 +7,6 @@ using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
-using MeshUtils = BML.Scripts.Utils.MeshUtils;
 
 namespace BML.Scripts.CaveV2.MudBun
 {
@@ -76,6 +75,8 @@ namespace BML.Scripts.CaveV2.MudBun
         #endregion
 
         #region MudBun
+
+        public bool IsMeshLocked => _mudRenderer.MeshLocked;
 
         protected void OnAfterLockMeshCallback()
         {
@@ -167,7 +168,7 @@ namespace BML.Scripts.CaveV2.MudBun
         private float lastGenerateTime;
         protected void TryGenerateWithCooldown()
         {
-            if (_generateOnChange)
+            if (_generateOnChange && !_mudRenderer.MeshLocked)
             {
                 var elapsedTime = (Time.time - lastGenerateTime);
                 if (elapsedTime >= _generateMinCooldownSeconds)
@@ -175,12 +176,18 @@ namespace BML.Scripts.CaveV2.MudBun
                     lastGenerateTime = Time.time;
                     this.GenerateMudBun();
                 }
+                else
+                {
+                    DestroyMudBun();
+                }
             }
         }
         
-        [Button, PropertyOrder(-1)]
+        [Button, PropertyOrder(-1), DisableIf("$IsMeshLocked")]
         public void GenerateMudBun()
         {
+            if (_mudRenderer.MeshLocked) return;
+            
             this.GenerateMudBun(_mudRenderer, _instanceAsPrefabs);
             
             OnAfterGenerate?.Invoke();
@@ -193,7 +200,7 @@ namespace BML.Scripts.CaveV2.MudBun
             MudBunGenerator.DestroyMudBun(mudRenderer);
         }
         
-        [Button, PropertyOrder(-1)]
+        [Button, PropertyOrder(-1), DisableIf("$IsMeshLocked")]
         public void DestroyMudBun()
         {
             DestroyMudBun(_mudRenderer);
@@ -201,6 +208,8 @@ namespace BML.Scripts.CaveV2.MudBun
 
         private static void DestroyMudBun(MudRenderer mudRenderer)
         {
+            if (mudRenderer.MeshLocked) return;
+            
             // mudRenderer.DestroyAllBrushesImmediate();
             var allBrushes = mudRenderer.Brushes.ToList();
             foreach (var mudRendererBrush in allBrushes)

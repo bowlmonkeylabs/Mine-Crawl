@@ -24,11 +24,15 @@ namespace BML.Scripts.CaveV2
         #region Inspector
 
         [SerializeField] private bool _generateOnChange;
+        
+        [SerializeField] private bool _generateRandomOnStart;
 
         [SerializeField] private bool _retryOnFailure = true;
         [SerializeField] private int _maxRetryDepth = 3;
 
         [SerializeField] private bool _showTraversabilityCheck = false;
+        
+        [SerializeField] private bool _enableLogs = false;
         
         [SerializeField, DisableIf("$_notOverrideBounds")] private Bounds _caveGenBounds = new Bounds(Vector3.zero, new Vector3(10,6,10));
         [SerializeField] private bool _overrideBounds = false;
@@ -73,10 +77,15 @@ namespace BML.Scripts.CaveV2
         public CaveGraphV2 CaveGraph => _caveGraph;
         [HideInInspector, SerializeField] private CaveGraphV2 _caveGraph;
 
+        [ShowInInspector]
+        [InfoBox("Generation is disabled while MudBun mesh is locked.", InfoMessageType.Error, "_isGenerationDisabled")]
+        public bool IsGenerationEnabled => !_caveGraphMudBunRenderer.IsMeshLocked;
+        private bool _isGenerationDisabled => !IsGenerationEnabled;
+
         private int _retryDepth = 0;
         
         [PropertyOrder(-1)]
-        [Button, LabelText("Generate Cave Graph")]
+        [Button, LabelText("Generate Cave Graph"), EnableIf("$IsGenerationEnabled")]
         private void GenerateCaveGraphButton()
         {
             _retryDepth = 0;
@@ -85,12 +94,21 @@ namespace BML.Scripts.CaveV2
         
         private void GenerateCaveGraph(bool useRandomSeed = true)
         {
+            if (!IsGenerationEnabled)
+                return;
+            
             DestroyCaveGraph();
 
             if (useRandomSeed)
             {
                 _caveGenParams.UpdateRandomSeed();
             }
+
+            if (_enableLogs)
+            {
+                Debug.Log($"Generating level ({_caveGenParams.Seed})");
+            }
+            
             _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
 
             OnAfterGenerate?.Invoke();
@@ -118,10 +136,17 @@ namespace BML.Scripts.CaveV2
         }
 
         [PropertyOrder(-1)]
-        [Button]
+        [Button, EnableIf("$IsGenerationEnabled")]
         private void DestroyCaveGraph()
         {
+            if (!IsGenerationEnabled) 
+                return;
+            
             _caveGraph = null;
+            _minimumSpanningTreeGraphTEMP = null;
+            
+            _caveGraphMudBunRenderer.DestroyMudBun();
+            _levelObjectSpawner.DestroyLevelObjects();
         }
 
         private CaveGraphV2 GenerateCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)
@@ -348,6 +373,15 @@ namespace BML.Scripts.CaveV2
         #endregion
 
         #region Unity lifecycle
+
+        private void Start()
+        {
+            if (_generateRandomOnStart)
+            {
+                _retryDepth = 0;
+                GenerateCaveGraph(true);
+            }
+        }
 
         private void OnEnable()
         {
