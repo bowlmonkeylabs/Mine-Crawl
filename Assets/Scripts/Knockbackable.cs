@@ -12,8 +12,7 @@ namespace BML.Scripts
         [SerializeField] private BehaviorTree behaviorTree;
 
         public void SetKnockback(Vector3 direction) {
-            behaviorTree.SendEvent("SetKnockback", direction);
-            Debug.Log("hellosdpiughf");
+            behaviorTree.SendEvent<object>("SetKnockback", direction);
         }
 
         public void SetKnockback(PickaxeHitInfo pickaxeHitInfo) {
