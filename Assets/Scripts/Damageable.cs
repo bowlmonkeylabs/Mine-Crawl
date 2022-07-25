@@ -53,8 +53,8 @@ namespace BML.Scripts
         }
 
         public void TakeCritDamage(int damage) {
-            this.TakeDamage(damage * this._critMultiplier);
             _onCrit.Invoke();
+            this.TakeDamage(damage * this._critMultiplier);
         }
 
         private void Death()
