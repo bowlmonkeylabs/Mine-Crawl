@@ -117,8 +117,6 @@ namespace BML.Scripts
                 _enemySpawnerParams.TerrainLayerMask,
                 _enemySpawnerParams.MaxRaycastLength);
             
-            Debug.Log($"Spawned: {newGameObject.name}");
-
             lastSpawnTime = Time.time;
         }
     }

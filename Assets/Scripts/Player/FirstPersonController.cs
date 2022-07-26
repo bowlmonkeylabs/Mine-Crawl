@@ -346,7 +346,7 @@ namespace BML.Scripts.Player
 				originalGravity = Gravity;
 				Gravity = 0f;
 				_verticalVelocity = 0f;
-				LayerMask orignalCollisionMask = _motor.CollidableLayers;
+				orignalCollisionMask = _motor.CollidableLayers;
 				_motor.CollidableLayers = noClipCollisionMask;
 
 			}

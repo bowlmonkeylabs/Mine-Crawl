@@ -10,7 +10,6 @@ namespace BML.Scripts
         {
             if (other.gameObject.IsInLayerMask(_enemyMask))
             {
-                Debug.Log($"Destroying: {other.gameObject.name}");
                 Destroy(other.gameObject);
             }
         }

@@ -7,7 +7,7 @@ namespace BML.Scripts
 {
     public class EnemyDebugManager : MonoBehaviour
     {
-        [SerializeField] private Transform _levelObjectContainer;
+        [SerializeField] private Transform _enemyContainer;
         [SerializeField] private GameEvent _onAddEnemyHealth;
         [SerializeField] private int _healthAmountToAdd = 10;
 
@@ -23,12 +23,11 @@ namespace BML.Scripts
 
         private void AddEnemmyHealth()
         {
-            EnemyController[] enemyControllers = _levelObjectContainer.GetComponentsInChildren<EnemyController>();
+            Damageable[] enemyDamageables = _enemyContainer.GetComponentsInChildren<Damageable>();
             
-            foreach (var enemyController in enemyControllers)
+            foreach (var damageable in enemyDamageables)
             {
-                Damageable enemyDamagable = enemyController.GetComponent<Damageable>();
-                enemyDamagable.Health += _healthAmountToAdd;
+                damageable.Health += _healthAmountToAdd;
             }
         }
     }
