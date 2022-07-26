@@ -9,6 +9,12 @@ namespace BML.Scripts.Store
         [SerializeField] private DynamicGameEvent _purchaseEvent;
         [SerializeField] private StoreItem _itemToPurchase;
 
+        public void Init(DynamicGameEvent purchaseEvent, StoreItem itemToPurchase)
+        {
+            _purchaseEvent = purchaseEvent;
+            _itemToPurchase = itemToPurchase;
+        }
+
         public void Raise()
         {
             _purchaseEvent.Raise(_itemToPurchase);
