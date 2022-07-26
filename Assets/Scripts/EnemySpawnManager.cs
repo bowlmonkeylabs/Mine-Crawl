@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -13,10 +14,12 @@ namespace BML.Scripts
         [SerializeField] private Transform _enemyContainer;
         [SerializeField] private Transform _player;
         [SerializeField] private float _spawnDelay = 1f;
+        [SerializeField] private DynamicGameEvent _onSpawnPointEnterSpawnTrigger;
+        [SerializeField] private DynamicGameEvent _onSpawnPointExitSpawnTrigger;
         [Required, SerializeField] [InlineEditor()] private EnemySpawnerParams _enemySpawnerParams;
 
-        private Dictionary<EnemySpawnParams, List<GameObject>> enemySpawnPointDict =
-            new Dictionary<EnemySpawnParams, List<GameObject>>();
+        private Dictionary<string, List<Transform>> tagToSpawnPointsDict =
+            new Dictionary<string, List<Transform>>();
 
         private float lastSpawnTime = Mathf.NegativeInfinity;
         
@@ -24,7 +27,19 @@ namespace BML.Scripts
 
         private void Awake()
         {
-            PopulateSpawnPoints();
+            InitSpawnPoints();
+        }
+
+        private void OnEnable()
+        {
+            _onSpawnPointEnterSpawnTrigger.Subscribe(RegisterSpawnPoint);
+            _onSpawnPointExitSpawnTrigger.Subscribe(UnregisterSpawnPoint);
+        }
+
+        private void OnDisable()
+        {
+            _onSpawnPointEnterSpawnTrigger.Unsubscribe(RegisterSpawnPoint);
+            _onSpawnPointExitSpawnTrigger.Unsubscribe(UnregisterSpawnPoint);
         }
 
         private void Update()
@@ -34,13 +49,24 @@ namespace BML.Scripts
 
         #endregion
 
-        private void PopulateSpawnPoints()
+        private void InitSpawnPoints()
         {
             foreach (var spawnAtTag in _enemySpawnerParams.SpawnAtTags)
             {
-                var taggedSpawnPoints = GameObject.FindGameObjectsWithTag(spawnAtTag.Tag).ToList();
-                enemySpawnPointDict.Add(spawnAtTag, taggedSpawnPoints);
+                tagToSpawnPointsDict.Add(spawnAtTag.Tag, new List<Transform>());
             }
+        }
+
+        private void RegisterSpawnPoint(object prev, object enemySpawnInfoObj)
+        {
+            EnemySpawnInfo enemySpawnInfo = (EnemySpawnInfo) enemySpawnInfoObj;
+            tagToSpawnPointsDict[enemySpawnInfo.spawnPointTag].Add(enemySpawnInfo.spawnPoint);
+        }
+        
+        private void UnregisterSpawnPoint(object prev, object enemySpawnInfoObj)
+        {
+            EnemySpawnInfo enemySpawnInfo = (EnemySpawnInfo) enemySpawnInfoObj;
+            tagToSpawnPointsDict[enemySpawnInfo.spawnPointTag].Remove(enemySpawnInfo.spawnPoint);
         }
 
         private void HandleSpawning()
@@ -49,7 +75,7 @@ namespace BML.Scripts
                 return;
 
             EnemySpawnParams randomEnemy = _enemySpawnerParams.SpawnAtTags.GetRandomElement();
-            Transform randomSpawnPoint = enemySpawnPointDict[randomEnemy].GetRandomElement().transform;
+            Transform randomSpawnPoint = tagToSpawnPointsDict[randomEnemy.Tag].GetRandomElement().transform;
             
             var newGameObject =
                 GameObjectUtils.SafeInstantiate(randomEnemy.InstanceAsPrefab, randomEnemy.Prefab, _enemyContainer);
