@@ -33,6 +33,7 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolReference _isStoreOpen;
 		[SerializeField] private BoolReference _isGodModeEnabled;
 		[SerializeField] private BoolReference _isNoClipEnabled;
+		[SerializeField] private GameEvent _onAddEnemyHealth;
 
 		[SerializeField] private VariableContainer _containerUiMenuStates;
 
@@ -116,6 +117,14 @@ namespace BML.Scripts.Player
 			_isNoClipEnabled.Value = !_isNoClipEnabled.Value;
 			Debug.Log($"No Clip Mode: {_isNoClipEnabled.Value}");
 		}
+		
+		public void OnAddEnemyHealth()
+		{
+			_onAddEnemyHealth.Raise();
+			Debug.Log($"Added enemy health");
+		}
+		
+		
 		
 		public void OnUnlockCursor()
 		{

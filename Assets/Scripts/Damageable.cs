@@ -1,5 +1,6 @@
 ﻿using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -23,6 +24,7 @@ namespace BML.Scripts
         private float lastDamageTime = Mathf.NegativeInfinity;
 
         public bool IsDead => _useHealthVariable ? _healthReference.Value <= 0 : _health <= 0;
+        public int Health { get => _health; set => _health = value; }
 
         public void TakeDamage(int damage)
         {
