@@ -33,9 +33,24 @@ namespace BML.Scripts.Player
         [SerializeField] private Transform _torchInstanceContainer;
         [SerializeField] private IntReference _inventoryTorchCount;
 
+        [TitleGroup("GodMode")]
+        [SerializeField] private BoolVariable _isGodModeEnabled;
+        [SerializeField] private Damageable _damageable;
+
         #endregion
 
         #region Unity lifecycle
+
+        private void OnEnable()
+        {
+            _isGodModeEnabled.Subscribe(SetGodMode);
+            SetGodMode();
+        }
+
+        private void OnDisable()
+        {
+            _isGodModeEnabled.Unsubscribe(SetGodMode);
+        }
 
         private void Update()
         {
@@ -125,6 +140,15 @@ namespace BML.Scripts.Player
             newGameObjectRb.AddForce(throwForce, ForceMode.Impulse);
         }
         
+        #endregion
+
+        #region GodMode
+
+        private void SetGodMode()
+        {
+            _damageable.SetInvincible(_isGodModeEnabled.Value);
+        }
+
         #endregion
         
         private void HandleHover()

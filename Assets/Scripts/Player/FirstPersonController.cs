@@ -1,6 +1,9 @@
 ﻿//FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
 //https://assetstore.unity.com/packages/essentials/starter-assets-first-person-character-controller-196525
 
+using System;
+using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.Scripts.Utils;
 using KinematicCharacterController;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -41,6 +44,10 @@ namespace BML.Scripts.Player
 		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
 		public bool Grounded = true;
 
+		[Header("No Clip Mode")] 
+		[SerializeField] private BoolVariable isNoClipEnabled;
+		[SerializeField] private float noClipSprintMultiplier = 3f;
+		[SerializeField] private LayerMask noClipCollisionMask;
 
 		[Header("Cinemachine")]
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
@@ -62,8 +69,12 @@ namespace BML.Scripts.Player
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
+		
+		// no clip mode
+		private float originalGravity;
+		private LayerMask orignalCollisionMask;
 
-	
+
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 		private PlayerInput _playerInput;
 #endif
@@ -92,7 +103,10 @@ namespace BML.Scripts.Player
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
+			
 		}
+
+		
 
 		private void Start()
 		{
@@ -108,6 +122,16 @@ namespace BML.Scripts.Player
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+		}
+		
+		private void OnEnable()
+		{
+			isNoClipEnabled.Subscribe(SetNoClip);
+		}
+
+		private void OnDisable()
+		{
+			isNoClipEnabled.Unsubscribe(SetNoClip);
 		}
 
 		private void Update()
@@ -148,7 +172,8 @@ namespace BML.Scripts.Player
 	    public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
 	    {
 		    // set target speed based on move speed, sprint speed and if sprint is pressed
-		    float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+		    float sprintSpeed = isNoClipEnabled.Value ? SprintSpeed * noClipSprintMultiplier : SprintSpeed;
+		    float targetSpeed = _input.sprint ? sprintSpeed : MoveSpeed;
 
 		    // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -186,6 +211,10 @@ namespace BML.Scripts.Player
 		    {
 			    // move
 			    inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
+			    if (isNoClipEnabled.Value)
+			    {
+				    inputDirection = transform.right * _input.move.x + _mainCamera.transform.forward * _input.move.y;
+			    }
 		    }
 
 		    // move the player
@@ -303,6 +332,27 @@ namespace BML.Scripts.Player
 			if (_verticalVelocity < _terminalVelocity)
 			{
 				_verticalVelocity += Gravity * Time.deltaTime;
+			}
+		}
+
+		private void SetNoClip()
+		{
+			int playerLayer = LayerMask.NameToLayer("Player");
+			int terrainLayer = LayerMask.NameToLayer("Terrain");
+			int defaultlayer = LayerMask.NameToLayer("Default");
+			
+			if (isNoClipEnabled.Value)
+			{
+				originalGravity = Gravity;
+				Gravity = 0f;
+				LayerMask orignalCollisionMask = _motor.CollidableLayers;
+				_motor.CollidableLayers = noClipCollisionMask;
+
+			}
+			else
+			{
+				Gravity = originalGravity;
+				_motor.CollidableLayers = orignalCollisionMask;
 			}
 		}
 

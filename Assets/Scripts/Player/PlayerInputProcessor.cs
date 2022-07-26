@@ -31,6 +31,8 @@ namespace BML.Scripts.Player
 		
 		[SerializeField] private BoolReference _isPaused;
 		[SerializeField] private BoolReference _isStoreOpen;
+		[SerializeField] private BoolReference _isGodModeEnabled;
+		[SerializeField] private BoolReference _isNoClipEnabled;
 
 		[SerializeField] private VariableContainer _containerUiMenuStates;
 
@@ -101,6 +103,18 @@ namespace BML.Scripts.Player
 		public void OnToggleStore()
 		{
 			_isStoreOpen.Value = !_isStoreOpen.Value;
+		}
+
+		public void OnToggleGodMode()
+		{
+			_isGodModeEnabled.Value = !_isGodModeEnabled.Value;
+			Debug.Log($"Enable God Mode: {_isGodModeEnabled.Value}");
+		}
+		
+		public void OnToggleNoClipMode()
+		{
+			_isNoClipEnabled.Value = !_isNoClipEnabled.Value;
+			Debug.Log($"No Clip Mode: {_isNoClipEnabled.Value}");
 		}
 		
 		public void OnUnlockCursor()

@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace BML.Scripts.Store
 {
+    [InlineEditor()]
     [CreateAssetMenu(fileName = "StoreInventory", menuName = "BML/Store/StoreInventory", order = 0)]
     public class StoreInventory : ScriptableObject
     {

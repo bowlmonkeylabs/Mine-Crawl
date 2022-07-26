@@ -14,6 +14,7 @@ namespace BML.Scripts
 
         [SerializeField] private int _critMultiplier = 2;
         [SerializeField] private float _invincibilitySeconds = 0;
+        [SerializeField] private bool _isInvincible = false;
 
         [SerializeField] private UnityEvent _onDamage;
         [SerializeField] private UnityEvent _onCrit;
@@ -25,7 +26,8 @@ namespace BML.Scripts
 
         public void TakeDamage(int damage)
         {
-            if (!Mathf.Approximately(0f, _invincibilitySeconds) && lastDamageTime + _invincibilitySeconds > Time.time)
+            if (_isInvincible || 
+                !Mathf.Approximately(0f, _invincibilitySeconds) && lastDamageTime + _invincibilitySeconds > Time.time)
                 return;
 
             lastDamageTime = Time.time;
@@ -60,6 +62,11 @@ namespace BML.Scripts
         private void Death()
         {
             _onDeath.Invoke();
+        }
+
+        public void SetInvincible(bool isInvincible)
+        {
+            _isInvincible = isInvincible;
         }
     }
 }

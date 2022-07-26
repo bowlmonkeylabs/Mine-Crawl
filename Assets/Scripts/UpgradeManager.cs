@@ -11,6 +11,7 @@ namespace BML.Scripts
     public class UpgradeManager : MonoBehaviour
     {
         [SerializeField] private IntVariable _oreCount;
+        [SerializeField] private BoolVariable _isGodModeEnabled;
         [SerializeField] private StoreInventory _storeInventory;
 
 
@@ -34,10 +35,13 @@ namespace BML.Scripts
         {
             StoreItem storeItem = (StoreItem) storeItemObj;
             
-            if (_oreCount.Value < storeItem._cost.Value) return;
+            if (!_isGodModeEnabled.Value &&
+                _oreCount.Value < storeItem._cost.Value) 
+                return;
 
             storeItem._incrementOnPurchase.Value += storeItem._incrementAmount.Value;
-            _oreCount.Value -= storeItem._cost.Value;
+            if (!_isGodModeEnabled.Value)
+                _oreCount.Value -= storeItem._cost.Value;
         }
     }
 }
