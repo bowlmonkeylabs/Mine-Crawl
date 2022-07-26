@@ -17,29 +17,45 @@ public class Knockback : Action
     [SerializeField] private RichAI ai;
 
     private float knockBackStartTime;
+    private float currentSpeed;
+    private float prevSpeed;
+    private CharacterController charController;
 
     public override void OnStart()
     {
-        ai.enabled = false;
+        charController = transform.GetComponentInChildren<CharacterController>();
         knockBackStartTime = Time.time;
-        _rigidbody.isKinematic = false;
-        _rigidbody.AddForce(KnockBackDirection.Value.normalized * KnockbackForce.Value, ForceMode.Impulse);
+        ai.enabled = false;
+        charController.enabled = true;
+        currentSpeed = KnockbackForce.Value;
+        prevSpeed = KnockbackForce.Value;
     }
 	
     public override void OnEnd()
     {
         ai.enabled = true;
-        _rigidbody.isKinematic = true;
+        //_rigidbody.isKinematic = true;
+        charController.enabled = false;
     }
 
     public override TaskStatus OnUpdate()
     {
         if (knockBackStartTime + KnockbackTime.Value > Time.time)
         {
+            HandleKnockBack();
             return TaskStatus.Running;
         }
 
         return TaskStatus.Success;
+    }
+    
+    private void HandleKnockBack()
+    {
+        currentSpeed = Mathf.Lerp(prevSpeed, 0f,  Time.deltaTime/KnockbackTime.Value);
+        var velocity = currentSpeed * KnockBackDirection.Value;
+		
+        charController.Move(velocity * Time.deltaTime);
+        prevSpeed = currentSpeed;
     }
 
 }
