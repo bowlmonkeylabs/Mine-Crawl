@@ -6,6 +6,5 @@ namespace BML.Scripts.Player
     {
         public int Damage;
         public Vector3 HitPositon;
-        public Vector3 HitDirection;
     }
 }
