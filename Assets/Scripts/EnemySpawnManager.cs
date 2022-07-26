@@ -5,6 +5,7 @@ using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts
@@ -14,8 +15,10 @@ namespace BML.Scripts
         [SerializeField] private Transform _enemyContainer;
         [SerializeField] private Transform _player;
         [SerializeField] private float _spawnDelay = 1f;
-        [SerializeField] private DynamicGameEvent _onSpawnPointEnterSpawnTrigger;
-        [SerializeField] private DynamicGameEvent _onSpawnPointExitSpawnTrigger;
+        [SerializeField] private DynamicGameEvent _onSpawnPointEnterSpawnTriggerInner;
+        [SerializeField] private DynamicGameEvent _onSpawnPointExitSpawnTriggerInner;
+        [SerializeField] private DynamicGameEvent _onSpawnPointEnterSpawnTriggerOuter;
+        [SerializeField] private DynamicGameEvent _onSpawnPointExitSpawnTriggerOuter;
         [Required, SerializeField] [InlineEditor()] private EnemySpawnerParams _enemySpawnerParams;
 
         private Dictionary<string, List<Transform>> tagToSpawnPointsDict =
@@ -32,14 +35,18 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
-            _onSpawnPointEnterSpawnTrigger.Subscribe(RegisterSpawnPoint);
-            _onSpawnPointExitSpawnTrigger.Subscribe(UnregisterSpawnPoint);
+            _onSpawnPointEnterSpawnTriggerOuter.Subscribe(RegisterSpawnPoint);
+            _onSpawnPointExitSpawnTriggerOuter.Subscribe(UnregisterSpawnPoint);
+            _onSpawnPointEnterSpawnTriggerInner.Subscribe(UnregisterSpawnPoint);
+            _onSpawnPointExitSpawnTriggerInner.Subscribe(RegisterSpawnPoint);
         }
 
         private void OnDisable()
         {
-            _onSpawnPointEnterSpawnTrigger.Unsubscribe(RegisterSpawnPoint);
-            _onSpawnPointExitSpawnTrigger.Unsubscribe(UnregisterSpawnPoint);
+            _onSpawnPointEnterSpawnTriggerOuter.Unsubscribe(RegisterSpawnPoint);
+            _onSpawnPointExitSpawnTriggerOuter.Unsubscribe(UnregisterSpawnPoint);
+            _onSpawnPointEnterSpawnTriggerInner.Unsubscribe(UnregisterSpawnPoint);
+            _onSpawnPointExitSpawnTriggerInner.Unsubscribe(RegisterSpawnPoint);
         }
 
         private void Update()
