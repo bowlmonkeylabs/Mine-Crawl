@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Utils
 {
-    public class RandomUtils
+    public static class RandomUtils
     {
         [Serializable]
         public struct WeightPair<T>
@@ -45,6 +45,12 @@ namespace BML.Scripts.Utils
                 Random.value * size.y,
                 Random.value * size.z) - size / 2;
             return randomPosition;
+        }
+        
+        public static T GetRandomElement<T>(this List<T> list) where T : class
+        {
+            int randomIndex = Random.Range(0, list.Count);
+            return list[randomIndex];
         }
     }
 }

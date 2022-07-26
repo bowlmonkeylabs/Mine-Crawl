@@ -119,7 +119,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                         {
                             var newGameObject =
                                 GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
-                            newGameObject.transform.position = GetPointUnder(go.transform.position,
+                            newGameObject.transform.position = SpawnObjectsUtil.GetPointUnder(go.transform.position,
                                 levelObjectSpawnerParameters.TerrainLayerMask,
                                 levelObjectSpawnerParameters.MaxRaycastLength);
 
@@ -174,15 +174,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         #region Spawn objects utility
 
-        private static Vector3 GetPointUnder(Vector3 position, LayerMask layerMask, float checkDistance)
-        {
-            var didHit = Physics.Raycast(new Ray(position, Vector3.down), out var hitInfo, checkDistance, layerMask);
-            if (didHit)
-            {
-                return hitInfo.point;
-            }
-            return position;
-        }
+        
 
         #endregion
         
