@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -14,7 +15,10 @@ namespace BML.Scripts
     {
         [SerializeField] private Transform _enemyContainer;
         [SerializeField] private Transform _player;
-        [SerializeField] private float _spawnDelay = 1f;
+        [SerializeField] private FloatVariable _levelStartTime;
+        [SerializeField] private FloatVariable _minutesToMaxSpawn;
+        [SerializeField] private CurveVariable _spawnDelayCurve;
+        [SerializeField] private CurveVariable _spawnCapCurve;
         [SerializeField] private DynamicGameEvent _onSpawnPointEnterSpawnTriggerInner;
         [SerializeField] private DynamicGameEvent _onSpawnPointExitSpawnTriggerInner;
         [SerializeField] private DynamicGameEvent _onSpawnPointEnterSpawnTriggerOuter;
@@ -25,6 +29,8 @@ namespace BML.Scripts
             new Dictionary<string, List<Transform>>();
 
         private float lastSpawnTime = Mathf.NegativeInfinity;
+        private float percentToMaxSpawn;
+        private float currentSpawnDelay;
         
         #region Unity lifecycle
 
@@ -51,6 +57,9 @@ namespace BML.Scripts
 
         private void Update()
         {
+            percentToMaxSpawn = (Time.time - _levelStartTime.Value) / (_minutesToMaxSpawn.Value * 60f);
+            currentSpawnDelay = _spawnDelayCurve.Value.Evaluate(percentToMaxSpawn);
+
             HandleSpawning();
         }
 
@@ -78,8 +87,20 @@ namespace BML.Scripts
 
         private void HandleSpawning()
         {
-            if (lastSpawnTime + _spawnDelay > Time.time)
+            if (lastSpawnTime + currentSpawnDelay > Time.time)
                 return;
+
+            int currentEnemyCount = 0;
+            for (int i = 0; i < _enemyContainer.childCount; i++)
+            {
+                if (_enemyContainer.GetChild(i).gameObject.activeSelf)
+                    currentEnemyCount++;
+            }
+
+            if (currentEnemyCount >= _spawnCapCurve.Value.Evaluate(percentToMaxSpawn))
+                return;
+            
+                
 
             EnemySpawnParams randomEnemy = _enemySpawnerParams.SpawnAtTags.GetRandomElement();
             Transform randomSpawnPoint = tagToSpawnPointsDict[randomEnemy.Tag].GetRandomElement().transform;

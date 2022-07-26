@@ -11758,6 +11758,7 @@ MonoBehaviour:
   _quitFeedbacks: {fileID: 60774676}
   _isGameLost: {fileID: 11400000, guid: 8ed3ee76d426bc14887f854d668acfc0, type: 2}
   _levelTimer: {fileID: 11400000, guid: 53a44c7fb8c81cb4a8e5a8e8244a0272, type: 2}
+  _levelStartTime: {fileID: 11400000, guid: c23f9b241da59364fa29c90c92285e88, type: 2}
 --- !u!4 &1660056001
 Transform:
   m_ObjectHideFlags: 0
@@ -13959,7 +13960,7 @@ GameObject:
   - component: {fileID: 1994959336}
   - component: {fileID: 1994959335}
   m_Layer: 0
-  m_Name: '[EnemeySpawnManager]'
+  m_Name: '{EnemeySpawnManager}'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13979,7 +13980,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyContainer: {fileID: 1751489072}
   _player: {fileID: 3835178114251414924}
-  _spawnDelay: 1
+  _levelStartTime: {fileID: 11400000, guid: c23f9b241da59364fa29c90c92285e88, type: 2}
+  _minutesToMaxSpawn: {fileID: 11400000, guid: 47e12604ff60c1e43b8a0f8122df4ff2, type: 2}
+  _spawnDelayCurve: {fileID: 11400000, guid: b71d8e9475f3efa44bd872dc693ee8b9, type: 2}
+  _spawnCapCurve: {fileID: 11400000, guid: 6287d4838ad197348a1e5b34fad45401, type: 2}
   _onSpawnPointEnterSpawnTriggerInner: {fileID: 11400000, guid: 526cceb8abc888a458ae739799b5a8b4, type: 2}
   _onSpawnPointExitSpawnTriggerInner: {fileID: 11400000, guid: f118043f602e5054cb06cd58aa6c6b5e, type: 2}
   _onSpawnPointEnterSpawnTriggerOuter: {fileID: 11400000, guid: a46e307e43e986f41a09941cfbac9ac0, type: 2}
@@ -15290,7 +15294,7 @@ GameObject:
   - component: {fileID: 2125505347}
   - component: {fileID: 2125505346}
   m_Layer: 0
-  m_Name: '[Debug]'
+  m_Name: '{Debug}'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

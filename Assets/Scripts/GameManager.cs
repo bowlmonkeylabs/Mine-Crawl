@@ -20,10 +20,12 @@ namespace BML.Scripts
 
         [SerializeField] private BoolVariable _isGameLost;
         [SerializeField] private TimerVariable _levelTimer;
+        [SerializeField] private FloatVariable _levelStartTime;
 
         private void Start()
         {
             _levelTimer.StartTimer();
+            _levelStartTime.Value = Time.time;
         }
 
         #region Public interface
