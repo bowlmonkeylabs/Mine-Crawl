@@ -11,7 +11,7 @@ public class Knockback : Action
 {
     [SerializeField] private SharedVector3 KnockBackDirection;
     [SerializeField] private SharedFloat KnockbackTime;
-    [SerializeField] private SharedFloat KnockbackForce;
+    [SerializeField] private SharedFloat KnockbackSpeed;
 	
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private RichAI ai;
@@ -23,7 +23,8 @@ public class Knockback : Action
         ai.enabled = false;
         knockBackStartTime = Time.time;
         _rigidbody.isKinematic = false;
-        _rigidbody.AddForce(KnockBackDirection.Value.normalized * KnockbackForce.Value, ForceMode.Impulse);
+        Debug.Log("hello");
+        _rigidbody.AddForce(KnockBackDirection.Value.normalized * KnockbackSpeed.Value, ForceMode.Force);
     }
 	
     public override void OnEnd()
@@ -41,5 +42,4 @@ public class Knockback : Action
 
         return TaskStatus.Success;
     }
-
 }
