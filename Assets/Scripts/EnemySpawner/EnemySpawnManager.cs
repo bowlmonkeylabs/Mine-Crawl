@@ -90,6 +90,7 @@ namespace BML.Scripts
             if (lastSpawnTime + currentSpawnDelay > Time.time)
                 return;
 
+            //Check against current enemy cap
             int currentEnemyCount = 0;
             for (int i = 0; i < _enemyContainer.childCount; i++)
             {
@@ -100,10 +101,15 @@ namespace BML.Scripts
             if (currentEnemyCount >= _spawnCapCurve.Value.Evaluate(percentToMaxSpawn))
                 return;
             
-                
 
             EnemySpawnParams randomEnemy = _enemySpawnerParams.SpawnAtTags.GetRandomElement();
-            Transform randomSpawnPoint = tagToSpawnPointsDict[randomEnemy.Tag].GetRandomElement().transform;
+            List<Transform> potentialSpawnPointsForTag = tagToSpawnPointsDict[randomEnemy.Tag];
+
+            //If no spawn points in range for this tag, return
+            if (potentialSpawnPointsForTag.Count == 0)
+                return;
+
+            Transform randomSpawnPoint = potentialSpawnPointsForTag.GetRandomElement().transform;
             
             var newGameObject =
                 GameObjectUtils.SafeInstantiate(randomEnemy.InstanceAsPrefab, randomEnemy.Prefab, _enemyContainer);
