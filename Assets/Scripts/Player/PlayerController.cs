@@ -109,7 +109,8 @@ namespace BML.Scripts.Player
                     PickaxeHitInfo pickaxeHitInfo = new PickaxeHitInfo()
                     {
                         Damage = _pickaxeDamage.Value,
-                        HitPositon = hit.point
+                        HitPositon = hit.point,
+                        HitDirection = _mainCamera.forward
                     };
                     interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
                 }
