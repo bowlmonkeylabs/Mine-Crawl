@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
+using BML.Scripts.Utils;
 using Pathfinding;
 using UnityEngine;
 
@@ -11,14 +12,14 @@ public class Knockback : Action
 {
     [SerializeField] private SharedVector3 KnockBackDirection;
     [SerializeField] private SharedFloat KnockbackTime;
-    [SerializeField] private SharedFloat KnockbackForce;
+    [SerializeField] private SharedFloat KnockbackMaxSpeed;
+    [SerializeField] private SharedFloat KnockbackMinSpeed;
+    [SerializeField] private SharedFloat KnockbackVerticalSpeed;
 	
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private RichAI ai;
 
     private float knockBackStartTime;
-    private float currentSpeed;
-    private float prevSpeed;
     private CharacterController charController;
 
     public override void OnStart()
@@ -27,8 +28,6 @@ public class Knockback : Action
         knockBackStartTime = Time.time;
         ai.enabled = false;
         charController.enabled = true;
-        currentSpeed = KnockbackForce.Value;
-        prevSpeed = KnockbackForce.Value;
     }
 	
     public override void OnEnd()
@@ -51,11 +50,16 @@ public class Knockback : Action
     
     private void HandleKnockBack()
     {
-        currentSpeed = Mathf.Lerp(prevSpeed, 0f,  Time.deltaTime/KnockbackTime.Value);
-        var velocity = currentSpeed * KnockBackDirection.Value;
-		
-        charController.Move(velocity * Time.deltaTime);
-        prevSpeed = currentSpeed;
+        var percentComplete = (Time.time - knockBackStartTime) / KnockbackTime.Value;
+        var horizontalSpeed = Mathf.SmoothStep(KnockbackMaxSpeed.Value, KnockbackMinSpeed.Value,  percentComplete);
+        var horizontalVelocity = horizontalSpeed * KnockBackDirection.Value.xoz();
+        
+        var verticalSpeed = Mathf.SmoothStep(KnockbackVerticalSpeed.Value, -KnockbackVerticalSpeed.Value,  percentComplete);
+        var verticalVelocity = verticalSpeed * Vector3.up;
+
+        horizontalVelocity += verticalVelocity;
+
+        charController.Move(horizontalVelocity * Time.deltaTime);
     }
 
 }
