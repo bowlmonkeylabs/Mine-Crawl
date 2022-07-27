@@ -15,6 +15,7 @@ namespace BML.Scripts
     {
         [SerializeField] private Transform _enemyContainer;
         [SerializeField] private Transform _player;
+        [SerializeField] private float _spawnOffsetRadius = 5f;
         [SerializeField] private FloatVariable _levelStartTime;
         [SerializeField] private FloatVariable _minutesToMaxSpawn;
         [SerializeField] private CurveVariable _spawnDelayCurve;
@@ -110,10 +111,14 @@ namespace BML.Scripts
                 return;
 
             Transform randomSpawnPoint = potentialSpawnPointsForTag.GetRandomElement().transform;
-            
+
+
+            var spawnOffset = Random.insideUnitCircle;
+            var spawnPoint = randomSpawnPoint.position +
+                             new Vector3(spawnOffset.x, 0f, spawnOffset.y) * _spawnOffsetRadius;
             var newGameObject =
                 GameObjectUtils.SafeInstantiate(randomEnemy.InstanceAsPrefab, randomEnemy.Prefab, _enemyContainer);
-            newGameObject.transform.position = SpawnObjectsUtil.GetPointUnder(randomSpawnPoint.position,
+            newGameObject.transform.position = SpawnObjectsUtil.GetPointUnder(spawnPoint,
                 _enemySpawnerParams.TerrainLayerMask,
                 _enemySpawnerParams.MaxRaycastLength);
             
