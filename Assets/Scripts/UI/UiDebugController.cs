@@ -12,6 +12,7 @@ namespace BML.Scripts.UI
         [SerializeField] private FloatVariable _currentSpawnDelay;
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
+        [SerializeField] private IntReference _seedDebugReference;
 
         private void Awake()
         {
@@ -25,7 +26,10 @@ namespace BML.Scripts.UI
         protected void UpdateText()
         {
             _text.text = $@"Player Coordinates: {this.formatVector3(_playerTransformSceneReference.Value.position)}
-Enemy Spawn Params: Delay: {_currentSpawnDelay.Value.ToString("0.00")} Cap: {_currentSpawnCap.Value.ToString("0.00")} Count: {_currentEnemyCount.Value}";
+Enemy Spawn Params: Delay: {_currentSpawnDelay.Value.ToString("0.00")}
+Cap: {_currentSpawnCap.Value.ToString("0.00")}
+Count: {_currentEnemyCount.Value}
+Seed: {_seedDebugReference.Value}";
         }
 
         private string formatVector3(Vector3 vector3) {

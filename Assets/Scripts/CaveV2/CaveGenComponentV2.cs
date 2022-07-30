@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
 using UnityEngine;
 using BML.Scripts.CaveV2.MudBun;
@@ -27,6 +28,8 @@ namespace BML.Scripts.CaveV2
         [SerializeField] private bool _overrideBounds = false;
         private bool _notOverrideBounds => !_overrideBounds;
         public Bounds CaveGenBounds => (_overrideBounds ? _caveGenBounds : _caveGenParams.PoissonBounds);
+
+        [SerializeField] private IntReference _seedDebugReference;
         
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGenParameters _caveGenParams;
@@ -40,6 +43,15 @@ namespace BML.Scripts.CaveV2
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private LevelObjectSpawner _levelObjectSpawner;
         
+        #endregion
+
+        #region Untiy Lifecycle
+
+        private void Awake()
+        {
+            _seedDebugReference.Value = _caveGenParams.Seed;
+        }
+
         #endregion
         
         #region Events
