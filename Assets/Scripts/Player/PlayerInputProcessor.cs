@@ -34,6 +34,7 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolReference _isGodModeEnabled;
 		[SerializeField] private BoolReference _isNoClipEnabled;
 		[SerializeField] private GameEvent _onAddEnemyHealth;
+        [SerializeField] private GameEvent _onOpenDebugUi;
 
 		[SerializeField] private VariableContainer _containerUiMenuStates;
 
@@ -122,6 +123,12 @@ namespace BML.Scripts.Player
 		{
 			_onAddEnemyHealth.Raise();
 			Debug.Log($"Added enemy health");
+		}
+
+        public void OnOpenDebugUi()
+		{
+            Debug.Log($"Pressed Debug Ui");
+			_onOpenDebugUi.Raise();
 		}
 		
 		

@@ -20,6 +20,9 @@ namespace BML.Scripts
         [SerializeField] private FloatVariable _minutesToMaxSpawn;
         [SerializeField] private CurveVariable _spawnDelayCurve;
         [SerializeField] private CurveVariable _spawnCapCurve;
+        [SerializeField] private FloatVariable _currentSpawnDelay;
+        [SerializeField] private FloatVariable _currentSpawnCap;
+        [SerializeField] private IntVariable _currentEnemyCount;
         [SerializeField] private DynamicGameEvent _onSpawnPointEnterSpawnTriggerInner;
         [SerializeField] private DynamicGameEvent _onSpawnPointExitSpawnTriggerInner;
         [SerializeField] private DynamicGameEvent _onSpawnPointEnterSpawnTriggerOuter;
@@ -31,7 +34,6 @@ namespace BML.Scripts
 
         private float lastSpawnTime = Mathf.NegativeInfinity;
         private float percentToMaxSpawn;
-        private float currentSpawnDelay;
         
         #region Unity lifecycle
 
@@ -59,7 +61,7 @@ namespace BML.Scripts
         private void Update()
         {
             percentToMaxSpawn = (Time.time - _levelStartTime.Value) / (_minutesToMaxSpawn.Value * 60f);
-            currentSpawnDelay = _spawnDelayCurve.Value.Evaluate(percentToMaxSpawn);
+            _currentSpawnDelay.Value = _spawnDelayCurve.Value.Evaluate(percentToMaxSpawn);
 
             HandleSpawning();
         }
@@ -88,18 +90,23 @@ namespace BML.Scripts
 
         private void HandleSpawning()
         {
-            if (lastSpawnTime + currentSpawnDelay > Time.time)
+            if (lastSpawnTime + _currentSpawnDelay.Value > Time.time)
                 return;
 
             //Check against current enemy cap
-            int currentEnemyCount = 0;
-            for (int i = 0; i < _enemyContainer.childCount; i++)
-            {
-                if (_enemyContainer.GetChild(i).gameObject.activeSelf)
-                    currentEnemyCount++;
-            }
 
-            if (currentEnemyCount >= _spawnCapCurve.Value.Evaluate(percentToMaxSpawn))
+            _currentEnemyCount.Value = _enemyContainer.GetComponentsInChildren<Transform>().Where(t => t.gameObject.activeSelf).Count();
+
+            //  = 0;
+            // for (int i = 0; i < _enemyContainer.childCount; i++)
+            // {
+            //     if (_enemyContainer.GetChild(i).gameObject.activeSelf)
+            //         _currentEnemyCount.Value++;
+            // }
+
+            _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(percentToMaxSpawn);
+
+            if (_currentEnemyCount.Value >= _currentSpawnCap.Value)
                 return;
             
 
