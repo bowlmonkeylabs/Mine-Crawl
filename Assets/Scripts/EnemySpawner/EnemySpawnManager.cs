@@ -94,15 +94,7 @@ namespace BML.Scripts
                 return;
 
             //Check against current enemy cap
-
-            _currentEnemyCount.Value = _enemyContainer.GetComponentsInChildren<Transform>().Where(t => t.gameObject.activeSelf).Count();
-
-            //  = 0;
-            // for (int i = 0; i < _enemyContainer.childCount; i++)
-            // {
-            //     if (_enemyContainer.GetChild(i).gameObject.activeSelf)
-            //         _currentEnemyCount.Value++;
-            // }
+            _currentEnemyCount.Value = _enemyContainer.Cast<Transform>().Count(t => t.gameObject.activeSelf);
 
             _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(percentToMaxSpawn);
 
