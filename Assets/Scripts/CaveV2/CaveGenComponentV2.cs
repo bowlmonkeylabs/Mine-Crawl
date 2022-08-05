@@ -220,6 +220,7 @@ namespace BML.Scripts.CaveV2
                 caveGraph.AddEdge(edge);
             }
 
+            // Remove direct connection between start and end
             caveGraph.TryGetEdge(startNode, endNode, out var startEndEdge);
             if (startEndEdge != null)
             {
