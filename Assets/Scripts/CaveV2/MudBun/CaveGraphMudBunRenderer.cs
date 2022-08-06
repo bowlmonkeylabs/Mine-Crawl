@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2.MudBun
 {
@@ -44,11 +45,14 @@ namespace BML.Scripts.CaveV2.MudBun
 
         #region MudBun
 
+        private const int STEP_ID = 2;
+
         protected override void GenerateMudBun(
             MudRenderer mudRenderer,
             bool instanceAsPrefabs
         ) {
             base.GenerateMudBun(mudRenderer, instanceAsPrefabs);
+            Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
 
             var localOrigin = mudRenderer.transform.position;
 

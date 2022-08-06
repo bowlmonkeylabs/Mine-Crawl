@@ -85,11 +85,15 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 }
             }
         }
+        
+        private const int STEP_ID = 2;
 
         [Button, PropertyOrder(-1), EnableIf("$_isGenerationEnabled")]
         public void SpawnLevelObjects()
         {
             if (!_caveGenerator.IsGenerationEnabled) return;
+            
+            Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
             
             DestroyLevelObjects();
 

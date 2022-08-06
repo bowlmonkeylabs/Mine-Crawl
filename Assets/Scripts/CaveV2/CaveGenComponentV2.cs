@@ -43,6 +43,8 @@ namespace BML.Scripts.CaveV2
         
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGenParameters _caveGenParams;
+
+        public CaveGenParameters CaveGenParams => _caveGenParams;
         
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGraphClayxelRenderer _caveGraphClayxelRenderer;
