@@ -12,6 +12,7 @@ using BML.Scripts.Utils;
 using GK;
 using QuikGraph.Algorithms;
 using Sirenix.OdinInspector;
+using Unity.Collections;
 using UnityEditor;
 using Random = UnityEngine.Random;
 
@@ -33,6 +34,7 @@ namespace BML.Scripts.CaveV2
         [SerializeField] private bool _showTraversabilityCheck = false;
         
         [SerializeField] private bool _enableLogs = false;
+        [HideInInspector] public bool EnableLogs => _enableLogs;
         
         [SerializeField, DisableIf("$_notOverrideBounds")] private Bounds _caveGenBounds = new Bounds(Vector3.zero, new Vector3(10,6,10));
         [SerializeField] private bool _overrideBounds = false;
@@ -84,6 +86,9 @@ namespace BML.Scripts.CaveV2
         public bool IsGenerationEnabled => !_caveGraphMudBunRenderer.IsMeshLocked;
         private bool _isGenerationDisabled => !IsGenerationEnabled;
 
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly]
+        public bool IsGenerated { get; private set; } = false;
+
         private int _retryDepth = 0;
         
         [PropertyOrder(-1)]
@@ -112,7 +117,8 @@ namespace BML.Scripts.CaveV2
             }
             
             _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
-
+            IsGenerated = true;
+            
             OnAfterGenerate?.Invoke();
         }
 
@@ -146,6 +152,7 @@ namespace BML.Scripts.CaveV2
             
             _caveGraph = null;
             _minimumSpanningTreeGraphTEMP = null;
+            IsGenerated = false;
             
             _caveGraphMudBunRenderer.DestroyMudBun();
             _levelObjectSpawner.DestroyLevelObjects();
@@ -379,8 +386,9 @@ namespace BML.Scripts.CaveV2
 
         private void Start()
         {
-            if (_generateRandomOnStart)
+            if (_generateRandomOnStart && ApplicationUtils.IsPlaying_EditorSafe)
             {
+                if (_enableLogs) Debug.Log($"CaveGraph: Generate random on start");
                 _retryDepth = 0;
                 GenerateCaveGraph(true);
             }
@@ -389,21 +397,54 @@ namespace BML.Scripts.CaveV2
         private void OnEnable()
         {
             _caveGenParams.OnValidateEvent += OnValidate;
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged += PlayModeStateChanged;
+#endif
         }
         
         private void OnDisable()
         {
             _caveGenParams.OnValidateEvent -= OnValidate;
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged -= PlayModeStateChanged;
+#endif
         }
 
         private void OnValidate()
         {
-            if (_generateOnChange)
+            lock (_lockIsGenerateOnChangeEnabled)
             {
-                _retryDepth = 0;
-                GenerateCaveGraph(false);
+                if (_generateOnChange 
+                    && _isGenerateOnChangeEnabled 
+                    && !ApplicationUtils.IsPlaying_EditorSafe)
+                {
+                    if (_enableLogs) Debug.Log($"CaveGraph: Generate on change {_isGenerateOnChangeEnabled}");
+                    _retryDepth = 0;
+                    GenerateCaveGraph(false);
+                }   
             }
         }
+
+        [ShowInInspector] private bool _isGenerateOnChangeEnabled = false;
+        private object _lockIsGenerateOnChangeEnabled = new object();
+#if UNITY_EDITOR
+        private void PlayModeStateChanged(PlayModeStateChange stateChange)
+        {
+            lock (_lockIsGenerateOnChangeEnabled)
+            {
+                switch (stateChange)
+                {
+                    case PlayModeStateChange.EnteredEditMode:
+                        _isGenerateOnChangeEnabled = true;
+                        break;
+                    case PlayModeStateChange.EnteredPlayMode:
+                        _isGenerateOnChangeEnabled = false;
+                        break;
+                }
+                if (_enableLogs) Debug.Log($"CaveGraph: Play Mode State Changed: {this.name} {stateChange} {_isGenerateOnChangeEnabled}");
+            }
+        }
+#endif
 
         private void OnDrawGizmosSelected()
         {

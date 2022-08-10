@@ -44,8 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89c093964aae43a2bb30b403b66848dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _generateOnChange: 0
-  _maxGeneratesPerSecond: 5
+  _generateOnChange: 1
+  _maxGeneratesPerSecond: 4
+  _lockAfterGenerate: 1
+  _lockInEditMode: 0
+  _requireManualUnlock: 0
   _mudRenderer: {fileID: 5384662947967996456}
   _invertNormals: 1
   _instanceAsPrefabs: 1
@@ -63,7 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1406bb0b613343248bba1c664e68d2b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxVoxelsK: 256
+  MaxVoxelsK: 2025
   MaxChunks: 64
   ShowGpuMemoryUsage: 0
   AutoAdjustBudgetsToHighWaterMarks: 0
@@ -161,7 +164,7 @@ MonoBehaviour:
   MeshGenerationForceConvexCollider: 0
   MeshGenerationColliderSurfaceShift: 0
   MeshGenerationCreateRigidBody: 0
-  GenerateColliderMeshAssetByEditor: 1
+  GenerateColliderMeshAssetByEditor: 0
   GenerateColliderMeshAssetByEditorName: Mud Renderer Collider Mesh 4294934696
   MeshGenerationColliderVoxelDensity: 1
   MeshGenerationRenderableMeshMode: 2
@@ -169,7 +172,7 @@ MonoBehaviour:
   MeshGenerationGenerateTextureUV: 0
   MeshGenerationGenerateLightMapUV: 0
   MeshGenerationWeldVertices: 1
-  MeshGenerationLockOnStart: 1
+  MeshGenerationLockOnStart: 0
   GenerateMeshAssetByEditor: 0
   GenerateMeshAssetByEditorName: Mud Renderer Mesh 4294934696
   RecursiveLockMeshByEditor: 1
@@ -383,12 +386,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _generateOnChange: 1
+  _generateRandomOnStart: 1
   _retryOnFailure: 1
   _maxRetryDepth: 10
   _showTraversabilityCheck: 1
+  _enableLogs: 1
   _caveGenBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 5, y: 3, z: 5}
+    m_Extent: {x: 15, y: 10, z: 15}
   _overrideBounds: 0
   _seedDebugReference:
     UseConstant: 0

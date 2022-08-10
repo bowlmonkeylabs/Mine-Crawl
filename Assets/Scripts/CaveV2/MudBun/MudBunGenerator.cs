@@ -20,6 +20,8 @@ namespace BML.Scripts.CaveV2.MudBun
         private float _generateMinCooldownSeconds => 1f / (float) _maxGeneratesPerSecond;
 
         [SerializeField] private bool _lockAfterGenerate = false;
+        [SerializeField] private bool _lockInEditMode = true;
+        [SerializeField, PropertyTooltip("Use to prevent script from automatically unlocking the Mud Renderer.")] private bool _requireManualUnlock = false;
         
         [Required, SerializeField] private MudRenderer _mudRenderer;
 
@@ -30,6 +32,8 @@ namespace BML.Scripts.CaveV2.MudBun
 #else
         private bool _instanceAsPrefabs = false;
 #endif
+
+        [SerializeField] private bool _enableLogs = false;
 
         #endregion
 
@@ -61,24 +65,48 @@ namespace BML.Scripts.CaveV2.MudBun
         {
             _mudRenderer.OnAfterLockMesh += OnAfterLockMeshCallback;
             _mudRenderer.OnAfterAddCollider += OnAfterAddColliderCallback;
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged += PlayModeStateChanged;
+#endif
         }
 
         protected virtual void OnDisable()
         {
             _mudRenderer.OnAfterLockMesh -= OnAfterLockMeshCallback;
             _mudRenderer.OnAfterAddCollider -= OnAfterAddColliderCallback;
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged -= PlayModeStateChanged;
+#endif
         }
 
         protected virtual void OnValidate()
         {
-            TryGenerateWithCooldown();
+            TryGenerateWithCooldown_OnValidate();
         }
+        
+        private bool _isGenerateOnChangeEnabled = false;
+#if UNITY_EDITOR
+        private void PlayModeStateChanged(PlayModeStateChange stateChange)
+        {
+            switch (stateChange)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                    _isGenerateOnChangeEnabled = true;
+                    break;
+                case PlayModeStateChange.EnteredPlayMode:
+                    _isGenerateOnChangeEnabled = false;
+                    break;
+            }
+            if (_enableLogs) Debug.Log($"MudBun: Play Mode State Changed: {this.name} {stateChange} {_isGenerateOnChangeEnabled}");
+        }
+#endif
 
         #endregion
 
         #region MudBun
 
         public bool IsMeshLocked => _mudRenderer.MeshLocked;
+        private bool IsMudBunGenerationEnabled => !_requireManualUnlock || !_mudRenderer.MeshLocked; // Don't let the IDE fool you!; this is not referenced in C# code, but referenced by name in a string passed to Odin attributes.
 
         protected void OnAfterLockMeshCallback()
         {
@@ -169,55 +197,83 @@ namespace BML.Scripts.CaveV2.MudBun
 
         private float lastGenerateTime;
 
-        protected void TryGenerateWithCooldown()
+        protected virtual void TryGenerateWithCooldown()
         {
+            if (_enableLogs) Debug.Log($"MudBun: Try generate with cooldown");
             if (_generateOnChange && !_mudRenderer.MeshLocked)
             {
                 var elapsedTime = (Time.time - lastGenerateTime);
-                if (elapsedTime >= _generateMinCooldownSeconds)
+                if (elapsedTime >= _generateMinCooldownSeconds || ApplicationUtils.IsPlaying_EditorSafe)
                 {
+                    if (_enableLogs) Debug.Log($"MudBun: Generating");
                     lastGenerateTime = Time.time;
-                    this.GenerateMudBun();
+                    this.GenerateMudBunInternal();
                 }
                 else
                 {
+                    if (_enableLogs) Debug.Log($"MudBun: Destroying");
                     DestroyMudBun();
                 }
             }
         }
 
-        [Button, PropertyOrder(-1), DisableIf("$IsMeshLocked")]
-        public void GenerateMudBun()
+        protected void TryGenerateWithCooldown_OnValidate()
         {
-            if (_mudRenderer.MeshLocked) return;
+            if (ApplicationUtils.IsPlaying_EditorSafe || !_isGenerateOnChangeEnabled) return;
 
-            this.GenerateMudBun(_mudRenderer, _instanceAsPrefabs);
+            TryGenerateWithCooldown();
+        }
+
+        [Button("Generate Mud Bun"), PropertyOrder(-1), EnableIf("IsMudBunGenerationEnabled")]
+        public void GenerateMudBunInternal()
+        {
+            if (_enableLogs) Debug.Log($"MudBun: Generate MudBun");
+            if (_mudRenderer.MeshLocked)
+            {
+                if (_requireManualUnlock) return;
+                
+                this.UnlockMesh();
+            }
+            
+            this.GenerateMudBunInternal(_mudRenderer, _instanceAsPrefabs);
 
             if (_lockAfterGenerate)
             {
-                this.LockMesh();
+                if (_lockInEditMode
+                    || ApplicationUtils.IsPlaying_EditorSafe)
+                {
+                    if (_enableLogs) Debug.Log($"MudBun: Lock after generate");
+                    this.LockMesh();
+                }
             }
             
             OnAfterGenerate?.Invoke();
         }
 
-        protected virtual void GenerateMudBun(
+        protected virtual void GenerateMudBunInternal(
             MudRenderer mudRenderer,
             bool instanceAsPrefabs
         )
         {
-            MudBunGenerator.DestroyMudBun(mudRenderer);
+            this.DestroyMudBun(mudRenderer);
         }
-
-        [Button, PropertyOrder(-1), DisableIf("$IsMeshLocked")]
+        
+        [Button, PropertyOrder(-1), EnableIf("IsMudBunGenerationEnabled")]
         public void DestroyMudBun()
         {
             DestroyMudBun(_mudRenderer);
         }
 
-        private static void DestroyMudBun(MudRenderer mudRenderer)
+        private void DestroyMudBun(MudRenderer mudRenderer)
         {
-            if (mudRenderer.MeshLocked) return;
+            if (_enableLogs) Debug.Log($"MudBun: Destroy MudBun");
+            if (mudRenderer.MeshLocked)
+            {
+                if (_requireManualUnlock) return;
+                
+                if (_enableLogs) Debug.Log($"MudBun: Unlock mesh");
+                this.UnlockMesh();
+            }
 
             // mudRenderer.DestroyAllBrushesImmediate();
             var allBrushes = mudRenderer.Brushes.ToList();
@@ -231,17 +287,24 @@ namespace BML.Scripts.CaveV2.MudBun
             }
         }
 
-        [Button]
+        [Button, PropertyOrder(-1), DisableIf("$IsMeshLocked")]
         public void LockMesh()
         {
             DoLockMesh(this.transform, _mudRenderer.RecursiveLockMeshByEditor);
+        }
+
+        [Button, PropertyOrder(-1), EnableIf("$IsMeshLocked")]
+        public void UnlockMesh()
+        {
+            if (_enableLogs) Debug.Log($"MudBun: Unlock mesh");
+            _mudRenderer.UnlockMesh();
         }
         
         protected void DoLockMesh(Transform t, bool recursive, int depth = 0)
         {
             if (t == null)
                 return;
-
+            
             _mudRenderer.MeshGenerationLockOnStartByEditor = true;
 
             if (recursive)
@@ -290,6 +353,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 if (colliderMesh != null
                     && generateColliderMeshAsset)
                 {
+#if UNITY_EDITOR
                     renderer.ValidateAssetNames();
 
                     string rootFolder = "Assets";
@@ -305,12 +369,15 @@ namespace BML.Scripts.CaveV2.MudBun
                     AssetDatabase.Refresh();
 
                     Debug.Log($"MudBun: Saved collider mesh asset - \"{folderPath}/{assetName}.mesh\"");
+#else
+                    Debug.Warning("Unable to generate collider asset in build! Requires access to the UnityEditor.AssetDatabase namespace.");
+#endif
                 }
             }
             
-#if UNITY_EDITOR
             if (generateMeshAsset)
             {
+#if UNITY_EDITOR
                 renderer.ValidateAssetNames();
 
                 string rootFolder = "Assets";
@@ -367,13 +434,10 @@ namespace BML.Scripts.CaveV2.MudBun
                     else if (skinnedMeshRenderer != null)
                         skinnedMeshRenderer.sharedMaterial = mat;
                 }
-            }
 #else
-            if (generateMeshAsset)
-            {
-                Debug.Log("Unable to generate mesh asset in build! Requires access to the UnityEditor.AssetDatabase namespace.");
-            }
+                Debug.Warning("Unable to generate mesh asset in build! Requires access to the UnityEditor.AssetDatabase namespace.");
 #endif
+            }
 
             if (depth == 0
                 && createNewObject)

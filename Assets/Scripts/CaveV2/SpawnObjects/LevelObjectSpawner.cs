@@ -71,7 +71,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private float lastGenerateTime;
         private void TrySpawnLevelObjectsWithCooldown()
         {
-            if (_generateOnChange && _caveGenerator.IsGenerationEnabled)
+            if (_generateOnChange && _caveGenerator.IsGenerationEnabled && !Application.isPlaying)
             {
                 var elapsedTime = (Time.time - lastGenerateTime);
                 if (elapsedTime >= _generateMinCooldownSeconds)
@@ -91,7 +91,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [Button, PropertyOrder(-1), EnableIf("$_isGenerationEnabled")]
         public void SpawnLevelObjects()
         {
-            if (!_caveGenerator.IsGenerationEnabled) return;
+            // if (!_caveGenerator.IsGenerationEnabled) return;
+            if (_caveGenerator.EnableLogs) Debug.Log($"Level Object Spawner: Generate");
             
             Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
             
@@ -107,7 +108,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         public void DestroyLevelObjects()
         {
             if (!_caveGenerator.IsGenerationEnabled) return;
-            
+            if (_caveGenerator.EnableLogs) Debug.Log($"Level Object Spawner: Destroy");
+
             var children = Enumerable.Range(0, this.transform.childCount)
                 .Select(i => this.transform.GetChild(i).gameObject)
                 .ToList();
@@ -181,8 +183,6 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 }
             }
         }
-        
-        
         
         #endregion
 
