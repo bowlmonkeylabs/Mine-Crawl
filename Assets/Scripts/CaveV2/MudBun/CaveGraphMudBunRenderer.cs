@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2.MudBun
 {
@@ -17,7 +18,7 @@ namespace BML.Scripts.CaveV2.MudBun
 
         [Required, SerializeField]
         private CaveGenComponentV2 _caveGenerator;
-        private CaveGraphV2 _caveGraph => _caveGenerator.CaveGraph; 
+        private CaveGraphV2 _caveGraph => _caveGenerator.CaveGraph;
         
         [Required, InlineEditor, SerializeField]
         private CaveGraphMudBunRendererParameters _caveGraphRenderParams;
@@ -30,25 +31,36 @@ namespace BML.Scripts.CaveV2.MudBun
         {
             base.OnEnable();
             _caveGenerator.OnAfterGenerate += TryGenerateWithCooldown;
-            _caveGraphRenderParams.OnValidateEvent += TryGenerateWithCooldown;
+            _caveGraphRenderParams.OnValidateEvent += TryGenerateWithCooldown_OnValidate;
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
             _caveGenerator.OnAfterGenerate -= TryGenerateWithCooldown;
-            _caveGraphRenderParams.OnValidateEvent -= TryGenerateWithCooldown;
+            _caveGraphRenderParams.OnValidateEvent -= TryGenerateWithCooldown_OnValidate;
         }
 
         #endregion
 
         #region MudBun
 
-        protected override void GenerateMudBun(
+        private const int STEP_ID = 2;
+
+        protected override void GenerateMudBunInternal(
             MudRenderer mudRenderer,
             bool instanceAsPrefabs
-        ) {
-            base.GenerateMudBun(mudRenderer, instanceAsPrefabs);
+        )
+        {
+            int totalBrushCount = _caveGraph.VertexCount + _caveGraph.EdgeCount; 
+            if (totalBrushCount > 100)
+            {
+                throw new Exception($"MudBun will not be generated with such a large cave graph (Vertices:{_caveGraph.VertexCount}, Edge:{_caveGraph.EdgeCount})");
+            }
+            
+            base.GenerateMudBunInternal(mudRenderer, instanceAsPrefabs);
+            
+            Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
 
             var localOrigin = mudRenderer.transform.position;
 
@@ -107,6 +119,13 @@ namespace BML.Scripts.CaveV2.MudBun
                 newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 newGameObject.transform.localScale = localScale;
             }
+        }
+
+        protected override void TryGenerateWithCooldown()
+        {
+            if (!_caveGenerator.IsGenerated) return;
+            
+            base.TryGenerateWithCooldown();
         }
 
         #endregion

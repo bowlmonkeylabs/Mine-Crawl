@@ -11,6 +11,8 @@ namespace BML.Scripts.CaveV2.CaveGraph
     {
         public CaveNodeData StartNode { get; set; }
         public CaveNodeData EndNode { get; set; }
+        
+        public List<CaveNodeConnectionData> MainPath { get; set; }
 
         public CaveGraphV2() : base(true)
         {
@@ -36,6 +38,9 @@ namespace BML.Scripts.CaveV2.CaveGraph
             var vertices = (excludeVertices != null)
                 ? Vertices.Except(excludeVertices).ToList()
                 : Vertices.ToList();
+
+            if (numVertices >= vertices.Count)
+                return vertices;
             
             List<CaveNodeData> randomVertices = new List<CaveNodeData>();
             for (int i = 0; i < numVertices; i++)
@@ -73,14 +78,14 @@ namespace BML.Scripts.CaveV2.CaveGraph
             return nearestVertex;
         }
         
-        public void DrawGizmos(Vector3 localOrigin)
+        public void DrawGizmos(Vector3 localOrigin, bool showMainPath, Color color)
         {
-            Gizmos.color = Color.white;
+            Gizmos.color = color;
             foreach (var caveNodeData in Vertices)
             {
                 var worldPosition = localOrigin + caveNodeData.LocalPosition;
                 var size = caveNodeData.Size;
-                Color gizmoColor = Color.white;
+                Color gizmoColor = color;
                 if (this.IsAdjacentEdgesEmpty(caveNodeData))
                 {
                     gizmoColor = Color.gray;
@@ -92,12 +97,23 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 Gizmos.DrawSphere(worldPosition, size);
             }
             
-            Gizmos.color = Color.white;
+            Gizmos.color = color;
             foreach (var caveNodeConnectionData in Edges)
             {
                 var sourceWorldPosition = localOrigin + caveNodeConnectionData.Source.LocalPosition;
                 var targetWorldPosition = localOrigin + caveNodeConnectionData.Target.LocalPosition;
                 Gizmos.DrawLine(sourceWorldPosition, targetWorldPosition);
+            }
+            
+            if (showMainPath && MainPath != null)
+            {
+                Gizmos.color = Color.green;
+                foreach (var caveNodeConnectionData in MainPath)
+                {
+                    var sourceWorldPosition = localOrigin + caveNodeConnectionData.Source.LocalPosition;
+                    var targetWorldPosition = localOrigin + caveNodeConnectionData.Target.LocalPosition;
+                    Gizmos.DrawLine(sourceWorldPosition, targetWorldPosition);
+                }
             }
         }
     }

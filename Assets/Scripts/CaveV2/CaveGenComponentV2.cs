@@ -9,8 +9,10 @@ using BML.Scripts.CaveV2.Util;
 using BML.Scripts.CaveV2.Clayxel;
 using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Utils;
+using GK;
 using QuikGraph.Algorithms;
 using Sirenix.OdinInspector;
+using Unity.Collections;
 using UnityEditor;
 using Random = UnityEngine.Random;
 
@@ -24,6 +26,16 @@ namespace BML.Scripts.CaveV2
 
         [SerializeField] private bool _generateOnChange;
         
+        [SerializeField] private bool _generateRandomOnStart;
+
+        [SerializeField] private bool _retryOnFailure = true;
+        [SerializeField] private int _maxRetryDepth = 3;
+
+        [SerializeField] private bool _showTraversabilityCheck = false;
+        
+        [SerializeField] private bool _enableLogs = false;
+        [HideInInspector] public bool EnableLogs => _enableLogs;
+        
         [SerializeField, DisableIf("$_notOverrideBounds")] private Bounds _caveGenBounds = new Bounds(Vector3.zero, new Vector3(10,6,10));
         [SerializeField] private bool _overrideBounds = false;
         private bool _notOverrideBounds => !_overrideBounds;
@@ -33,6 +45,8 @@ namespace BML.Scripts.CaveV2
         
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGenParameters _caveGenParams;
+
+        public CaveGenParameters CaveGenParams => _caveGenParams;
         
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGraphClayxelRenderer _caveGraphClayxelRenderer;
@@ -67,34 +81,84 @@ namespace BML.Scripts.CaveV2
         public CaveGraphV2 CaveGraph => _caveGraph;
         [HideInInspector, SerializeField] private CaveGraphV2 _caveGraph;
 
+        [ShowInInspector]
+        [InfoBox("Generation is disabled while MudBun mesh is locked.", InfoMessageType.Error, "_isGenerationDisabled")]
+        public bool IsGenerationEnabled => !_caveGraphMudBunRenderer.IsMeshLocked;
+        private bool _isGenerationDisabled => !IsGenerationEnabled;
+
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly]
+        public bool IsGenerated { get; private set; } = false;
+
+        private int _retryDepth = 0;
+        
         [PropertyOrder(-1)]
-        [Button, LabelText("Generate Cave Graph")]
+        [Button, LabelText("Generate Cave Graph"), EnableIf("$IsGenerationEnabled")]
         private void GenerateCaveGraphButton()
         {
+            _retryDepth = 0;
             GenerateCaveGraph();
         }
         
         private void GenerateCaveGraph(bool useRandomSeed = true)
         {
+            if (!IsGenerationEnabled)
+                return;
+            
             DestroyCaveGraph();
 
             if (useRandomSeed)
             {
                 _caveGenParams.UpdateRandomSeed();
             }
+
+            if (_enableLogs)
+            {
+                Debug.Log($"Generating level ({_caveGenParams.Seed})");
+            }
+            
             _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
+            IsGenerated = true;
             
             OnAfterGenerate?.Invoke();
         }
 
-        [PropertyOrder(-1)]
-        [Button]
-        private void DestroyCaveGraph()
+        private CaveGraphV2 RetryGenerateCaveGraph(bool checkRetryDepth = true)
         {
-            _caveGraph = null;
+            if (checkRetryDepth) {
+                _retryDepth++;
+                if (_retryDepth >= _maxRetryDepth)
+                {
+                    throw new Exception($"Exceeded cave generation max retries ({_maxRetryDepth})");
+                }
+            }
+            
+            if (_caveGenParams.LockSeed || !_retryOnFailure)
+            {
+                throw new Exception("Cave generation failed; level is not traversable. To automatically resolve, ensure 'Retry on failure' is checked and 'Lock seed' is unchecked.");
+            }
+            else
+            {
+                _caveGenParams.UpdateRandomSeed(false);
+                return GenerateCaveGraph(_caveGenParams, CaveGenBounds);
+            }
         }
 
-        private static CaveGraphV2 GenerateCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)
+        [PropertyOrder(-1)]
+        [Button, EnableIf("$IsGenerationEnabled")]
+        private void DestroyCaveGraph()
+        {
+            if (!IsGenerationEnabled) 
+                return;
+            
+            _caveGraph = null;
+            _minimumSpanningTreeGraphTEMP = null;
+            IsGenerated = false;
+            
+            _caveGraphMudBunRenderer.DestroyMudBun();
+            _levelObjectSpawner.DestroyLevelObjects();
+        }
+
+        private CaveGraphV2 GenerateCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)
         {
             Random.InitState(caveGenParams.Seed);
             
@@ -165,6 +229,7 @@ namespace BML.Scripts.CaveV2
                 caveGraph.AddEdge(edge);
             }
 
+            // Remove direct connection between start and end
             caveGraph.TryGetEdge(startNode, endNode, out var startEndEdge);
             if (startEndEdge != null)
             {
@@ -184,11 +249,97 @@ namespace BML.Scripts.CaveV2
             {
                 var shortestPathFromStartFunc = caveGraph.ShortestPathsDijkstra(edge => edge.Length, startNode);
                 shortestPathFromStartFunc(endNode, out var shortestPathFromStartToEnd);
-                shortestPathFromStartToEnd = shortestPathFromStartToEnd?.ToList();
-                if (shortestPathFromStartToEnd != null)
+                var shortestPathFromStartToEndList = shortestPathFromStartToEnd?.ToList();
+                
+                if (shortestPathFromStartToEndList != null)
                 {
-                    caveGraph.RemoveEdgeIf(edge => !shortestPathFromStartToEnd.Contains(edge));
+                    var keepEdges = shortestPathFromStartToEndList;
+                    
+                    // Offshoots from main path
+                    if (caveGenParams.UseOffshootsFromMainPath)
+                    {
+                        for (int n = 0; n < caveGenParams.NumOffshoots; n++)
+                        {
+                            int randomOffshootPathIndex = Random.Range(1, shortestPathFromStartToEndList.Count - 1);
+                            CaveNodeData offshootStart = shortestPathFromStartToEndList[randomOffshootPathIndex].Source;
+
+                            for (int i = 0; i < caveGenParams.OffshootLength; i++)
+                            {
+                                var adjacentEdges = caveGraph.AdjacentEdges(offshootStart)
+                                    .Where(edge =>
+                                    {
+                                        var edgeAreadyUsed = keepEdges.Contains(edge);
+
+                                        CaveNodeData otherVertex;
+                                        if (offshootStart == edge.Source) otherVertex = edge.Target;
+                                        otherVertex = edge.Source;
+                                        var vertexAlreadyUsed = keepEdges.Any(e =>
+                                            e.Source == otherVertex || e.Target == otherVertex);
+                                        return !edgeAreadyUsed && !vertexAlreadyUsed;
+                                    })
+                                    .ToList();
+                                if (!adjacentEdges.Any())
+                                    break;
+                            
+                                int randomEdgeIndex = Random.Range(0, adjacentEdges.Count);
+                                var randomEdge = adjacentEdges[randomEdgeIndex];
+                                keepEdges.Add(randomEdge);
+
+                                if (offshootStart == randomEdge.Source) offshootStart = randomEdge.Target;
+                                else if (offshootStart == randomEdge.Target) offshootStart = randomEdge.Source;
+                                else break;
+                            }
+                        }
+                    }
+                    
+                    // Remove all edges except what we want to keep
+                    caveGraph.RemoveEdgeIf(edge => !keepEdges.Contains(edge));
                 }
+            }
+            
+            // Minimum spanning tree
+            if (caveGenParams.MinimumSpanningTree)
+            {
+                var pointsOfInterest = caveGraph.GetRandomVertices(caveGenParams.MinimumSpanningNodes, false);
+                var minimumGraph = new CaveGraphV2();
+                minimumGraph.AddVertex(caveGraph.StartNode);
+                minimumGraph.AddVertex(caveGraph.EndNode);
+                minimumGraph.AddVertexRange(pointsOfInterest);
+                var test = new DelaunayCalculator();
+                var delaunayPoints = minimumGraph.Vertices.Select(v => v.LocalPosition.xz()).ToList();
+                var triangulation = test.CalculateTriangulation(delaunayPoints);
+                var triangulationCaveNodes = triangulation.Vertices
+                    .Select(v2 =>
+                        minimumGraph.Vertices.FirstOrDefault(caveNode =>
+                            Mathf.Approximately(caveNode.LocalPosition.x, v2.x)
+                            && Mathf.Approximately(caveNode.LocalPosition.z, v2.y)))
+                    .ToList();
+                var edges = new List<CaveNodeConnectionData>();
+                for (int i = 0; i < triangulation.Triangles.Count; i += 3)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        var sourceIndex = triangulation.Triangles[i+j];
+                        var targetIndex = triangulation.Triangles[i+((j+1)%3)];
+                        var sourceNode = triangulationCaveNodes[sourceIndex];
+                        var targetNode = triangulationCaveNodes[targetIndex];
+                        if (sourceNode == null || targetNode == null)
+                        {
+                            continue;
+                        }
+
+                        var edgeRadius = Math.Max(sourceNode.Size, targetNode.Size);
+                        var edge = new CaveNodeConnectionData(sourceNode, targetNode, edgeRadius);
+                        edges.Add(edge);
+                    }
+                }
+                minimumGraph.AddEdgeRange(edges);
+                var minimumSpanningTree = 
+                    minimumGraph.MinimumSpanningTreeKruskal(
+                        edge => edge.Length).ToList();
+                minimumGraph.RemoveEdgeIf(edge => !minimumSpanningTree.Contains(edge));
+                _minimumSpanningTreeGraphTEMP = minimumGraph;
+                // TODO
             }
             
             // Remove orphaned nodes
@@ -202,32 +353,91 @@ namespace BML.Scripts.CaveV2
             }
 
             // Check traversability
-            // TODO
+            {
+                var shortestPathFromStartFunc = caveGraph.ShortestPathsDijkstra(edge => edge.Length, startNode);
+                shortestPathFromStartFunc(endNode, out var shortestPathFromStartToEnd);
+                caveGraph.MainPath = shortestPathFromStartToEnd?.ToList();
+                if (shortestPathFromStartToEnd == null)
+                {
+                    // Not traversable
+                    if (_showTraversabilityCheck)
+                    {
+                        Debug.LogWarning($"Seed {caveGenParams.Seed} failed traversability check, retrying cave generation.");
+                    }
+                    
+                    _retryDepth++;
+                    if (_retryDepth >= _maxRetryDepth)
+                    {
+                        Debug.LogError($"Exceeded cave generation max retries ({_maxRetryDepth})");
+                        return caveGraph;
+                    }
+                    return RetryGenerateCaveGraph(false);
+                }
+            }
             
             return caveGraph;
         }
+
+        private CaveGraphV2 _minimumSpanningTreeGraphTEMP;
         
         #endregion
 
         #region Unity lifecycle
 
+        private void Start()
+        {
+            if (_generateRandomOnStart && ApplicationUtils.IsPlaying_EditorSafe)
+            {
+                if (_enableLogs) Debug.Log($"CaveGraph: Generate random on start");
+                _retryDepth = 0;
+                GenerateCaveGraph(true);
+            }
+        }
+
         private void OnEnable()
         {
             _caveGenParams.OnValidateEvent += OnValidate;
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged += PlayModeStateChanged;
+#endif
         }
         
         private void OnDisable()
         {
             _caveGenParams.OnValidateEvent -= OnValidate;
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged -= PlayModeStateChanged;
+#endif
         }
 
         private void OnValidate()
         {
-            if (_generateOnChange)
+            if (_generateOnChange 
+                && _isGenerateOnChangeEnabled 
+                && !ApplicationUtils.IsPlaying_EditorSafe)
             {
+                if (_enableLogs) Debug.Log($"CaveGraph: Generate on change {_isGenerateOnChangeEnabled}");
+                _retryDepth = 0;
                 GenerateCaveGraph(false);
-            }
+            } 
         }
+
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] private bool _isGenerateOnChangeEnabled = false;
+#if UNITY_EDITOR
+        private void PlayModeStateChanged(PlayModeStateChange stateChange)
+        {
+            switch (stateChange)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                    _isGenerateOnChangeEnabled = true;
+                    break;
+                case PlayModeStateChange.EnteredPlayMode:
+                    _isGenerateOnChangeEnabled = false;
+                    break;
+            }
+            if (_enableLogs) Debug.Log($"CaveGraph: Play Mode State Changed: {this.name} {stateChange} {_isGenerateOnChangeEnabled}");
+        }
+#endif
 
         private void OnDrawGizmosSelected()
         {
@@ -242,7 +452,14 @@ namespace BML.Scripts.CaveV2
             // Draw cave graph
             if (_caveGraph != null)
             {
-                _caveGraph.DrawGizmos(LocalOrigin);
+                _caveGraph.DrawGizmos(LocalOrigin, _showTraversabilityCheck, Color.white);
+            }
+            if (_caveGenParams.MinimumSpanningTree && _minimumSpanningTreeGraphTEMP != null)
+            {
+                _minimumSpanningTreeGraphTEMP.DrawGizmos(
+                    LocalOrigin + Vector3.up * _caveGenParams.PoissonBounds.size.y, 
+                    _showTraversabilityCheck,
+                    Color.yellow);
             }
             
             #if UNITY_EDITOR

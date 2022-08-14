@@ -17,7 +17,6 @@ namespace BML.Scripts.CaveV2
             get => _seed;
             set
             {
-                LogSeedHist();
                 _seed = value;
             }
         }
@@ -58,7 +57,7 @@ namespace BML.Scripts.CaveV2
         [LabelText("Sample Radius")]
         [Range(2f, 50f)]
         public float PoissonSampleRadius = 1f;
-        
+
         [TitleGroup("Poisson")]
         [LabelText("Bounds")]
         public Bounds PoissonBounds = new Bounds(Vector3.zero, Vector3.one * 5);
@@ -92,6 +91,21 @@ namespace BML.Scripts.CaveV2
         public bool OnlyShortestPathBetweenStartAndEnd = true;
         
         [TitleGroup("Graph processing")]
+        public bool UseOffshootsFromMainPath = true;
+        
+        [TitleGroup("Graph processing")]
+        public int NumOffshoots = 2;
+        
+        [TitleGroup("Graph processing")]
+        public int OffshootLength = 3;
+        
+        [TitleGroup("Graph processing")]
+        public bool MinimumSpanningTree = true;
+        
+        [TitleGroup("Graph processing")]
+        public int MinimumSpanningNodes = 3;
+        
+        [TitleGroup("Graph processing")]
         public bool RemoveOrphanNodes = true;
         
         [TitleGroup("Mesh generation")]
@@ -123,10 +137,12 @@ namespace BML.Scripts.CaveV2
 
         #region Utils
 
-        public void UpdateRandomSeed()
+        public void UpdateRandomSeed(bool logSeedHist = true)
         {
             if (LockSeed) return;
-
+            
+            if (logSeedHist) LogSeedHist();
+            
             Seed = Random.Range(Int32.MinValue, Int32.MaxValue);
         }
 

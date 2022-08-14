@@ -58,6 +58,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         
         #region Generate level objects
         
+        private bool _isGenerationEnabled => _caveGenerator.IsGenerationEnabled;
+        
         private void TrySpawnLevelObjects()
         {
             if (_generateOnLockMudBunMesh)
@@ -69,7 +71,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private float lastGenerateTime;
         private void TrySpawnLevelObjectsWithCooldown()
         {
-            if (_generateOnChange)
+            if (_generateOnChange && _caveGenerator.IsGenerationEnabled && !Application.isPlaying)
             {
                 var elapsedTime = (Time.time - lastGenerateTime);
                 if (elapsedTime >= _generateMinCooldownSeconds)
@@ -77,12 +79,23 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     lastGenerateTime = Time.time;
                     this.SpawnLevelObjects();
                 }
+                else
+                {
+                    DestroyLevelObjects();
+                }
             }
         }
+        
+        private const int STEP_ID = 2;
 
-        [Button, PropertyOrder(-1)]
+        [Button, PropertyOrder(-1), EnableIf("$_isGenerationEnabled")]
         public void SpawnLevelObjects()
         {
+            // if (!_caveGenerator.IsGenerationEnabled) return;
+            if (_caveGenerator.EnableLogs) Debug.Log($"Level Object Spawner: Generate");
+            
+            Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
+            
             DestroyLevelObjects();
 
             SpawnPlayer(_caveGenerator, this.transform, _player);
@@ -91,9 +104,12 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             _onAfterGenerateEvent.Raise();
         }
 
-        [Button, PropertyOrder(-1)]
+        [Button, PropertyOrder(-1), EnableIf("$_isGenerationEnabled")]
         public void DestroyLevelObjects()
         {
+            if (!_caveGenerator.IsGenerationEnabled) return;
+            if (_caveGenerator.EnableLogs) Debug.Log($"Level Object Spawner: Destroy");
+
             var children = Enumerable.Range(0, this.transform.childCount)
                 .Select(i => this.transform.GetChild(i).gameObject)
                 .ToList();
@@ -167,8 +183,6 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 }
             }
         }
-        
-        
         
         #endregion
 
