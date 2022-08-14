@@ -412,37 +412,30 @@ namespace BML.Scripts.CaveV2
 
         private void OnValidate()
         {
-            lock (_lockIsGenerateOnChangeEnabled)
+            if (_generateOnChange 
+                && _isGenerateOnChangeEnabled 
+                && !ApplicationUtils.IsPlaying_EditorSafe)
             {
-                if (_generateOnChange 
-                    && _isGenerateOnChangeEnabled 
-                    && !ApplicationUtils.IsPlaying_EditorSafe)
-                {
-                    if (_enableLogs) Debug.Log($"CaveGraph: Generate on change {_isGenerateOnChangeEnabled}");
-                    _retryDepth = 0;
-                    GenerateCaveGraph(false);
-                }   
-            }
+                if (_enableLogs) Debug.Log($"CaveGraph: Generate on change {_isGenerateOnChangeEnabled}");
+                _retryDepth = 0;
+                GenerateCaveGraph(false);
+            } 
         }
 
-        [ShowInInspector] private bool _isGenerateOnChangeEnabled = false;
-        private object _lockIsGenerateOnChangeEnabled = new object();
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] private bool _isGenerateOnChangeEnabled = false;
 #if UNITY_EDITOR
         private void PlayModeStateChanged(PlayModeStateChange stateChange)
         {
-            lock (_lockIsGenerateOnChangeEnabled)
+            switch (stateChange)
             {
-                switch (stateChange)
-                {
-                    case PlayModeStateChange.EnteredEditMode:
-                        _isGenerateOnChangeEnabled = true;
-                        break;
-                    case PlayModeStateChange.EnteredPlayMode:
-                        _isGenerateOnChangeEnabled = false;
-                        break;
-                }
-                if (_enableLogs) Debug.Log($"CaveGraph: Play Mode State Changed: {this.name} {stateChange} {_isGenerateOnChangeEnabled}");
+                case PlayModeStateChange.EnteredEditMode:
+                    _isGenerateOnChangeEnabled = true;
+                    break;
+                case PlayModeStateChange.EnteredPlayMode:
+                    _isGenerateOnChangeEnabled = false;
+                    break;
             }
+            if (_enableLogs) Debug.Log($"CaveGraph: Play Mode State Changed: {this.name} {stateChange} {_isGenerateOnChangeEnabled}");
         }
 #endif
 
