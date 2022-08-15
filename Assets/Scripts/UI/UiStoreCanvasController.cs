@@ -14,6 +14,7 @@ namespace BML.Scripts.UI
         [SerializeField] private GameObject _storeUiButtonPrefab;
         [SerializeField] private GameObject _storeResumeButtonPrefab;
         [SerializeField] private Transform _listContainerStoreButtons;
+        [SerializeField] private UiMenuPageController _storeUiMenuPageController;
         [SerializeField] private StoreInventory _storeInventory;
 
         private List<Button> buttonList = new List<Button>();
@@ -46,6 +47,7 @@ namespace BML.Scripts.UI
             var newResumeButton  = GameObjectUtils.SafeInstantiate(true, _storeResumeButtonPrefab, _listContainerStoreButtons);
             var buttonResume = newResumeButton.GetComponent<Button>();
             buttonList.Add(buttonResume);
+            buttonResume.onClick.AddListener(_storeUiMenuPageController.ClosePage);
             SetNavigationOrder();
         }
 
