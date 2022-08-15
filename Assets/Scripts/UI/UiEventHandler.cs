@@ -32,6 +32,7 @@ namespace BML.Scripts.UI
         [FoldoutGroup("$onCancelGroupTitle"), HideLabel]
         [SerializeField] private UnityEvent _onCancel;
         private ICancelHandler cancelHandler;
+        public void OnCancelAddListener(UnityAction action) => _onCancel.AddListener(action);
         
         private string onPointerEnterGroupTitle => GetGroupHeaderString("On Pointer Enter", _propagatePointerEnter, _onPointerEnter);
         [FoldoutGroup("$onPointerEnterGroupTitle", expanded: false), LabelText("Propagate Handler")]

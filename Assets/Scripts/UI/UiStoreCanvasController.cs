@@ -48,6 +48,7 @@ namespace BML.Scripts.UI
             var buttonResume = newResumeButton.GetComponent<Button>();
             buttonList.Add(buttonResume);
             buttonResume.onClick.AddListener(_storeUiMenuPageController.ClosePage);
+            buttonResume.GetComponent<UiEventHandler>().OnCancelAddListener(_storeUiMenuPageController.ClosePage);
             SetNavigationOrder();
         }
 
