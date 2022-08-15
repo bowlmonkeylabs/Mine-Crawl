@@ -122,20 +122,19 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private static void SpawnObjectsAtTags(LevelObjectSpawnerParameters levelObjectSpawnerParameters, Transform parent)
         {
-            Dictionary<String, List<GameObject>> availableSpawnPoints = new Dictionary<string, List<GameObject>>();
+            Dictionary<String, List<GameObject>> occupiedSpawnPoints = new Dictionary<string, List<GameObject>>();
             foreach (var spawnAtTagParameters in levelObjectSpawnerParameters.SpawnAtTags)
             {
-                Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
+                //Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
 
                 var tagged = GameObject.FindGameObjectsWithTag(spawnAtTagParameters.Tag).ToList();
-                if (!availableSpawnPoints.ContainsKey(spawnAtTagParameters.Tag))
-                    availableSpawnPoints.Add(spawnAtTagParameters.Tag, tagged);
+                if (occupiedSpawnPoints.ContainsKey(spawnAtTagParameters.Tag))
+                    tagged = tagged.Except(occupiedSpawnPoints[spawnAtTagParameters.Tag]).ToList();
 
-                List<GameObject> remainingSpawnPoints = new List<GameObject>();
-                remainingSpawnPoints.AddRange(availableSpawnPoints[spawnAtTagParameters.Tag]);
-                Debug.Log($"Remaining Spawn Points Before: {remainingSpawnPoints.Count}");
+                List<GameObject> pointsToRemove = new List<GameObject>();
+                //Debug.Log($"Remaining Spawn Points Before: {tagged.Count}");
                 
-                foreach (var go in availableSpawnPoints[spawnAtTagParameters.Tag])
+                foreach (var go in tagged)
                 {
                     if (!go.SafeIsUnityNull())
                     {
@@ -150,8 +149,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
                             if (spawnAtTagParameters.ChooseWithoutReplacement)
                             {
-                                remainingSpawnPoints.Remove(go);
-                                // Debug.Log($"Removing point. Remaining: {remainingSpawnPoints.Count}");
+                                pointsToRemove.Add(go);
+                                //Debug.Log($"Removing point. Remove count: {pointsToRemove.Count}");
                             }
                                 
 
@@ -163,8 +162,18 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     }
                 }
 
-                availableSpawnPoints[spawnAtTagParameters.Tag] = remainingSpawnPoints;
-                Debug.Log($"Remaining Spawn Points After: {remainingSpawnPoints.Count}");
+                if (occupiedSpawnPoints.ContainsKey(spawnAtTagParameters.Tag))
+                {
+                    occupiedSpawnPoints[spawnAtTagParameters.Tag] = occupiedSpawnPoints[spawnAtTagParameters.Tag]
+                        .Union(pointsToRemove).ToList();
+                }
+                    
+                else
+                {
+                    occupiedSpawnPoints[spawnAtTagParameters.Tag] = pointsToRemove;
+                }
+                
+                //Debug.Log($"Remaining Spawn Points After: {tagged.Count - pointsToRemove.Count}");
 
             }
         }
