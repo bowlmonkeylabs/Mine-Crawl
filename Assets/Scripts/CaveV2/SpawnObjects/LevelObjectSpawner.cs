@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.CaveV2.MudBun;
@@ -121,12 +122,20 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private static void SpawnObjectsAtTags(LevelObjectSpawnerParameters levelObjectSpawnerParameters, Transform parent)
         {
+            Dictionary<String, List<GameObject>> availableSpawnPoints = new Dictionary<string, List<GameObject>>();
             foreach (var spawnAtTagParameters in levelObjectSpawnerParameters.SpawnAtTags)
             {
-                // Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
-                
+                Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
+
                 var tagged = GameObject.FindGameObjectsWithTag(spawnAtTagParameters.Tag).ToList();
-                foreach (var go in tagged)
+                if (!availableSpawnPoints.ContainsKey(spawnAtTagParameters.Tag))
+                    availableSpawnPoints.Add(spawnAtTagParameters.Tag, tagged);
+
+                List<GameObject> remainingSpawnPoints = new List<GameObject>();
+                remainingSpawnPoints.AddRange(availableSpawnPoints[spawnAtTagParameters.Tag]);
+                Debug.Log($"Remaining Spawn Points Before: {remainingSpawnPoints.Count}");
+                
+                foreach (var go in availableSpawnPoints[spawnAtTagParameters.Tag])
                 {
                     if (!go.SafeIsUnityNull())
                     {
@@ -139,6 +148,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                                 levelObjectSpawnerParameters.TerrainLayerMask,
                                 levelObjectSpawnerParameters.MaxRaycastLength);
 
+                            if (spawnAtTagParameters.ChooseWithoutReplacement)
+                            {
+                                remainingSpawnPoints.Remove(go);
+                                // Debug.Log($"Removing point. Remaining: {remainingSpawnPoints.Count}");
+                            }
+                                
+
                             if (spawnAtTagParameters.DeleteTagAfterSpawn)
                             {
                                 GameObject.DestroyImmediate(go, false);
@@ -146,7 +162,10 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                         }
                     }
                 }
-                
+
+                availableSpawnPoints[spawnAtTagParameters.Tag] = remainingSpawnPoints;
+                Debug.Log($"Remaining Spawn Points After: {remainingSpawnPoints.Count}");
+
             }
         }
 
