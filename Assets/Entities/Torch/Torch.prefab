@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5806157411169186486
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 153188153403816064}
+  - component: {fileID: 2430730895771532510}
+  m_Layer: 11
+  m_Name: StickyTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &153188153403816064
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5806157411169186486}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.6, z: 0.1}
+  m_Children: []
+  m_Father: {fileID: 8692043271137078941}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2430730895771532510
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5806157411169186486}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.16, z: 1}
+  m_Center: {x: 0, y: -0.42, z: 0}
 --- !u!1 &8692043269319617905
 GameObject:
   m_ObjectHideFlags: 0
@@ -64,8 +108,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CollisionLayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   OnCollisionEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollisionExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollisionStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  TriggerLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  OnTriggerEnterEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1549063831}
@@ -80,18 +136,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  OnCollisionExitEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCollisionStayEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  TriggerLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  OnTriggerEnterEvent:
-    m_PersistentCalls:
-      m_Calls: []
   OnTriggerExitEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -215,8 +259,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.19, z: 1}
-  m_Center: {x: 0, y: -0.4, z: 0}
+  m_Size: {x: 1, y: 0.99999994, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8692043269805377163
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,6 +382,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8692043269761479821}
+  - {fileID: 153188153403816064}
   m_Father: {fileID: 8692043269319617904}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
