@@ -1644,8 +1644,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8446087146172152300}
-  - component: {fileID: 8446087146172152302}
   - component: {fileID: 8446087146172152301}
+  - component: {fileID: 4545588379565990327}
   m_Layer: 0
   m_Name: DamageTrigger
   m_TagString: Untagged
@@ -1667,19 +1667,6 @@ Transform:
   m_Father: {fileID: 8446087147361510365}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &8446087146172152302
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8446087146172152291}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.75
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8446087146172152301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1697,6 +1684,20 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _time: 2
+--- !u!136 &4545588379565990327
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8446087146172152291}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.75
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!1 &8446087147361510364
 GameObject:
   m_ObjectHideFlags: 0
@@ -1933,10 +1934,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.25
-  m_Height: 1
+  m_Radius: 0.375
+  m_Height: 1.5
   m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!54 &5178630630282638017
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2051,13 +2052,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 0
   serializedVersion: 2
-  m_Height: 1
-  m_Radius: 0.27
+  m_Height: 1.5
+  m_Radius: 0.375
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!114 &952584137865864921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2208,8 +2209,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8998054361545590669}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0.75, z: 0}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_Children:
   - {fileID: 576293169589067403}
   - {fileID: 2167973335621195022}
