@@ -32,8 +32,9 @@ public class OreCritMarker : MonoBehaviour
 
         Vector3 newCritPoint = _oreCollider.bounds.center;
         newCritPoint += randomRotation * centerToHit;
+        newCritPoint = _oreCollider.ClosestPoint(newCritPoint);
         newCritPoint += centerToHit.normalized * _critMarkerSurfaceOffset;
-        _critMarker.transform.position = _oreCollider.ClosestPointOnBounds(newCritPoint);
+        _critMarker.transform.position = newCritPoint;
     }
     
     private void OnDrawGizmos()
