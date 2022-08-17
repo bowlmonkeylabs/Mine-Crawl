@@ -10,6 +10,7 @@ namespace BML.Scripts.Store
     public class StoreItem : ScriptableObject
     {
         public string _storeText;
+        public GameObject _uiReplacePrefab;
         public DynamicGameEvent _onPurchaseEvent;
         public IntReference _incrementOnPurchase;
         public IntReference _incrementAmount;

@@ -32,6 +32,10 @@ namespace BML.Scripts.Player
         [SerializeField] private float _torchThrowForce;
         [SerializeField] private Transform _torchInstanceContainer;
         [SerializeField] private IntReference _inventoryTorchCount;
+        
+        [TitleGroup("Health")]
+        [SerializeField] private IntReference _health;
+        [SerializeField] private IntReference _maxHealth;
 
         [TitleGroup("GodMode")]
         [SerializeField] private BoolVariable _isGodModeEnabled;
@@ -44,12 +48,14 @@ namespace BML.Scripts.Player
         private void OnEnable()
         {
             _isGodModeEnabled.Subscribe(SetGodMode);
+            _health.Subscribe(ClampHealth);
             SetGodMode();
         }
 
         private void OnDisable()
         {
             _isGodModeEnabled.Unsubscribe(SetGodMode);
+            _health.Unsubscribe(ClampHealth);
         }
 
         private void Update()
@@ -171,6 +177,12 @@ namespace BML.Scripts.Player
             {
                 _uiAimReticle.SetReticleHover(false);
             }
+        }
+
+        private void ClampHealth()
+        {
+            if (_health.Value > _maxHealth.Value)
+                _health.Value = _maxHealth.Value;
         }
 
     }

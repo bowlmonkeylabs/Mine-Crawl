@@ -31,7 +31,8 @@ namespace BML.Scripts.UI
             
             foreach (var storeItem in _storeInventory.StoreItems)
             {
-                var newStoreItem = GameObjectUtils.SafeInstantiate(true, _storeUiButtonPrefab, _listContainerStoreButtons);
+                var prefab = storeItem._uiReplacePrefab != null ? storeItem._uiReplacePrefab : _storeUiButtonPrefab;
+                var newStoreItem = GameObjectUtils.SafeInstantiate(true, prefab, _listContainerStoreButtons);
                 newStoreItem.name = $"Button_{storeItem._storeText}";
                 
                 var purchaseEvent = newStoreItem.GetComponent<StorePurchaseEvent>();
