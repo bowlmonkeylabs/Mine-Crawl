@@ -6836,6 +6836,7 @@ GameObject:
   - component: {fileID: 1159938472}
   - component: {fileID: 1159938473}
   - component: {fileID: 1159938474}
+  - component: {fileID: 1159938475}
   m_Layer: 0
   m_Name: Canvas_Debug
   m_TagString: Untagged
@@ -6898,6 +6899,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _onOpenDebugUi: {fileID: 11400000, guid: 55e7124127d2bf14cba3267c4a8e5ac8, type: 2}
   _debugUi: {fileID: 660778831}
+--- !u!114 &1159938475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159938471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d172456b27f879e409d095e8dae0eae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _text: {fileID: 1642506394}
+  _playerTransformSceneReference: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
+  _currentSpawnDelay: {fileID: 11400000, guid: 352b10b7d534eae4d821308690c1fbfb, type: 2}
+  _currentSpawnCap: {fileID: 11400000, guid: f57160f80ef0ba046ac7c6bf4b3f0228, type: 2}
+  _currentEnemyCount: {fileID: 11400000, guid: 6fdcc6ab717b88f4fa6f8ecf81b9db82, type: 2}
+  _seedDebugReference:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: '{I} '
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: c857b0d81cdcf3c46a02132ca1a0cfd4, type: 2}
+  _statPickaxeSwingSpeed: {fileID: 11400000, guid: 847d0bda117679d41a67eea023b02e24, type: 2}
 --- !u!1001 &1183680596
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9548,7 +9574,6 @@ GameObject:
   - component: {fileID: 1642506393}
   - component: {fileID: 1642506395}
   - component: {fileID: 1642506394}
-  - component: {fileID: 1642506396}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -9672,30 +9697,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1642506392}
   m_CullTransparentMesh: 1
---- !u!114 &1642506396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1642506392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d172456b27f879e409d095e8dae0eae5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _text: {fileID: 1642506394}
-  _playerTransformSceneReference: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
-  _currentSpawnDelay: {fileID: 11400000, guid: 352b10b7d534eae4d821308690c1fbfb, type: 2}
-  _currentSpawnCap: {fileID: 11400000, guid: f57160f80ef0ba046ac7c6bf4b3f0228, type: 2}
-  _currentEnemyCount: {fileID: 11400000, guid: 6fdcc6ab717b88f4fa6f8ecf81b9db82, type: 2}
-  _seedDebugReference:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: c857b0d81cdcf3c46a02132ca1a0cfd4, type: 2}
 --- !u!1 &1660055999
 GameObject:
   m_ObjectHideFlags: 0
@@ -12429,6 +12430,14 @@ PrefabInstance:
     - target: {fileID: 4720054890593790168, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265003986444444711, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.602103
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265003986444444711, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.79841846
       objectReference: {fileID: 0}
     - target: {fileID: 8722278798120057416, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
       propertyPath: m_RootOrder

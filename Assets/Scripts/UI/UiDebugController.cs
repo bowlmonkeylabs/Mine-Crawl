@@ -13,6 +13,7 @@ namespace BML.Scripts.UI
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
         [SerializeField] private IntReference _seedDebugReference;
+        [SerializeField] private EvaluateCurveVariable _statPickaxeSwingSpeed;
 
         private void Awake()
         {
@@ -29,7 +30,8 @@ namespace BML.Scripts.UI
 Enemy Spawn Params: Delay: {_currentSpawnDelay.Value.ToString("0.00")}
 Cap: {_currentSpawnCap.Value.ToString("0.00")}
 Count: {_currentEnemyCount.Value}
-Seed: {_seedDebugReference.Value}";
+Seed: {_seedDebugReference.Value}
+Pickaxe Swing Speed: {_statPickaxeSwingSpeed.Value}";
         }
 
         private string formatVector3(Vector3 vector3) {
