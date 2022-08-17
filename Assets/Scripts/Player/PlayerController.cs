@@ -33,6 +33,12 @@ namespace BML.Scripts.Player
         [SerializeField] private Transform _torchInstanceContainer;
         [SerializeField] private IntReference _inventoryTorchCount;
         
+        [TitleGroup("Bomb")]
+        [SerializeField] private GameObject _bombPrefab;
+        [SerializeField] private float _bombThrowForce;
+        [SerializeField] private Transform _bombInstanceContainer;
+        [SerializeField] private IntReference _inventoryBombCount;
+        
         [TitleGroup("Health")]
         [SerializeField] private IntReference _health;
         [SerializeField] private IntReference _maxHealth;
@@ -91,6 +97,14 @@ namespace BML.Scripts.Player
                 TryPlaceTorch();
             }
         }
+
+        private void OnThrowBomb(InputValue value)
+        {
+            if (value.isPressed)
+            {
+                TryThrowBomb();
+            }
+        }
         
         #endregion
 
@@ -142,6 +156,30 @@ namespace BML.Scripts.Player
             
             // Instantiate torch
             var newGameObject = GameObjectUtils.SafeInstantiate(true, _torchPrefab, _torchInstanceContainer);
+            newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
+            var newGameObjectRb = newGameObject.GetComponentInChildren<Rigidbody>();
+            newGameObjectRb.AddForce(throwForce, ForceMode.Impulse);
+        }
+        
+        #endregion
+        
+        #region Torch
+
+        private void TryThrowBomb()
+        {
+            // Check torch count
+            if (_inventoryBombCount.Value <= 0)
+            {
+                return;
+            }
+            _inventoryBombCount.Value -= 1;
+            
+            // Calculate throw
+            var throwDir = _mainCamera.forward;
+            var throwForce = throwDir * _bombThrowForce;
+            
+            // Instantiate torch
+            var newGameObject = GameObjectUtils.SafeInstantiate(true, _bombPrefab, _bombInstanceContainer);
             newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
             var newGameObjectRb = newGameObject.GetComponentInChildren<Rigidbody>();
             newGameObjectRb.AddForce(throwForce, ForceMode.Impulse);
