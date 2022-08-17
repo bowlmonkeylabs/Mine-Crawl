@@ -30,7 +30,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5384662949636187771}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5384662947967996457
 MonoBehaviour:
@@ -228,7 +228,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5384662949636187771}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5384662948231364059
 MonoBehaviour:
@@ -250,96 +250,6 @@ MonoBehaviour:
   _caveGenerator: {fileID: 5384662949636187768}
   _player: {fileID: 0}
   _levelObjectSpawnerParams: {fileID: 11400000, guid: e5ddf7d6a91ecf644b6fb463f2cc3e6a, type: 2}
---- !u!1 &5384662948330959079
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5384662948330959072}
-  - component: {fileID: 5384662948330959078}
-  - component: {fileID: 5384662948330959073}
-  m_Layer: 0
-  m_Name: Clayxel Renderer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &5384662948330959072
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5384662948330959079}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5384662949636187771}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5384662948330959078
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5384662948330959079}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6561e5cc02104273809d10a01f06c497, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _clayContainer: {fileID: 5384662948330959073}
-  _invertNormals: 1
-  _freezeToMesh: 1
-  _instanceAsPrefabs: 1
-  _retopo: 0
-  _generateCollisionMesh: 0
-  _caveGenerator: {fileID: 5384662949636187768}
-  _caveGraphRenderParams: {fileID: 11400000, guid: 4fc11ea1372a493499d6f8af93c5dc69, type: 2}
---- !u!114 &5384662948330959073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5384662948330959079}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf51d6fd97243134dbf9d48bd3107215, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  needsUpdate: 0
-  customMaterial: {fileID: 0}
-  clayxelDetail: 88
-  chunksX: 1
-  chunksY: 1
-  chunksZ: 1
-  material: {fileID: 0}
-  castShadows: 1
-  receiveShadows: 1
-  storeAssetPath: 
-  frozen: 0
-  clayObjectsOrderLocked: 1
-  autoBounds: 1
-  renderMode: 0
-  instanceOf: {fileID: 0}
-  interactive: 0
-  meshNormalSmooth: 180
-  meshInvertNormals: 1
-  isMeshNormalsInverted: 0
-  meshVoxelize: 0
-  microvoxelSplatsQuality: 1
-  microvoxelRayIterations: 1
-  autoBoundsLimit: 1
-  autoRigEnabled: 0
-  retopoMaxVerts: -1
-  retopoApplied: 0
 --- !u!1 &5384662949636187769
 GameObject:
   m_ObjectHideFlags: 0
@@ -368,7 +278,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5384662948330959072}
   - {fileID: 5384662947967996459}
   - {fileID: 5384662948231364058}
   m_Father: {fileID: 0}
@@ -404,6 +313,5 @@ MonoBehaviour:
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: c857b0d81cdcf3c46a02132ca1a0cfd4, type: 2}
   _caveGenParams: {fileID: 11400000, guid: 422f7183a1db541439442b7b906dee8c, type: 2}
-  _caveGraphClayxelRenderer: {fileID: 5384662948330959078}
   _caveGraphMudBunRenderer: {fileID: 5384662947967996457}
   _levelObjectSpawner: {fileID: 5384662948231364059}
