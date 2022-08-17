@@ -34,6 +34,12 @@ namespace BML.Scripts.UI
         [SerializeField] private UnityEvent _onClose;
         [SerializeField] private Button.ButtonClickedEvent _onClickBackdrop;
 
+        public Selectable DefaultSelected
+        {
+            get => _defaultSelected;
+            set => _defaultSelected = value;
+        }
+
         public void LogMessage(string message)
         {
             Debug.Log(message);

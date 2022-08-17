@@ -48,8 +48,11 @@ namespace BML.Scripts.UI
             var newResumeButton  = GameObjectUtils.SafeInstantiate(true, _storeResumeButtonPrefab, _listContainerStoreButtons);
             var buttonResume = newResumeButton.GetComponent<Button>();
             buttonList.Add(buttonResume);
+            
             buttonResume.onClick.AddListener(_storeUiMenuPageController.ClosePage);
             buttonResume.GetComponent<UiEventHandler>().OnCancelAddListener(_storeUiMenuPageController.ClosePage);
+
+            _storeUiMenuPageController.DefaultSelected = buttonList[0];
             SetNavigationOrder();
         }
 
