@@ -196,7 +196,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 }
                 else
                 {
+#if UNITY_EDITOR
                     var isPrefab = PrefabUtility.IsPartOfPrefabAsset(player);
+#else
+                    var isPrefab = false;
+#endif
                     GameObject newGameObject = GameObjectUtils.SafeInstantiate(isPrefab, player, parent);
                     newGameObject.transform.position = startWorldPosition;
 

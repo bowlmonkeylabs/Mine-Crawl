@@ -45,7 +45,7 @@ namespace BML.Scripts.Utils
                 newGameObject = GameObject.Instantiate(prefab, parent);
             }
 #else
-            newGameObject = GameObject.Instantiate(roomPrefab, clayContainer.transform);
+            newGameObject = GameObject.Instantiate(prefab, parent);
 #endif
             return newGameObject;
         }

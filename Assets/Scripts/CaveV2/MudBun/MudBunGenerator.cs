@@ -370,7 +370,7 @@ namespace BML.Scripts.CaveV2.MudBun
 
                     Debug.Log($"MudBun: Saved collider mesh asset - \"{folderPath}/{assetName}.mesh\"");
 #else
-                    Debug.Warning("Unable to generate collider asset in build! Requires access to the UnityEditor.AssetDatabase namespace.");
+                    Debug.LogWarning("Unable to generate collider asset in build! Requires access to the UnityEditor.AssetDatabase namespace.");
 #endif
                 }
             }
@@ -435,7 +435,7 @@ namespace BML.Scripts.CaveV2.MudBun
                         skinnedMeshRenderer.sharedMaterial = mat;
                 }
 #else
-                Debug.Warning("Unable to generate mesh asset in build! Requires access to the UnityEditor.AssetDatabase namespace.");
+                Debug.LogWarning("Unable to generate mesh asset in build! Requires access to the UnityEditor.AssetDatabase namespace.");
 #endif
             }
 
@@ -455,10 +455,13 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     DestroyAllChildren(clone.transform);
                 }
-
+#if UNITY_EDITOR
                 Undo.RegisterCreatedObjectUndo(clone, clone.name);
+#endif
                 DestroyImmediate(clone.GetComponent<MudRenderer>());
+#if UNITY_EDITOR
                 Selection.activeObject = clone;
+#endif
 
                 renderer.UnlockMesh();
             }

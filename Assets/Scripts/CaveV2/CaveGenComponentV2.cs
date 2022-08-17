@@ -6,7 +6,6 @@ using BML.Scripts.CaveV2.CaveGraph;
 using UnityEngine;
 using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.CaveV2.Util;
-using BML.Scripts.CaveV2.Clayxel;
 using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Utils;
 using GK;
@@ -47,9 +46,6 @@ namespace BML.Scripts.CaveV2
         [SerializeField] private CaveGenParameters _caveGenParams;
 
         public CaveGenParameters CaveGenParams => _caveGenParams;
-        
-        [Required] [InlineEditor, Space(10f)]
-        [SerializeField] private CaveGraphClayxelRenderer _caveGraphClayxelRenderer;
 
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGraphMudBunRenderer _caveGraphMudBunRenderer;

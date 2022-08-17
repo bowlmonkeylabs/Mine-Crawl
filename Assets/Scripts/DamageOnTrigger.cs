@@ -29,18 +29,13 @@ namespace BML.Scripts
                 return;
             }
             
-            Debug.Log($"Trying to damage {other.gameObject.name}");
-
             GameObject otherObj = other.gameObject;
             if (!otherObj.IsInLayerMask(_damageMask)) return;
             
-            Debug.Log($"Will damage {other.gameObject.name}");
-
             Damageable damageable = otherObj.GetComponent<Damageable>();
             if (damageable != null) {
                 damageable.TakeDamage(_damage);
                 _lastDamageTime = Time.time;
-                Debug.Log($"Damaged {other.gameObject.name}");
             }
         }
     }
