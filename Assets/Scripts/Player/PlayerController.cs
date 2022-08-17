@@ -24,7 +24,7 @@ namespace BML.Scripts.Player
         [SerializeField] private GameEvent _onUsePickaxe;
         [SerializeField] private float _interactDistance = 5f;
         [SerializeField] private LayerMask _interactMask;
-        [SerializeField] private TimerReference _interactCooldown;
+        [SerializeField] private EvaluateCurveVariable _pickaxeSwingCooldown;
         [SerializeField] private IntReference _pickaxeDamage;
         
         [TitleGroup("Torch")]
@@ -40,6 +40,9 @@ namespace BML.Scripts.Player
         [TitleGroup("GodMode")]
         [SerializeField] private BoolVariable _isGodModeEnabled;
         [SerializeField] private Damageable _damageable;
+
+        private float lastSwingTime = Mathf.NegativeInfinity;
+        private bool pickaxeInputHeld = false;
 
         #endregion
 
@@ -60,12 +63,8 @@ namespace BML.Scripts.Player
 
         private void Update()
         {
+            if (pickaxeInputHeld) TryUsePickaxe();
             HandleHover();
-        }
-
-        private void FixedUpdate()
-        {
-            _interactCooldown.UpdateTime();
         }
 
         #endregion
@@ -76,12 +75,12 @@ namespace BML.Scripts.Player
         {
             if (value.isPressed)
             {
-                _interactCooldown.SubscribeFinished(TryUsePickaxe);
+                pickaxeInputHeld = true;
                 TryUsePickaxe();
             }
             else
             {
-                _interactCooldown.UnsubscribeFinished(TryUsePickaxe);
+                pickaxeInputHeld = false;
             }
         }
 
@@ -100,27 +99,28 @@ namespace BML.Scripts.Player
         private void TryUsePickaxe()
         {
             RaycastHit hit;
-            
-            if ((_interactCooldown.IsStopped || _interactCooldown.IsFinished))
-            {
-                _onUsePickaxe.Raise();
-                _interactCooldown.RestartTimer();
-                
-                if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
-                    _interactMask, QueryTriggerInteraction.Collide))
-                {
-                    PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
-                    if (interactionReceiver == null) return;
 
-                    PickaxeHitInfo pickaxeHitInfo = new PickaxeHitInfo()
-                    {
-                        Damage = _pickaxeDamage.Value,
-                        HitPositon = hit.point,
-                        HitDirection = _mainCamera.forward
-                    };
-                    interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
-                }
+            if (lastSwingTime + _pickaxeSwingCooldown.Value > Time.time)
+                return;
+            
+            _onUsePickaxe.Raise();
+            lastSwingTime = Time.time;
+            
+            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
+                _interactMask, QueryTriggerInteraction.Collide))
+            {
+                PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
+                if (interactionReceiver == null) return;
+
+                PickaxeHitInfo pickaxeHitInfo = new PickaxeHitInfo()
+                {
+                    Damage = _pickaxeDamage.Value,
+                    HitPositon = hit.point,
+                    HitDirection = _mainCamera.forward
+                };
+                interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
             }
+            
         }
 
         #endregion

@@ -217,12 +217,10 @@ namespace BML.VisualStateMachine.Scripts.Events
             if (isValid)
             {
                 OnSuccess.Invoke();
-                Debug.Log("Success");
             }
             else
             {
                 OnFailure.Invoke();
-                Debug.Log("Failure");
             }
         }
 
