@@ -663,6 +663,7 @@ GameObject:
   m_Component:
   - component: {fileID: 310669043338530568}
   - component: {fileID: 310669043338530569}
+  - component: {fileID: 708339657616056763}
   m_Layer: 7
   m_Name: PlayerFollowCamera
   m_TagString: Untagged
@@ -720,6 +721,26 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 310669043950419660}
+--- !u!114 &708339657616056763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310669043338530551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fceddf535ba74afa99c5d52187836c97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _camera: {fileID: 310669043338530569}
+  _fovValue:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: a0dd7973c053207418e10c8f444ee980, type: 2}
 --- !u!1 &310669043950419659
 GameObject:
   m_ObjectHideFlags: 0
@@ -2158,7 +2179,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4507583159405323060}
-  m_LocalRotation: {x: 0.023247022, y: 0.86137897, z: -0.039583143, w: 0.5058844}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.064, y: 0.074, z: 0.25}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_Children:
