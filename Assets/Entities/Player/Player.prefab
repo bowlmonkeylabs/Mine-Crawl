@@ -1426,6 +1426,41 @@ MonoBehaviour:
   JumpTimeout: 0.1
   FallTimeout: 0.15
   Grounded: 1
+  KnockbackVerticalForce: 2
+  KnockbackDuration: 0.25
+  KnockbackHorizontalForceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 25
+      inSlope: -44.72605
+      outSlope: -44.72605
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.14441057
+    - serializedVersion: 3
+      time: 0.40296885
+      value: 11.852821
+      inSlope: -22.05198
+      outSlope: -22.05198
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 5
+      inSlope: -7.594984
+      outSlope: -7.594984
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.13321228
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   isNoClipEnabled: {fileID: 11400000, guid: eb030997b85161549968d03364b4c38e, type: 2}
   noClipSprintMultiplier: 5
   noClipCollisionMask:
@@ -1522,6 +1557,18 @@ MonoBehaviour:
       - m_Target: {fileID: 2501227245172862259}
         m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
         m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6318842967923595271}
+        m_TargetAssemblyTypeName: BML.Scripts.Player.FirstPersonController, BML.Scripts
+        m_MethodName: Knockback
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

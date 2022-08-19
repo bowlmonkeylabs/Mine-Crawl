@@ -43,6 +43,11 @@ namespace BML.Scripts.Player
 		[Header("Player Grounded")]
 		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
 		public bool Grounded = true;
+		
+		[Header("Knockback")]
+		public float KnockbackVerticalForce = 10f;
+		public float KnockbackDuration = .2f;
+		public AnimationCurve KnockbackHorizontalForceCurve;
 
 		[Header("No Clip Mode")] 
 		[SerializeField] private BoolVariable isNoClipEnabled;
@@ -69,6 +74,12 @@ namespace BML.Scripts.Player
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
+		
+		// knockback
+		private Vector3 _knockbackDir;
+		private bool _knockbackActive = false;
+		private float knockbackStartTime = Mathf.NegativeInfinity;
+		private float percentToEndKnockback = 0f;
 		
 		// no clip mode
 		private float originalGravity;
@@ -136,7 +147,12 @@ namespace BML.Scripts.Player
 
 		private void Update()
 		{
-			
+			if (knockbackStartTime + KnockbackDuration < Time.time)
+				_knockbackActive = false;
+			else
+			{
+				percentToEndKnockback = (Time.time - knockbackStartTime) / KnockbackDuration;
+			}
 		}
 
 		private void LateUpdate()
@@ -171,6 +187,15 @@ namespace BML.Scripts.Player
 
 	    public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
 	    {
+		    // Kill Y velocity if just get grounded so not to slide
+		    // Without this, y velocity is converted to horizontal velocity when land
+		    if (_motor.GroundingStatus.IsStableOnGround && !_motor.LastGroundingStatus.IsStableOnGround)
+		    {
+		        currentVelocity = Vector3.ProjectOnPlane(currentVelocity , _motor.CharacterUp);
+		        currentVelocity  = _motor.GetDirectionTangentToSurface(currentVelocity ,
+			        _motor.GroundingStatus.GroundNormal) * currentVelocity .magnitude;
+		    }
+		    
 		    // set target speed based on move speed, sprint speed and if sprint is pressed
 		    float sprintSpeed = isNoClipEnabled.Value ? SprintSpeed * noClipSprintMultiplier : SprintSpeed;
 		    float targetSpeed = _input.sprint ? sprintSpeed : MoveSpeed;
@@ -217,8 +242,13 @@ namespace BML.Scripts.Player
 			    }
 		    }
 
+		    Vector3 horizontalVelocity = inputDirection.normalized * _speed;
+		    
+		    if (_knockbackActive)
+			    horizontalVelocity = _knockbackDir * KnockbackHorizontalForceCurve.Evaluate(percentToEndKnockback);
+
 		    // move the player
-		    currentVelocity = inputDirection.normalized * (_speed) +
+		    currentVelocity = horizontalVelocity + 
 		                      new Vector3(0.0f, _verticalVelocity, 0.0f);
 	    }
 
@@ -333,6 +363,18 @@ namespace BML.Scripts.Player
 			{
 				_verticalVelocity += Gravity * Time.deltaTime;
 			}
+		}
+
+		public void Knockback()
+		{
+			if (_knockbackActive)
+				return;
+
+			_motor.ForceUnground();
+			_knockbackDir = -_mainCamera.transform.forward.xoz().normalized;
+			_verticalVelocity = KnockbackVerticalForce;
+			knockbackStartTime = Time.time;
+			_knockbackActive = true;
 		}
 
 		private void SetNoClip()
