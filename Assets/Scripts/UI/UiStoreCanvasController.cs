@@ -39,7 +39,22 @@ namespace BML.Scripts.UI
                 purchaseEvent.Init(storeItem._onPurchaseEvent, storeItem);
 
                 var storeItemText = newStoreItem.GetComponentInChildren<TMPro.TMP_Text>();
-                storeItemText.text = $"{storeItem._cost.Value}  Ore -> {storeItem._incrementAmount.Value} {storeItem._storeText}";
+
+                storeItemText.text = "";
+                
+                if (storeItem._resourceCost.Value > 0)
+                    storeItemText.text += $" + R{storeItem._resourceCost.Value}";
+                
+                if (storeItem._rareResourceCost.Value > 0)
+                    storeItemText.text += $" + RR{storeItem._rareResourceCost.Value}";
+                
+                if (storeItem._enemyResourceCost.Value > 0)
+                    storeItemText.text += $" + ER{storeItem._enemyResourceCost.Value}";
+
+                //Remove leading +
+                storeItemText.text = storeItemText.text.Substring(3);
+                
+                storeItemText.text += $" -> {storeItem._incrementAmount.Value} {storeItem._storeText}";
                 
                 var button = newStoreItem.GetComponent<Button>();
                 buttonList.Add(button);

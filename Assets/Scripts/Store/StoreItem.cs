@@ -14,6 +14,8 @@ namespace BML.Scripts.Store
         public DynamicGameEvent _onPurchaseEvent;
         public IntReference _incrementOnPurchase;
         public IntReference _incrementAmount;
-        public IntReference _cost;
+        public IntReference _resourceCost;
+        public IntReference _rareResourceCost;
+        public IntReference _enemyResourceCost;
     }
 }

@@ -10,7 +10,9 @@ namespace BML.Scripts
 {
     public class UpgradeManager : MonoBehaviour
     {
-        [SerializeField] private IntVariable _oreCount;
+        [SerializeField] private IntVariable _resourceCount;
+        [SerializeField] private IntVariable _rareResourceCount;
+        [SerializeField] private IntVariable _enemyResourceCount;
         [SerializeField] private BoolVariable _isGodModeEnabled;
         [SerializeField] private StoreInventory _storeInventory;
 
@@ -34,14 +36,25 @@ namespace BML.Scripts
         private void AttemptPurchase(object prev, object storeItemObj)
         {
             StoreItem storeItem = (StoreItem) storeItemObj;
-            
-            if (!_isGodModeEnabled.Value &&
-                _oreCount.Value < storeItem._cost.Value) 
+
+            if (_isGodModeEnabled.Value)
+            {
+                storeItem._incrementOnPurchase.Value += storeItem._incrementAmount.Value;
                 return;
+            }
+
+            if (_resourceCount.Value < storeItem._resourceCost.Value ||
+                _rareResourceCount.Value < storeItem._rareResourceCost.Value ||
+                _enemyResourceCount.Value < storeItem._enemyResourceCost.Value)
+                return;
+            
+                
+            
+            _resourceCount.Value -= storeItem._resourceCost.Value;
+            _rareResourceCount.Value -= storeItem._rareResourceCost.Value;
+            _enemyResourceCount.Value -= storeItem._enemyResourceCost.Value;
 
             storeItem._incrementOnPurchase.Value += storeItem._incrementAmount.Value;
-            if (!_isGodModeEnabled.Value)
-                _oreCount.Value -= storeItem._cost.Value;
         }
     }
 }
