@@ -63,6 +63,7 @@ namespace BML.Scripts.Player
 		public float BottomClamp = -90.0f;
 
 		// cinemachine
+		private float _cinemachineTargetYaw;
 		private float _cinemachineTargetPitch;
 
 		// player
@@ -92,19 +93,11 @@ namespace BML.Scripts.Player
 		private KinematicCharacterMotor _motor;
 		private PlayerInputProcessor _input;
 		private GameObject _mainCamera;
-
-		private const float _threshold = 0.01f;
-
+		
 		private bool IsCurrentDeviceMouse
 		{
-			get
-			{
-				#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-				return _playerInput.currentControlScheme == "KeyboardMouse";
-				#else
-				return false;
-				#endif
-			}
+			get => _playerInput.currentControlScheme == "Keyboard&Mouse";
+			
 		}
 
 		private void Awake()
@@ -171,18 +164,7 @@ namespace BML.Scripts.Player
 
 	    public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
 	    {
-		    // if there is an input
-		    if (_input.look.sqrMagnitude >= _threshold)
-		    {
-			    //Don't multiply mouse input by Time.deltaTime
-			    float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-				
-			    _rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
-
-			    // rotate the player left and right
-			    Quaternion deltaRot = Quaternion.Euler(Vector3.up * _rotationVelocity);
-			    currentRotation *= deltaRot;
-		    }
+		    
 	    }
 
 	    public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
@@ -235,10 +217,10 @@ namespace BML.Scripts.Player
 		    if (_input.move != Vector2.zero)
 		    {
 			    // move
-			    inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
+			    inputDirection = _mainCamera.transform.right * _input.move.x + _mainCamera.transform.forward * _input.move.y;
 			    if (isNoClipEnabled.Value)
 			    {
-				    inputDirection = transform.right * _input.move.x + _mainCamera.transform.forward * _input.move.y;
+				    inputDirection = _mainCamera.transform.right * _input.move.x + _mainCamera.transform.forward * _input.move.y;
 			    }
 		    }
 
@@ -300,20 +282,18 @@ namespace BML.Scripts.Player
 
 		private void CameraRotation()
 		{
-			// if there is an input
-			if (_input.look.sqrMagnitude >= _threshold)
-			{
-				//Don't multiply mouse input by Time.deltaTime
-				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-				
-				_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
+			//Don't multiply mouse input by Time.deltaTime
+			float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-				// clamp our pitch rotation
-				_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+			_cinemachineTargetYaw += _input.look.x * RotationSpeed * deltaTimeMultiplier;
+			_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
 
-				// Update Cinemachine camera target pitch
-				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
-			}
+			// clamp our pitch rotation
+			_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+
+			// Update Cinemachine camera target pitch
+			CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, _cinemachineTargetYaw, 0.0f);
+			
 		}
 
 		private void JumpAndGravity()
