@@ -42,16 +42,12 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private void OnEnable()
         {
             _mudBunGenerator.OnAfterFinished += TrySpawnLevelObjects;
-            
-            _caveGenerator.OnAfterGenerate += TrySpawnLevelObjectsWithCooldown;
             _levelObjectSpawnerParams.OnValidateEvent += TrySpawnLevelObjectsWithCooldown;
         }
 
         private void OnDisable()
         {
             _mudBunGenerator.OnAfterFinished -= TrySpawnLevelObjects;
-            
-            _caveGenerator.OnAfterGenerate -= TrySpawnLevelObjectsWithCooldown;
             _levelObjectSpawnerParams.OnValidateEvent -= TrySpawnLevelObjectsWithCooldown;
         }
 
