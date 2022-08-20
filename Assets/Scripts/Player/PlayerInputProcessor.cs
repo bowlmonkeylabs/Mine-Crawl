@@ -18,6 +18,9 @@ namespace BML.Scripts.Player
 		[Header("Character Input Values")]
 		public Vector2 move;
 		public Vector2 look;
+		public Vector2 lookUnscaled;
+		public Vector2 lookScaleMouse = new Vector2(0.005f, 0.005f);
+		public Vector2 lookScaleGamepad = new Vector2(12.5f, 12.5f);
 		public bool jump;
 		public bool sprint;
 
@@ -26,7 +29,6 @@ namespace BML.Scripts.Player
 
 		[FormerlySerializedAs("cursorLocked")] [Header("Mouse Cursor Settings")]
 		public bool playerCursorLocked = true;
-		public bool cursorInputForLook = true;
 		[SerializeField] private FloatReference _mouseSensitivity;
 		
 		[SerializeField] private BoolReference _isPaused;
@@ -37,7 +39,8 @@ namespace BML.Scripts.Player
         [SerializeField] private GameEvent _onOpenDebugUi;
 
 		[SerializeField] private VariableContainer _containerUiMenuStates;
-
+		[SerializeField] private PlayerInput playerInput;
+		
 		private bool isUsingUi
 		{
 			get
@@ -47,9 +50,13 @@ namespace BML.Scripts.Player
 					.Any(b => (b != null && b.Value));
 			}
 		}
-
-		[SerializeField] private PlayerInput playerInput;
-
+		
+		private bool IsCurrentDeviceMouse
+		{
+			get => playerInput.currentControlScheme == "Keyboard&Mouse";
+			
+		}
+		
 		private void OnEnable()
 		{
 			ApplyUiState();
@@ -65,8 +72,7 @@ namespace BML.Scripts.Player
 		{
 			_containerUiMenuStates.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyUiState));
 		}
-
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
+		
 		public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
@@ -74,11 +80,8 @@ namespace BML.Scripts.Player
 
 		public void OnLook(InputValue value)
 		{
-			if(cursorInputForLook)
-			{
-				var inputValue = value.Get<Vector2>() * _mouseSensitivity.Value;
-				LookInput(inputValue);
-			}
+			var inputValue = value.Get<Vector2>();
+			LookInput(inputValue);
 		}
 
 		public void OnJump(InputValue value)
@@ -137,7 +140,7 @@ namespace BML.Scripts.Player
 		{
 			SetCursorState(false);
 		}
-#endif
+		
 		public void ApplyUiState()
 		{
 			// Debug.Log($"Apply Ui State: {isUsingUi} => {playerInput.currentActionMap.name} {Cursor.lockState}");
@@ -161,7 +164,12 @@ namespace BML.Scripts.Player
 
 		public void LookInput(Vector2 newLookDirection)
 		{
-			look = newLookDirection;
+			lookUnscaled = newLookDirection;
+
+			if (IsCurrentDeviceMouse)
+				look = lookUnscaled * lookScaleMouse * _mouseSensitivity.Value;
+			else
+				look = lookUnscaled * lookScaleGamepad * _mouseSensitivity.Value;
 		}
 
 		public void JumpInput(bool newJumpState)

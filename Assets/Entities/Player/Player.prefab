@@ -1361,11 +1361,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   move: {x: 0, y: 0}
   look: {x: 0, y: 0}
+  lookUnscaled: {x: 0, y: 0}
+  lookScaleMouse: {x: 0.005, y: 0.005}
+  lookScaleGamepad: {x: 12.5, y: 12.5}
   jump: 0
   sprint: 0
   analogMovement: 1
   playerCursorLocked: 1
-  cursorInputForLook: 1
   _mouseSensitivity:
     UseConstant: 0
     EnableInstanceOptions: 0
@@ -1383,21 +1385,21 @@ MonoBehaviour:
   _isStoreOpen:
     UseConstant: 0
     EnableInstanceOptions: 0
-    InstanceName: 
+    InstanceName: '{I} '
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 2c6a9ec7ffcec724b83f7abc212de507, type: 2}
   _isGodModeEnabled:
     UseConstant: 0
     EnableInstanceOptions: 0
-    InstanceName: 
+    InstanceName: '{I} '
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: c3845ac29ad76214893f2b304a42dcef, type: 2}
   _isNoClipEnabled:
     UseConstant: 0
     EnableInstanceOptions: 0
-    InstanceName: 
+    InstanceName: '{I} '
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: eb030997b85161549968d03364b4c38e, type: 2}
@@ -1421,6 +1423,39 @@ MonoBehaviour:
   SprintSpeed: 6
   RotationSpeed: 1
   SpeedChangeRate: 10
+  AnalogMovementCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.3
+      inSlope: 0.08394601
+      outSlope: 0.08394601
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.11060065
+    - serializedVersion: 3
+      time: 0.9
+      value: 0.4
+      inSlope: 0.1298279
+      outSlope: 9.753129
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.106687084
+      outWeight: 0.1424199
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.5207832
+      outSlope: 0.5207832
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.1
@@ -1469,6 +1504,7 @@ MonoBehaviour:
   CinemachineCameraTarget: {fileID: 7730667928466908283}
   TopClamp: 89
   BottomClamp: -89
+  lookAcceleration: 0.015
 --- !u!114 &4112429824577967131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1493,7 +1529,7 @@ MonoBehaviour:
   _pickaxeDamage:
     UseConstant: 0
     EnableInstanceOptions: 0
-    InstanceName: 
+    InstanceName: '{I} '
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 24cc2b3aa4293fb4f94460301ae1bdef, type: 2}
@@ -1503,7 +1539,7 @@ MonoBehaviour:
   _inventoryTorchCount:
     UseConstant: 0
     EnableInstanceOptions: 0
-    InstanceName: 
+    InstanceName: '{I} '
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: dcc1ad60fbe421843b6d6dcec22f6bd3, type: 2}
@@ -1513,21 +1549,21 @@ MonoBehaviour:
   _inventoryBombCount:
     UseConstant: 0
     EnableInstanceOptions: 0
-    InstanceName: 
+    InstanceName: '{I} '
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 9dad663e7e1b4f14589a7eecb85405f1, type: 2}
   _health:
     UseConstant: 0
     EnableInstanceOptions: 0
-    InstanceName: 
+    InstanceName: '{I} '
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
   _maxHealth:
     UseConstant: 0
     EnableInstanceOptions: 0
-    InstanceName: 
+    InstanceName: '{I} '
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
@@ -2865,7 +2901,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 40
+  field of view: 50
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

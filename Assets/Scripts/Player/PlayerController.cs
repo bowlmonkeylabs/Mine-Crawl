@@ -195,7 +195,7 @@ namespace BML.Scripts.Player
         }
 
         #endregion
-        
+
         private void HandleHover()
         {
             if (lastHoverUpdateTime + 1f / _hoverUpdatesPerSecond > Time.time)

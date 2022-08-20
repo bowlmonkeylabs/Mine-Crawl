@@ -27,6 +27,8 @@ namespace BML.Scripts.Player
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
+		[Tooltip("Curve for analog look input smoothing")]
+		public AnimationCurve AnalogMovementCurve;
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -69,6 +71,7 @@ namespace BML.Scripts.Player
 		// player
 		private float _speed;
 		private float _rotationVelocity;
+		public float lookAcceleration = .05f;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
 
@@ -87,18 +90,19 @@ namespace BML.Scripts.Player
 		private LayerMask orignalCollisionMask;
 
 
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 		private PlayerInput _playerInput;
-#endif
 		private KinematicCharacterMotor _motor;
 		private PlayerInputProcessor _input;
 		private GameObject _mainCamera;
+		private float previouRotSpeed = 0f;
 		
 		private bool IsCurrentDeviceMouse
 		{
 			get => _playerInput.currentControlScheme == "Keyboard&Mouse";
 			
 		}
+
+		#region Unity Lifecycle
 
 		private void Awake()
 		{
@@ -110,18 +114,12 @@ namespace BML.Scripts.Player
 			
 		}
 
-		
-
 		private void Start()
 		{
 			_motor = GetComponent<KinematicCharacterMotor>();
 			_motor.CharacterController = this;
 			_input = GetComponent<PlayerInputProcessor>();
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 			_playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
-#endif
 
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
@@ -152,6 +150,8 @@ namespace BML.Scripts.Player
 		{
 			CameraRotation();
 		}
+
+		#endregion
 
 		#region Kinematic Character Controller
 
@@ -284,16 +284,38 @@ namespace BML.Scripts.Player
 		{
 			//Don't multiply mouse input by Time.deltaTime
 			float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+			
+			float rotSpeed = RotationSpeed;
+			
+			if (!IsCurrentDeviceMouse)
+			{
+				//For analog movement, dont interpolate linearly
+				rotSpeed *= AnalogMovementCurve.Evaluate(_input.lookUnscaled.magnitude);
+				
+				float dummy = 0f;
+				float rotSpeedAccelerated;
 
-			_cinemachineTargetYaw += _input.look.x * RotationSpeed * deltaTimeMultiplier;
-			_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
+				//Accelerate to higher values but stop immediately
+				if (rotSpeed > previouRotSpeed)
+					rotSpeedAccelerated = Mathf.SmoothDamp(previouRotSpeed, rotSpeed, ref dummy, lookAcceleration);
+				else
+					rotSpeedAccelerated = rotSpeed;
+				
+				//Debug.Log($"prev: {previouRotSpeed} | target: {String.Format("{0:0.00}", rotSpeed)}");
+
+				rotSpeed = rotSpeedAccelerated;
+				previouRotSpeed = rotSpeedAccelerated;
+			}
+				
+			
+			_cinemachineTargetYaw += _input.look.x * rotSpeed * deltaTimeMultiplier;
+			_cinemachineTargetPitch += _input.look.y * rotSpeed * deltaTimeMultiplier;
 
 			// clamp our pitch rotation
 			_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
 			// Update Cinemachine camera target pitch
 			CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, _cinemachineTargetYaw, 0.0f);
-			
 		}
 
 		private void JumpAndGravity()
