@@ -11,6 +11,7 @@ namespace BML.Scripts
 
         [SerializeField] private CinemachineVirtualCamera _camera;
         [SerializeField] private FloatReference _fovValue;
+        [SerializeField] private bool _useHorizontalFov = true;
 
         #endregion
         
@@ -31,7 +32,18 @@ namespace BML.Scripts
 
         private void SetCinemachineCameraFov()
         {
-            _camera.m_Lens.FieldOfView = _fovValue.Value;
+            if (_useHorizontalFov)
+            {
+                var verticalFov = Camera.HorizontalToVerticalFieldOfView(
+                    _fovValue.Value,
+                    _camera.m_Lens.Aspect
+                );
+                _camera.m_Lens.FieldOfView = verticalFov;
+            }
+            else
+            {
+                _camera.m_Lens.FieldOfView = _fovValue.Value;
+            }
         }
     }
 }
