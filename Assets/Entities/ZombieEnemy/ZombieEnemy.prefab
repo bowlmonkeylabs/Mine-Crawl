@@ -1644,8 +1644,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8446087146172152300}
-  - component: {fileID: 8446087146172152301}
+  - component: {fileID: 61164718902771253}
   - component: {fileID: 4545588379565990327}
+  - component: {fileID: 8446087146172152302}
   m_Layer: 0
   m_Name: DamageTrigger
   m_TagString: Untagged
@@ -1667,7 +1668,7 @@ Transform:
   m_Father: {fileID: 8446087147361510365}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8446087146172152301
+--- !u!114 &61164718902771253
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1676,7 +1677,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8446087146172152291}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ad0c01c5a68415a802f73ded0a64c14, type: 3}
+  m_Script: {fileID: 11500000, guid: 8809fcaea7a787242b331ab0e4762a92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 1
@@ -1698,6 +1699,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0.25, z: 0}
+--- !u!135 &8446087146172152302
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8446087146172152291}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.75
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8446087147361510364
 GameObject:
   m_ObjectHideFlags: 0
@@ -1723,6 +1737,8 @@ GameObject:
   - component: {fileID: 3045753009962011587}
   - component: {fileID: 5557812560587384032}
   - component: {fileID: 2973721377856437905}
+  - component: {fileID: 5225949785509531780}
+  - component: {fileID: 6574438273452170678}
   m_Layer: 10
   m_Name: ZombieEnemy
   m_TagString: Untagged
@@ -1844,9 +1860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthReference: {fileID: 0}
-  _health: 3
-  _useHealthVariable: 0
+  health: {fileID: 5225949785509531780}
   _critMultiplier: 2
   _invincibilitySeconds: 0
   _isInvincible: 0
@@ -2190,6 +2204,64 @@ MonoBehaviour:
   version: 1
   unwrap: 1
   splitAtEveryPortal: 0
+--- !u!114 &5225949785509531780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8446087147361510364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _healthReference: {fileID: 0}
+  _health: 3
+  _useHealthVariable: 0
+  _onHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1550127903}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6574438273452170678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8446087147361510364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04ecd871b7dcf0e47840fbb6de206a44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 5225949785509531780}
+  _critMultiplier: 2
+  _invincibilitySeconds: 0
+  _isInvincible: 0
+  _onDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  _onCrit:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDeath:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &8769558815352529025
 GameObject:
   m_ObjectHideFlags: 0

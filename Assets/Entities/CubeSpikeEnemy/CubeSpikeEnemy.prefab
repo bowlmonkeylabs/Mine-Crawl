@@ -262,6 +262,8 @@ GameObject:
   - component: {fileID: 9198729175416441857}
   - component: {fileID: 2426635321772833314}
   - component: {fileID: 152893675504039563}
+  - component: {fileID: 1525200595836623026}
+  - component: {fileID: 7972474629112012132}
   m_Layer: 10
   m_Name: CubeSpikeEnemy
   m_TagString: Untagged
@@ -299,9 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthReference: {fileID: 0}
-  _health: 3
-  _useHealthVariable: 0
+  health: {fileID: 1525200595836623026}
   _critMultiplier: 2
   _invincibilitySeconds: 0
   _isInvincible: 0
@@ -406,6 +406,64 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1525200595836623026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000336959785077410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _healthReference: {fileID: 0}
+  _health: 3
+  _useHealthVariable: 0
+  _onHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3000336959854452572}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7972474629112012132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000336959785077410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04ecd871b7dcf0e47840fbb6de206a44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 1525200595836623026}
+  _critMultiplier: 2
+  _invincibilitySeconds: 0
+  _isInvincible: 0
+  _onDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  _onCrit:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDeath:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3000336959854452575
 GameObject:
   m_ObjectHideFlags: 0
@@ -563,7 +621,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3000336961076370925}
   - component: {fileID: 3000336961076370915}
-  - component: {fileID: 3000336961076370914}
+  - component: {fileID: 4078345195737344521}
   m_Layer: 0
   m_Name: DamageTrigger
   m_TagString: Untagged
@@ -598,7 +656,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.5, y: 2.25, z: 2.5}
   m_Center: {x: 0, y: 1.5, z: 0}
---- !u!114 &3000336961076370914
+--- !u!114 &4078345195737344521
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -607,7 +665,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3000336961076370924}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ad0c01c5a68415a802f73ded0a64c14, type: 3}
+  m_Script: {fileID: 11500000, guid: 8809fcaea7a787242b331ab0e4762a92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 1
@@ -918,11 +976,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
---- !u!4 &3104066529416524042 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
-  m_PrefabInstance: {fileID: 3213711351615608545}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2330626703123901360 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
@@ -931,6 +984,11 @@ GameObject:
 --- !u!137 &7391696399828045555 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -3887185075125053422, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
+  m_PrefabInstance: {fileID: 3213711351615608545}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3104066529416524042 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
   m_PrefabInstance: {fileID: 3213711351615608545}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &7230225398867700184

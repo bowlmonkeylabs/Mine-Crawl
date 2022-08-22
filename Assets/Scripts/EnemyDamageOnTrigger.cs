@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 namespace BML.Scripts
 {
-    public class DamageOnTrigger : MonoBehaviour
+    public class EnemyDamageOnTrigger : MonoBehaviour
     {
         [SerializeField] private int _damage = 1;
         [SerializeField] private LayerMask _damageMask;
@@ -31,10 +31,13 @@ namespace BML.Scripts
             
             GameObject otherObj = other.gameObject;
             if (!otherObj.IsInLayerMask(_damageMask)) return;
-            
-            Damageable damageable = otherObj.GetComponent<Damageable>();
+
+            EnemyDamageable damageable = otherObj.GetComponent<EnemyDamageable>();
             if (damageable != null) {
-                damageable.TakeDamage(_damage);
+                damageable.TakeDamage(new EnemyHitInfo() {
+                    Damage = _damage,
+                    HitDirection = (other.transform.position - transform.position).normalized
+                });
                 _lastDamageTime = Time.time;
             }
         }

@@ -45,7 +45,6 @@ namespace BML.Scripts.Player
 
         [TitleGroup("GodMode")]
         [SerializeField] private BoolVariable _isGodModeEnabled;
-        [SerializeField] private Damageable _damageable;
 
         private float lastSwingTime = Mathf.NegativeInfinity;
         private bool pickaxeInputHeld = false;
@@ -191,7 +190,9 @@ namespace BML.Scripts.Player
 
         private void SetGodMode()
         {
-            _damageable.SetInvincible(_isGodModeEnabled.Value);
+            foreach(Damageable damageable in GetComponents<Damageable>()) {
+                damageable.SetInvincible(_isGodModeEnabled.Value);
+            }
         }
 
         #endregion

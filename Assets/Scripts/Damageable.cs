@@ -7,12 +7,10 @@ using UnityEngine.Serialization;
 
 namespace BML.Scripts
 {
+    [RequireComponent(typeof(Health))]
     public class Damageable : MonoBehaviour
     {
-        [SerializeField] [ShowIf("_useHealthVariable")] [LabelText("health")] private IntVariable _healthReference;
-        [SerializeField] [HideIf("_useHealthVariable")] private int _health;
-        [SerializeField] private bool _useHealthVariable = false;
-
+        [SerializeField] private Health health;
         [SerializeField] private int _critMultiplier = 2;
         [SerializeField] private float _invincibilitySeconds = 0;
         [SerializeField] private bool _isInvincible = false;
@@ -23,47 +21,26 @@ namespace BML.Scripts
 
         private float lastDamageTime = Mathf.NegativeInfinity;
 
-        public bool IsDead => _useHealthVariable ? _healthReference.Value <= 0 : _health <= 0;
-        public int Health { get => _health; set => _health = value; }
-
-        public void TakeDamage(int damage)
+        protected void TakeDamage(int damage)
         {
             if (_isInvincible || 
                 !Mathf.Approximately(0f, _invincibilitySeconds) && lastDamageTime + _invincibilitySeconds > Time.time)
                 return;
 
             lastDamageTime = Time.time;
-            
-            if (_useHealthVariable)
-            {
-                if (_healthReference.Value <= 0) return;
-                _healthReference.Value -= damage;
-                _onDamage.Invoke();
-                if (_healthReference.Value <= 0)
-                {
-                    Death();
-                }
-            }
-            else
-            {
-                if (_health <= 0) return;
-                _health -= damage;
-                _onDamage.Invoke();
-                if (_health <= 0)
-                {
-                    Death();
-                }
+
+            _onDamage.Invoke();
+
+            health.DecrementHealth(damage);
+
+            if(health.IsDead) {
+                _onDeath.Invoke();
             }
         }
 
-        public void TakeCritDamage(int damage) {
+        protected void TakeCritDamage(int damage) {
             _onCrit.Invoke();
             this.TakeDamage(damage * this._critMultiplier);
-        }
-
-        private void Death()
-        {
-            _onDeath.Invoke();
         }
 
         public void SetInvincible(bool isInvincible)

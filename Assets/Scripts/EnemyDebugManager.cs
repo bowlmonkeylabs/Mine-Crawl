@@ -23,11 +23,11 @@ namespace BML.Scripts
 
         private void AddEnemmyHealth()
         {
-            Damageable[] enemyDamageables = _enemyContainer.GetComponentsInChildren<Damageable>();
+            Health[] enemyHealths = _enemyContainer.GetComponentsInChildren<Health>();
             
-            foreach (var damageable in enemyDamageables)
+            foreach (var health in enemyHealths)
             {
-                damageable.Health += _healthAmountToAdd;
+                health.IncrementHealth(_healthAmountToAdd);
             }
         }
     }
