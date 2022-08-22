@@ -15,6 +15,9 @@ namespace BML.Scripts.UI
         [SerializeField] private GameObject _storeResumeButtonPrefab;
         [SerializeField] private Transform _listContainerStoreButtons;
         [SerializeField] private UiMenuPageController _storeUiMenuPageController;
+        [SerializeField] private string _resourceIconText;
+        [SerializeField] private string _rareResourceIconText;
+        [SerializeField] private string _enemyResourceIconText;
         [SerializeField] private StoreInventory _storeInventory;
 
         private List<Button> buttonList = new List<Button>();
@@ -43,16 +46,16 @@ namespace BML.Scripts.UI
                 storeItemText.text = "";
                 
                 if (storeItem._resourceCost.Value > 0)
-                    storeItemText.text += $" + R{storeItem._resourceCost.Value}";
+                    storeItemText.text += $" + {storeItem._resourceCost.Value}{_resourceIconText}";
                 
                 if (storeItem._rareResourceCost.Value > 0)
-                    storeItemText.text += $" + RR{storeItem._rareResourceCost.Value}";
+                    storeItemText.text += $" + {storeItem._rareResourceCost.Value}{_rareResourceIconText}";
                 
                 if (storeItem._enemyResourceCost.Value > 0)
-                    storeItemText.text += $" + ER{storeItem._enemyResourceCost.Value}";
+                    storeItemText.text += $" + {storeItem._enemyResourceCost.Value}{_enemyResourceIconText}";
 
                 //Remove leading +
-                storeItemText.text = storeItemText.text.Substring(3);
+                if (storeItemText.text != "") storeItemText.text = storeItemText.text.Substring(3);
                 
                 storeItemText.text += $" -> {storeItem._incrementAmount.Value} {storeItem._storeText}";
                 
