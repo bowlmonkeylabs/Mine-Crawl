@@ -8,14 +8,6 @@ namespace BML.Scripts
 {
     public class EnemyDamageable : Damageable
     {
-        public void TakeDamage(EnemyHitInfo enemyHitInfo)
-        {
-            base.TakeDamage(enemyHitInfo.Damage);
-        }
-
-        public void TakeCritDamage(EnemyHitInfo enemyHitInfo)
-        {
-            base.TakeCritDamage(enemyHitInfo.Damage);
-        }
+        
     }
 }

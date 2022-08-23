@@ -2,6 +2,7 @@
 using BML.ScriptableObjectCore.Scripts.Variables;
 using UnityEngine;
 using UnityEngine.Events;
+using BML.Scripts.Utils;
 
 namespace BML.Scripts
 {
@@ -59,9 +60,7 @@ namespace BML.Scripts
             foreach (var col in playerColliders)
             {
                 ExplosiveDamageable damageable = col.GetComponent<ExplosiveDamageable>();
-                damageable.TakeDamage(new ExplosionHitInfo() {
-                    Damage = _damagePlayer.Value
-                });
+                damageable.TakeDamage(new HitInfo(_damagePlayer.Value, (col.transform.position - transform.position).normalized));
             }
             
             Collider[] enemyColliders = Physics.OverlapSphere(transform.position, _explosionRadius.Value, _enemyMask);
@@ -69,9 +68,7 @@ namespace BML.Scripts
             foreach (var col in enemyColliders)
             {
                 ExplosiveDamageable damageable = col.GetComponent<ExplosiveDamageable>();
-                damageable.TakeDamage(new ExplosionHitInfo() {
-                    Damage = _damageEnemy.Value
-                });
+                damageable.TakeDamage(new HitInfo(_damageEnemy.Value, (col.transform.position - transform.position).normalized));
             }
             
             Collider[] interactableColliders = Physics.OverlapSphere(transform.position, _explosionRadius.Value, _interactableMask);
@@ -83,16 +80,12 @@ namespace BML.Scripts
                 if (damageable == null) continue;
 
                 if (damageable.gameObject.tag.Equals(_oreTag) && damageable.gameObject != gameObject) {
-                    damageable.TakeDamage(new ExplosionHitInfo() {
-                        Damage = _damageOre.Value
-                    });
+                    damageable.TakeDamage(new HitInfo(_damageOre.Value, (col.transform.position - transform.position).normalized));
                     continue;
                 }
 
                 if(damageable.gameObject.tag.Equals(_exitBarrierTag)) {
-                    damageable.TakeDamage(new ExplosionHitInfo() {
-                        Damage = _damageExitBarrier.Value
-                    });
+                    damageable.TakeDamage(new HitInfo(_damageExitBarrier.Value, (col.transform.position - transform.position).normalized));
                 }
             }
 

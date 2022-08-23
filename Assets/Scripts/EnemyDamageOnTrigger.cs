@@ -34,10 +34,7 @@ namespace BML.Scripts
 
             EnemyDamageable damageable = otherObj.GetComponent<EnemyDamageable>();
             if (damageable != null) {
-                damageable.TakeDamage(new EnemyHitInfo() {
-                    Damage = _damage,
-                    HitDirection = (other.transform.position - transform.position).normalized
-                });
+                damageable.TakeDamage(new HitInfo(_damage, (other.transform.position - transform.position).normalized));
                 _lastDamageTime = Time.time;
             }
         }

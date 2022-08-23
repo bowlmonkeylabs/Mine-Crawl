@@ -125,12 +125,7 @@ namespace BML.Scripts.Player
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
                 if (interactionReceiver == null) return;
 
-                PickaxeHitInfo pickaxeHitInfo = new PickaxeHitInfo()
-                {
-                    Damage = _pickaxeDamage.Value,
-                    HitPositon = hit.point,
-                    HitDirection = _mainCamera.forward
-                };
+                HitInfo pickaxeHitInfo = new HitInfo(_pickaxeDamage.Value, _mainCamera.forward, hit.point);
                 interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
             }
             

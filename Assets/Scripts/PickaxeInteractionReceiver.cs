@@ -7,9 +7,9 @@ namespace BML.Scripts
 {
     public class PickaxeInteractionReceiver : InteractionReceiver
     {
-        [SerializeField] private UnityEvent<PickaxeHitInfo> _onPickaxeInteract;
+        [SerializeField] private UnityEvent<HitInfo> _onPickaxeInteract;
 
-        public void ReceiveInteraction(PickaxeHitInfo param)
+        public void ReceiveInteraction(HitInfo param)
         {
             _onPickaxeInteract.Invoke(param);
             OnInteract.Invoke();

@@ -367,13 +367,13 @@ namespace BML.Scripts.Player
 			}
 		}
 
-		public void Knockback()
+		public void Knockback(HitInfo hitInfo)
 		{
 			if (_knockbackActive)
 				return;
 
 			_motor.ForceUnground();
-			_knockbackDir = -_mainCamera.transform.forward.xoz().normalized;
+			_knockbackDir = hitInfo.HitDirection.xoz().normalized;
 			_verticalVelocity = KnockbackVerticalForce;
 			knockbackStartTime = Time.time;
 			_knockbackActive = true;

@@ -15,13 +15,13 @@ namespace BML.Scripts
         [SerializeField] private float _invincibilitySeconds = 0;
         [SerializeField] private bool _isInvincible = false;
 
-        [SerializeField] private UnityEvent _onDamage;
-        [SerializeField] private UnityEvent _onCrit;
+        [SerializeField] private UnityEvent<HitInfo> _onDamage;
+        [SerializeField] private UnityEvent<HitInfo> _onCrit;
         [SerializeField] private UnityEvent _onDeath;
 
         private float lastDamageTime = Mathf.NegativeInfinity;
 
-        protected void TakeDamage(int damage)
+        public void TakeDamage(HitInfo hitInfo)
         {
             if (_isInvincible || 
                 !Mathf.Approximately(0f, _invincibilitySeconds) && lastDamageTime + _invincibilitySeconds > Time.time)
@@ -29,18 +29,19 @@ namespace BML.Scripts
 
             lastDamageTime = Time.time;
 
-            _onDamage.Invoke();
+            _onDamage.Invoke(hitInfo);
 
-            health.DecrementHealth(damage);
+            health.DecrementHealth(hitInfo.Damage);
 
             if(health.IsDead) {
                 _onDeath.Invoke();
             }
         }
 
-        protected void TakeCritDamage(int damage) {
-            _onCrit.Invoke();
-            this.TakeDamage(damage * this._critMultiplier);
+        public void TakeCritDamage(HitInfo hitInfo) {
+            hitInfo.Damage *= this._critMultiplier;
+            _onCrit.Invoke(hitInfo);
+            this.TakeDamage(hitInfo);
         }
 
         public void SetInvincible(bool isInvincible)

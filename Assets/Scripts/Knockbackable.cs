@@ -15,8 +15,8 @@ namespace BML.Scripts
             behaviorTree.SendEvent<object>("SetKnockback", direction);
         }
 
-        public void SetKnockback(PickaxeHitInfo pickaxeHitInfo) {
-            SetKnockback(pickaxeHitInfo.HitDirection);
+        public void SetKnockback(HitInfo hitInfo) {
+            SetKnockback(hitInfo.HitDirection);
         }
 
     }

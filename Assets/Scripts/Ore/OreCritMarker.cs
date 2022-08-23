@@ -5,7 +5,9 @@ using BML.Scripts.Utils;
 using BML.Scripts.Player;
 using Shapes;
 
-public class OreCritMarker : MonoBehaviour
+namespace BML.Scripts
+{
+    public class OreCritMarker : MonoBehaviour
 {
     [SerializeField] private Collider _oreCollider;
     [SerializeField] private GameObject _critMarker;
@@ -15,8 +17,8 @@ public class OreCritMarker : MonoBehaviour
     private Vector3 lastHitPos;
     private Vector3 centerToHit;
 
-    public void MoveCritMarker(PickaxeHitInfo pickaxeHitInfo) {
-        this.MoveCritMarker(pickaxeHitInfo.HitPositon);
+    public void MoveCritMarker(HitInfo hitInfo) {
+        this.MoveCritMarker(hitInfo.HitPositon);
     }
 
     public void MoveCritMarker(Vector3 hitPosition)
@@ -59,4 +61,6 @@ public class OreCritMarker : MonoBehaviour
             centerToHit.magnitude, false, new Color(0f, 1f, 0f, a));
         
     }
+}
+
 }
