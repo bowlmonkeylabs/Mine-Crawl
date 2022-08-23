@@ -26,6 +26,9 @@ namespace BML.Scripts.CaveV2
         [SerializeField] private bool _generateOnChange;
         
         [SerializeField] private bool _generateRandomOnStart;
+        
+        [Tooltip("Don't regenerate level on start if IsGenerated.")]
+        [SerializeField] private bool _dontRegenerateOnStart;
 
         [SerializeField] private bool _retryOnFailure = true;
         [SerializeField] private int _maxRetryDepth = 3;
@@ -382,11 +385,14 @@ namespace BML.Scripts.CaveV2
 
         private void Start()
         {
+            if (_dontRegenerateOnStart && IsGenerated)
+                return;
+            
             if (_generateRandomOnStart && ApplicationUtils.IsPlaying_EditorSafe)
             {
                 if (_enableLogs) Debug.Log($"CaveGraph: Generate random on start");
                 _retryDepth = 0;
-                GenerateCaveGraph(true);
+                GenerateCaveGraph(!_dontRegenerateOnStart);
             }
         }
 
