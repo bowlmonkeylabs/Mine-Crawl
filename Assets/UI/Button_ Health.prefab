@@ -115,6 +115,18 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6011151041640180005, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2452620533806979480}
+    - target: {fileID: 6011151041640180005, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TryRaise
+      objectReference: {fileID: 0}
+    - target: {fileID: 6011151041640180005, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BML.VisualStateMachine.Scripts.Events.ConditionalEvent, StateMachine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
 --- !u!1 &4322733293806013498 stripped
@@ -122,68 +134,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6011151041640180003, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
   m_PrefabInstance: {fileID: 7536361663908373785}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4322733293806013500 stripped
+--- !u!114 &7536361664403334222 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6011151041640180005, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
+  m_CorrespondingSourceObject: {fileID: 629178711, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
   m_PrefabInstance: {fileID: 7536361663908373785}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4322733293806013498}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: e11407f89c634a62ad7dd263b63f139d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &769653849655563576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4322733293806013498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bac3452c3d166594f8e8494b57ab1162, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BoolVariables: []
-  FloatVariables: []
-  IntVariables:
-  - {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
-  - {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
-  Vector2Variables: []
-  Vector3Variables: []
-  OnIncrease:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2452620533806979480}
-        m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
-          StateMachine
-        m_MethodName: TryRaise
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnDecrease:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2452620533806979480}
-        m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
-          StateMachine
-        m_MethodName: TryRaise
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &2452620533806979480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,7 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d9de05a2e70424e8718c7cf216b134, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conditionPreview: '-  Health  <   Stats_ Max Health
+  conditionPreview: '-  Player_ Health  <   Stats_ Max Health
 
 '
   StateMachines: []
@@ -228,25 +189,10 @@ MonoBehaviour:
   OnSuccess:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4322733293806013500}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
-        m_MethodName: set_interactable
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  OnFailure:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4322733293806013500}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
-        m_MethodName: set_interactable
-        m_Mode: 6
+      - m_Target: {fileID: 7536361664403334222}
+        m_TargetAssemblyTypeName: BML.Scripts.Store.StorePurchaseEvent, BML.Scripts
+        m_MethodName: Raise
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -255,37 +201,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6733036147598440092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4322733293806013498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bcc561d61138de47bdb32d717cd44c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UnityEvents:
-  - UnityCallback: 2
-    randomDelay: 0
-    delay: 0.01
-    delayMin: 0
-    delayMax: 0
-    unityEvent:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 2452620533806979480}
-          m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
-            StateMachine
-          m_MethodName: TryRaise
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  OnFailure:
+    m_PersistentCalls:
+      m_Calls: []
