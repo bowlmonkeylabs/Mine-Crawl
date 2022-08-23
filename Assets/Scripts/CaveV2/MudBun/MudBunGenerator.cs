@@ -276,6 +276,7 @@ namespace BML.Scripts.CaveV2.MudBun
             }
 
             // mudRenderer.DestroyAllBrushesImmediate();
+            mudRenderer.RescanBrushesImmediate();
             var allBrushes = mudRenderer.Brushes.ToList();
             foreach (var mudRendererBrush in allBrushes)
             {

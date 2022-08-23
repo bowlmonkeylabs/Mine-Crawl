@@ -27,8 +27,12 @@ namespace BML.Scripts.CaveV2
         
         [SerializeField] private bool _generateRandomOnStart;
         
-        [Tooltip("Don't regenerate level on start if IsGenerated.")]
-        [SerializeField] private bool _dontRegenerateOnStart;
+        [Tooltip("Keep level generated in Edit Mode. If not generated, then generate with current seed. RETRY WILL NOT WORK WITH THIS ENABLED.")]
+        #if UNITY_EDITOR
+        [SerializeField] private bool _keepEditModeLevel;
+        #else
+        private bool _keepEditModeLevel = false;
+        #endif
 
         [SerializeField] private bool _retryOnFailure = true;
         [SerializeField] private int _maxRetryDepth = 3;
@@ -42,6 +46,8 @@ namespace BML.Scripts.CaveV2
         [SerializeField] private bool _overrideBounds = false;
         private bool _notOverrideBounds => !_overrideBounds;
         public Bounds CaveGenBounds => (_overrideBounds ? _caveGenBounds : _caveGenParams.PoissonBounds);
+
+        [SerializeField] private BoolReference _retrySameSeed;
 
         [SerializeField] private IntReference _seedDebugReference;
         
@@ -58,15 +64,6 @@ namespace BML.Scripts.CaveV2
         
         #endregion
 
-        #region Untiy Lifecycle
-
-        private void Awake()
-        {
-            _seedDebugReference.Value = _caveGenParams.Seed;
-        }
-
-        #endregion
-        
         #region Events
         
         public delegate void AfterGenerate();
@@ -382,17 +379,23 @@ namespace BML.Scripts.CaveV2
         #endregion
 
         #region Unity lifecycle
+        
+        private void Awake()
+        {
+            _seedDebugReference.Value = _caveGenParams.Seed;
+        }
 
         private void Start()
         {
-            if (_dontRegenerateOnStart && IsGenerated)
+            if (_keepEditModeLevel && IsGenerated)
                 return;
             
             if (_generateRandomOnStart && ApplicationUtils.IsPlaying_EditorSafe)
             {
                 if (_enableLogs) Debug.Log($"CaveGraph: Generate random on start");
                 _retryDepth = 0;
-                GenerateCaveGraph(!_dontRegenerateOnStart);
+                bool randomSeed = !_keepEditModeLevel && !_retrySameSeed.Value;
+                GenerateCaveGraph(randomSeed);
             }
         }
 

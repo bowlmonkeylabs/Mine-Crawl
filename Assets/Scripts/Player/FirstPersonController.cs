@@ -112,15 +112,16 @@ namespace BML.Scripts.Player
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
 			
-		}
-
-		private void Start()
-		{
 			_motor = GetComponent<KinematicCharacterMotor>();
 			_motor.CharacterController = this;
 			_input = GetComponent<PlayerInputProcessor>();
 			_playerInput = GetComponent<PlayerInput>();
+			originalGravity = Gravity;
+			orignalCollisionMask = _motor.CollidableLayers;
+		}
 
+		private void Start()
+		{
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
