@@ -157,7 +157,7 @@ namespace BML.Scripts.Player
         
         #endregion
         
-        #region Torch
+        #region Bomb
 
         private void TryThrowBomb()
         {
@@ -181,7 +181,7 @@ namespace BML.Scripts.Player
         
         #endregion
 
-        #region GodMode
+        #region God Mode
 
         private void SetGodMode()
         {
