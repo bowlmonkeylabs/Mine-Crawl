@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BML.Scripts.UI
 {
-    public class UiDebugController : MonoBehaviour
+    public class UiDebugOverlay : MonoBehaviour
     {
         [SerializeField] private TMP_Text _text;
         [SerializeField] private TransformSceneReference _playerTransformSceneReference;
@@ -15,15 +15,20 @@ namespace BML.Scripts.UI
         [SerializeField] private IntReference _seedDebugReference;
         [SerializeField] private EvaluateCurveVariable _statPickaxeSwingSpeed;
 
+        #region Unity lifecycle
+
         private void Awake()
         {
             UpdateText();
         }
 
-        private void Update() {
+        private void Update()
+        {
             UpdateText();
         }
 
+        #endregion
+        
         protected void UpdateText()
         {
             _text.text = $@"Player Coordinates: {this.formatVector3(_playerTransformSceneReference.Value.position)}
