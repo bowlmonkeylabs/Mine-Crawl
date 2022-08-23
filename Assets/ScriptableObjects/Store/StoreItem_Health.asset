@@ -12,41 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62a8dd97943f407baf43d5381f5becd9, type: 3}
   m_Name: StoreItem_Health
   m_EditorClassIdentifier: 
-  _storeText: H
+  _storeButtonName: Health
   _uiReplacePrefab: {fileID: 4322733293806013498, guid: abfd8e1de2df89f4c9615dc26a43e361, type: 3}
   _onPurchaseEvent: {fileID: 11400000, guid: c938fec1d2bbe3d44a3ac0762139168a, type: 2}
-  _incrementOnPurchase:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
-  _incrementAmount:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 0}
-  _resourceCost:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 5
-    Variable: {fileID: 0}
-  _rareResourceCost:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
-  _enemyResourceCost:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
+  _resourceCost: 5
+  _rareResourceCost: 0
+  _enemyResourceCost: 0
+  PurchaseItems:
+  - _incrementOnPurchase: {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
+    _storeText: H
+    _incrementAmount: 1

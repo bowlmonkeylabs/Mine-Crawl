@@ -39,22 +39,30 @@ namespace BML.Scripts
 
             if (_isGodModeEnabled.Value)
             {
-                storeItem._incrementOnPurchase.Value += storeItem._incrementAmount.Value;
+                DoPurchase(storeItem);
                 return;
             }
 
-            if (_resourceCount.Value < storeItem._resourceCost.Value ||
-                _rareResourceCount.Value < storeItem._rareResourceCost.Value ||
-                _enemyResourceCount.Value < storeItem._enemyResourceCost.Value)
+            if (_resourceCount.Value < storeItem._resourceCost ||
+                _rareResourceCount.Value < storeItem._rareResourceCost ||
+                _enemyResourceCount.Value < storeItem._enemyResourceCost)
                 return;
             
                 
             
-            _resourceCount.Value -= storeItem._resourceCost.Value;
-            _rareResourceCount.Value -= storeItem._rareResourceCost.Value;
-            _enemyResourceCount.Value -= storeItem._enemyResourceCost.Value;
+            _resourceCount.Value -= storeItem._resourceCost;
+            _rareResourceCount.Value -= storeItem._rareResourceCost;
+            _enemyResourceCount.Value -= storeItem._enemyResourceCost;
 
-            storeItem._incrementOnPurchase.Value += storeItem._incrementAmount.Value;
+            DoPurchase(storeItem);
+        }
+
+        private void DoPurchase(StoreItem storeItem)
+        {
+            foreach (var purchaseItem in storeItem.PurchaseItems)
+            {
+                purchaseItem._incrementOnPurchase.Value += purchaseItem._incrementAmount;
+            }
         }
     }
 }

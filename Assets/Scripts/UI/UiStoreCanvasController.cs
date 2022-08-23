@@ -4,6 +4,7 @@ using System.Linq;
 using BML.Scripts.Store;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,28 +37,14 @@ namespace BML.Scripts.UI
             {
                 var prefab = storeItem._uiReplacePrefab != null ? storeItem._uiReplacePrefab : _storeUiButtonPrefab;
                 var newStoreItem = GameObjectUtils.SafeInstantiate(true, prefab, _listContainerStoreButtons);
-                newStoreItem.name = $"Button_{storeItem._storeText}";
+                newStoreItem.name = $"Button_{storeItem._storeButtonName}";
                 
                 var purchaseEvent = newStoreItem.GetComponent<StorePurchaseEvent>();
                 purchaseEvent.Init(storeItem._onPurchaseEvent, storeItem);
 
                 var storeItemText = newStoreItem.GetComponentInChildren<TMPro.TMP_Text>();
 
-                storeItemText.text = "";
-                
-                if (storeItem._resourceCost.Value > 0)
-                    storeItemText.text += $" + {storeItem._resourceCost.Value}{_resourceIconText}";
-                
-                if (storeItem._rareResourceCost.Value > 0)
-                    storeItemText.text += $" + {storeItem._rareResourceCost.Value}{_rareResourceIconText}";
-                
-                if (storeItem._enemyResourceCost.Value > 0)
-                    storeItemText.text += $" + {storeItem._enemyResourceCost.Value}{_enemyResourceIconText}";
-
-                //Remove leading +
-                if (storeItemText.text != "") storeItemText.text = storeItemText.text.Substring(3);
-                
-                storeItemText.text += $" -> {storeItem._incrementAmount.Value} {storeItem._storeText}";
+                storeItemText.text = GenerateStoreText(storeItem);
                 
                 var button = newStoreItem.GetComponent<Button>();
                 buttonList.Add(button);
@@ -85,6 +72,36 @@ namespace BML.Scripts.UI
             {
                 GameObject.DestroyImmediate(childObject);
             }
+        }
+
+        private String GenerateStoreText(StoreItem storeItem)
+        {
+            string costText = "";
+            
+            if (storeItem._resourceCost > 0)
+                costText += $" + {storeItem._resourceCost}{_resourceIconText}";
+                
+            if (storeItem._rareResourceCost > 0)
+                costText += $" + {storeItem._rareResourceCost}{_rareResourceIconText}";
+                
+            if (storeItem._enemyResourceCost > 0)
+                costText += $" + {storeItem._enemyResourceCost}{_enemyResourceIconText}";
+
+            //Remove leading +
+            if (costText != "") costText = costText.Substring(3);
+
+            string resultText = "";
+            
+            foreach (var purchaseItem in storeItem.PurchaseItems)
+            {
+                if (!purchaseItem._storeText.IsNullOrWhitespace())  //Dont add if left blank (Ex. for max health also inc health but dont show)
+                    resultText += $" + {purchaseItem._incrementAmount} {purchaseItem._storeText}";
+            }
+
+            //Remove leading +
+            if (resultText != "") resultText = resultText.Substring(3);
+
+            return $"{costText} -> {resultText}";
         }
 
         private void SetNavigationOrder()

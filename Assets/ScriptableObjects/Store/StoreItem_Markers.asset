@@ -12,41 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62a8dd97943f407baf43d5381f5becd9, type: 3}
   m_Name: StoreItem_Markers
   m_EditorClassIdentifier: 
-  _storeText: <sprite="StoreIcons" name="Torch_Icon">
+  _storeButtonName: Markers
   _uiReplacePrefab: {fileID: 0}
   _onPurchaseEvent: {fileID: 11400000, guid: aea5850e50cb86a47af532c61870fd41, type: 2}
-  _incrementOnPurchase:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: dcc1ad60fbe421843b6d6dcec22f6bd3, type: 2}
-  _incrementAmount:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 0}
-  _resourceCost:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
-  _rareResourceCost:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: '{I} '
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
-  _enemyResourceCost:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 0}
+  _resourceCost: 0
+  _rareResourceCost: 0
+  _enemyResourceCost: 1
+  PurchaseItems:
+  - _incrementOnPurchase: {fileID: 11400000, guid: dcc1ad60fbe421843b6d6dcec22f6bd3, type: 2}
+    _storeText: <sprite="StoreIcons" name="Torch_Icon">
+    _incrementAmount: 1

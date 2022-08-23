@@ -12,41 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62a8dd97943f407baf43d5381f5becd9, type: 3}
   m_Name: StoreItem_PickaxeSwingSpeed
   m_EditorClassIdentifier: 
-  _storeText: SS
+  _storeButtonName: PickaxeSwingSpeed
   _uiReplacePrefab: {fileID: 7933450210100238674, guid: 709514f4e32e0ff46a09bab111db93ad, type: 3}
   _onPurchaseEvent: {fileID: 11400000, guid: 512f05b94af7a5746becce7d05a21da3, type: 2}
-  _incrementOnPurchase:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: a154a67fdfe571a4f95520b3d4416149, type: 2}
-  _incrementAmount:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 0}
-  _resourceCost:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
-  _rareResourceCost:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 2
-    Variable: {fileID: 0}
-  _enemyResourceCost:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
+  _resourceCost: 0
+  _rareResourceCost: 2
+  _enemyResourceCost: 0
+  PurchaseItems:
+  - _incrementOnPurchase: {fileID: 11400000, guid: a154a67fdfe571a4f95520b3d4416149, type: 2}
+    _storeText: SS
+    _incrementAmount: 1
