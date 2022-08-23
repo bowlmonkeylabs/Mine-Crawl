@@ -38,12 +38,10 @@ namespace BML.Scripts
                     _camera.m_Lens.Aspect
                 );
                 _camera.m_Lens.FieldOfView = verticalFov;
-                Debug.Log($"Set HFOV: {_fovValue.Value} | VFOV: {verticalFov} | aspect: {_camera.m_Lens.Aspect}");
             }
             else
             {
                 _camera.m_Lens.FieldOfView = _fovValue.Value;
-                Debug.Log($"Set VFOV: {_fovValue.Value}");
             }
         }
     }
