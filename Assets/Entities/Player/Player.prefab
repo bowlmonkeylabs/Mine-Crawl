@@ -874,6 +874,7 @@ GameObject:
   - component: {fileID: 310669043338530568}
   - component: {fileID: 310669043338530569}
   - component: {fileID: 708339657616056763}
+  - component: {fileID: 297433743}
   m_Layer: 7
   m_Name: PlayerFollowCamera
   m_TagString: Untagged
@@ -917,7 +918,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 7730667928466908284}
   m_Lens:
-    FieldOfView: 40
+    FieldOfView: 58.72517
     OrthographicSize: 10
     NearClipPlane: 0.2
     FarClipPlane: 500
@@ -952,6 +953,39 @@ MonoBehaviour:
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: a0dd7973c053207418e10c8f444ee980, type: 2}
   _useHorizontalFov: 1
+--- !u!114 &297433743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310669043338530551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bcc561d61138de47bdb32d717cd44c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnityEvents:
+  - UnityCallback: 2
+    randomDelay: 0
+    delay: 0.05
+    delayMin: 0
+    delayMax: 0
+    unityEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 708339657616056763}
+          m_TargetAssemblyTypeName: BML.Scripts.CinemachineFovSetter, BML.Scripts
+          m_MethodName: SetCinemachineCameraFov
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &310669043950419659
 GameObject:
   m_ObjectHideFlags: 0
@@ -3680,7 +3714,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 40
+  field of view: 58.72517
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
