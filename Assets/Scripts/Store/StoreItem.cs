@@ -19,11 +19,21 @@ namespace BML.Scripts.Store
         [Tooltip("Event the store button raises when this item is selected in UI")]
         public DynamicGameEvent _onPurchaseEvent;
         
+        [PropertySpace(5f, 0f)]
+        [BoxGroup("Cost")] [HorizontalGroup("Cost/H", 10f)]
+        [LabelText("R")] [LabelWidth(25f)]
         public int _resourceCost;
+        
+        [BoxGroup("Cost")] [HorizontalGroup("Cost/H", 10f)]
+        [LabelText("RR")] [LabelWidth(25f)]
         public int _rareResourceCost;
+        
+        [BoxGroup("Cost")] [HorizontalGroup("Cost/H", 10f)]
+        [LabelText("ER")] [LabelWidth(25f)]
         public int _enemyResourceCost;
         
-        [Tooltip("List of items to ")]
+        [Tooltip("List of items to Increment on Purchase")]
+        [PropertySpace(5f, 0f)]
         public List<PurchaseItem> PurchaseItems;
     }
 

@@ -31,7 +31,7 @@ namespace BML.Scripts.UI
         [Button("Generate Store Items")]
         public void GenerateStoreItems()
         {
-            DestoryStoreItems();
+            DestroyShopItems();
             
             foreach (var storeItem in _storeInventory.StoreItems)
             {
@@ -62,7 +62,7 @@ namespace BML.Scripts.UI
         }
 
         [Button("Destroy Store Items")]
-        public void DestoryStoreItems()
+        public void DestroyShopItems()
         {
             buttonList.Clear();
             var children = Enumerable.Range(0, _listContainerStoreButtons.childCount)
