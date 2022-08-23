@@ -33,12 +33,13 @@ namespace BML.Scripts.Player
 		
 		[SerializeField] private BoolReference _isPaused;
 		[SerializeField] private BoolReference _isStoreOpen;
+		[SerializeField] private BoolReference _isDebugOverlayOpen; // This is specifically exluceded from _containerUiMenuStates, so this acts as an overlay rather than an interactable menu.
 		[SerializeField] private BoolReference _isGodModeEnabled;
 		[SerializeField] private BoolReference _isNoClipEnabled;
 		[SerializeField] private GameEvent _onAddEnemyHealth;
-        [SerializeField] private GameEvent _onOpenDebugUi;
 
 		[SerializeField] private VariableContainer _containerUiMenuStates;
+		
 		[SerializeField] private PlayerInput playerInput;
 		
 		private bool isUsingUi
@@ -57,6 +58,8 @@ namespace BML.Scripts.Player
 			
 		}
 		
+		#region Unity lifecycle
+		
 		private void OnEnable()
 		{
 			ApplyUiState();
@@ -72,6 +75,16 @@ namespace BML.Scripts.Player
 		{
 			_containerUiMenuStates.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyUiState));
 		}
+		
+		private void OnApplicationFocus(bool hasFocus)
+		{
+			// SetCursorState(playerCursorLocked);
+			ApplyUiState();
+		}
+		
+		#endregion
+		
+		#region Input callbacks
 		
 		public void OnMove(InputValue value)
 		{
@@ -131,32 +144,14 @@ namespace BML.Scripts.Player
         public void OnOpenDebugUi()
 		{
             Debug.Log($"Pressed Debug Ui");
-			_onOpenDebugUi.Raise();
+			_isDebugOverlayOpen.Value = !_isDebugOverlayOpen.Value;
 		}
-		
-		
-		
+        
 		public void OnUnlockCursor()
 		{
 			SetCursorState(false);
 		}
 		
-		public void ApplyUiState()
-		{
-			// Debug.Log($"Apply Ui State: {isUsingUi} => {playerInput.currentActionMap.name} {Cursor.lockState}");
-			if (isUsingUi)
-			{
-				playerInput.SwitchCurrentActionMap("UI");
-				SetCursorState(false);
-			}
-			else
-			{
-				playerInput.SwitchCurrentActionMap("Player");
-				SetCursorState(playerCursorLocked);
-			}
-			// Debug.Log($"Updated to: {playerInput.currentActionMap.name} {Cursor.lockState}");
-		}
-
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
@@ -183,12 +178,24 @@ namespace BML.Scripts.Player
 			sprint = newSprintState;
 		}
 		
-		private void OnApplicationFocus(bool hasFocus)
+		#endregion
+		
+		public void ApplyUiState()
 		{
-			// SetCursorState(playerCursorLocked);
-			ApplyUiState();
+			// Debug.Log($"Apply Ui State: {isUsingUi} => {playerInput.currentActionMap.name} {Cursor.lockState}");
+			if (isUsingUi)
+			{
+				playerInput.SwitchCurrentActionMap("UI");
+				SetCursorState(false);
+			}
+			else
+			{
+				playerInput.SwitchCurrentActionMap("Player");
+				SetCursorState(playerCursorLocked);
+			}
+			// Debug.Log($"Updated to: {playerInput.currentActionMap.name} {Cursor.lockState}");
 		}
-
+		
 		private void SetCursorState(bool newState)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
