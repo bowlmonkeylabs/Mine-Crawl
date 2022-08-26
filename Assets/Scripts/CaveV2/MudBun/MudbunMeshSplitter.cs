@@ -181,8 +181,8 @@ namespace BML.Scripts.CaveV2.MudBun
 
         private void SeparateMeshPart(string objName, string layerName, List<int> triangleList)
         {
-            var separateMeshObj =
-                GameObjectUtils.SafeInstantiate(false, new GameObject(), transform.parent);
+            var separateMeshObj = new GameObject(objName);
+            separateMeshObj.transform.parent = transform.parent;
             separateMeshObj.name = objName;
             separateMeshObj.layer = LayerMask.NameToLayer(layerName);
             MeshFilter meshFilter = separateMeshObj.AddComponent<MeshFilter>();
