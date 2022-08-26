@@ -14,29 +14,33 @@ namespace BML.Scripts.CaveV2.MudBun
     [ExecuteAlways]
     public class MudbunMeshSplitter : MonoBehaviour
     {
-        [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
         [Required, SerializeField] private MudRenderer _mudRenderer;
         [Tooltip("Separate the mudbun mesh into wall and ground after mudbun adds collider. Should be TRUE for play/build.")]
         [Required, SerializeField] private bool _separateAfterAddMudbunCollider = true;
+        [Required, SerializeField] private bool _enableLogs;
         [SerializeField] private float _groundDotProductMin = 0f;
         [SerializeField] private string _groundLayer = "Terrain";
         [SerializeField] private string _wallLayer = "Obstacle";
         [SerializeField] private string _groundObjName = "Cave_Ground";
         [SerializeField] private string _wallObjName = "Cave_Walls";
         
-        [FoldoutGroup("Debug")] [SerializeField] [ReadOnly] private MeshFilter _meshFilter;
-        [FoldoutGroup("Debug")] [SerializeField] [ReadOnly] private MeshRenderer _meshRenderer;
-        [FoldoutGroup("Debug")] [SerializeField] [ReadOnly] private MeshCollider _meshCollider;
+        [FoldoutGroup("Debug"), SerializeField, ReadOnly] private MeshFilter _meshFilter;
+        [FoldoutGroup("Debug"), SerializeField, ReadOnly] private MeshRenderer _meshRenderer;
+        [FoldoutGroup("Debug"), SerializeField, ReadOnly] private MeshCollider _meshCollider;
+        [FoldoutGroup("Debug"), SerializeField, ReadOnly] private GameObject _groundObj;
+        [FoldoutGroup("Debug"), SerializeField, ReadOnly] private GameObject _wallObj;
 
-        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private int[] _triangles;
-        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private Vector3[] _normals;
-        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private Vector3[] _vertices;
-        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<Vector3> faceNormals = new List<Vector3>();
-        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<int> triangleIndices_g = new List<int>();
-        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<int> triangleIndices_w = new List<int>();
-        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<int> g_trianglesList = new List<int>();
-        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<int> w_trianglesList = new List<int>();
-        
+        [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] private int[] _triangles;
+        [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] private Vector3[] _normals;
+        [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] private Vector3[] _vertices;
+        [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] private List<Vector3> faceNormals = new List<Vector3>();
+        [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] private List<int> triangleIndices_g = new List<int>();
+        [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] private List<int> triangleIndices_w = new List<int>();
+        [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] private List<int> g_trianglesList = new List<int>();
+        [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] private List<int> w_trianglesList = new List<int>();
+
+        public bool IsMeshSeparated => (_groundObj != null || _wallObj != null);
+
         private Mesh mesh_original;
 
         #region Unity Lifecycle
@@ -53,6 +57,9 @@ namespace BML.Scripts.CaveV2.MudBun
 
         #endregion
 
+
+        #region Slice/Separate Mesh
+        
         private void GatherMeshData()
         {
             if (_meshFilter == null)
@@ -73,9 +80,9 @@ namespace BML.Scripts.CaveV2.MudBun
             _vertices = mesh_original.vertices;
 
             
-            Debug.Log($"Normals size: {_normals.Length}");
-            Debug.Log($"Triangles size: {_triangles.Length}");
-            Debug.Log($"Vertices size: {_vertices.Length}");
+            if (_enableLogs) Debug.Log($"Normals size: {_normals.Length}");
+            if (_enableLogs) Debug.Log($"Triangles size: {_triangles.Length}");
+            if (_enableLogs) Debug.Log($"Vertices size: {_vertices.Length}");
             
             // See this post to use normals of triangle face, NOT THE VERTICES' NORMALS
             // https://forum.unity.com/threads/how-do-i-get-the-normal-of-each-triangle-in-mesh.101018/
@@ -110,12 +117,13 @@ namespace BML.Scripts.CaveV2.MudBun
 
                 j++;
             }
-            Debug.Log($"Iterations {j} | Count: {triangleIndices_g.Count}");
+            if (_enableLogs) Debug.Log($"Iterations {j} | Count: {triangleIndices_g.Count}");
             
-            Debug.Log($"Detected {triangleIndices_g.Count} / {_triangles.Length / 3f} triangles that are ground");
+            if (_enableLogs) Debug.Log($"Detected {triangleIndices_g.Count} / {_triangles.Length / 3f} triangles that are ground");
         }
         
-        [Button]
+        [Button, PropertyOrder(-1), DisableIf("IsMeshSeparated")]
+        [InfoBox("Slicing is disabled while separated mesh exists.", InfoMessageType.Warning, "IsMeshSeparated")]
         public void SliceMesh()
         {
             GatherMeshData();
@@ -146,7 +154,7 @@ namespace BML.Scripts.CaveV2.MudBun
 
             // Split the original mesh into 2 submeshes and assign same material
             mesh_original.subMeshCount = 2;
-            Debug.Log($"Incrementing submesh count: {mesh_original.subMeshCount}");
+            if (_enableLogs) Debug.Log($"Incrementing submesh count: {mesh_original.subMeshCount}");
 
             Material[] materials = new Material[2];
             materials[0] = _meshRenderer.sharedMaterials[0];
@@ -169,17 +177,18 @@ namespace BML.Scripts.CaveV2.MudBun
             SeparateMesh();
         }
 
-        [Button]
+        [Button, PropertyOrder(-1), DisableIf("IsMeshSeparated")]
+        [InfoBox("Separating is disabled while separated mesh exists.", InfoMessageType.Warning, "IsMeshSeparated")]
         public void SeparateMesh()
         {
             SliceMesh();
-            SeparateMeshPart(_groundObjName, _groundLayer, g_trianglesList);
-            SeparateMeshPart(_wallObjName, _wallLayer, w_trianglesList);
+            _groundObj = SeparateMeshPart(_groundObjName, _groundLayer, g_trianglesList);
+            _wallObj = SeparateMeshPart(_wallObjName, _wallLayer, w_trianglesList);
             if (_meshRenderer != null) _meshRenderer.enabled = false;
             if (_meshCollider != null) _meshCollider.enabled = false;
         }
 
-        private void SeparateMeshPart(string objName, string layerName, List<int> triangleList)
+        private GameObject SeparateMeshPart(string objName, string layerName, List<int> triangleList)
         {
             var separateMeshObj = new GameObject(objName);
             separateMeshObj.transform.parent = transform.parent;
@@ -209,6 +218,10 @@ namespace BML.Scripts.CaveV2.MudBun
             meshCollider.sharedMesh = mesh;
             meshRenderer.sharedMaterial = _meshRenderer.sharedMaterial;
             meshRenderer.shadowCastingMode = ShadowCastingMode.Off;
+
+            return separateMeshObj;
         }
+        
+        #endregion
     }
 }
