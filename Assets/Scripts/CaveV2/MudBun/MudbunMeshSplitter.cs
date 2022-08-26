@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using BML.Scripts.Utils;
 using MudBun;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
@@ -15,8 +16,13 @@ namespace BML.Scripts.CaveV2.MudBun
     public class MudbunMeshSplitter : MonoBehaviour
     {
         [Required, SerializeField] private MudRenderer _mudRenderer;
+        
         [Tooltip("Separate the mudbun mesh into wall and ground after mudbun adds collider. Should be TRUE for play/build.")]
         [Required, SerializeField] private bool _separateAfterAddMudbunCollider = true;
+        
+        [Tooltip("Undo separation when mudbun is unlocked. Should be TRUE unless debugging")]
+        [Required, SerializeField] private bool _undoSeparateAfterMudbunUnlocked = true;
+        
         [Required, SerializeField] private bool _enableLogs;
         [SerializeField] private float _groundDotProductMin = 0f;
         [SerializeField] private string _groundLayer = "Terrain";
@@ -48,11 +54,13 @@ namespace BML.Scripts.CaveV2.MudBun
         private void OnEnable()
         {
             _mudRenderer.OnAfterAddCollider += SeparateMeshOnLock;
+            _mudRenderer.OnAfterUnlockMesh += UndoSeparatedMesh;
         }
 
         private void OnDisable()
         {
             _mudRenderer.OnAfterAddCollider -= SeparateMeshOnLock;
+            _mudRenderer.OnAfterUnlockMesh -= UndoSeparatedMesh;
         }
 
         #endregion
@@ -222,6 +230,30 @@ namespace BML.Scripts.CaveV2.MudBun
             return separateMeshObj;
         }
         
+        #endregion
+
+        #region Cleanup
+
+        public bool IsMeshNotSeparated => !IsMeshSeparated;
+        
+        [Button, PropertyOrder(-1), EnableIf("IsMeshSeparated")]
+        [InfoBox("Separated mesh does not exist.", InfoMessageType.Warning, "IsMeshNotSeparated")]
+        public void UndoSeparatedMesh()
+        {
+            if (!IsMeshSeparated)
+                return;
+            
+            if (_enableLogs) Debug.Log("Undoing separated mesh");
+
+            if (!_groundObj.SafeIsUnityNull())
+                DestroyImmediate(_groundObj, false);
+            if (!_wallObj.SafeIsUnityNull())
+                DestroyImmediate(_wallObj, false);
+            
+            if (_meshRenderer != null) _meshRenderer.enabled = true;
+            if (_meshCollider != null) _meshCollider.enabled = true;
+        }
+
         #endregion
     }
 }
