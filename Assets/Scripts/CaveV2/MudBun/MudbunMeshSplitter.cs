@@ -1,32 +1,37 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace BML.Scripts.CaveV2.MudBun
 {
     public class MudbunMeshSplitter : MonoBehaviour
     {
-        [SerializeField] private MeshFilter _meshFilter;
-        [SerializeField] private MeshRenderer _meshRenderer;
         [SerializeField] private float _groundDotProductMin = 0f;
         [SerializeField] private string _groundLayer = "Terrain";
         [SerializeField] private string _wallLayer = "Obstacle";
+        [SerializeField] private string _groundObjName = "Cave_Ground";
+        [SerializeField] private string _wallObjName = "Cave_Walls";
+        
+        [FoldoutGroup("Debug")] [SerializeField] [ReadOnly] private MeshFilter _meshFilter;
+        [FoldoutGroup("Debug")] [SerializeField] [ReadOnly] private MeshRenderer _meshRenderer;
+        [FoldoutGroup("Debug")] [SerializeField] [ReadOnly] private MeshCollider _meshCollider;
 
-        [ShowInInspector] [ReadOnly] private List<int> _triangles = new List<int>();
-        [ShowInInspector] [ReadOnly] private List<Vector3> _normals = new List<Vector3>();
-        [ShowInInspector] [ReadOnly] private List<Vector3>  _vertices = new List<Vector3>();
+        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private int[] _triangles;
+        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private Vector3[] _normals;
+        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private Vector3[] _vertices;
+        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<Vector3> faceNormals = new List<Vector3>();
+        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<int> triangleIndices_g = new List<int>();
+        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<int> triangleIndices_w = new List<int>();
+        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<int> g_trianglesList = new List<int>();
+        [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<int> w_trianglesList = new List<int>();
         
-        private List<Vector3> faceNormals = new List<Vector3>();
-        private List<int> triangleIndices_g = new List<int>();
-        private List<int> triangleIndices_w = new List<int>();
-        private List<int> g_trianglesList = new List<int>();
-        private List<int> w_trianglesList = new List<int>();
-        
-        
-        [Button]
-        public void SliceMesh()
+        private Mesh mesh_original;
+
+        private void GatherMeshData()
         {
             if (_meshFilter == null)
                 _meshFilter = GetComponent<MeshFilter>();
@@ -34,134 +39,147 @@ namespace BML.Scripts.CaveV2.MudBun
             if (_meshRenderer == null)
                 _meshRenderer = GetComponent<MeshRenderer>();
             
-            //TODO: use mesh instead of sharedMesh for runtime?
-            Mesh mesh = _meshFilter.sharedMesh;
+            if (_meshCollider == null)
+                _meshCollider = GetComponent<MeshCollider>();
             
-            Vector3[] normals = mesh.normals;
-            int[] triangles = mesh.triangles;
-            Vector3[] vertices = mesh.vertices;
+            // Use mesh instead of sharedMesh for runtime?
+            // Seems to work fine for this procedural mesh...
+            mesh_original = _meshFilter.sharedMesh;
+            
+            _normals = mesh_original.normals;
+            _triangles = mesh_original.triangles;
+            _vertices = mesh_original.vertices;
 
-            _normals = normals.ToList();
-            _triangles = triangles.ToList();
-            _vertices = vertices.ToList();
             
-            Debug.Log($"Normals size: {normals.Length}");
-            Debug.Log($"Triangles size: {triangles.Length}");
-            Debug.Log($"Vertices size: {vertices.Length}");
+            Debug.Log($"Normals size: {_normals.Length}");
+            Debug.Log($"Triangles size: {_triangles.Length}");
+            Debug.Log($"Vertices size: {_vertices.Length}");
             
-            //See this post to use normals of triangle face, NOT THE VERTICES
-            //https://forum.unity.com/threads/how-do-i-get-the-normal-of-each-triangle-in-mesh.101018/
+            // See this post to use normals of triangle face, NOT THE VERTICES' NORMALS
+            // https://forum.unity.com/threads/how-do-i-get-the-normal-of-each-triangle-in-mesh.101018/
             
-            //Loop through triangle indices and calculate the face normal for each triangle
-            //Store this normal in a list whose index is the triangle's index
-            for(int i = 0; i < triangles.Length;)
+            // Loop through triangle indices and calculate the face normal for each triangle face
+            // Store this normal in a list whose index is the triangle's index
+            faceNormals.Clear();
+            for(int i = 0; i < _triangles.Length;)
             {
-                //Vector3 P1 = vertices[triangles[i]];
-                Vector3 N1 = normals[triangles[i]];
+                Vector3 N1 = _normals[_triangles[i]];
                 i++;
-                
-                //Vector3 P2 = vertices[triangles[i]];
-                Vector3 N2 = normals[triangles[i]];
+                Vector3 N2 = _normals[_triangles[i]];
                 i++;
-                
-                //Vector3 P3 = vertices[triangles[i]];
-                Vector3 N3 = normals[triangles[i]];
+                Vector3 N3 = _normals[_triangles[i]];
                 i++;
 
                 Vector3 faceNormal = (N1 + N2 + N3) / 3;
                 faceNormals.Add(faceNormal);
             }
+
+            triangleIndices_g.Clear();
+            triangleIndices_w.Clear();
             
+            // Determine if triangles are ground or wall
+            int j = 0;
             for (int i = 0; i < faceNormals.Count; i++)
             {
                 if (Vector3.Dot(faceNormals[i], Vector3.up) > _groundDotProductMin)
                     triangleIndices_g.Add(i);
                 else
                     triangleIndices_w.Add(i);
+
+                j++;
             }
+            Debug.Log($"Iterations {j} | Count: {triangleIndices_g.Count}");
             
-            Debug.Log($"Detected {triangleIndices_g.Count} / {triangles.Length / 3f} triangles that are ground");
+            Debug.Log($"Detected {triangleIndices_g.Count} / {_triangles.Length / 3f} triangles that are ground");
+        }
+        
+        [Button]
+        public void SliceMesh()
+        {
+            GatherMeshData();
             
+            // For each triangle, there are 3 vertex indexes
             int[] g_triangles = new int[triangleIndices_g.Count * 3];
             int[] w_triangles = new int[triangleIndices_w.Count * 3];
 
-            //Set ground data
-            //Store the actual triangle vertex index triplets in array
+            // Set ground data
+            // Store the actual triangle vertex index triplets in array
             for (int i = 0; i < triangleIndices_g.Count; i++)
             {
-                g_triangles[i * 3] = triangles[triangleIndices_g[i] * 3];
-                g_triangles[i * 3 + 1] = triangles[triangleIndices_g[i] * 3 + 1];
-                g_triangles[i * 3 + 2] = triangles[triangleIndices_g[i] * 3 + 2];
+                g_triangles[i * 3] = _triangles[triangleIndices_g[i] * 3];
+                g_triangles[i * 3 + 1] = _triangles[triangleIndices_g[i] * 3 + 1];
+                g_triangles[i * 3 + 2] = _triangles[triangleIndices_g[i] * 3 + 2];
             }
-
             g_trianglesList = g_triangles.ToList();
             
             //Set wall data
             //Store the actual triangle vertex index triplets in array
             for (int i = 0; i < triangleIndices_w.Count; i++)
             {
-                w_triangles[i * 3] = triangles[triangleIndices_w[i] * 3];
-                w_triangles[i * 3 + 1] = triangles[triangleIndices_w[i] * 3 + 1];
-                w_triangles[i * 3 + 2] = triangles[triangleIndices_w[i] * 3 + 2];
+                w_triangles[i * 3] = _triangles[triangleIndices_w[i] * 3];
+                w_triangles[i * 3 + 1] = _triangles[triangleIndices_w[i] * 3 + 1];
+                w_triangles[i * 3 + 2] = _triangles[triangleIndices_w[i] * 3 + 2];
             }
-
             w_trianglesList = w_triangles.ToList();
 
-            mesh.subMeshCount = 2;
-            Debug.Log($"Incrementing submesh count: {mesh.subMeshCount}");
+            // Split the original mesh into 2 submeshes and assign same material
+            mesh_original.subMeshCount = 2;
+            Debug.Log($"Incrementing submesh count: {mesh_original.subMeshCount}");
 
-            mesh.SetTriangles(g_triangles, 0);
-            mesh.SetTriangles(w_triangles, 1);
+            Material[] materials = new Material[2];
+            materials[0] = _meshRenderer.sharedMaterials[0];
+            materials[1] = materials[0];
+            _meshRenderer.sharedMaterials = materials;
+
+            mesh_original.SetTriangles(g_triangles, 1);
+            mesh_original.SetTriangles(w_triangles, 0);
             
-            mesh.RecalculateNormals();
-            mesh.RecalculateBounds();
-            mesh.RecalculateTangents();
+            mesh_original.RecalculateNormals();
+            mesh_original.RecalculateBounds();
+            mesh_original.RecalculateTangents();
 
-            _meshFilter.sharedMesh = mesh;
+            _meshFilter.sharedMesh = mesh_original;
         }
 
         [Button]
         public void SeparateMesh()
         {
-            var wallsObj =
-                GameObjectUtils.SafeInstantiate(false, new GameObject(), transform.parent);
-            wallsObj.name = "Cave_Walls";
-            wallsObj.layer = LayerMask.NameToLayer(_wallLayer);
-            MeshFilter meshfilter_w = wallsObj.AddComponent<MeshFilter>();
-            Mesh mesh_w = new Mesh();
-            MeshRenderer meshRenderer_w = wallsObj.AddComponent<MeshRenderer>();
-            MeshCollider meshCollider_w = wallsObj.AddComponent<MeshCollider>();
-            
-            mesh_w.Clear();
-            mesh_w.SetVertices(_vertices);
-            mesh_w.SetTriangles(w_trianglesList, 0);
-            mesh_w.SetColors(_meshFilter.sharedMesh.colors);
-            mesh_w.RecalculateNormals();
-            mesh_w.RecalculateBounds();
-            mesh_w.RecalculateTangents();
-            meshfilter_w.sharedMesh = mesh_w;
-            meshCollider_w.sharedMesh = mesh_w;
-            meshRenderer_w.material = _meshRenderer.material;
+            SeparateMeshPart(_groundObjName, _groundLayer, g_trianglesList);
+            SeparateMeshPart(_wallObjName, _wallLayer, w_trianglesList);
+            _meshRenderer.enabled = false;
+            _meshCollider.enabled = false;
+        }
 
-            var groundObj =
+        private void SeparateMeshPart(string objName, string layerName, List<int> triangleList)
+        {
+            var separateMeshObj =
                 GameObjectUtils.SafeInstantiate(false, new GameObject(), transform.parent);
-            groundObj.name = "Cave_Ground";
-            groundObj.layer = LayerMask.NameToLayer(_groundLayer);
-            MeshFilter meshfilter_g = groundObj.AddComponent<MeshFilter>();
-            Mesh mesh_g = new Mesh();
-            MeshRenderer meshRenderer_g = groundObj.AddComponent<MeshRenderer>();
-            MeshCollider meshCollider_g = groundObj.AddComponent<MeshCollider>();
+            separateMeshObj.name = objName;
+            separateMeshObj.layer = LayerMask.NameToLayer(layerName);
+            MeshFilter meshFilter = separateMeshObj.AddComponent<MeshFilter>();
+            Mesh mesh = new Mesh();
+            MeshRenderer meshRenderer = separateMeshObj.AddComponent<MeshRenderer>();
+            MeshCollider meshCollider = separateMeshObj.AddComponent<MeshCollider>();
             
-            mesh_g.Clear();
-            mesh_g.SetVertices(_vertices);
-            mesh_g.SetTriangles(g_trianglesList, 0);
-            mesh_g.SetColors(_meshFilter.sharedMesh.colors);
-            mesh_g.RecalculateNormals();
-            mesh_g.RecalculateBounds();
-            mesh_g.RecalculateTangents();
-            meshfilter_g.sharedMesh = mesh_g;
-            meshCollider_g.sharedMesh = mesh_g;
-            meshRenderer_g.material = _meshRenderer.material;
+            mesh.Clear();
+            
+            // Right now copying all vertices from original mesh just to preserve their index
+            // Not sure if this could lead any issues or pref impacts later down the line
+            // https://answers.unity.com/questions/947930/create-a-mesh-from-a-sub-mesh.html
+            mesh.SetVertices(_vertices);
+            mesh.SetTriangles(triangleList, 0);
+            mesh.SetColors(_meshFilter.sharedMesh.colors);
+            mesh.SetUVs(0, _meshFilter.sharedMesh.uv);
+            mesh.SetNormals(_normals);
+            mesh.SetTangents(_meshFilter.sharedMesh.tangents);
+            mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
+            mesh.Optimize();
+            // mesh.RecalculateBounds();
+            meshFilter.sharedMesh = mesh;
+            meshCollider.sharedMesh = mesh;
+            meshRenderer.sharedMaterial = _meshRenderer.sharedMaterial;
+            meshRenderer.shadowCastingMode = ShadowCastingMode.Off;
         }
     }
 }
