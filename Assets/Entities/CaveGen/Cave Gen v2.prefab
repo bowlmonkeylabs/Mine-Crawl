@@ -48,12 +48,12 @@ MonoBehaviour:
   _generateOnChange: 1
   _maxGeneratesPerSecond: 4
   _lockAfterGenerate: 1
-  _lockInEditMode: 0
+  _lockInEditMode: 1
   _requireManualUnlock: 0
   _mudRenderer: {fileID: 5384662947967996456}
   _invertNormals: 1
   _instanceAsPrefabs: 1
-  _enableLogs: 0
+  _enableLogs: 1
   _caveGenerator: {fileID: 5384662949636187768}
   _caveGraphRenderParams: {fileID: 11400000, guid: 6ec58bae35629cd408fb088282212513, type: 2}
 --- !u!114 &5384662947967996456
@@ -180,7 +180,7 @@ MonoBehaviour:
   RecursiveLockMeshByEditor: 1
   RememberLockedMeshMaterialByEditor: 1
   MeshGenerationLockOnStartByEditor: 0
-  m_lastLockedMeshMaterial: {fileID: 2100000, guid: c451390b22e2f4f43b8547f996781afc, type: 2}
+  m_lastLockedMeshMaterial: {fileID: 2100000, guid: bd60708c43fe77445bd908877d1cbc6e, type: 2}
   m_aBrushTransformCache: []
   m_aNestedRendereTransformCache: []
   m_isMeshLocked: 0
@@ -212,8 +212,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b53ed7d0319f4b7b9f7ca51fd27ea387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _caveGenerator: {fileID: 5384662949636187768}
+  _mudRenderer: {fileID: 5384662947967996456}
+  _separateAfterAddMudbunCollider: 1
+  _groundDotProductMin: 0
+  _groundLayer: Terrain
+  _wallLayer: Obstacle
+  _groundObjName: Cave_Ground
+  _wallObjName: Cave_Walls
   _meshFilter: {fileID: 0}
   _meshRenderer: {fileID: 0}
+  _meshCollider: {fileID: 0}
 --- !u!1 &5384662948231364056
 GameObject:
   m_ObjectHideFlags: 0
@@ -316,7 +325,7 @@ MonoBehaviour:
   _retryOnFailure: 1
   _maxRetryDepth: 10
   _showTraversabilityCheck: 1
-  _enableLogs: 0
+  _enableLogs: 1
   _caveGenBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 15, y: 10, z: 15}

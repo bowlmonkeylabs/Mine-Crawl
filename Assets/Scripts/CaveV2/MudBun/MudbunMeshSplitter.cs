@@ -1,15 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using BML.Scripts.Utils;
+using MudBun;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.CaveV2.MudBun
 {
+    [ExecuteAlways]
     public class MudbunMeshSplitter : MonoBehaviour
     {
+        [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
+        [Required, SerializeField] private MudRenderer _mudRenderer;
+        [Tooltip("Separate the mudbun mesh into wall and ground after mudbun adds collider. Should be TRUE for play/build.")]
+        [Required, SerializeField] private bool _separateAfterAddMudbunCollider = true;
         [SerializeField] private float _groundDotProductMin = 0f;
         [SerializeField] private string _groundLayer = "Terrain";
         [SerializeField] private string _wallLayer = "Obstacle";
@@ -30,6 +38,20 @@ namespace BML.Scripts.CaveV2.MudBun
         [FoldoutGroup("Debug")] [ShowInInspector] [ReadOnly] private List<int> w_trianglesList = new List<int>();
         
         private Mesh mesh_original;
+
+        #region Unity Lifecycle
+
+        private void OnEnable()
+        {
+            _mudRenderer.OnAfterAddCollider += SeparateMeshOnLock;
+        }
+
+        private void OnDisable()
+        {
+            _mudRenderer.OnAfterAddCollider -= SeparateMeshOnLock;
+        }
+
+        #endregion
 
         private void GatherMeshData()
         {
@@ -141,13 +163,20 @@ namespace BML.Scripts.CaveV2.MudBun
             _meshFilter.sharedMesh = mesh_original;
         }
 
+        private void SeparateMeshOnLock()
+        {
+            if (!_separateAfterAddMudbunCollider) return;
+            SeparateMesh();
+        }
+
         [Button]
         public void SeparateMesh()
         {
+            SliceMesh();
             SeparateMeshPart(_groundObjName, _groundLayer, g_trianglesList);
             SeparateMeshPart(_wallObjName, _wallLayer, w_trianglesList);
-            _meshRenderer.enabled = false;
-            _meshCollider.enabled = false;
+            if (_meshRenderer != null) _meshRenderer.enabled = false;
+            if (_meshCollider != null) _meshCollider.enabled = false;
         }
 
         private void SeparateMeshPart(string objName, string layerName, List<int> triangleList)
