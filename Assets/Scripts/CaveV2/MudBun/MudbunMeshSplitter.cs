@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.Utils;
 using MudBun;
 using Sirenix.OdinInspector;
@@ -29,6 +30,7 @@ namespace BML.Scripts.CaveV2.MudBun
         [SerializeField] private string _wallLayer = "Obstacle";
         [SerializeField] private string _groundObjName = "Cave_Ground";
         [SerializeField] private string _wallObjName = "Cave_Walls";
+        [SerializeField] private GameEvent _onAfterSeparateMudbunMesh;
         
         [FoldoutGroup("Debug"), SerializeField, ReadOnly] private MeshFilter _meshFilter;
         [FoldoutGroup("Debug"), SerializeField, ReadOnly] private MeshRenderer _meshRenderer;
@@ -189,11 +191,16 @@ namespace BML.Scripts.CaveV2.MudBun
         [InfoBox("Separating is disabled while separated mesh exists.", InfoMessageType.Warning, "IsMeshSeparated")]
         public void SeparateMesh()
         {
+            UndoSeparatedMesh();
             SliceMesh();
+            
             _groundObj = SeparateMeshPart(_groundObjName, _groundLayer, g_trianglesList);
             _wallObj = SeparateMeshPart(_wallObjName, _wallLayer, w_trianglesList);
+            
             if (_meshRenderer != null) _meshRenderer.enabled = false;
             if (_meshCollider != null) _meshCollider.enabled = false;
+            
+            _onAfterSeparateMudbunMesh.Raise();
         }
 
         private GameObject SeparateMeshPart(string objName, string layerName, List<int> triangleList)
