@@ -20,7 +20,10 @@ namespace BML.Scripts.CaveV2.MudBun
         private float _generateMinCooldownSeconds => 1f / (float) _maxGeneratesPerSecond;
 
         [SerializeField] private bool _lockAfterGenerate = false;
-        [SerializeField] private bool _lockInEditMode = true;
+        
+        [SerializeField] [EnableIf("_lockAfterGenerate")] [Tooltip("Enable _lockAfterGenerate for edit mode. _lockAfterGenerate MUST BE TRUE FOR THIS TO WORK.")]
+        private bool _lockInEditMode = true;
+        
         [SerializeField, PropertyTooltip("Use to prevent script from automatically unlocking the Mud Renderer.")] private bool _requireManualUnlock = false;
         
         [Required, SerializeField] private MudRenderer _mudRenderer;
