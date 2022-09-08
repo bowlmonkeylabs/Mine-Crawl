@@ -2213,6 +2213,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+  _onRevive:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &5114166186670533046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2254,6 +2257,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onFailDamage:
+    m_PersistentCalls:
+      m_Calls: []
   _onCrit:
     m_PersistentCalls:
       m_Calls: []
@@ -2301,6 +2307,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onFailDamage:
+    m_PersistentCalls:
+      m_Calls: []
   _onCrit:
     m_PersistentCalls:
       m_Calls: []
@@ -2680,7 +2689,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 60
+  m_Radius: 50
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3322045946328878279
 MonoBehaviour:
@@ -3009,7 +3018,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 15
+  m_Radius: 13
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5380562975934463125
 MonoBehaviour:
@@ -3396,6 +3405,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6535237234419854927}
   - component: {fileID: 3163137778093457544}
+  - component: {fileID: 2558852830267370690}
   m_Layer: 9
   m_Name: PlayerAlertRadius
   m_TagString: PlayerAlertRadius
@@ -3428,8 +3438,36 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 12
+  m_Radius: 15
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2558852830267370690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5372935151083532606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bafb937cf1a47f04f8d27c5e9d7e6f96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 8f8e3727e2c5a4a4a8e566d962a29357, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3163137778093457544}
+        m_TargetAssemblyTypeName: UnityEngine.SphereCollider, UnityEngine
+        m_MethodName: set_radius
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 60
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5433615902667458110
 GameObject:
   m_ObjectHideFlags: 0
@@ -3737,7 +3775,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 58.72517
+  field of view: 40.43891
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

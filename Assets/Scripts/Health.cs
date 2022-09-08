@@ -24,9 +24,11 @@ namespace BML.Scripts
         
         #region Events
 
+        public delegate void _HealthChange(int prev, int current);
         public delegate void _Death();
         public delegate void _Revive();
 
+        public _HealthChange OnHealthChange;
         public _Death OnDeath;
         public _Revive OnRevive;
 
@@ -46,6 +48,8 @@ namespace BML.Scripts
 
         public int Value {get => _useHealthVariable ? _healthReference.Value : _health;}
         public bool IsDead {get => Value <= 0;}
+
+        public int StartingHealth => startingHealth;
 
         #endregion
         
@@ -68,6 +72,7 @@ namespace BML.Scripts
             lastDamageTime = Time.time;
 
             _onHealthChange.Invoke(Value - amount, Value);
+            OnHealthChange?.Invoke(Value - amount, Value);
             if (amount < 0) _onTakeDamage.Invoke();
             
             _value -= amount;

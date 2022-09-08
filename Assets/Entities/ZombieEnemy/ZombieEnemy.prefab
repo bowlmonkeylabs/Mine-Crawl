@@ -663,6 +663,130 @@ MonoBehaviour:
         FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
         MaterialIndexes: 
         UseMaterialPropertyBlocks: 0
+--- !u!1 &1893328506073133822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1071223403468858784}
+  - component: {fileID: 1622378700693179705}
+  - component: {fileID: 4403328305987073040}
+  m_Layer: 10
+  m_Name: AlertIfSpawnInsideTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1071223403468858784
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893328506073133822}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8446087147361510365}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1622378700693179705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893328506073133822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bcc561d61138de47bdb32d717cd44c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnityEvents:
+  - UnityCallback: 2
+    randomDelay: 0
+    delay: 0.01
+    delayMin: 0
+    delayMax: 0
+    unityEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4403328305987073040}
+          m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
+            StateMachine
+          m_MethodName: TryRaise
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &4403328305987073040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893328506073133822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07d9de05a2e70424e8718c7cf216b134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  conditionPreview: '-  Is Exit Challenge Started
+
+'
+  StateMachines: []
+  ValidStates: []
+  InvalidStates: []
+  BoolConditions:
+  - targetParameter:
+      UseConstant: 0
+      EnableInstanceOptions: 0
+      InstanceName: 
+      InstancePath: IntermediateProperties
+      ConstantValue: 0
+      Variable: {fileID: 11400000, guid: 581c62d8d27167049b20ffc6d8c7c015, type: 2}
+    value:
+      UseConstant: 1
+      EnableInstanceOptions: 0
+      InstanceName: 
+      InstancePath: IntermediateProperties
+      ConstantValue: 1
+      Variable: {fileID: 0}
+  FloatConditions: []
+  IntConditions: []
+  TimerConditions: []
+  Vector2Conditions: []
+  Vector3Conditions: []
+  GameEventConditions: []
+  DynamicGameEventConditions: []
+  OnSuccess:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6113328239708198805}
+        m_TargetAssemblyTypeName: BML.Scripts.Alertable, BML.Scripts
+        m_MethodName: SetAlerted
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnFailure:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1943729029533933559
 GameObject:
   m_ObjectHideFlags: 0
@@ -1759,6 +1883,7 @@ Transform:
   - {fileID: 1763207711072474018}
   - {fileID: 8446087146172152300}
   - {fileID: 574196401}
+  - {fileID: 1071223403468858784}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1821,7 +1946,7 @@ MonoBehaviour:
   radius: 0.5
   height: 1.5
   canMove: 1
-  maxSpeed: 1
+  maxSpeed: 2
   gravity: {x: NaN, y: NaN, z: NaN}
   groundMask:
     serializedVersion: 2
@@ -1861,8 +1986,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: {fileID: 5225949785509531780}
   _critMultiplier: 2
-  _invincibilitySeconds: 0
-  _isInvincible: 0
   _onDamage:
     m_PersistentCalls:
       m_Calls:
@@ -1878,6 +2001,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onFailDamage:
+    m_PersistentCalls:
+      m_Calls: []
   _onCrit:
     m_PersistentCalls:
       m_Calls: []
@@ -2203,7 +2329,12 @@ MonoBehaviour:
   _healthReference: {fileID: 0}
   _health: 3
   _useHealthVariable: 0
+  _invincibilitySeconds: 0
+  _isInvincible: 0
   _onHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  _onTakeDamage:
     m_PersistentCalls:
       m_Calls: []
   _onDeath:
@@ -2221,6 +2352,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onRevive:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6574438273452170678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2235,9 +2369,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: {fileID: 5225949785509531780}
   _critMultiplier: 2
-  _invincibilitySeconds: 0
-  _isInvincible: 0
   _onDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  _onFailDamage:
     m_PersistentCalls:
       m_Calls: []
   _onCrit:
