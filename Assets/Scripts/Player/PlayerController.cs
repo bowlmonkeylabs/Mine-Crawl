@@ -38,6 +38,12 @@ namespace BML.Scripts.Player
         [SerializeField] private float _bombThrowForce;
         [SerializeField] private Transform _bombInstanceContainer;
         [SerializeField] private IntReference _inventoryBombCount;
+
+        [TitleGroup("Rope")]
+        [SerializeField] private GameObject _ropePrefab;
+        [SerializeField] private float _ropeThrowForce;
+        [SerializeField] private Transform _ropeInstanceContainer;
+        [SerializeField] private IntReference _inventoryRopeCount;
         
         [TitleGroup("Health")]
         [SerializeField] private Health _healthController;
@@ -105,6 +111,14 @@ namespace BML.Scripts.Player
                 TryThrowBomb();
             }
         }
+
+        private void OnThrowRope(InputValue value)
+        {
+            if (value.isPressed)
+            {
+                TryThrowRope();
+            }
+        }
         
         #endregion
 
@@ -133,6 +147,22 @@ namespace BML.Scripts.Player
         }
 
         #endregion
+
+        #region Throw
+
+        private void Throw(float force, GameObject prefabToThrow, Transform container) {
+            // Calculate throw
+            var throwDir = _mainCamera.forward;
+            var throwForce = throwDir * force;
+            
+            // Instantiate throwable
+            var newGameObject = GameObjectUtils.SafeInstantiate(true, prefabToThrow, container);
+            newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
+            var throwable = newGameObject.GetComponentInChildren<Throwable>();
+            throwable.DoThrow(throwForce);
+        }
+
+        #endregion
         
         #region Torch
 
@@ -144,16 +174,8 @@ namespace BML.Scripts.Player
                 return;
             }
             _inventoryTorchCount.Value -= 1;
-            
-            // Calculate throw
-            var throwDir = _mainCamera.forward;
-            var throwForce = throwDir * _torchThrowForce;
-            
-            // Instantiate torch
-            var newGameObject = GameObjectUtils.SafeInstantiate(true, _torchPrefab, _torchInstanceContainer);
-            newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
-            var newGameObjectRb = newGameObject.GetComponentInChildren<Rigidbody>();
-            newGameObjectRb.AddForce(throwForce, ForceMode.Impulse);
+
+            this.Throw(_torchThrowForce, _torchPrefab, _torchInstanceContainer);
         }
         
         #endregion
@@ -168,16 +190,24 @@ namespace BML.Scripts.Player
                 return;
             }
             _inventoryBombCount.Value -= 1;
+
+            this.Throw(_bombThrowForce, _bombPrefab, _bombInstanceContainer);
+        }
+        
+        #endregion
+
+        #region Rope
+
+        private void TryThrowRope()
+        {
+            // Check torch count
+            if (_inventoryRopeCount.Value <= 0)
+            {
+                return;
+            }
+            _inventoryRopeCount.Value -= 1;
             
-            // Calculate throw
-            var throwDir = _mainCamera.forward;
-            var throwForce = throwDir * _bombThrowForce;
-            
-            // Instantiate torch
-            var newGameObject = GameObjectUtils.SafeInstantiate(true, _bombPrefab, _bombInstanceContainer);
-            newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
-            var newGameObjectRb = newGameObject.GetComponentInChildren<Rigidbody>();
-            newGameObjectRb.AddForce(throwForce, ForceMode.Impulse);
+            this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer);
         }
         
         #endregion

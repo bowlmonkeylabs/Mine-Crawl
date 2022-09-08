@@ -1,11 +1,11 @@
 ﻿//FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
 //https://assetstore.unity.com/packages/essentials/starter-assets-first-person-character-controller-196525
 
-using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Utils;
 using KinematicCharacterController;
 using UnityEngine;
+using MoreMountains.Tools;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -50,6 +50,11 @@ namespace BML.Scripts.Player
 		public float KnockbackVerticalForce = 10f;
 		public float KnockbackDuration = .2f;
 		public AnimationCurve KnockbackHorizontalForceCurve;
+
+        [Header("RopeMovement")]
+        [SerializeField] private BoolReference _isRopeMovementEnabled;
+        [SerializeField] private LayerMask _ropeLayerMask;
+        [SerializeField] private float _ropeMovementSpeed = 15;
 
 		[Header("No Clip Mode")] 
 		[SerializeField] private BoolVariable isNoClipEnabled;
@@ -178,6 +183,11 @@ namespace BML.Scripts.Player
 		        currentVelocity  = _motor.GetDirectionTangentToSurface(currentVelocity ,
 			        _motor.GroundingStatus.GroundNormal) * currentVelocity .magnitude;
 		    }
+
+            if(_isRopeMovementEnabled.Value) {
+                currentVelocity = _ropeMovementSpeed * Vector3.up * _input.move.y;
+                return;
+            }
 		    
 		    // set target speed based on move speed, sprint speed and if sprint is pressed
 		    float sprintSpeed = isNoClipEnabled.Value ? SprintSpeed * noClipSprintMultiplier : SprintSpeed;
@@ -219,10 +229,6 @@ namespace BML.Scripts.Player
 		    {
 			    // move
 			    inputDirection = _mainCamera.transform.right * _input.move.x + _mainCamera.transform.forward * _input.move.y;
-			    if (isNoClipEnabled.Value)
-			    {
-				    inputDirection = _mainCamera.transform.right * _input.move.x + _mainCamera.transform.forward * _input.move.y;
-			    }
 		    }
 
 		    Vector3 horizontalVelocity = inputDirection.normalized * _speed;
@@ -255,7 +261,14 @@ namespace BML.Scripts.Player
 	    public void OnMovementHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint,
 	        ref HitStabilityReport hitStabilityReport)
 	    {
-	        // This is called when the motor's movement logic detects a hit
+            // This is called when the motor's movement logic detects a hit
+
+            if(_ropeLayerMask.MMContains(hitCollider.gameObject)) {
+                originalGravity = Gravity;
+				Gravity = 0f;
+                _motor.ForceUnground();
+                _isRopeMovementEnabled.Value = true;
+            }
 	    }
 
 	    public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint,
@@ -278,6 +291,10 @@ namespace BML.Scripts.Player
 
 		private void GroundedCheck()
 		{
+            if(_isRopeMovementEnabled.Value) {
+                _motor.ForceUnground();
+                return;
+            }
 			Grounded = _motor.GroundingStatus.FoundAnyGround;
 		}
 
@@ -321,7 +338,7 @@ namespace BML.Scripts.Player
 
 		private void JumpAndGravity()
 		{
-			if (Grounded)
+			if (Grounded || _isRopeMovementEnabled.Value)
 			{
 				// reset the fall timeout timer
 				_fallTimeoutDelta = FallTimeout;
@@ -335,6 +352,10 @@ namespace BML.Scripts.Player
 				// Jump
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
+                    if(_isRopeMovementEnabled.Value) {
+                        Gravity = originalGravity;
+                        _isRopeMovementEnabled.Value = false;
+                    }
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_motor.ForceUnground();
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);

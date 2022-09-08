@@ -1944,6 +1944,17 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _isRopeMovementEnabled:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 602ed0103fbb1324ab3af06039d48696, type: 2}
+  _ropeLayerMask:
+    serializedVersion: 2
+    m_Bits: 4096
+  _ropeMovementSpeed: 15
   isNoClipEnabled: {fileID: 11400000, guid: eb030997b85161549968d03364b4c38e, type: 2}
   noClipSprintMultiplier: 5
   noClipCollisionMask:
@@ -2001,6 +2012,16 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 9dad663e7e1b4f14589a7eecb85405f1, type: 2}
+  _ropePrefab: {fileID: 2249430486495901417, guid: 89ee2e44e65e60340b339ee14baac33e, type: 3}
+  _ropeThrowForce: 8
+  _ropeInstanceContainer: {fileID: 0}
+  _inventoryRopeCount:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 3eb5a28a7ccc61c4b8f7017bb113aae2, type: 2}
   _healthController: {fileID: 1905872712608776435}
   _health:
     UseConstant: 0
@@ -2159,6 +2180,9 @@ MonoBehaviour:
   _invincibilitySeconds: 0
   _isInvincible: 0
   _onHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  _onTakeDamage:
     m_PersistentCalls:
       m_Calls: []
   _onDeath:
@@ -3719,7 +3743,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 11519
+    m_Bits: 27903
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
