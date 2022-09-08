@@ -13,18 +13,23 @@ namespace BML.Scripts
         [SerializeField] private Health health;
         [SerializeField] private int _critMultiplier = 2;
         
-
         [SerializeField] private UnityEvent<HitInfo> _onDamage;
+        [SerializeField] private UnityEvent<HitInfo> _onFailDamage;
         [SerializeField] private UnityEvent<HitInfo> _onCrit;
         [SerializeField] private UnityEvent _onDeath;
 
         
-
         public void TakeDamage(HitInfo hitInfo)
         {
+            //Don't play feedbacks if didn't actually take damage
+            if (!health.DecrementHealth(hitInfo.Damage))
+            {
+                _onFailDamage.Invoke(hitInfo);
+                return;
+            }
+                
+            
             _onDamage.Invoke(hitInfo);
-
-            health.DecrementHealth(hitInfo.Damage);
 
             if(health.IsDead) {
                 _onDeath.Invoke();
