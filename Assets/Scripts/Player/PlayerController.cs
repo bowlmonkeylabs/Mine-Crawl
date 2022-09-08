@@ -40,6 +40,7 @@ namespace BML.Scripts.Player
         [SerializeField] private IntReference _inventoryBombCount;
         
         [TitleGroup("Health")]
+        [SerializeField] private Health _healthController;
         [SerializeField] private IntReference _health;
         [SerializeField] private IntReference _maxHealth;
 
@@ -186,7 +187,7 @@ namespace BML.Scripts.Player
         private void SetGodMode()
         {
             foreach(Damageable damageable in GetComponents<Damageable>()) {
-                damageable.SetInvincible(_isGodModeEnabled.Value);
+                _healthController.SetInvincible(_isGodModeEnabled.Value);
             }
         }
 

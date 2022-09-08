@@ -10,8 +10,13 @@ namespace BML.Scripts
         [SerializeField] [ShowIf("_useHealthVariable")] [LabelText("health")] private IntVariable _healthReference;
         [SerializeField] [HideIf("_useHealthVariable")] private int _health;
         [SerializeField] private bool _useHealthVariable = false;
+        [SerializeField] private float _invincibilitySeconds = 0;
+        [SerializeField] private bool _isInvincible = false;
         [SerializeField] private UnityEvent<int, int> _onHealthChange;
+        [SerializeField] private UnityEvent _onTakeDamage;
         [SerializeField] private UnityEvent _onDeath;
+        
+        private float lastDamageTime = Mathf.NegativeInfinity;
 
         private int _value{get => Value; set {
             if(_useHealthVariable) _healthReference.Value = value;
@@ -23,8 +28,16 @@ namespace BML.Scripts
 
         public void DecrementHealth(int amount) {
             if (Value <= 0) return;
+            
+            if (_isInvincible || 
+                !Mathf.Approximately(0f, _invincibilitySeconds) && lastDamageTime + _invincibilitySeconds > Time.time)
+                return;
+
+            lastDamageTime = Time.time;
 
             _onHealthChange.Invoke(Value - amount, Value);
+            if (amount < 0) _onTakeDamage.Invoke();
+            
             _value -= amount;
             if (Value <= 0)
             {
@@ -39,6 +52,11 @@ namespace BML.Scripts
         private void Death()
         {
             _onDeath.Invoke();
+        }
+        
+        public void SetInvincible(bool isInvincible)
+        {
+            _isInvincible = isInvincible;
         }
     }
 }
