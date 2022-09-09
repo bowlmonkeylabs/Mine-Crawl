@@ -58,6 +58,7 @@ namespace BML.Scripts.Player
 
 		[Header("No Clip Mode")] 
 		[SerializeField] private BoolVariable isNoClipEnabled;
+		[SerializeField] private float noClipUpDownVelocity = 15f;
 		[SerializeField] private float noClipSprintMultiplier = 3f;
 		[SerializeField] private LayerMask noClipCollisionMask;
 
@@ -200,7 +201,7 @@ namespace BML.Scripts.Player
 		    if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
 		    // a reference to the players current horizontal velocity
-		    float currentHorizontalSpeed = new Vector3(currentVelocity.x, 0.0f, currentVelocity.z).magnitude;
+		    float currentHorizontalSpeed = currentVelocity.xoz().magnitude;
 
 		    float speedOffset = 0.1f;
 		    float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
@@ -219,19 +220,17 @@ namespace BML.Scripts.Player
 		    {
 			    _speed = targetSpeed;
 		    }
+		    
+		    Vector3 inputDirection = (_input.move.y * _mainCamera.transform.forward.xoz().normalized +
+		                              _input.move.x * _mainCamera.transform.right.xoz().normalized)
+									.normalized;
+		    
+			if (isNoClipEnabled.Value)
+				inputDirection = (_input.move.y * _mainCamera.transform.forward.normalized +
+				                  _input.move.x * _mainCamera.transform.right.normalized)
+					.normalized;
 
-		    // normalise input direction
-		    Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
-
-		    // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-		    // if there is a move input rotate player when the player is moving
-		    if (_input.move != Vector2.zero)
-		    {
-			    // move
-			    inputDirection = _mainCamera.transform.right * _input.move.x + _mainCamera.transform.forward * _input.move.y;
-		    }
-
-		    Vector3 horizontalVelocity = inputDirection.normalized * _speed;
+			Vector3 horizontalVelocity = inputDirection * _speed;
 		    
 		    if (_knockbackActive)
 			    horizontalVelocity = _knockbackDir * KnockbackHorizontalForceCurve.Evaluate(percentToEndKnockback);
@@ -386,6 +385,18 @@ namespace BML.Scripts.Player
 			if (_verticalVelocity < _terminalVelocity)
 			{
 				_verticalVelocity += Gravity * Time.deltaTime;
+			}
+			
+			//Move up and down in NoClip mode
+			if (isNoClipEnabled.Value)
+			{
+				if (_input.JumpHeld)
+					_verticalVelocity = noClipUpDownVelocity;
+				
+				else if (_input.CrouchHeld)
+					_verticalVelocity = -noClipUpDownVelocity;
+				else
+					_verticalVelocity = 0f;
 			}
 		}
 

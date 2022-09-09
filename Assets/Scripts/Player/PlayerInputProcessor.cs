@@ -41,6 +41,15 @@ namespace BML.Scripts.Player
 		[SerializeField] private VariableContainer _containerUiMenuStates;
 		
 		[SerializeField] private PlayerInput playerInput;
+
+		private InputAction jumpAction;
+		private InputAction crouchAction;
+
+		private bool jumpHeld;
+		private bool crouchHeld;
+
+		public bool JumpHeld => jumpHeld;
+		public bool CrouchHeld => crouchHeld;
 		
 		private bool isUsingUi
 		{
@@ -59,16 +68,32 @@ namespace BML.Scripts.Player
 		}
 		
 		#region Unity lifecycle
-		
+
+		private void Awake()
+		{
+			jumpAction = playerInput.actions.FindAction("Jump");
+			crouchAction = playerInput.actions.FindAction("Crouch");
+		}
+
 		private void OnEnable()
 		{
 			ApplyUiState();
 			_containerUiMenuStates.GetBoolVariables().ForEach(b => b.Subscribe(ApplyUiState));
+
+			jumpAction.performed += SetJumpHeld;
+			jumpAction.canceled += SetJumpHeld;
+			crouchAction.performed += SetCrouchHeld;
+			crouchAction.canceled += SetCrouchHeld;
 		}
 
 		private void OnDisable()
 		{
 			_containerUiMenuStates.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyUiState));
+			
+			jumpAction.performed -= SetJumpHeld;
+			jumpAction.canceled -= SetJumpHeld;
+			crouchAction.performed -= SetCrouchHeld;
+			crouchAction.canceled -= SetCrouchHeld;
 		}
 
 		private void OnDestroy()
@@ -99,7 +124,7 @@ namespace BML.Scripts.Player
 
 		public void OnJump(InputValue value)
 		{
-			JumpInput(value.isPressed);
+			jump = value.isPressed;
 		}
 
 		public void OnSprint(InputValue value)
@@ -167,18 +192,28 @@ namespace BML.Scripts.Player
 				look = lookUnscaled * lookScaleGamepad * _mouseSensitivity.Value;
 		}
 
-		public void JumpInput(bool newJumpState)
-		{
-			// Debug.Log($"Jump input {newJumpState}");
-			jump = newJumpState;
-		}
-
 		public void SprintInput(bool newSprintState)
 		{
 			sprint = newSprintState;
 		}
 		
 		#endregion
+
+		private void SetJumpHeld(InputAction.CallbackContext ctx)
+		{
+			if (ctx.performed)
+				jumpHeld = true;
+			else if (ctx.canceled)
+				jumpHeld = false;
+		}
+		
+		private void SetCrouchHeld(InputAction.CallbackContext ctx)
+		{
+			if (ctx.performed)
+				crouchHeld = true;
+			else if (ctx.canceled)
+				crouchHeld = false;
+		}
 		
 		public void ApplyUiState()
 		{
