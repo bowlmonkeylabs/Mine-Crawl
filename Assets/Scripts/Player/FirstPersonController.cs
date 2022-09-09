@@ -263,7 +263,7 @@ namespace BML.Scripts.Player
 	    {
             // This is called when the motor's movement logic detects a hit
 
-            if(_ropeLayerMask.MMContains(hitCollider.gameObject)) {
+            if(!_isRopeMovementEnabled.Value && _ropeLayerMask.MMContains(hitCollider.gameObject)) {
                 originalGravity = Gravity;
 				Gravity = 0f;
                 _motor.ForceUnground();
