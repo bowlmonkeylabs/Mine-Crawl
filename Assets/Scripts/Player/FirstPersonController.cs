@@ -291,11 +291,11 @@ namespace BML.Scripts.Player
 
 		private void GroundedCheck()
 		{
-            if(_isRopeMovementEnabled.Value) {
-                _motor.ForceUnground();
-                return;
-            }
 			Grounded = _motor.GroundingStatus.FoundAnyGround;
+            if(_isRopeMovementEnabled.Value && Grounded) {
+                _motor.ForceUnground();
+                Grounded = false;
+            }
 		}
 
 		private void CameraRotation()
