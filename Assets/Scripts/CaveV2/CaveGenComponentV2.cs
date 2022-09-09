@@ -34,7 +34,7 @@ namespace BML.Scripts.CaveV2
         private bool _keepEditModeLevel = false;
         #endif
 
-        [SerializeField] private bool _retryOnFailure = true;
+        [SerializeField] public bool RetryOnFailure = true;
         [SerializeField] private int _maxRetryDepth = 3;
 
         [SerializeField] private bool _showTraversabilityCheck = false;
@@ -88,7 +88,8 @@ namespace BML.Scripts.CaveV2
         private int _retryDepth = 0;
         
         [PropertyOrder(-1)]
-        [Button, LabelText("Generate Cave Graph"), EnableIf("$IsGenerationEnabled")]
+        [Button, LabelText("Generate Cave Graph")]
+        //[EnableIf("$IsGenerationEnabled")]
         private void GenerateCaveGraphButton()
         {
             _retryDepth = 0;
@@ -97,8 +98,8 @@ namespace BML.Scripts.CaveV2
         
         private void GenerateCaveGraph(bool useRandomSeed = true)
         {
-            if (!IsGenerationEnabled)
-                return;
+            // if (!IsGenerationEnabled)
+            //     return;
             
             DestroyCaveGraph();
 
@@ -106,16 +107,30 @@ namespace BML.Scripts.CaveV2
             {
                 _caveGenParams.UpdateRandomSeed();
             }
-
-            if (_enableLogs)
-            {
-                Debug.Log($"Generating level ({_caveGenParams.Seed})");
-            }
             
             _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
             IsGenerated = true;
             
             OnAfterGenerate?.Invoke();
+        }
+
+        public void RetryGenerateCaveGraph()
+        {
+            _retryDepth++;
+            if (_retryDepth >= _maxRetryDepth)
+            {
+                throw new Exception($"Exceeded cave generation max retries ({_maxRetryDepth})");
+            }
+            
+            if (_caveGenParams.LockSeed || !RetryOnFailure)
+            {
+                throw new Exception("Cave generation failed. To automatically resolve, ensure 'Retry on failure' is checked and 'Lock seed' is unchecked.");
+            }
+            else
+            {
+                _caveGenParams.UpdateRandomSeed(false);
+                GenerateCaveGraph(false);
+            }
         }
 
         private CaveGraphV2 RetryGenerateCaveGraph(bool checkRetryDepth = true)
@@ -128,7 +143,7 @@ namespace BML.Scripts.CaveV2
                 }
             }
             
-            if (_caveGenParams.LockSeed || !_retryOnFailure)
+            if (_caveGenParams.LockSeed || !RetryOnFailure)
             {
                 throw new Exception("Cave generation failed; level is not traversable. To automatically resolve, ensure 'Retry on failure' is checked and 'Lock seed' is unchecked.");
             }
@@ -140,11 +155,12 @@ namespace BML.Scripts.CaveV2
         }
 
         [PropertyOrder(-1)]
-        [Button, EnableIf("$IsGenerationEnabled")]
+        [Button] 
+        //[EnableIf("$IsGenerationEnabled")]
         private void DestroyCaveGraph()
         {
-            if (!IsGenerationEnabled) 
-                return;
+            // if (!IsGenerationEnabled) 
+            //     return;
             
             _caveGraph = null;
             _minimumSpanningTreeGraphTEMP = null;
@@ -157,6 +173,8 @@ namespace BML.Scripts.CaveV2
         private CaveGraphV2 GenerateCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)
         {
             Random.InitState(caveGenParams.Seed);
+            
+            if (_enableLogs) Debug.Log($"Generating level ({_caveGenParams.Seed})");
             
             var caveGraph = new CaveGraphV2();
             
@@ -370,6 +388,8 @@ namespace BML.Scripts.CaveV2
                     return RetryGenerateCaveGraph(false);
                 }
             }
+            
+            if (_enableLogs) Debug.Log($"Cave graph generated");
             
             return caveGraph;
         }

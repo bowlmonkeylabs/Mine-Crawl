@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.Utils;
 using KinematicCharacterController;
@@ -62,14 +63,14 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             if (_generateOnLockMudBunMesh)
             {
-                this.SpawnLevelObjects();
+                this.SpawnLevelObjects(_caveGenerator.RetryOnFailure);
             }
         }
 
         private float lastGenerateTime;
         private void TrySpawnLevelObjectsWithCooldown()
         {
-            if (_generateOnChange && _caveGenerator.IsGenerationEnabled && !Application.isPlaying)
+            if (_generateOnChange && !Application.isPlaying)
             {
                 var elapsedTime = (Time.time - lastGenerateTime);
                 if (elapsedTime >= _generateMinCooldownSeconds)
@@ -86,11 +87,16 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         
         private const int STEP_ID = 2;
 
-        [Button, PropertyOrder(-1), EnableIf("$_isGenerationEnabled")]
-        public void SpawnLevelObjects()
+        [Button, PropertyOrder(-1), LabelText("Spawn Level Objects")]
+        //[EnableIf("$_isGenerationEnabled")]
+        public void SpawnLevelObjectsButton()
+        {
+            SpawnLevelObjects();
+        }
+        
+        public void SpawnLevelObjects(bool retryOnFailure = false)
         {
             // if (!_caveGenerator.IsGenerationEnabled) return;
-            if (_caveGenerator.EnableLogs) Debug.Log($"Level Object Spawner: Generate");
             
             Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
             
@@ -107,10 +113,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             _onAfterGenerateEvent.Raise();
         }
 
-        [Button, PropertyOrder(-1), EnableIf("$_isGenerationEnabled")]
+        [Button, PropertyOrder(-1)]
+        //[EnableIf("$_isGenerationEnabled")]
         public void DestroyLevelObjects()
         {
-            if (!_caveGenerator.IsGenerationEnabled) return;
+            // if (!_caveGenerator.IsGenerationEnabled) return;
             if (_caveGenerator.EnableLogs) Debug.Log($"Level Object Spawner: Destroy");
 
             var children = Enumerable.Range(0, this.transform.childCount)
