@@ -70,6 +70,8 @@ namespace BML.Scripts
 
         private void InitSpawnPoints()
         {
+            tagToSpawnPointsDict =
+                new Dictionary<string, List<Transform>>();
             foreach (var spawnAtTag in _enemySpawnerParams.SpawnAtTags)
             {
                 tagToSpawnPointsDict.Add(spawnAtTag.Tag, new List<Transform>());
@@ -122,6 +124,18 @@ namespace BML.Scripts
                 _enemySpawnerParams.MaxRaycastLength);
             
             lastSpawnTime = Time.time;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            foreach (var tag in tagToSpawnPointsDict.Keys)
+            {
+                foreach (var spawnPoint in tagToSpawnPointsDict[tag])
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawSphere(spawnPoint.transform.position, .5f);
+                }
+            }
         }
     }
 }
