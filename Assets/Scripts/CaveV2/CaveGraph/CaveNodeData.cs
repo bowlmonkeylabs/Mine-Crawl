@@ -1,4 +1,6 @@
-﻿using BML.Scripts.Utils;
+﻿using System.Collections.Generic;
+using BML.Scripts.CaveV2.SpawnObjects;
+using BML.Scripts.Utils;
 using QuikGraph;
 using UnityEngine;
 
@@ -8,11 +10,14 @@ namespace BML.Scripts.CaveV2.CaveGraph
     {
         public Vector3 LocalPosition { get; private set; }
         public float Size { get; private set; }
+        public GameObject GameObject { get; set; }
+        public HashSet<SpawnPoint> SpawnPoints { get; set; }
 
         public CaveNodeData(Vector3 localPosition, float size)
         {
             LocalPosition = localPosition;
             Size = size;
+            SpawnPoints = new HashSet<SpawnPoint>();
         }
     }
     
@@ -23,6 +28,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
         public float Radius { get; private set; }
         public float Length { get; private set; }
         public float SteepnessAngle { get; private set; }
+        public GameObject GameObject { get; set; }
 
         public CaveNodeConnectionData(CaveNodeData source, CaveNodeData target, float radius)
         {

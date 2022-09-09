@@ -95,9 +95,14 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
             
             DestroyLevelObjects();
+            
+            if (_caveGenerator.EnableLogs) Debug.Log($"Level Object Spawner: Generate");
 
             SpawnPlayer(_caveGenerator, this.transform, _player);
-            SpawnObjectsAtTags(_levelObjectSpawnerParams, this.transform);
+
+            ResetSpawnPoints();
+            CatalogSpawnPoints(_caveGenerator);
+            SpawnObjectsAtTags(this.transform, retryOnFailure);
             
             _onAfterGenerateEvent.Raise();
         }
@@ -116,58 +121,97 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 GameObject.DestroyImmediate(childObject);
             }
         }
-
-        private static void SpawnObjectsAtTags(LevelObjectSpawnerParameters levelObjectSpawnerParameters, Transform parent)
+        
+        private void ResetSpawnPoints()
         {
-            Dictionary<String, List<GameObject>> occupiedSpawnPoints = new Dictionary<string, List<GameObject>>();
-            foreach (var spawnAtTagParameters in levelObjectSpawnerParameters.SpawnAtTags)
+            var spawnPoints = FindObjectsOfType<SpawnPoint>();
+            foreach (var spawnPoint in spawnPoints)
+            {
+                spawnPoint.ResetSpawnProbability();
+            }
+        }
+
+        private void CatalogSpawnPoints(CaveGenComponentV2 caveGenerator)
+        {
+            foreach (var caveNodeData in caveGenerator.CaveGraph.Vertices)
+            {
+                if (caveNodeData.GameObject.SafeIsUnityNull()) continue;
+                caveNodeData.SpawnPoints.Clear();
+
+                var childSpawnPoints = caveNodeData.GameObject
+                    .GetComponentsInChildren<SpawnPoint>()
+                    .ToList();
+                
+                caveNodeData.SpawnPoints.AddRange(childSpawnPoints);
+                foreach (var childSpawnPoint in childSpawnPoints)
+                {
+                    childSpawnPoint.ParentNode = caveNodeData;
+                }
+            }
+        }
+
+        private void CatalogSpawnPoints(Transform parent, CaveNodeData caveNodeData)
+        {
+            if (parent.SafeIsUnityNull()) return;
+
+            var childSpawnPoints = parent
+                .GetComponentsInChildren<SpawnPoint>()
+                .ToList();
+                
+            caveNodeData.SpawnPoints.AddRange(childSpawnPoints);
+            foreach (var childSpawnPoint in childSpawnPoints)
+            {
+                childSpawnPoint.ParentNode = caveNodeData;
+            }
+        }
+
+        private void SpawnObjectsAtTags(Transform parent, bool retryOnFailure)
+        {
+            foreach (var spawnAtTagParameters in _levelObjectSpawnerParams.SpawnAtTags)
             {
                 //Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
 
-                var tagged = GameObject.FindGameObjectsWithTag(spawnAtTagParameters.Tag).ToList();
-                if (occupiedSpawnPoints.ContainsKey(spawnAtTagParameters.Tag))
-                    tagged = tagged.Except(occupiedSpawnPoints[spawnAtTagParameters.Tag]).ToList();
+                int spawnCount = 0;
 
-                List<GameObject> pointsToRemove = new List<GameObject>();
-                //Debug.Log($"Remaining Spawn Points Before: {tagged.Count}");
-                
-                foreach (var go in tagged)
+                var taggedSpawnPoints = GameObject.FindGameObjectsWithTag(spawnAtTagParameters.Tag)
+                    .Select(go => go.GetComponent<SpawnPoint>())
+                    .Where(go => go != null)
+                    .ToList();
+
+                foreach (var spawnPoint in taggedSpawnPoints)
                 {
-                    if (!go.SafeIsUnityNull())
+                    bool doSpawn = (Random.value <= spawnPoint.SpawnChance * spawnAtTagParameters.SpawnProbability);
+                    if (doSpawn)
                     {
-                        bool doSpawn = (Random.value <= spawnAtTagParameters.SpawnProbability);
-                        if (doSpawn)
+                        var newGameObject =
+                            GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
+                        newGameObject.transform.position = SpawnObjectsUtil.GetPointUnder(spawnPoint.transform.position,
+                            _levelObjectSpawnerParams.TerrainLayerMask,
+                            _levelObjectSpawnerParams.MaxRaycastLength);
+                            
+                        CatalogSpawnPoints(newGameObject.transform, spawnPoint.ParentNode);
+
+                        if (spawnAtTagParameters.ChooseWithoutReplacement)
                         {
-                            var newGameObject =
-                                GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
-                            newGameObject.transform.position = SpawnObjectsUtil.GetPointUnder(go.transform.position,
-                                levelObjectSpawnerParameters.TerrainLayerMask,
-                                levelObjectSpawnerParameters.MaxRaycastLength);
-
-                            if (spawnAtTagParameters.ChooseWithoutReplacement)
-                            {
-                                pointsToRemove.Add(go);
-                                //Debug.Log($"Removing point. Remove count: {pointsToRemove.Count}");
-                            }
-                                
-
-                            if (spawnAtTagParameters.DeleteTagAfterSpawn)
-                            {
-                                GameObject.DestroyImmediate(go, false);
-                            }
+                            spawnPoint.SpawnChance = 0f;
+                        }
+                        
+                        spawnCount++;
+                        if (spawnAtTagParameters.MinMaxGlobalAmount.EnableMax
+                            && spawnCount >= spawnAtTagParameters.MinMaxGlobalAmount.ValueMax)
+                        {
+                            break;
                         }
                     }
-                }
-
-                if (occupiedSpawnPoints.ContainsKey(spawnAtTagParameters.Tag))
-                {
-                    occupiedSpawnPoints[spawnAtTagParameters.Tag] = occupiedSpawnPoints[spawnAtTagParameters.Tag]
-                        .Union(pointsToRemove).ToList();
-                }
                     
-                else
+                }
+                
+                if (spawnAtTagParameters.MinMaxGlobalAmount.EnableMin
+                    && spawnCount < spawnAtTagParameters.MinMaxGlobalAmount.ValueMin)
                 {
-                    occupiedSpawnPoints[spawnAtTagParameters.Tag] = pointsToRemove;
+                    if (_caveGenerator.EnableLogs) Debug.LogWarning($"Level Object Spawner: Minimum ({spawnAtTagParameters.MinMaxGlobalAmount.ValueMin}) not met for {spawnAtTagParameters.Tag} > {spawnAtTagParameters.Prefab?.name}");
+                    _caveGenerator.RetryGenerateCaveGraph();
+                    return;
                 }
                 
                 //Debug.Log($"Remaining Spawn Points After: {tagged.Count - pointsToRemove.Count}");

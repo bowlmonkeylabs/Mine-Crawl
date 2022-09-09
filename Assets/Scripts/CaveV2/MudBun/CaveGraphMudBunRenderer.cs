@@ -93,6 +93,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, roomPrefab, mudRenderer.transform);
                 newGameObject.transform.position = localOrigin + caveNodeData.LocalPosition;
                 newGameObject.transform.localScale = roomScale;
+                caveNodeData.GameObject = newGameObject;
             }
             
             // Spawn "tunnel" on each edge to ensure nodes are connected
@@ -118,6 +119,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
                 newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 newGameObject.transform.localScale = localScale;
+                caveNodeConnectionData.GameObject = newGameObject;
             }
         }
 
