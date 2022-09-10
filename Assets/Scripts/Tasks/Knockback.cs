@@ -10,7 +10,7 @@ namespace BML.Scripts.Tasks
 {
 
     [TaskCategory("AStarPro")]
-    [TaskDescription("Knocksback a rich ai using rigidbody")]
+    [TaskDescription("Knocksback a rich ai using character controller")]
     public class Knockback : Action
     {
         [SerializeField] private SharedVector3 KnockBackDirection;
