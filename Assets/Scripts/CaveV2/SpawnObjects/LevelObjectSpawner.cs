@@ -187,7 +187,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
                 foreach (var spawnPoint in taggedSpawnPoints)
                 {
-                    bool doSpawn = (Random.value <= spawnPoint.SpawnChance * spawnAtTagParameters.SpawnProbability);
+                    bool doSpawn = (Random.value < spawnPoint.SpawnChance * spawnAtTagParameters.SpawnProbability);
                     if (doSpawn)
                     {
                         var newGameObject =
