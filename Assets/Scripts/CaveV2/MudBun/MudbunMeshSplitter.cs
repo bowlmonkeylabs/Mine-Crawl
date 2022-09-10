@@ -219,6 +219,7 @@ namespace BML.Scripts.CaveV2.MudBun
             // Right now copying all vertices from original mesh just to preserve their index
             // Not sure if this could lead any issues or pref impacts later down the line
             // https://answers.unity.com/questions/947930/create-a-mesh-from-a-sub-mesh.html
+            mesh.indexFormat = IndexFormat.UInt32;
             mesh.SetVertices(_vertices);
             mesh.SetTriangles(triangleList, 0);
             mesh.SetColors(_meshFilter.sharedMesh.colors);
