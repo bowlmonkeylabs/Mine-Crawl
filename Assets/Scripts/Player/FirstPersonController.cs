@@ -55,6 +55,7 @@ namespace BML.Scripts.Player
         [SerializeField] private BoolReference _isRopeMovementEnabled;
         [SerializeField] private LayerMask _ropeLayerMask;
         [SerializeField] private float _ropeMovementSpeed = 15;
+        [SerializeField] private float _ropeGravitySpeed = 1;
 
 		[Header("No Clip Mode")] 
 		[SerializeField] private BoolVariable isNoClipEnabled;
@@ -190,13 +191,22 @@ namespace BML.Scripts.Player
 
             if(_isRopeMovementEnabled.Value) {
                 float moveDirection = _input.move.y;
-                if(reachedRopeBottom && moveDirection < 0) {
+                float movementSpeed = _ropeMovementSpeed;
+
+                if(_input.move.y != 0) {
+                    if(reachedRopeBottom && moveDirection < 0) {
                     moveDirection = 0;
                 }
+
                 if(reachedRopeTop && moveDirection > 0) {
                     moveDirection = 0;
                 }
-                currentVelocity = _ropeMovementSpeed * Vector3.up * moveDirection;
+                } else {
+                    moveDirection = !reachedRopeBottom ? -1 : 0;
+                    movementSpeed = _ropeGravitySpeed;
+                }
+
+                currentVelocity = movementSpeed * Vector3.up * moveDirection;
                 return;
             }
 		    
