@@ -95,6 +95,9 @@ namespace BML.Scripts.Player
 		private float originalGravity;
 		private LayerMask orignalCollisionMask;
 
+        //rope movement
+        private bool reachedRopeBottom = false;
+        private bool reachedRopeTop = false;
 
 		private PlayerInput _playerInput;
 		private KinematicCharacterMotor _motor;
@@ -186,7 +189,14 @@ namespace BML.Scripts.Player
 		    }
 
             if(_isRopeMovementEnabled.Value) {
-                currentVelocity = _ropeMovementSpeed * Vector3.up * _input.move.y;
+                float moveDirection = _input.move.y;
+                if(reachedRopeBottom && moveDirection < 0) {
+                    moveDirection = 0;
+                }
+                if(reachedRopeTop && moveDirection > 0) {
+                    moveDirection = 0;
+                }
+                currentVelocity = _ropeMovementSpeed * Vector3.up * moveDirection;
                 return;
             }
 		    
@@ -256,6 +266,26 @@ namespace BML.Scripts.Player
 	    {
 	        // This is called when the motor's ground probing detects a ground hit
 	    }
+
+        void OnTriggerEnter(Collider collider) {
+            if(_isRopeMovementEnabled.Value && collider.gameObject.tag == "RopeTop") {
+                reachedRopeTop = true;
+            }
+
+            if(_isRopeMovementEnabled.Value && collider.gameObject.tag == "RopeBottom") {
+                reachedRopeBottom = true;
+            }
+        }
+
+        void OnTriggerExit(Collider collider) {
+            if(_isRopeMovementEnabled.Value && collider.gameObject.tag == "RopeTop") {
+                reachedRopeTop = false;
+            }
+
+            if(_isRopeMovementEnabled.Value && collider.gameObject.tag == "RopeBottom") {
+                reachedRopeBottom = false;
+            }
+        }
 
 	    public void OnMovementHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint,
 	        ref HitStabilityReport hitStabilityReport)

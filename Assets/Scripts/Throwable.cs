@@ -13,13 +13,15 @@ namespace BML.Scripts
         [ShowIf("_stopOnGroundHit")] [SerializeField] private LayerMask _terrainLayerMask;
         [ShowIf("_stopOnGroundHit")] [SerializeField] private UnityEvent _onGrounded;
 
+        private bool _grounded = false;
+
         void Awake() {
             _rigidbody.isKinematic = false;
         }
 
         private void OnTriggerEnter (Collider collider)
 		{
-			if (_stopOnGroundHit && _terrainLayerMask.MMContains(collider.gameObject))
+			if (_stopOnGroundHit && !_grounded && _terrainLayerMask.MMContains(collider.gameObject))
 			{
                 this.SetGrounded();
 			}
@@ -27,13 +29,14 @@ namespace BML.Scripts
 
         private void OnColliderEnter (Collision collision)
 		{
-			if (_stopOnGroundHit && _terrainLayerMask.MMContains(collision.gameObject))
+			if (_stopOnGroundHit && !_grounded && _terrainLayerMask.MMContains(collision.gameObject))
 			{
                 this.SetGrounded();
 			}
 		}
 
         private void SetGrounded() {
+            _grounded = true;
             _rigidbody.isKinematic = true;
             _onGrounded.Invoke();
         }
