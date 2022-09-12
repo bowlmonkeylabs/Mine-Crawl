@@ -74,7 +74,8 @@ namespace BML.Scripts
                 new Dictionary<string, List<Transform>>();
             foreach (var spawnAtTag in _enemySpawnerParams.SpawnAtTags)
             {
-                tagToSpawnPointsDict.Add(spawnAtTag.Tag, new List<Transform>());
+                if (!tagToSpawnPointsDict.ContainsKey(spawnAtTag.Tag))
+                    tagToSpawnPointsDict.Add(spawnAtTag.Tag, new List<Transform>());
             }
         }
 
