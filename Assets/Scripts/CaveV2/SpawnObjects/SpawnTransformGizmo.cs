@@ -7,7 +7,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
     {
         [SerializeField] private float _gizmoRadius = 1f;
         
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.DrawWireSphere(this.transform.position, _gizmoRadius);
         }

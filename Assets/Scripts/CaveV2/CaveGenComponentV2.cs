@@ -41,6 +41,9 @@ namespace BML.Scripts.CaveV2
         
         [SerializeField] private bool _enableLogs = false;
         [HideInInspector] public bool EnableLogs => _enableLogs;
+
+        [SerializeField] private bool _generateDebugObjects = true;
+        [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
         
         [SerializeField, DisableIf("$_notOverrideBounds")] private Bounds _caveGenBounds = new Bounds(Vector3.zero, new Vector3(10,6,10));
         [SerializeField] private bool _overrideBounds = false;
@@ -111,6 +114,8 @@ namespace BML.Scripts.CaveV2
             _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
             IsGenerated = true;
             
+            GenerateCaveGraphDebugObjects();
+            
             OnAfterGenerate?.Invoke();
         }
 
@@ -165,6 +170,7 @@ namespace BML.Scripts.CaveV2
             _caveGraph = null;
             _minimumSpanningTreeGraphTEMP = null;
             IsGenerated = false;
+            DestroyDebugObjects();
             
             _caveGraphMudBunRenderer.DestroyMudBun();
             _levelObjectSpawner.DestroyLevelObjects();
@@ -395,6 +401,80 @@ namespace BML.Scripts.CaveV2
         }
 
         private CaveGraphV2 _minimumSpanningTreeGraphTEMP;
+        
+        #endregion
+        
+        #region Cave generation debug
+
+        private void DestroyDebugObjects()
+        {
+            if (_debugObjectsContainer == null) return;
+            
+            var debugObjects = Enumerable.Range(0, _debugObjectsContainer.childCount)
+                .Select(i => _debugObjectsContainer.GetChild(i).gameObject)
+                .ToList();
+            foreach (var childObject in debugObjects)
+            {
+                GameObject.DestroyImmediate(childObject);
+            }
+        }
+
+        private void GenerateCaveGraphDebugObjects()
+        {
+#if !UNITY_EDITOR
+            return;
+#else
+            
+            if (EnableLogs) Debug.Log("Cave Graph: Generating debug objects");
+            
+            if (!_generateDebugObjects || _debugObjectsContainer == null || !IsGenerated || _caveGraph == null) return;
+            
+            // Spawn "rooms" at each cave node
+            foreach (var caveNodeData in _caveGraph.Vertices)
+            {
+                // Spawn room
+                GameObject newGameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                newGameObject.transform.SetParent(_debugObjectsContainer);
+                newGameObject.transform.position = LocalToWorld(caveNodeData.LocalPosition);
+                newGameObject.transform.localScale = 2f * Vector3.one;
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(newGameObject.GetComponent<Renderer>(), false);
+                GameObject.Destroy(newGameObject.GetComponent<Collider>());
+
+                // Add debug component
+                var debugComponent = newGameObject.AddComponent<CaveNodeDataDebugComponent>();
+                debugComponent.CaveNodeData = caveNodeData;
+            }
+            
+            // Spawn "tunnel" on each edge to ensure nodes are connected
+            foreach (var caveNodeConnectionData in _caveGraph.Edges)
+            {
+                // Calculate tunnel position
+                var sourceTargetDiff = (caveNodeConnectionData.Target.LocalPosition -
+                                        caveNodeConnectionData.Source.LocalPosition);
+                var sourceTargetDiffProjectedToGroundNormalized = Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
+                
+                var edgeDiff = (caveNodeConnectionData.Target.LocalPosition - caveNodeConnectionData.Source.LocalPosition);
+                var edgeMidPosition = caveNodeConnectionData.Source.LocalPosition + edgeDiff / 2;
+                var edgeRotation = Quaternion.LookRotation(edgeDiff);
+                var edgeLength = edgeDiff.magnitude;
+                var localScale = new Vector3(0.1f, 0.1f, edgeLength);
+                // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
+
+                // Spawn tunnel
+                GameObject newGameObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                newGameObject.transform.SetParent(_debugObjectsContainer);
+                newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
+                newGameObject.transform.localScale = localScale;
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(newGameObject.GetComponent<Renderer>(), false);
+                GameObject.Destroy(newGameObject.GetComponent<Collider>());
+                
+                // Add debug component
+                var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
+                debugComponent.CaveConnectionNodeData = caveNodeConnectionData;
+            }
+            
+#endif
+        }
         
         #endregion
 
