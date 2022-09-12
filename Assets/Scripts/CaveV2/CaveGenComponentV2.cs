@@ -64,6 +64,9 @@ namespace BML.Scripts.CaveV2
 
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private LevelObjectSpawner _levelObjectSpawner;
+
+        [TitleGroup("Debug")]
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxMainPathDistance { get; private set; }
         
         #endregion
 
@@ -300,6 +303,7 @@ namespace BML.Scripts.CaveV2
                                     .ToList();
                                 if (!adjacentEdges.Any())
                                     break;
+                                // TODO make offshoots retry if failed/too short, rather than just cutting it off
                             
                                 int randomEdgeIndex = Random.Range(0, adjacentEdges.Count);
                                 var randomEdge = adjacentEdges[randomEdgeIndex];
@@ -395,6 +399,50 @@ namespace BML.Scripts.CaveV2
                 }
             }
             
+            // Calculate graph properties for use in later generation steps (e.g. object spawning, enemy spawning)
+            {
+                // Calculate distance from objective
+                {
+                    var findPathToObjective = caveGraph.ShortestPathsDijkstra(e => 1, caveGraph.EndNode);
+                    foreach (var caveGraphVertex in caveGraph.Vertices)
+                    {
+                        bool pathExists = findPathToObjective(caveGraphVertex, out var outPath);
+                        caveGraphVertex.ObjectiveDistance = (!pathExists ? -1 : outPath.Count());
+                    }
+                }
+
+                // Calculate distance from main path
+                {
+                    foreach (var caveNodeConnectionData in caveGraph.MainPath)
+                    {
+                        var findPathToSource = caveGraph.ShortestPathsDijkstra(e => 1, caveNodeConnectionData.Source);
+                        foreach (var caveGraphVertex in caveGraph.Vertices)
+                        {
+                            bool sameVertex = (caveGraphVertex == caveNodeConnectionData.Source || caveGraphVertex == caveNodeConnectionData.Target);
+                            if (sameVertex)
+                            {
+                                caveGraphVertex.MainPathDistance = 0;
+                                continue;
+                            }
+                            
+                            bool pathExists = findPathToSource(caveGraphVertex, out var outPath);
+                            if (pathExists)
+                            {
+                                var pathLength = outPath.Count();
+                                if (caveGraphVertex.MainPathDistance == -1
+                                    || pathLength < caveGraphVertex.MainPathDistance)
+                                {
+                                    caveGraphVertex.MainPathDistance = pathLength;
+                                }
+                            }
+                        }
+                    }
+
+                    this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
+                }
+                
+            }
+
             if (_enableLogs) Debug.Log($"Cave graph generated");
             
             return caveGraph;
@@ -438,7 +486,7 @@ namespace BML.Scripts.CaveV2
                 newGameObject.transform.position = LocalToWorld(caveNodeData.LocalPosition);
                 newGameObject.transform.localScale = 2f * Vector3.one;
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(newGameObject.GetComponent<Renderer>(), false);
-                GameObject.Destroy(newGameObject.GetComponent<Collider>());
+                GameObject.DestroyImmediate(newGameObject.GetComponent<Collider>());
 
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeDataDebugComponent>();
@@ -466,7 +514,7 @@ namespace BML.Scripts.CaveV2
                 newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 newGameObject.transform.localScale = localScale;
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(newGameObject.GetComponent<Renderer>(), false);
-                GameObject.Destroy(newGameObject.GetComponent<Collider>());
+                GameObject.DestroyImmediate(newGameObject.GetComponent<Collider>());
                 
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();

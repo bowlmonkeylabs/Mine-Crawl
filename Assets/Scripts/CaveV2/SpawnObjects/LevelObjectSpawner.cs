@@ -176,7 +176,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             foreach (var spawnAtTagParameters in _levelObjectSpawnerParams.SpawnAtTags)
             {
-                //Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
+                if (_caveGenerator.EnableLogs) Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
 
                 int spawnCount = 0;
 
@@ -187,7 +187,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
                 foreach (var spawnPoint in taggedSpawnPoints)
                 {
-                    bool doSpawn = (Random.value < spawnPoint.SpawnChance * spawnAtTagParameters.SpawnProbability);
+                    float mainPathDistanceFactor = (float) spawnPoint.ParentNode.MainPathDistance /
+                                                   (float)_caveGenerator.MaxMainPathDistance;
+                    float mainPathProbability = spawnAtTagParameters.MainPathProbabilityFalloff.Evaluate(mainPathDistanceFactor);
+
+                    float spawnChance = (spawnPoint.SpawnChance * spawnAtTagParameters.SpawnProbability *
+                                         mainPathProbability);
+                    bool doSpawn = (Random.value < spawnChance);
                     if (doSpawn)
                     {
                         var newGameObject =
@@ -228,7 +234,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private static void SpawnPlayer(CaveGenComponentV2 caveGenerator, Transform parent, GameObject player)
         {
-            // Debug.Log($"Call SpawnPlayer");
+            if (caveGenerator.EnableLogs) Debug.Log($"Spawn player");
+            
             // Place player at the level start
             if (caveGenerator.CaveGraph.StartNode != null)
             {

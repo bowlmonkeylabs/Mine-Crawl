@@ -33,8 +33,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
             public MinMax MinMaxGlobalAmount;
             public MinMax MinMaxClusterSize;
-            [PropertySpace(0,10)]
-            [Range(0f, 1f)] public float MainPathProbability = 0.5f;
+            [PropertySpace(0,10)] [Tooltip("Curve sample space is 0 to 1; this will be 'current room's distance from the main path', divided by 'maximum main path distance present in the level' (this /should/ be close to MaxOffshootLength of the level gen params)")]
+            public AnimationCurve MainPathProbabilityFalloff = AnimationCurve.Constant(0f, 1f, 1f);
         }
         public List<SpawnAtTagParameters> SpawnAtTags;
 
