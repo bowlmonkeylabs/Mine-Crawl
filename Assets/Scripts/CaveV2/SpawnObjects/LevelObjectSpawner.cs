@@ -4,6 +4,7 @@ using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.Utils;
+using KinematicCharacterController;
 using Mono.CSharp;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -186,7 +187,18 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 if (playerInThisScene)
                 {
                     // var prevPosition = player.transform.position;
-                    player.transform.position = startWorldPosition;
+                    KinematicCharacterMotor motor = player.GetComponent<KinematicCharacterMotor>();
+                    if (motor != null)
+                    {
+                        motor.SetPosition(startWorldPosition);
+                    }
+                    else
+                    {
+                        player.transform.position = startWorldPosition;
+                        Debug.LogWarning("Could not find KinematicCharacterMotor on player! " +
+                                         "Moving player position directly via Transform.");
+                    }
+                    
                     // player.transform.SetPositionAndRotation(startWorldPosition, Quaternion.identity);
                     // Debug.Log($"Moved player to level start... (prev: {prevPosition}, curr: {player.transform.position})");
                 }
