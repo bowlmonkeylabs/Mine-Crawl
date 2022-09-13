@@ -10,7 +10,12 @@ namespace BML.Scripts
         {
             if (other.gameObject.IsInLayerMask(_enemyMask))
             {
-                Destroy(other.gameObject);
+                Rigidbody rb = other.attachedRigidbody;
+                
+                if (rb != null)
+                    Destroy(other.attachedRigidbody.gameObject);
+                else
+                    Destroy(other.gameObject);
             }
         }
     }
