@@ -276,48 +276,101 @@ namespace BML.Scripts.CaveV2
                 
                 if (shortestPathFromStartToEndList != null)
                 {
-                    var keepEdges = shortestPathFromStartToEndList;
-                    
+                    var keepEdges = new List<CaveNodeConnectionData>();
+                    var checkedVertices = new Dictionary<CaveNodeData, int>();
+
+                    int maxRecheckCount = 3;
+
                     // Offshoots from main path
                     if (caveGenParams.UseOffshootsFromMainPath)
                     {
                         for (int n = 0; n < caveGenParams.NumOffshoots; n++)
                         {
-                            int randomOffshootPathIndex = Random.Range(1, shortestPathFromStartToEndList.Count - 1);
-                            CaveNodeData offshootStart = shortestPathFromStartToEndList[randomOffshootPathIndex].Source;
-
-                            for (int i = 0; i < caveGenParams.OffshootLength; i++)
+                            var remainingVertices = shortestPathFromStartToEndList
+                                .Select(e => e.Source)
+                                .Where(e => e != caveGraph.StartNode && e != caveGraph.EndNode)
+                                .Except(
+                                    checkedVertices
+                                        .Where(kv => kv.Value >= maxRecheckCount)
+                                        .Select(kv => kv.Key)
+                                )
+                                .Except(keepEdges.Select(e => e.Source))
+                                .ToList();
+                            Debug.Log(n);
+                            if (remainingVertices.Count == 0)
                             {
+                                break;
+                            }
+                            int randomOffshootPathIndex = Random.Range(0, remainingVertices.Count);
+                            CaveNodeData offshootStart = remainingVertices[randomOffshootPathIndex];
+
+                            var offshootPath = new List<CaveNodeConnectionData>();
+                            bool offshootSuccess = true;
+
+                            for (int i = 0; i < caveGenParams.MinMaxOffshootLength.y; i++)
+                            {
+                                if (checkedVertices.ContainsKey(offshootStart)) checkedVertices[offshootStart] = checkedVertices[offshootStart] + 1;
+                                else checkedVertices.Add(offshootStart, 1);
+                                
                                 var adjacentEdges = caveGraph.AdjacentEdges(offshootStart)
                                     .Where(edge =>
                                     {
-                                        var edgeAreadyUsed = keepEdges.Contains(edge);
+                                        // var edgeAlreadyUsed = keepEdges.Contains(edge) || offshootPath.Contains(edge);
+                                        var edgeAlreadyUsed = offshootPath.Contains(edge) || shortestPathFromStartToEndList.Contains(edge);// || keepEdges.Contains(edge);
 
                                         CaveNodeData otherVertex;
                                         if (offshootStart == edge.Source) otherVertex = edge.Target;
                                         otherVertex = edge.Source;
-                                        var vertexAlreadyUsed = keepEdges.Any(e =>
-                                            e.Source == otherVertex || e.Target == otherVertex);
-                                        return !edgeAreadyUsed && !vertexAlreadyUsed;
+                                        var vertexAlreadyUsed = offshootPath.Any(e =>
+                                                                    e.Source == otherVertex || e.Target == otherVertex);
+                                        return !edgeAlreadyUsed && !vertexAlreadyUsed;
                                     })
                                     .ToList();
                                 if (!adjacentEdges.Any())
+                                {
+                                    if (offshootPath.Count < caveGenParams.MinMaxOffshootLength.x)
+                                    {
+                                        n--;
+                                        offshootSuccess = false;
+                                    }
                                     break;
-                                // TODO make offshoots retry if failed/too short, rather than just cutting it off
+                                }
                             
                                 int randomEdgeIndex = Random.Range(0, adjacentEdges.Count);
                                 var randomEdge = adjacentEdges[randomEdgeIndex];
-                                keepEdges.Add(randomEdge);
+                                offshootPath.Add(randomEdge);
 
                                 if (offshootStart == randomEdge.Source) offshootStart = randomEdge.Target;
                                 else if (offshootStart == randomEdge.Target) offshootStart = randomEdge.Source;
-                                else break;
+                                else
+                                {
+                                    if (offshootPath.Count < caveGenParams.MinMaxOffshootLength.x)
+                                    {
+                                        n--;
+                                        offshootSuccess = false;
+                                    }
+                                    break;
+                                }
+                            }
+                            
+                            if (offshootSuccess)
+                            {
+                                keepEdges.AddRange(offshootPath);
                             }
                         }
                     }
                     
+                    // Keep all main path edges
+                    keepEdges.AddRange(shortestPathFromStartToEndList);
+                    
                     // Remove all edges except what we want to keep
                     caveGraph.RemoveEdgeIf(edge => !keepEdges.Contains(edge));
+
+                    var recheckSummary = checkedVertices.GroupBy(kv => kv.Value)
+                        .Select(group => (group.Key, group.Sum(kv => 1)))
+                        .ToList();
+                    var recheckString = String.Join(" | ", recheckSummary.Select(kv => $"{kv.Item2} main path vertices checked {kv.Key} times"));
+                    Debug.Log(recheckString);
                 }
             }
             
@@ -406,6 +459,12 @@ namespace BML.Scripts.CaveV2
                     var findPathToObjective = caveGraph.ShortestPathsDijkstra(e => 1, caveGraph.EndNode);
                     foreach (var caveGraphVertex in caveGraph.Vertices)
                     {
+                        bool isEndNode = (caveGraphVertex == caveGraph.EndNode);
+                        if (isEndNode)
+                        {
+                            caveGraphVertex.ObjectiveDistance = 0;
+                            continue;
+                        }
                         bool pathExists = findPathToObjective(caveGraphVertex, out var outPath);
                         caveGraphVertex.ObjectiveDistance = (!pathExists ? -1 : outPath.Count());
                     }
