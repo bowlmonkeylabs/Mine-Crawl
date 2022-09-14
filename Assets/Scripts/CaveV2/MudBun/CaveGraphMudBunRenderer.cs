@@ -30,14 +30,14 @@ namespace BML.Scripts.CaveV2.MudBun
         protected override void OnEnable()
         {
             base.OnEnable();
-            _caveGenerator.OnAfterGenerate += TryGenerateWithCooldown;
+            _caveGenerator.OnAfterGenerate += GenerateMudBunInternal;
             _caveGraphRenderParams.OnValidateEvent += TryGenerateWithCooldown_OnValidate;
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
-            _caveGenerator.OnAfterGenerate -= TryGenerateWithCooldown;
+            _caveGenerator.OnAfterGenerate -= GenerateMudBunInternal;
             _caveGraphRenderParams.OnValidateEvent -= TryGenerateWithCooldown_OnValidate;
         }
 
@@ -93,6 +93,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, roomPrefab, mudRenderer.transform);
                 newGameObject.transform.position = localOrigin + caveNodeData.LocalPosition;
                 newGameObject.transform.localScale = roomScale;
+                caveNodeData.GameObject = newGameObject;
             }
             
             // Spawn "tunnel" on each edge to ensure nodes are connected
@@ -118,14 +119,19 @@ namespace BML.Scripts.CaveV2.MudBun
                 GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
                 newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 newGameObject.transform.localScale = localScale;
+                caveNodeConnectionData.GameObject = newGameObject;
             }
         }
 
-        protected override void TryGenerateWithCooldown()
+        protected override void GenerateMudBunInternal()
         {
-            if (!_caveGenerator.IsGenerated) return;
+            if (!_caveGenerator.IsGenerated)
+            {
+                Debug.LogWarning($"MudBun: Failed, cave graph is not generated");
+                return;
+            }
             
-            base.TryGenerateWithCooldown();
+            base.GenerateMudBunInternal();
         }
 
         #endregion

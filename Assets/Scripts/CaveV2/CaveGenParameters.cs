@@ -95,9 +95,9 @@ namespace BML.Scripts.CaveV2
         
         [TitleGroup("Graph processing")]
         public int NumOffshoots = 2;
-        
-        [TitleGroup("Graph processing")]
-        public int OffshootLength = 3;
+
+        [TitleGroup("Graph processing")] [MinMaxSlider(1, 50, true)]
+        public Vector2Int MinMaxOffshootLength = new Vector2Int(1, 3);
         
         [TitleGroup("Graph processing")]
         public bool MinimumSpanningTree = true;
@@ -109,7 +109,7 @@ namespace BML.Scripts.CaveV2
         public bool RemoveOrphanNodes = true;
         
         [TitleGroup("Mesh generation")]
-        [MinMaxSlider(0.1f, 10f)]
+        [MinMaxSlider(0.1f, 10f, true)]
         public Vector2 RoomScaling = Vector2.one;
 
         #endregion

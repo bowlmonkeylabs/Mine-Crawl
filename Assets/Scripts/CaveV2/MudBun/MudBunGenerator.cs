@@ -228,7 +228,7 @@ namespace BML.Scripts.CaveV2.MudBun
         }
 
         [Button("Generate Mud Bun"), PropertyOrder(-1), EnableIf("IsMudBunGenerationEnabled")]
-        public void GenerateMudBunInternal()
+        protected virtual void GenerateMudBunInternal()
         {
             if (_enableLogs) Debug.Log($"MudBun: Generate MudBun");
             if (_mudRenderer.MeshLocked)

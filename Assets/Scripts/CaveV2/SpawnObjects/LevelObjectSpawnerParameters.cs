@@ -15,12 +15,26 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [Serializable]
         public class SpawnAtTagParameters
         {
+            [Serializable, InlineProperty]
+            public class MinMax
+            {
+                [HorizontalGroup(.1f), HideLabel] public bool EnableMin = false;
+                [HorizontalGroup(.3f), HideLabel, EnableIf("$EnableMin")] public int ValueMin = 1;
+                [HorizontalGroup(.1f, MarginLeft = .1f), HideLabel] public bool EnableMax = false;
+                [HorizontalGroup(.3f), HideLabel, EnableIf("$EnableMax")] public int ValueMax = 1;
+            }
+            
+            [PropertySpace(10,0)]
             public string Tag;
             public GameObject Prefab;
             public bool InstanceAsPrefab;
             public bool ChooseWithoutReplacement;
-            [ReadOnly] public bool DeleteTagAfterSpawn;
             [Range(0f, 1f)] public float SpawnProbability;
+
+            public MinMax MinMaxGlobalAmount;
+            public MinMax MinMaxClusterSize;
+            [PropertySpace(0,10)] [Tooltip("Curve sample space is 0 to 1; this will be 'current room's distance from the main path', divided by 'maximum main path distance present in the level' (this /should/ be close to MaxOffshootLength of the level gen params)")]
+            public AnimationCurve MainPathProbabilityFalloff = AnimationCurve.Constant(0f, 1f, 1f);
         }
         public List<SpawnAtTagParameters> SpawnAtTags;
 
