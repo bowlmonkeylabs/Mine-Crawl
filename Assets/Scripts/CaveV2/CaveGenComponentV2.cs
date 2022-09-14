@@ -551,7 +551,7 @@ namespace BML.Scripts.CaveV2
                 debugComponent.CaveNodeData = caveNodeData;
                 
                 // Add shape renderer component
-                var shapeSphereComponent = newGameObject.AddComponent<Sphere>();
+                var shapeSphereComponent = newGameObject.AddComponent<Shapes.Sphere>();
                 if (caveNodeData.MainPathDistance == 0)
                 {
                     shapeSphereComponent.Color = Color.green;
