@@ -109,7 +109,7 @@ namespace BML.Scripts.CaveV2
         public bool RemoveOrphanNodes = true;
         
         [TitleGroup("Mesh generation")]
-        [MinMaxSlider(0.1f, 10f)]
+        [MinMaxSlider(0.1f, 10f, true)]
         public Vector2 RoomScaling = Vector2.one;
 
         #endregion
