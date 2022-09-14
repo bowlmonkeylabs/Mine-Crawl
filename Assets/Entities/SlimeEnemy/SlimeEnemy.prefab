@@ -959,6 +959,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _damageCooldown: 1
+  _onTriggerEnter:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!135 &8198436558940097164
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1086,14 +1089,14 @@ MonoBehaviour:
           TargetBPM: 120
         Owner: {fileID: 6234188384059194629}
         DebugActive: 0
-        Sfx: {fileID: 8300000, guid: 2a4c5c281111d63408680ba5adc37fce, type: 3}
+        Sfx: {fileID: 8300000, guid: 60ab4e7e1940f9f4b9cfb89eddfb3151, type: 3}
         RandomSfx: []
         TestPlayButton:
           ButtonText: Debug Play Sound
         TestStopButton:
           ButtonText: Debug Stop Sound
-        MinVolume: 0.35
-        MaxVolume: 0.35
+        MinVolume: 1
+        MaxVolume: 1
         MinPitch: 1
         MaxPitch: 1
         PlaybackTime: {x: 0, y: 0}
@@ -1380,7 +1383,7 @@ MonoBehaviour:
   traversableTags: -1
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
-    value: -1
+    value: 1
 --- !u!114 &3520044267730943824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1626,7 +1629,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f33a44ad9d6f0d845b8ce9618da67889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  behaviorTree: {fileID: 45409624996634200}
+  _behaviorTree: {fileID: 45409624996634200}
+  _onAlerted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7095403073724109192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2152,14 +2158,14 @@ MonoBehaviour:
           TargetBPM: 120
         Owner: {fileID: 4105760494233487220}
         DebugActive: 0
-        Sfx: {fileID: 8300000, guid: c677de223bc2fd84aa34712e29717dea, type: 3}
+        Sfx: {fileID: 8300000, guid: 0bbab737d1dad2e4b91594db32c72a16, type: 3}
         RandomSfx: []
         TestPlayButton:
           ButtonText: Debug Play Sound
         TestStopButton:
           ButtonText: Debug Stop Sound
-        MinVolume: 0.4
-        MaxVolume: 0.4
+        MinVolume: 1
+        MaxVolume: 1
         MinPitch: 1
         MaxPitch: 1
         PlaybackTime: {x: 0, y: 0}
