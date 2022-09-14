@@ -183,6 +183,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 var taggedSpawnPoints = GameObject.FindGameObjectsWithTag(spawnAtTagParameters.Tag)
                     .Select(go => go.GetComponent<SpawnPoint>())
                     .Where(go => go != null)
+                    .OrderBy(s => Random.value)
                     .ToList();
 
                 foreach (var spawnPoint in taggedSpawnPoints)
@@ -193,7 +194,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
                     float spawnChance = (spawnPoint.SpawnChance * spawnAtTagParameters.SpawnProbability *
                                          mainPathProbability);
-                    bool doSpawn = (Random.value < spawnChance);
+                    var rand = Random.value;
+                    bool doSpawn = (rand < spawnChance);
+                    if (_caveGenerator.EnableLogs) Debug.Log($"Try spawn {spawnAtTagParameters.Prefab?.name}: (Spawn point {spawnPoint.SpawnChance}) (Main path {mainPathProbability}) (Spawn chance {spawnChance}) (Random {rand}) (Do Spawn {doSpawn})");
                     if (doSpawn)
                     {
                         var newGameObject =
@@ -222,7 +225,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 if (spawnAtTagParameters.MinMaxGlobalAmount.EnableMin
                     && spawnCount < spawnAtTagParameters.MinMaxGlobalAmount.ValueMin)
                 {
-                    if (_caveGenerator.EnableLogs) Debug.LogWarning($"Level Object Spawner: Minimum ({spawnAtTagParameters.MinMaxGlobalAmount.ValueMin}) not met for {spawnAtTagParameters.Tag} > {spawnAtTagParameters.Prefab?.name}");
+                    if (_caveGenerator.EnableLogs) Debug.LogWarning($"Level Object Spawner: Minimum not met for object {spawnAtTagParameters.Prefab?.name} on tag {spawnAtTagParameters.Tag} ({spawnCount}/{spawnAtTagParameters.MinMaxGlobalAmount.ValueMin})");
                     _caveGenerator.RetryGenerateCaveGraph();
                     return;
                 }
