@@ -477,23 +477,32 @@ namespace BML.Scripts.CaveV2
             
             if (!_generateDebugObjects || _debugObjectsContainer == null || !IsGenerated || _caveGraph == null) return;
             
-            // Spawn "rooms" at each cave node
+            // Spawn debug object at each cave node
             foreach (var caveNodeData in _caveGraph.Vertices)
             {
-                // Spawn room
-                GameObject newGameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                // Spawn empty object
+                GameObject newGameObject = new GameObject("Cave Node Gizmo");
                 newGameObject.transform.SetParent(_debugObjectsContainer);
                 newGameObject.transform.position = LocalToWorld(caveNodeData.LocalPosition);
-                newGameObject.transform.localScale = 2f * Vector3.one;
-                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(newGameObject.GetComponent<Renderer>(), false);
-                GameObject.DestroyImmediate(newGameObject.GetComponent<Collider>());
-
+                
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeDataDebugComponent>();
                 debugComponent.CaveNodeData = caveNodeData;
+                
+                // Add shape renderer component
+                var shapeSphereComponent = newGameObject.AddComponent<Sphere>();
+                if (caveNodeData.MainPathDistance == 0)
+                {
+                    shapeSphereComponent.Color = Color.green;
+                }
+                if (caveNodeData.ObjectiveDistance == 0)
+                {
+                    shapeSphereComponent.Color = Color.red;
+                }
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(shapeSphereComponent, false);
             }
             
-            // Spawn "tunnel" on each edge to ensure nodes are connected
+            // Spawn debug object on each edge to ensure nodes are connected
             foreach (var caveNodeConnectionData in _caveGraph.Edges)
             {
                 // Calculate tunnel position
@@ -508,17 +517,22 @@ namespace BML.Scripts.CaveV2
                 var localScale = new Vector3(0.1f, 0.1f, edgeLength);
                 // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
 
-                // Spawn tunnel
-                GameObject newGameObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                // Spawn empty object
+                GameObject newGameObject = new GameObject("Cave Node Gizmo");
                 newGameObject.transform.SetParent(_debugObjectsContainer);
-                newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
-                newGameObject.transform.localScale = localScale;
-                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(newGameObject.GetComponent<Renderer>(), false);
-                GameObject.DestroyImmediate(newGameObject.GetComponent<Collider>());
+                // newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
+                // newGameObject.transform.position = edgeMidPosition;
+                // newGameObject.transform.localScale = localScale;
                 
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
                 debugComponent.CaveConnectionNodeData = caveNodeConnectionData;
+
+                // Add shape renderer component
+                var shapeLineComponent = newGameObject.AddComponent<Shapes.Line>();
+                shapeLineComponent.Start = LocalToWorld(caveNodeConnectionData.Source.LocalPosition);
+                shapeLineComponent.End = LocalToWorld(caveNodeConnectionData.Target.LocalPosition);
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(shapeLineComponent, false);
             }
             
 #endif
@@ -603,10 +617,10 @@ namespace BML.Scripts.CaveV2
             Gizmos.DrawWireCube(poissonBoundsWithPadding.center, poissonBoundsWithPadding.size);
             
             // Draw cave graph
-            if (_caveGraph != null)
-            {
-                _caveGraph.DrawGizmos(LocalOrigin, _showTraversabilityCheck, Color.white);
-            }
+            // if (_caveGraph != null)
+            // {
+            //     _caveGraph.DrawGizmos(LocalOrigin, _showTraversabilityCheck, Color.white);
+            // }
             if (_caveGenParams.MinimumSpanningTree && _minimumSpanningTreeGraphTEMP != null)
             {
                 _minimumSpanningTreeGraphTEMP.DrawGizmos(
