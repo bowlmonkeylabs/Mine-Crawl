@@ -316,13 +316,15 @@ namespace BML.Scripts.CaveV2
                                     .Where(edge =>
                                     {
                                         // var edgeAlreadyUsed = keepEdges.Contains(edge) || offshootPath.Contains(edge);
-                                        var edgeAlreadyUsed = offshootPath.Contains(edge) || shortestPathFromStartToEndList.Contains(edge);// || keepEdges.Contains(edge);
+                                        var edgeAlreadyUsed = offshootPath.Contains(edge) || shortestPathFromStartToEndList.Contains(edge) || keepEdges.Contains(edge);
 
                                         CaveNodeData otherVertex;
                                         if (offshootStart == edge.Source) otherVertex = edge.Target;
                                         otherVertex = edge.Source;
                                         var vertexAlreadyUsed = offshootPath.Any(e =>
-                                                                    e.Source == otherVertex || e.Target == otherVertex);
+                                                                    e.Source == otherVertex || e.Target == otherVertex)
+                                                                    || keepEdges.Any(e =>
+                                                                        e.Source == otherVertex || e.Target == otherVertex);
                                         return !edgeAlreadyUsed && !vertexAlreadyUsed;
                                     })
                                     .ToList();
@@ -366,10 +368,10 @@ namespace BML.Scripts.CaveV2
                     // Remove all edges except what we want to keep
                     caveGraph.RemoveEdgeIf(edge => !keepEdges.Contains(edge));
 
-                    var recheckSummary = checkedVertices.GroupBy(kv => kv.Value)
-                        .Select(group => (group.Key, group.Sum(kv => 1)))
-                        .ToList();
-                    var recheckString = String.Join(" | ", recheckSummary.Select(kv => $"{kv.Item2} main path vertices checked {kv.Key} times"));
+                    // var recheckSummary = checkedVertices.GroupBy(kv => kv.Value)
+                    //     .Select(group => (group.Key, group.Sum(kv => 1)))
+                    //     .ToList();
+                    // var recheckString = String.Join(" | ", recheckSummary.Select(kv => $"{kv.Item2} main path vertices checked {kv.Key} times"));
                     // Debug.Log(recheckString);
                 }
             }
