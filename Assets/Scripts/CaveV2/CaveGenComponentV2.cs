@@ -296,7 +296,7 @@ namespace BML.Scripts.CaveV2
                                 )
                                 .Except(keepEdges.Select(e => e.Source))
                                 .ToList();
-                            Debug.Log(n);
+                            // Debug.Log(n);
                             if (remainingVertices.Count == 0)
                             {
                                 break;
@@ -370,7 +370,7 @@ namespace BML.Scripts.CaveV2
                         .Select(group => (group.Key, group.Sum(kv => 1)))
                         .ToList();
                     var recheckString = String.Join(" | ", recheckSummary.Select(kv => $"{kv.Item2} main path vertices checked {kv.Key} times"));
-                    Debug.Log(recheckString);
+                    // Debug.Log(recheckString);
                 }
             }
             
