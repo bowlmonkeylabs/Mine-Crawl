@@ -247,21 +247,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 // Debug.Log($"Call SpawnPlayer: Position {startWorldPosition} | Player in scene {playerInThisScene}");
                 if (playerInThisScene)
                 {
-                    // var prevPosition = player.transform.position;
-                    KinematicCharacterMotor motor = player.GetComponent<KinematicCharacterMotor>();
-                    if (motor != null)
-                    {
-                        motor.SetPosition(startWorldPosition);
-                    }
-                    else
-                    {
-                        player.transform.position = startWorldPosition;
-                        Debug.LogWarning("Could not find KinematicCharacterMotor on player! " +
-                                         "Moving player position directly via Transform.");
-                    }
-                    
-                    // player.transform.SetPositionAndRotation(startWorldPosition, Quaternion.identity);
-                    // Debug.Log($"Moved player to level start... (prev: {prevPosition}, curr: {player.transform.position})");
+                    MovePlayer(player, startWorldPosition);
                 }
                 else
                 {
@@ -270,10 +256,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 #else
                     var isPrefab = false;
 #endif
-                    GameObject newGameObject = GameObjectUtils.SafeInstantiate(isPrefab, player, parent);
-                    newGameObject.transform.position = startWorldPosition;
-
-                    player = newGameObject;
+                    player = GameObjectUtils.SafeInstantiate(isPrefab, player, parent);
+                    MovePlayer(player, startWorldPosition);
                 }
                 
                 // Stop velocity
@@ -282,6 +266,29 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 {
                     rb.velocity = Vector3.zero;
                 }
+            }
+        }
+
+        private static void MovePlayer(GameObject player, Vector3 destination)
+        {
+            // If in play mode, move player using kinematicCharController motor to avoid race condition
+            if (ApplicationUtils.IsPlaying_EditorSafe)
+            {
+                KinematicCharacterMotor motor = player.GetComponent<KinematicCharacterMotor>();
+                if (motor != null)
+                {
+                    motor.SetPosition(destination);
+                }
+                else
+                {
+                    player.transform.position = destination;
+                    Debug.LogWarning("Could not find KinematicCharacterMotor on player! " +
+                                     "Moving player position directly via Transform.");
+                }
+            }
+            else
+            {
+                player.transform.position = destination;
             }
         }
         
