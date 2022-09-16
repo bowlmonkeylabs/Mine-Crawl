@@ -1,4 +1,4 @@
-﻿//FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
+//FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
 //https://assetstore.unity.com/packages/essentials/starter-assets-first-person-character-controller-196525
 
 using BML.ScriptableObjectCore.Scripts.Variables;
@@ -288,11 +288,11 @@ namespace BML.Scripts.Player
         }
 
         void OnTriggerExit(Collider collider) {
-            if(_isRopeMovementEnabled.Value && collider.gameObject.tag == "RopeTop") {
+            if(collider.gameObject.tag == "RopeTop") {
                 reachedRopeTop = false;
             }
 
-            if(_isRopeMovementEnabled.Value && collider.gameObject.tag == "RopeBottom") {
+            if(collider.gameObject.tag == "RopeBottom") {
                 reachedRopeBottom = false;
             }
         }
