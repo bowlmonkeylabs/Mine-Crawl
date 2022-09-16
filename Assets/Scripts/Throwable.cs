@@ -2,6 +2,7 @@
 using UnityEngine.Events;
 using MoreMountains.Tools;
 using Sirenix.OdinInspector;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts
 {
@@ -10,7 +11,7 @@ namespace BML.Scripts
     {
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private bool _stopOnGroundHit = false;
-        [ShowIf("_stopOnGroundHit")] [SerializeField] private LayerMask _terrainLayerMask;
+        [FormerlySerializedAs("_terrainLayerMask")] [ShowIf("_stopOnGroundHit")] [SerializeField] private LayerMask _stickyLayerMask;
         [ShowIf("_stopOnGroundHit")] [SerializeField] private UnityEvent _onGrounded;
 
         private bool _grounded = false;
@@ -21,7 +22,7 @@ namespace BML.Scripts
 
         private void OnTriggerEnter (Collider collider)
 		{
-			if (_stopOnGroundHit && !_grounded && _terrainLayerMask.MMContains(collider.gameObject))
+			if (_stopOnGroundHit && !_grounded && _stickyLayerMask.MMContains(collider.gameObject))
 			{
                 this.SetGrounded();
 			}
@@ -29,7 +30,7 @@ namespace BML.Scripts
 
         private void OnColliderEnter (Collision collision)
 		{
-			if (_stopOnGroundHit && !_grounded && _terrainLayerMask.MMContains(collision.gameObject))
+			if (_stopOnGroundHit && !_grounded && _stickyLayerMask.MMContains(collision.gameObject))
 			{
                 this.SetGrounded();
 			}
