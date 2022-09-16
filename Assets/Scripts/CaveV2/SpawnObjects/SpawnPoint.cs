@@ -1,6 +1,8 @@
 ﻿using System;
 using BML.Scripts.CaveV2.CaveGraph;
+using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 
 namespace BML.Scripts.CaveV2.SpawnObjects
@@ -23,6 +25,30 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private void Awake()
         {
             ResetSpawnProbability();
+        }
+        
+        private void OnDrawGizmosSelected()
+        {
+            #if UNITY_EDITOR
+            var transformCached = this.transform;
+            var checkTransforms = new Transform[] { transformCached, transformCached.parent };
+            if (SelectionUtils.InSelection(checkTransforms))
+            {
+                var position = transformCached.position;
+                Gizmos.color = Color.grey;
+                Gizmos.DrawSphere(position, 0.25f);
+                var style = new GUIStyle
+                {
+                    alignment = TextAnchor.MiddleCenter,
+                    fontSize = 8,
+                    normal = new GUIStyleState
+                    {
+                        textColor = Color.white,
+                    },
+                };
+                Handles.Label(position, this.tag, style);
+            }
+            #endif
         }
 
         #endregion

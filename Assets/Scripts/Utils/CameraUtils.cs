@@ -18,6 +18,18 @@ namespace BML.Scripts.Utils
             var planes = GeometryUtility.CalculateFrustumPlanes(camera);
             return GeometryUtility.TestPlanesAABB(planes, bounds);
         }
+        
+        public static bool IsSceneViewCameraInRange(Vector3 position, float distance)
+        {
+            Camera camera = Camera.current;
+            Vector3 cameraPos = camera.WorldToScreenPoint(position);
+            return ((cameraPos.x >= 0) &&
+                    (cameraPos.x <= camera.pixelWidth) &&
+                    (cameraPos.y >= 0) &&
+                    (cameraPos.y <= camera.pixelHeight) &&
+                    (cameraPos.z > 0) &&
+                    (cameraPos.z < distance));
+        }
     
     }
 }
