@@ -28,25 +28,51 @@ namespace BML.Scripts.CaveV2.CaveGraph
 
         #endregion
 
+        private Color GetNodeColor(CaveNodeData caveNodeData, CaveGenComponentV2.GizmoColorScheme colorScheme)
+        {
+            Color color;
+            float fac;
+            switch (colorScheme)
+            {
+                case CaveGenComponentV2.GizmoColorScheme.PlayerVisited:
+                    if (CaveNodeData.PlayerOccupied) color = CaveGenerator.DebugNodeColor_Occupied;
+                    else if (CaveNodeData.PlayerVisited) color = CaveGenerator.DebugNodeColor_Visited;
+                    else color = CaveGenerator.DebugNodeColor_Default;
+                    break;
+                case CaveGenComponentV2.GizmoColorScheme.MainPath:
+                    if (CaveNodeData.MainPathDistance == 0) color = CaveGenerator.DebugNodeColor_MainPath;
+                    else if (CaveNodeData.ObjectiveDistance == 0) color = CaveGenerator.DebugNodeColor_End;
+                    else color = CaveGenerator.DebugNodeColor_Default;
+                    break;
+                case CaveGenComponentV2.GizmoColorScheme.ObjectiveDistance:
+                    fac = (float) caveNodeData.ObjectiveDistance / (float) CaveGenerator.MaxObjectiveDistance;
+                    color = CaveGenerator.DebugNodeColor_Gradient.Evaluate(fac);
+                    break;
+                case CaveGenComponentV2.GizmoColorScheme.PlayerDistance:
+                    fac = (float) caveNodeData.PlayerDistance / (float) CaveGenerator.MaxPlayerDistance;
+                    color = CaveGenerator.DebugNodeColor_Gradient.Evaluate(fac);
+                    break;
+                default:
+                    color = CaveGenerator.DebugNodeColor_Default;
+                    break;
+            }
+
+            return color;
+        }
+
         private void UpdatePlayerOccupied()
         {
             // Debug.Log($"CaveNodeDataDebugComponent: UpdatePlayerOccupied");
 
             if (InnerRenderer != null)
             {
-                Color innerColor;
-                if (CaveNodeData.PlayerOccupied) innerColor = CaveGenerator.DebugNodeColor_Occupied;
-                else if (CaveNodeData.PlayerVisited) innerColor = CaveGenerator.DebugNodeColor_Visited;
-                else innerColor = CaveGenerator.DebugNodeColor_Default;
+                Color innerColor = GetNodeColor(CaveNodeData, CaveGenerator.GizmoColorScheme_Inner);
                 InnerRenderer.Color = innerColor;
             }
 
             if (OuterRenderer != null)
             {
-                Color outerColor;
-                if (CaveNodeData.MainPathDistance == 0) outerColor = CaveGenerator.DebugNodeColor_MainPath;
-                else if (CaveNodeData.ObjectiveDistance == 0) outerColor = CaveGenerator.DebugNodeColor_End;
-                else outerColor = CaveGenerator.DebugNodeColor_Default;
+                Color outerColor = GetNodeColor(CaveNodeData, CaveGenerator.GizmoColorScheme_Outer);
                 OuterRenderer.Color = outerColor;
             }
         }

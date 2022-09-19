@@ -70,15 +70,28 @@ namespace BML.Scripts.CaveV2
         private bool _generateDebugObjects = false;
 #endif
         [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
+
+        public enum GizmoColorScheme
+        {
+            PlayerVisited,
+            MainPath,
+            ObjectiveDistance,
+            PlayerDistance,
+        }
         
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public GizmoColorScheme GizmoColorScheme_Inner = GizmoColorScheme.PlayerVisited;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public GizmoColorScheme GizmoColorScheme_Outer = GizmoColorScheme.MainPath;
         [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Default;
         [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Occupied;
         [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Visited;
         [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Start;
         [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_End;
         [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_MainPath;
-        
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Gradient DebugNodeColor_Gradient;
+
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxMainPathDistance { get; private set; }
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxObjectiveDistance { get; private set; }
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxPlayerDistance { get; private set; }
         
         #endregion
 
@@ -482,6 +495,8 @@ namespace BML.Scripts.CaveV2
                         bool pathExists = findPathToObjective(caveGraphVertex, out var outPath);
                         caveGraphVertex.ObjectiveDistance = (!pathExists ? -1 : outPath.Count());
                     }
+                    
+                    this.MaxObjectiveDistance = caveGraph.Vertices.Max(e => e.ObjectiveDistance);
                 }
 
                 // Calculate distance from main path
@@ -519,6 +534,15 @@ namespace BML.Scripts.CaveV2
             if (_enableLogs) Debug.Log($"Cave graph generated");
             
             return caveGraph;
+        }
+
+        public void UpdatePlayerDistance(IEnumerable<CaveNodeData> playerOccupidedNodes)
+        {
+            _caveGraph.FloodFillDistance(
+                playerOccupidedNodes, 
+                (node, dist) => node.PlayerDistance = dist);
+            
+            this.MaxPlayerDistance = _caveGraph.Vertices.Max(e => e.PlayerDistance);
         }
 
         private CaveGraphV2 _minimumSpanningTreeGraphTEMP;

@@ -18,13 +18,6 @@ namespace BML.Scripts.CaveV2
         private Dictionary<Collider, CaveNodeData> _currentNodes;
         private Dictionary<Collider, CaveNodeConnectionData> _currentNodeConnections;
 
-        private void UpdatePlayerDistance()
-        {
-            _caveGenerator.CaveGraph.FloodFillDistance(
-                _currentNodes.Values.AsEnumerable(), 
-                (node, dist) => node.PlayerDistance = dist);
-        }
-
         #region Unity lifecycle
 
         private void Awake()
@@ -67,7 +60,7 @@ namespace BML.Scripts.CaveV2
                         caveNodeConnectionData.PlayerVisited = true;
                         caveNodeConnectionData.PlayerOccupied = true;
                         _currentNodeConnections.Add(other, caveNodeConnectionData);
-                        // UpdatePlayerDistance();
+                        // _caveGenerator.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
                         Debug.Log($"PLAYER IN {caveNodeConnectionData.Source.LocalPosition} <-> {caveNodeConnectionData.Target.LocalPosition}");
                     }
                     else
@@ -82,7 +75,7 @@ namespace BML.Scripts.CaveV2
                         caveNodeData.PlayerVisited = true;
                         caveNodeData.PlayerOccupied = true;
                         _currentNodes.Add(other, caveNodeData);
-                        UpdatePlayerDistance();
+                        _caveGenerator.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
                         Debug.Log($"PLAYER IN {caveNodeData.LocalPosition}");
                     }
                 }
@@ -109,14 +102,14 @@ namespace BML.Scripts.CaveV2
                     Debug.Log($"PLAYER LEFT {_currentNodes[other]}");
                     _currentNodes[other].PlayerOccupied = false;
                     _currentNodes.Remove(other);
-                    UpdatePlayerDistance();
+                    _caveGenerator.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
                 }
                 else if (_currentNodeConnections.ContainsKey(other))
                 {
                     Debug.Log($"PLAYER LEFT {_currentNodeConnections[other].Source.LocalPosition} <-> {_currentNodeConnections[other].Target.LocalPosition}");
                     _currentNodeConnections[other].PlayerOccupied = false;
                     _currentNodeConnections.Remove(other);
-                    UpdatePlayerDistance();
+                    _caveGenerator.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
                 }
                 else
                 {
