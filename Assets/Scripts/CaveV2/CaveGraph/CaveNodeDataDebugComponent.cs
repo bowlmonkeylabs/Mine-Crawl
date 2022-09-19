@@ -44,6 +44,10 @@ namespace BML.Scripts.CaveV2.CaveGraph
                     else if (CaveNodeData.ObjectiveDistance == 0) color = CaveGenerator.DebugNodeColor_End;
                     else color = CaveGenerator.DebugNodeColor_Default;
                     break;
+                case CaveGenComponentV2.GizmoColorScheme.MainPathDistance:
+                    fac = (float) caveNodeData.MainPathDistance / (float) CaveGenerator.MaxMainPathDistance;
+                    color = CaveGenerator.DebugNodeColor_Gradient.Evaluate(fac);
+                    break;
                 case CaveGenComponentV2.GizmoColorScheme.ObjectiveDistance:
                     fac = (float) caveNodeData.ObjectiveDistance / (float) CaveGenerator.MaxObjectiveDistance;
                     color = CaveGenerator.DebugNodeColor_Gradient.Evaluate(fac);

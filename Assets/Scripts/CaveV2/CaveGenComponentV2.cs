@@ -75,6 +75,7 @@ namespace BML.Scripts.CaveV2
         {
             PlayerVisited,
             MainPath,
+            MainPathDistance,
             ObjectiveDistance,
             PlayerDistance,
         }
@@ -483,48 +484,18 @@ namespace BML.Scripts.CaveV2
             {
                 // Calculate distance from objective
                 {
-                    var findPathToObjective = caveGraph.ShortestPathsDijkstra(e => 1, caveGraph.EndNode);
-                    foreach (var caveGraphVertex in caveGraph.Vertices)
-                    {
-                        bool isEndNode = (caveGraphVertex == caveGraph.EndNode);
-                        if (isEndNode)
-                        {
-                            caveGraphVertex.ObjectiveDistance = 0;
-                            continue;
-                        }
-                        bool pathExists = findPathToObjective(caveGraphVertex, out var outPath);
-                        caveGraphVertex.ObjectiveDistance = (!pathExists ? -1 : outPath.Count());
-                    }
-                    
+                    var objectiveVertices = new List<CaveNodeData> { caveGraph.EndNode };
+                    caveGraph.FloodFillDistance(objectiveVertices, (node, dist) => node.ObjectiveDistance = dist);
+
                     this.MaxObjectiveDistance = caveGraph.Vertices.Max(e => e.ObjectiveDistance);
                 }
 
                 // Calculate distance from main path
                 {
-                    foreach (var caveNodeConnectionData in caveGraph.MainPath)
-                    {
-                        var findPathToSource = caveGraph.ShortestPathsDijkstra(e => 1, caveNodeConnectionData.Source);
-                        foreach (var caveGraphVertex in caveGraph.Vertices)
-                        {
-                            bool sameVertex = (caveGraphVertex == caveNodeConnectionData.Source || caveGraphVertex == caveNodeConnectionData.Target);
-                            if (sameVertex)
-                            {
-                                caveGraphVertex.MainPathDistance = 0;
-                                continue;
-                            }
-                            
-                            bool pathExists = findPathToSource(caveGraphVertex, out var outPath);
-                            if (pathExists)
-                            {
-                                var pathLength = outPath.Count();
-                                if (caveGraphVertex.MainPathDistance == -1
-                                    || pathLength < caveGraphVertex.MainPathDistance)
-                                {
-                                    caveGraphVertex.MainPathDistance = pathLength;
-                                }
-                            }
-                        }
-                    }
+                    var mainPathVertices = caveGraph.MainPath
+                        .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target})
+                        .Distinct();
+                    caveGraph.FloodFillDistance(mainPathVertices, (node, dist) => node.MainPathDistance = dist);
 
                     this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
                 }
