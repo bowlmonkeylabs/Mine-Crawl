@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.Utilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -76,6 +77,31 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 .AsParallel();
             var nearestVertex = distances.FirstOrDefault().vertex;
             return nearestVertex;
+        }
+
+        public void FloodFillDistance(IEnumerable<CaveNodeData> targetVertices, Action<CaveNodeData, int> updateStoredVertexDistance)
+        {
+            int distanceToTarget = 0;
+            var verticesToCheck = new HashSet<CaveNodeData>(targetVertices);
+            var verticesToCheckNext = new HashSet<CaveNodeData>();
+            var checkedVertices = new HashSet<CaveNodeData>(verticesToCheck);
+
+            while (verticesToCheck.Count > 0)
+            {
+                foreach (var caveNodeData in verticesToCheck)
+                {
+                    updateStoredVertexDistance(caveNodeData, distanceToTarget);
+
+                    var adjacentVertices = this.AdjacentVertices(caveNodeData).Where(v => !checkedVertices.Contains(v));
+                    verticesToCheckNext.AddRange(adjacentVertices);
+                }
+                
+                verticesToCheck.Clear();
+                verticesToCheck.AddRange(verticesToCheckNext);
+                checkedVertices.AddRange(verticesToCheck);
+                verticesToCheckNext.Clear();
+                distanceToTarget += 1;
+            }
         }
         
         public void DrawGizmos(Vector3 localOrigin, bool showMainPath, Color color)

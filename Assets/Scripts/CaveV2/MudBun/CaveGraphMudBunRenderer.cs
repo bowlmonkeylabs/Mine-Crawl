@@ -94,6 +94,13 @@ namespace BML.Scripts.CaveV2.MudBun
                 newGameObject.transform.position = localOrigin + caveNodeData.LocalPosition;
                 newGameObject.transform.localScale = roomScale;
                 caveNodeData.GameObject = newGameObject;
+
+                // Assign reference to cave node data
+                var caveNodeDataDebugComponent = newGameObject.GetComponent<CaveNodeDataDebugComponent>();
+                if (caveNodeDataDebugComponent != null)
+                {
+                    caveNodeDataDebugComponent.CaveNodeData = caveNodeData;
+                }
             }
             
             // Spawn "tunnel" on each edge to ensure nodes are connected
@@ -120,6 +127,13 @@ namespace BML.Scripts.CaveV2.MudBun
                 newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 newGameObject.transform.localScale = localScale;
                 caveNodeConnectionData.GameObject = newGameObject;
+                
+                // Assign reference to cave node connection data
+                var caveNodeConnectionDataDebugComponent = newGameObject.GetComponent<CaveNodeConnectionDataDebugComponent>();
+                if (caveNodeConnectionDataDebugComponent != null)
+                {
+                    caveNodeConnectionDataDebugComponent.CaveNodeConnectionData = caveNodeConnectionData;
+                }
             }
         }
 

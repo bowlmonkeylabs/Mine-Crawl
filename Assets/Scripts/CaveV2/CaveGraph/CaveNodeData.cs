@@ -18,6 +18,10 @@ namespace BML.Scripts.CaveV2.CaveGraph
         // Calculated properties
         [ShowInInspector] public int MainPathDistance { get; set; }
         [ShowInInspector] public int ObjectiveDistance { get; set; }
+        [ShowInInspector] public int PlayerDistance { get; set; }
+        [ShowInInspector] public bool PlayerVisited { get; set; }
+        [ShowInInspector] public bool PlayerOccupied { get; set; }
+        [ShowInInspector] public float PlayerInfluence { get; set; }
         
         // Scene object references
         [ShowInInspector] public GameObject GameObject { get; set; }
@@ -30,6 +34,10 @@ namespace BML.Scripts.CaveV2.CaveGraph
 
             MainPathDistance = -1;
             ObjectiveDistance = -1;
+            PlayerDistance = -1;
+            PlayerVisited = false;
+            PlayerOccupied = false;
+            PlayerInfluence = -1f;
             
             SpawnPoints = new HashSet<SpawnPoint>();
         }
@@ -46,7 +54,9 @@ namespace BML.Scripts.CaveV2.CaveGraph
         [ShowInInspector] public float SteepnessAngle { get; private set; }
         
         // Calculated properties
-        
+        [ShowInInspector] public bool PlayerVisited { get; set; }
+        [ShowInInspector] public bool PlayerOccupied { get; set; }
+        [ShowInInspector] public float PlayerInfluence { get; set; }
         
         // Scene object references
         [ShowInInspector] public GameObject GameObject { get; set; }
@@ -66,6 +76,10 @@ namespace BML.Scripts.CaveV2.CaveGraph
             var horizontalComponent = edgeDir.xoz().magnitude;
             var verticalComponent = edgeDir.y;
             SteepnessAngle = Mathf.Rad2Deg * Mathf.Atan2(verticalComponent, horizontalComponent);
+
+            PlayerVisited = false;
+            PlayerOccupied = false;
+            PlayerInfluence = -1f;
         }
         
     }

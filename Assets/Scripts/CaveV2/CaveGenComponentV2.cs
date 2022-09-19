@@ -37,14 +37,6 @@ namespace BML.Scripts.CaveV2
         [SerializeField] public bool RetryOnFailure = true;
         [SerializeField] private int _maxRetryDepth = 3;
 
-        [SerializeField] private bool _showTraversabilityCheck = false;
-        
-        [SerializeField] private bool _enableLogs = false;
-        [HideInInspector] public bool EnableLogs => _enableLogs;
-
-        [SerializeField] private bool _generateDebugObjects = true;
-        [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
-        
         [SerializeField, DisableIf("$_notOverrideBounds")] private Bounds _caveGenBounds = new Bounds(Vector3.zero, new Vector3(10,6,10));
         [SerializeField] private bool _overrideBounds = false;
         private bool _notOverrideBounds => !_overrideBounds;
@@ -66,6 +58,18 @@ namespace BML.Scripts.CaveV2
         [SerializeField] private LevelObjectSpawner _levelObjectSpawner;
 
         [TitleGroup("Debug")]
+        [SerializeField] private bool _enableLogs = false;
+        [HideInInspector] public bool EnableLogs => _enableLogs;
+        
+        [SerializeField] private bool _showTraversabilityCheck = false;
+
+#if UNITY_EDITOR
+        [SerializeField] private bool _generateDebugObjects = true;
+#else
+        private bool _generateDebugObjects = false;
+#endif
+        [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
+        
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxMainPathDistance { get; private set; }
         
         #endregion
@@ -546,10 +550,6 @@ namespace BML.Scripts.CaveV2
                 newGameObject.transform.SetParent(_debugObjectsContainer);
                 newGameObject.transform.position = LocalToWorld(caveNodeData.LocalPosition);
                 
-                // Add debug component
-                var debugComponent = newGameObject.AddComponent<CaveNodeDataDebugComponent>();
-                debugComponent.CaveNodeData = caveNodeData;
-                
                 // Add shape renderer component
                 var shapeSphereComponent = newGameObject.AddComponent<Shapes.Sphere>();
                 if (caveNodeData.MainPathDistance == 0)
@@ -561,6 +561,12 @@ namespace BML.Scripts.CaveV2
                     shapeSphereComponent.Color = Color.red;
                 }
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(shapeSphereComponent, false);
+                
+                // Add debug component
+                var debugComponent = newGameObject.AddComponent<CaveNodeDataDebugComponent>();
+                debugComponent.CaveNodeData = caveNodeData;
+
+                // UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
             }
             
             // Spawn debug object on each edge to ensure nodes are connected
@@ -584,16 +590,18 @@ namespace BML.Scripts.CaveV2
                 // newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 // newGameObject.transform.position = edgeMidPosition;
                 // newGameObject.transform.localScale = localScale;
-                
-                // Add debug component
-                var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
-                debugComponent.CaveConnectionNodeData = caveNodeConnectionData;
 
                 // Add shape renderer component
                 var shapeLineComponent = newGameObject.AddComponent<Shapes.Line>();
                 shapeLineComponent.Start = LocalToWorld(caveNodeConnectionData.Source.LocalPosition);
                 shapeLineComponent.End = LocalToWorld(caveNodeConnectionData.Target.LocalPosition);
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(shapeLineComponent, false);
+                
+                // Add debug component
+                var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
+                debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
+                
+                // UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
             }
             
 #endif
