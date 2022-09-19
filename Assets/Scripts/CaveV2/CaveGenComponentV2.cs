@@ -10,6 +10,7 @@ using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Utils;
 using GK;
 using QuikGraph.Algorithms;
+using Shapes;
 using Sirenix.OdinInspector;
 using Unity.Collections;
 using UnityEditor;
@@ -69,6 +70,13 @@ namespace BML.Scripts.CaveV2
         private bool _generateDebugObjects = false;
 #endif
         [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
+        
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Default;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Occupied;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Visited;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Start;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_End;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_MainPath;
         
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxMainPathDistance { get; private set; }
         
@@ -550,23 +558,29 @@ namespace BML.Scripts.CaveV2
                 newGameObject.transform.SetParent(_debugObjectsContainer);
                 newGameObject.transform.position = LocalToWorld(caveNodeData.LocalPosition);
                 
-                // Add shape renderer component
-                var shapeSphereComponent = newGameObject.AddComponent<Shapes.Sphere>();
-                if (caveNodeData.MainPathDistance == 0)
-                {
-                    shapeSphereComponent.Color = Color.green;
-                }
-                if (caveNodeData.ObjectiveDistance == 0)
-                {
-                    shapeSphereComponent.Color = Color.red;
-                }
-                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(shapeSphereComponent, false);
+                // Add shape renderer component for node
+                var sphereOuter = newGameObject.AddComponent<Shapes.Sphere>();
+                sphereOuter.Color = DebugNodeColor_Default;
+                sphereOuter.BlendMode = ShapesBlendMode.Additive;
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(sphereOuter, false);
+                
+                // Add shape renderer component for secondary node indicator
+                GameObject newGameObjectInner = new GameObject("Indicator");
+                newGameObjectInner.transform.SetParent(newGameObject.transform);
+                newGameObjectInner.transform.position = LocalToWorld(caveNodeData.LocalPosition);
+                var sphereInner = newGameObjectInner.AddComponent<Shapes.Sphere>();
+                sphereInner.Color = DebugNodeColor_Default;
+                sphereInner.Radius = sphereOuter.Radius * 2 / 3;
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(sphereInner, false);
                 
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeDataDebugComponent>();
                 debugComponent.CaveNodeData = caveNodeData;
+                debugComponent.CaveGenerator = this;
+                debugComponent.InnerRenderer = sphereInner;
+                debugComponent.OuterRenderer = sphereOuter;
 
-                // UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
+                UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
             }
             
             // Spawn debug object on each edge to ensure nodes are connected
@@ -595,13 +609,14 @@ namespace BML.Scripts.CaveV2
                 var shapeLineComponent = newGameObject.AddComponent<Shapes.Line>();
                 shapeLineComponent.Start = LocalToWorld(caveNodeConnectionData.Source.LocalPosition);
                 shapeLineComponent.End = LocalToWorld(caveNodeConnectionData.Target.LocalPosition);
+                shapeLineComponent.Color = DebugNodeColor_Default;
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(shapeLineComponent, false);
                 
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
                 debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
                 
-                // UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
+                UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
             }
             
 #endif

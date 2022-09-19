@@ -2,24 +2,23 @@
 using Shapes;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.CaveV2.CaveGraph
 {
+    [ExecuteAlways]
     public class CaveNodeDataDebugComponent : MonoBehaviour
     {
         [ReadOnly] public CaveNodeData CaveNodeData;
-        [ReadOnly, ShowInInspector] private ShapeRenderer _renderer;
-        private Color _startingColor;
+        [ReadOnly] public CaveGenComponentV2 CaveGenerator; 
+        [ReadOnly] public ShapeRenderer InnerRenderer;
+        [ReadOnly] public ShapeRenderer OuterRenderer;
 
         #region Unity lifecycle
 
         private void Awake()
         {
-            _renderer = GetComponent<ShapeRenderer>();
-            if (_renderer != null)
-            {
-                _startingColor = _renderer.Color;
-            }
+            InnerRenderer = GetComponent<ShapeRenderer>();
         }
 
         private void Update()
@@ -33,15 +32,22 @@ namespace BML.Scripts.CaveV2.CaveGraph
         {
             // Debug.Log($"CaveNodeDataDebugComponent: UpdatePlayerOccupied");
 
-            if (_renderer != null)
+            if (InnerRenderer != null)
             {
-                var setColor = CaveNodeData.PlayerOccupied
-                    ? Color.blue
-                    : _startingColor;
-                setColor.a = CaveNodeData.PlayerVisited
-                    ? 0.5f
-                    : _startingColor.a;
-                _renderer.Color = setColor;
+                Color innerColor;
+                if (CaveNodeData.PlayerOccupied) innerColor = CaveGenerator.DebugNodeColor_Occupied;
+                else if (CaveNodeData.PlayerVisited) innerColor = CaveGenerator.DebugNodeColor_Visited;
+                else innerColor = CaveGenerator.DebugNodeColor_Default;
+                InnerRenderer.Color = innerColor;
+            }
+
+            if (OuterRenderer != null)
+            {
+                Color outerColor;
+                if (CaveNodeData.MainPathDistance == 0) outerColor = CaveGenerator.DebugNodeColor_MainPath;
+                else if (CaveNodeData.ObjectiveDistance == 0) outerColor = CaveGenerator.DebugNodeColor_End;
+                else outerColor = CaveGenerator.DebugNodeColor_Default;
+                OuterRenderer.Color = outerColor;
             }
         }
     }
