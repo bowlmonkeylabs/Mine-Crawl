@@ -1,6 +1,7 @@
 ﻿using System;
 using BML.Scripts.Utils;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 namespace BML.Scripts
@@ -10,6 +11,7 @@ namespace BML.Scripts
         [SerializeField] private int _damage = 1;
         [SerializeField] private LayerMask _damageMask;
         [SerializeField] private float _damageCooldown = 2;
+        [SerializeField] private UnityEvent _onTriggerEnter;
 
         private float _lastDamageTime = Mathf.NegativeInfinity;
         
@@ -36,6 +38,7 @@ namespace BML.Scripts
             if (damageable != null) {
                 damageable.TakeDamage(new HitInfo(_damage, (other.transform.position - transform.position).normalized));
                 _lastDamageTime = Time.time;
+                _onTriggerEnter.Invoke();
             }
         }
     }
