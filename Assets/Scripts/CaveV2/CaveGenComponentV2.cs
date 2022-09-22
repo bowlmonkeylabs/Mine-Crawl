@@ -10,6 +10,7 @@ using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Utils;
 using GK;
 using QuikGraph.Algorithms;
+using Shapes;
 using Sirenix.OdinInspector;
 using Unity.Collections;
 using UnityEditor;
@@ -37,14 +38,6 @@ namespace BML.Scripts.CaveV2
         [SerializeField] public bool RetryOnFailure = true;
         [SerializeField] private int _maxRetryDepth = 3;
 
-        [SerializeField] private bool _showTraversabilityCheck = false;
-        
-        [SerializeField] private bool _enableLogs = false;
-        [HideInInspector] public bool EnableLogs => _enableLogs;
-
-        [SerializeField] private bool _generateDebugObjects = true;
-        [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
-        
         [SerializeField, DisableIf("$_notOverrideBounds")] private Bounds _caveGenBounds = new Bounds(Vector3.zero, new Vector3(10,6,10));
         [SerializeField] private bool _overrideBounds = false;
         private bool _notOverrideBounds => !_overrideBounds;
@@ -66,7 +59,40 @@ namespace BML.Scripts.CaveV2
         [SerializeField] private LevelObjectSpawner _levelObjectSpawner;
 
         [TitleGroup("Debug")]
+        [SerializeField] private bool _enableLogs = false;
+        [HideInInspector] public bool EnableLogs => _enableLogs;
+        
+        [SerializeField] private bool _showTraversabilityCheck = false;
+
+#if UNITY_EDITOR
+        [SerializeField] private bool _generateDebugObjects = true;
+#else
+        private bool _generateDebugObjects = false;
+#endif
+        [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
+
+        public enum GizmoColorScheme
+        {
+            PlayerVisited,
+            MainPath,
+            MainPathDistance,
+            ObjectiveDistance,
+            PlayerDistance,
+        }
+        
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public GizmoColorScheme GizmoColorScheme_Inner = GizmoColorScheme.PlayerVisited;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public GizmoColorScheme GizmoColorScheme_Outer = GizmoColorScheme.MainPath;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Default;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Occupied;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Visited;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_Start;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_End;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Color DebugNodeColor_MainPath;
+        [FoldoutGroup("Gizmo colors")] [SerializeField] public Gradient DebugNodeColor_Gradient;
+
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxMainPathDistance { get; private set; }
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxObjectiveDistance { get; private set; }
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxPlayerDistance { get; private set; }
         
         #endregion
 
@@ -458,46 +484,18 @@ namespace BML.Scripts.CaveV2
             {
                 // Calculate distance from objective
                 {
-                    var findPathToObjective = caveGraph.ShortestPathsDijkstra(e => 1, caveGraph.EndNode);
-                    foreach (var caveGraphVertex in caveGraph.Vertices)
-                    {
-                        bool isEndNode = (caveGraphVertex == caveGraph.EndNode);
-                        if (isEndNode)
-                        {
-                            caveGraphVertex.ObjectiveDistance = 0;
-                            continue;
-                        }
-                        bool pathExists = findPathToObjective(caveGraphVertex, out var outPath);
-                        caveGraphVertex.ObjectiveDistance = (!pathExists ? -1 : outPath.Count());
-                    }
+                    var objectiveVertices = new List<CaveNodeData> { caveGraph.EndNode };
+                    caveGraph.FloodFillDistance(objectiveVertices, (node, dist) => node.ObjectiveDistance = dist);
+
+                    this.MaxObjectiveDistance = caveGraph.Vertices.Max(e => e.ObjectiveDistance);
                 }
 
                 // Calculate distance from main path
                 {
-                    foreach (var caveNodeConnectionData in caveGraph.MainPath)
-                    {
-                        var findPathToSource = caveGraph.ShortestPathsDijkstra(e => 1, caveNodeConnectionData.Source);
-                        foreach (var caveGraphVertex in caveGraph.Vertices)
-                        {
-                            bool sameVertex = (caveGraphVertex == caveNodeConnectionData.Source || caveGraphVertex == caveNodeConnectionData.Target);
-                            if (sameVertex)
-                            {
-                                caveGraphVertex.MainPathDistance = 0;
-                                continue;
-                            }
-                            
-                            bool pathExists = findPathToSource(caveGraphVertex, out var outPath);
-                            if (pathExists)
-                            {
-                                var pathLength = outPath.Count();
-                                if (caveGraphVertex.MainPathDistance == -1
-                                    || pathLength < caveGraphVertex.MainPathDistance)
-                                {
-                                    caveGraphVertex.MainPathDistance = pathLength;
-                                }
-                            }
-                        }
-                    }
+                    var mainPathVertices = caveGraph.MainPath
+                        .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target})
+                        .Distinct();
+                    caveGraph.FloodFillDistance(mainPathVertices, (node, dist) => node.MainPathDistance = dist);
 
                     this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
                 }
@@ -507,6 +505,15 @@ namespace BML.Scripts.CaveV2
             if (_enableLogs) Debug.Log($"Cave graph generated");
             
             return caveGraph;
+        }
+
+        public void UpdatePlayerDistance(IEnumerable<CaveNodeData> playerOccupidedNodes)
+        {
+            _caveGraph.FloodFillDistance(
+                playerOccupidedNodes, 
+                (node, dist) => node.PlayerDistance = dist);
+            
+            this.MaxPlayerDistance = _caveGraph.Vertices.Max(e => e.PlayerDistance);
         }
 
         private CaveGraphV2 _minimumSpanningTreeGraphTEMP;
@@ -546,21 +553,29 @@ namespace BML.Scripts.CaveV2
                 newGameObject.transform.SetParent(_debugObjectsContainer);
                 newGameObject.transform.position = LocalToWorld(caveNodeData.LocalPosition);
                 
+                // Add shape renderer component for node
+                var sphereOuter = newGameObject.AddComponent<Shapes.Sphere>();
+                sphereOuter.Color = DebugNodeColor_Default;
+                sphereOuter.BlendMode = ShapesBlendMode.Additive;
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(sphereOuter, false);
+                
+                // Add shape renderer component for secondary node indicator
+                GameObject newGameObjectInner = new GameObject("Indicator");
+                newGameObjectInner.transform.SetParent(newGameObject.transform);
+                newGameObjectInner.transform.position = LocalToWorld(caveNodeData.LocalPosition);
+                var sphereInner = newGameObjectInner.AddComponent<Shapes.Sphere>();
+                sphereInner.Color = DebugNodeColor_Default;
+                sphereInner.Radius = sphereOuter.Radius * 2 / 3;
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(sphereInner, false);
+                
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeDataDebugComponent>();
                 debugComponent.CaveNodeData = caveNodeData;
-                
-                // Add shape renderer component
-                var shapeSphereComponent = newGameObject.AddComponent<Shapes.Sphere>();
-                if (caveNodeData.MainPathDistance == 0)
-                {
-                    shapeSphereComponent.Color = Color.green;
-                }
-                if (caveNodeData.ObjectiveDistance == 0)
-                {
-                    shapeSphereComponent.Color = Color.red;
-                }
-                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(shapeSphereComponent, false);
+                debugComponent.CaveGenerator = this;
+                debugComponent.InnerRenderer = sphereInner;
+                debugComponent.OuterRenderer = sphereOuter;
+
+                UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
             }
             
             // Spawn debug object on each edge to ensure nodes are connected
@@ -584,16 +599,19 @@ namespace BML.Scripts.CaveV2
                 // newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 // newGameObject.transform.position = edgeMidPosition;
                 // newGameObject.transform.localScale = localScale;
-                
-                // Add debug component
-                var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
-                debugComponent.CaveConnectionNodeData = caveNodeConnectionData;
 
                 // Add shape renderer component
                 var shapeLineComponent = newGameObject.AddComponent<Shapes.Line>();
                 shapeLineComponent.Start = LocalToWorld(caveNodeConnectionData.Source.LocalPosition);
                 shapeLineComponent.End = LocalToWorld(caveNodeConnectionData.Target.LocalPosition);
+                shapeLineComponent.Color = DebugNodeColor_Default;
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(shapeLineComponent, false);
+                
+                // Add debug component
+                var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
+                debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
+                
+                UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
             }
             
 #endif

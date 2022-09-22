@@ -754,10 +754,6 @@ MonoBehaviour:
   _keepEditModeLevel: 0
   RetryOnFailure: 1
   _maxRetryDepth: 10
-  _showTraversabilityCheck: 1
-  _enableLogs: 0
-  _generateDebugObjects: 0
-  _debugObjectsContainer: {fileID: 1191531237}
   _caveGenBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 15, y: 10, z: 15}
@@ -779,6 +775,47 @@ MonoBehaviour:
   _caveGenParams: {fileID: 11400000, guid: 422f7183a1db541439442b7b906dee8c, type: 2}
   _caveGraphMudBunRenderer: {fileID: 1231575172}
   _levelObjectSpawner: {fileID: 1496774518}
+  _enableLogs: 0
+  _showTraversabilityCheck: 1
+  _generateDebugObjects: 1
+  _debugObjectsContainer: {fileID: 1191531237}
+  GizmoColorScheme_Inner: 0
+  GizmoColorScheme_Outer: 1
+  DebugNodeColor_Default: {r: 1, g: 1, b: 1, a: 0.29803923}
+  DebugNodeColor_Occupied: {r: 1, g: 0.99997807, b: 0, a: 0.29803923}
+  DebugNodeColor_Visited: {r: 0, g: 0, b: 0, a: 0.29803923}
+  DebugNodeColor_Start: {r: 0, g: 0.9056604, b: 0.0542722, a: 0.29803923}
+  DebugNodeColor_End: {r: 0.90588236, g: 0.32915863, b: 0, a: 0.29803923}
+  DebugNodeColor_MainPath: {r: 0, g: 0.8419214, b: 0.90588236, a: 0.29803923}
+  DebugNodeColor_Gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0, b: 0, a: 1}
+    key1: {r: 0, g: 1, b: 0.00427413, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
 --- !u!4 &771419350
 Transform:
   m_ObjectHideFlags: 0
@@ -2642,6 +2679,10 @@ PrefabInstance:
       propertyPath: _target
       value: 
       objectReference: {fileID: 1772095149}
+    - target: {fileID: 3069818814161535491, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
+      propertyPath: _caveGenerator
+      value: 
+      objectReference: {fileID: 771419349}
     - target: {fileID: 4112429824577967131, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
       propertyPath: _uiAimReticle
       value: 
@@ -2661,6 +2702,14 @@ PrefabInstance:
     - target: {fileID: 7265003986444444704, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
       propertyPath: field of view
       value: 40.43891
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265003986444444711, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.25881955
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265003986444444711, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.9659257
       objectReference: {fileID: 0}
     - target: {fileID: 8722278798120057416, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
       propertyPath: m_RootOrder
