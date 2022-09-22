@@ -938,7 +938,7 @@ MonoBehaviour:
   _oreCollider: {fileID: 182695390771352254}
   _critMarker: {fileID: 2238584893062115824}
   _critMarkerMinMaxAngle: {x: 15, y: 41.42908}
-  _critMarkerSurfaceOffset: 0.05
+  _critMarkerSurfaceOffset: 0.1
 --- !u!114 &1425103801302272645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -953,8 +953,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: {fileID: 7664960571339365045}
   _critMultiplier: 2
-  _invincibilitySeconds: 0
-  _isInvincible: 0
   _onDamage:
     m_PersistentCalls:
       m_Calls:
@@ -970,6 +968,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onFailDamage:
+    m_PersistentCalls:
+      m_Calls: []
   _onCrit:
     m_PersistentCalls:
       m_Calls:
@@ -1037,9 +1038,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: {fileID: 7664960571339365045}
   _critMultiplier: 2
-  _invincibilitySeconds: 0
-  _isInvincible: 0
   _onDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  _onFailDamage:
     m_PersistentCalls:
       m_Calls: []
   _onCrit:
@@ -1063,7 +1065,12 @@ MonoBehaviour:
   _healthReference: {fileID: 0}
   _health: 3
   _useHealthVariable: 0
+  _invincibilitySeconds: 0
+  _isInvincible: 0
   _onHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  _onTakeDamage:
     m_PersistentCalls:
       m_Calls: []
   _onDeath:
@@ -1081,6 +1088,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onRevive:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &8399686363568519638
 PrefabInstance:
   m_ObjectHideFlags: 0

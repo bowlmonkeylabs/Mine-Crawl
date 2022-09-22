@@ -68,6 +68,10 @@ namespace BML.Scripts
             foreach (var col in enemyColliders)
             {
                 ExplosiveDamageable damageable = col.GetComponent<ExplosiveDamageable>();
+                if (damageable == null)
+                {
+                    damageable = col.attachedRigidbody.GetComponent<ExplosiveDamageable>();
+                }
                 damageable.TakeDamage(new HitInfo(_damageEnemy.Value, (col.transform.position - transform.position).normalized));
             }
             

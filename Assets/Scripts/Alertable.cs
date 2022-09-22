@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BehaviorDesigner.Runtime;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts
 {
-    [RequireComponent(typeof(BehaviorTree))]
+    [RequireComponent(typeof(BehaviorDesigner.Runtime.BehaviorTree))]
     public class Alertable : MonoBehaviour
     {
-        [SerializeField] private BehaviorTree behaviorTree;
+        [FormerlySerializedAs("behaviorTree")] [SerializeField] private BehaviorDesigner.Runtime.BehaviorTree _behaviorTree;
+        [SerializeField] private UnityEvent _onAlerted;
 
         public void SetAlerted() {
-            behaviorTree.SendEvent("SetAlerted");
+            _behaviorTree.SendEvent("SetAlerted");
+            _onAlerted.Invoke();
         }
 
     }
