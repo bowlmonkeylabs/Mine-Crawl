@@ -50,6 +50,10 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
                 this.OnUpdate?.Invoke();
                 if(EnableDebugOnUpdate)
                     Debug.LogError($"name: {name} | prevValue: {prevValue} | currentValue: {runtimeValue}");
+
+                prevValue = runtimeValue;
+                // Setting this means that 'prevValue' technically only contains the previous value during the frame an update occurs, otherwise it is in sync with 'runtimeValue'
+                // But this allows delta updates to work even when we edit values through the inspector (which circumvents this Value.set() method)
             }
         }
 
@@ -57,7 +61,11 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         public void BroadcastUpdate()
         {
             OnUpdate?.Invoke();
-            OnUpdateDelta?.Invoke(runtimeValue, runtimeValue);
+            OnUpdateDelta?.Invoke(prevValue, runtimeValue);
+            
+            prevValue = runtimeValue;
+            // Setting this means that 'prevValue' technically only contains the previous value during the frame an update occurs, otherwise it is in sync with 'runtimeValue'
+            // But this allows delta updates to work even when we edit values through the inspector (which circumvents the Value.set() method)
         }
 
         public void Subscribe(OnUpdate callback)
