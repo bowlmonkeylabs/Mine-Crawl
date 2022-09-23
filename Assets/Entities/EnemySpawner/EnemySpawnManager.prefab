@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9182727736491517635}
   - component: {fileID: 9182727736491517644}
   m_Layer: 0
-  m_Name: EnemeySpawnManager
+  m_Name: EnemySpawnManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b35a275cd6d47c3a72152c1639f65f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _caveGenerator: {fileID: 0}
   _enemyContainer: {fileID: 0}
   _player: {fileID: 0}
   _spawnOffsetRadius: 1
@@ -53,8 +54,7 @@ MonoBehaviour:
   _currentSpawnDelay: {fileID: 11400000, guid: 352b10b7d534eae4d821308690c1fbfb, type: 2}
   _currentSpawnCap: {fileID: 11400000, guid: f57160f80ef0ba046ac7c6bf4b3f0228, type: 2}
   _currentEnemyCount: {fileID: 11400000, guid: 6fdcc6ab717b88f4fa6f8ecf81b9db82, type: 2}
-  _onSpawnPointEnterSpawnTriggerInner: {fileID: 11400000, guid: 526cceb8abc888a458ae739799b5a8b4, type: 2}
-  _onSpawnPointExitSpawnTriggerInner: {fileID: 11400000, guid: f118043f602e5054cb06cd58aa6c6b5e, type: 2}
-  _onSpawnPointEnterSpawnTriggerOuter: {fileID: 11400000, guid: a46e307e43e986f41a09941cfbac9ac0, type: 2}
-  _onSpawnPointExitSpawnTriggerOuter: {fileID: 11400000, guid: 0b04ca2028126624e93c9d748fc233e5, type: 2}
+  _minMaxSpawnPlayerDistance: {x: 2, y: 3}
+  _onActivateTrapRoom: {fileID: 11400000, guid: dc68008b25e8625419c7d72c183ad374, type: 2}
+  _onDeactivateTrapRoom: {fileID: 11400000, guid: db7724a7b29423b4280db6ffbe5b9097, type: 2}
   _enemySpawnerParams: {fileID: 11400000, guid: ceabea79e797e2b4898d9dc95f70dffb, type: 2}

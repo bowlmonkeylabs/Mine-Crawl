@@ -99,8 +99,10 @@ namespace BML.Scripts.CaveV2
         #region Events
         
         public delegate void AfterGenerate();
-
         public AfterGenerate OnAfterGenerate;
+        
+        public delegate void AfterUpdatePlayerDistance();
+        public AfterUpdatePlayerDistance OnAfterUpdatePlayerDistance;
         
         #endregion
         
@@ -514,6 +516,8 @@ namespace BML.Scripts.CaveV2
                 (node, dist) => node.PlayerDistance = dist);
             
             this.MaxPlayerDistance = _caveGraph.Vertices.Max(e => e.PlayerDistance);
+            
+            this.OnAfterUpdatePlayerDistance?.Invoke();
         }
 
         private CaveGraphV2 _minimumSpanningTreeGraphTEMP;

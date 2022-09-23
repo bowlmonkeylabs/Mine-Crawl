@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.Scripts.CaveV2;
+using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts
 {
     public class EnemySpawnManager : MonoBehaviour
     {
+        #region Inspector
+        
+        [SerializeField, Required] private CaveGenComponentV2 _caveGenerator;
         [SerializeField] private Transform _enemyContainer;
         [SerializeField] private Transform _player;
         [SerializeField] private float _spawnOffsetRadius = 5f;
@@ -23,14 +26,21 @@ namespace BML.Scripts
         [SerializeField] private FloatVariable _currentSpawnDelay;
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
-        [SerializeField] private DynamicGameEvent _onSpawnPointEnterSpawnTriggerInner;
-        [SerializeField] private DynamicGameEvent _onSpawnPointExitSpawnTriggerInner;
-        [SerializeField] private DynamicGameEvent _onSpawnPointEnterSpawnTriggerOuter;
-        [SerializeField] private DynamicGameEvent _onSpawnPointExitSpawnTriggerOuter;
+        
+        [UnityEngine.Tooltip(
+            "Controls range within spawn points will be considered for active spawning. 'Player Distance' is defined by the CaveNodeData, in terms of graph distance from the player's current location.")]
+        [SerializeField, MinMaxSlider(0, 10, true)]
+        private Vector2Int _minMaxSpawnPlayerDistance = new Vector2Int(1, 3);
+
+        [UnityEngine.Tooltip("While exit challenge is active, the spawner will override the 'Min Max Player Spawn Distance' to 0, meaning enemies will only spawn in the same room as the player. (This works only because the exit challenge is constructed as a single 'room' in the level data.")]
+        [SerializeField] private BoolReference _isExitChallengeActive;
+        
         [Required, SerializeField] [InlineEditor()] private EnemySpawnerParams _enemySpawnerParams;
 
-        private Dictionary<string, List<Transform>> tagToSpawnPointsDict =
-            new Dictionary<string, List<Transform>>();
+        #endregion
+
+        private Dictionary<string, List<SpawnPoint>> _allSpawnPointsByTag;
+        private Dictionary<string, List<SpawnPoint>> _activeSpawnPointsByTag;
 
         private float lastSpawnTime = Mathf.NegativeInfinity;
         private float percentToMaxSpawn;
@@ -39,23 +49,19 @@ namespace BML.Scripts
 
         private void Awake()
         {
-            InitSpawnPoints();
+            // InitSpawnPoints();
         }
 
         private void OnEnable()
         {
-            _onSpawnPointEnterSpawnTriggerOuter.Subscribe(RegisterSpawnPoint);
-            _onSpawnPointExitSpawnTriggerOuter.Subscribe(UnregisterSpawnPoint);
-            _onSpawnPointEnterSpawnTriggerInner.Subscribe(UnregisterSpawnPoint);
-            _onSpawnPointExitSpawnTriggerInner.Subscribe(RegisterSpawnPoint);
+            _caveGenerator.OnAfterGenerate += InitSpawnPoints;
+            _caveGenerator.OnAfterUpdatePlayerDistance += CacheActiveSpawnPoints;
         }
 
         private void OnDisable()
         {
-            _onSpawnPointEnterSpawnTriggerOuter.Unsubscribe(RegisterSpawnPoint);
-            _onSpawnPointExitSpawnTriggerOuter.Unsubscribe(UnregisterSpawnPoint);
-            _onSpawnPointEnterSpawnTriggerInner.Unsubscribe(UnregisterSpawnPoint);
-            _onSpawnPointExitSpawnTriggerInner.Unsubscribe(RegisterSpawnPoint);
+            _caveGenerator.OnAfterGenerate -= InitSpawnPoints;
+            _caveGenerator.OnAfterUpdatePlayerDistance -= CacheActiveSpawnPoints;
         }
 
         private void Update()
@@ -65,31 +71,84 @@ namespace BML.Scripts
 
             HandleSpawning();
         }
-
-        #endregion
-
-        private void InitSpawnPoints()
+        
+        private void OnDrawGizmosSelected()
         {
-            tagToSpawnPointsDict =
-                new Dictionary<string, List<Transform>>();
-            foreach (var spawnAtTag in _enemySpawnerParams.SpawnAtTags)
+            if (_allSpawnPointsByTag != null)
             {
-                if (!tagToSpawnPointsDict.ContainsKey(spawnAtTag.Tag))
-                    tagToSpawnPointsDict.Add(spawnAtTag.Tag, new List<Transform>());
+                foreach (var tag in _allSpawnPointsByTag.Keys)
+                {
+                    foreach (var spawnPoint in _allSpawnPointsByTag[tag])
+                    {
+                        Gizmos.color = Color.gray;
+                        Gizmos.DrawSphere(spawnPoint.transform.position, .5f);
+                    }
+
+                    if (_activeSpawnPointsByTag != null)
+                    {
+                        foreach (var spawnPoint in _activeSpawnPointsByTag[tag])
+                        {
+                            Gizmos.color = Color.yellow;
+                            Gizmos.DrawSphere(spawnPoint.transform.position, .5f);
+                        }
+                    }
+                }
             }
         }
 
-        private void RegisterSpawnPoint(object prev, object enemySpawnInfoObj)
+        #endregion
+        
+        #region Spawn points
+
+        private void InitSpawnPoints()
         {
-            EnemySpawnInfo enemySpawnInfo = (EnemySpawnInfo) enemySpawnInfoObj;
-            tagToSpawnPointsDict[enemySpawnInfo.spawnPointTag].Add(enemySpawnInfo.spawnPoint);
+            var tagsToSpawn = _enemySpawnerParams.SpawnAtTags
+                .Select(spawnAtTag => spawnAtTag.Tag)
+                .Distinct()
+                .ToList();
+
+            var tags = String.Join(", ", tagsToSpawn);
+            // Debug.Log($"InitSpawnPoints {tags}");
+
+            _allSpawnPointsByTag = _caveGenerator.CaveGraph.Vertices
+                .SelectMany(caveNodeData => caveNodeData.SpawnPoints)
+                .GroupBy(sp => sp.gameObject.tag)
+                .Where(group => tagsToSpawn.Contains(group.Key))
+                .ToDictionary(group => group.Key, group => group.ToList());
+
+            // Debug.Log($"{_allSpawnPointsByTag.Keys.Count} tags with spawn points");
+            // foreach (var kv     in _allSpawnPointsByTag)
+            // {
+            //     Debug.Log($"{kv.Key}: {kv.Value.Count}");
+            // }
+            
+            CacheActiveSpawnPoints();
         }
         
-        private void UnregisterSpawnPoint(object prev, object enemySpawnInfoObj)
+        private bool SpawnPointIsActive(SpawnPoint spawnPoint)
         {
-            EnemySpawnInfo enemySpawnInfo = (EnemySpawnInfo) enemySpawnInfoObj;
-            tagToSpawnPointsDict[enemySpawnInfo.spawnPointTag].Remove(enemySpawnInfo.spawnPoint);
+            bool inRangeOfPlayer = (spawnPoint.ParentNode.PlayerDistance >= _minMaxSpawnPlayerDistance.x
+                && spawnPoint.ParentNode.PlayerDistance <= _minMaxSpawnPlayerDistance.y);
+            bool isExitChallengeActive = (_isExitChallengeActive.Value);
+            bool isCurrentRoom = (spawnPoint.ParentNode.PlayerDistance == 0);
+
+            return (!isExitChallengeActive && inRangeOfPlayer)
+                   || (isExitChallengeActive && isCurrentRoom);
         }
+
+        private void CacheActiveSpawnPoints()
+        {
+            _activeSpawnPointsByTag = new Dictionary<string, List<SpawnPoint>>();
+            foreach (var kv in _allSpawnPointsByTag)
+            {
+                // Debug.Log($"CacheActiveSpawnPoints {kv.Key}");
+                _activeSpawnPointsByTag[kv.Key] = kv.Value.Where(SpawnPointIsActive).ToList();
+            }
+        }
+        
+        #endregion
+        
+        #region Spawning
 
         private void HandleSpawning()
         {
@@ -106,14 +165,13 @@ namespace BML.Scripts
             
 
             EnemySpawnParams randomEnemy = _enemySpawnerParams.SpawnAtTags.GetRandomElement();
-            List<Transform> potentialSpawnPointsForTag = tagToSpawnPointsDict[randomEnemy.Tag];
+            List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemy.Tag];
 
             //If no spawn points in range for this tag, return
             if (potentialSpawnPointsForTag.Count == 0)
                 return;
 
             Transform randomSpawnPoint = potentialSpawnPointsForTag.GetRandomElement().transform;
-
 
             var spawnOffset = Random.insideUnitCircle;
             var spawnPoint = randomSpawnPoint.position +
@@ -126,17 +184,8 @@ namespace BML.Scripts
             
             lastSpawnTime = Time.time;
         }
-
-        private void OnDrawGizmosSelected()
-        {
-            foreach (var tag in tagToSpawnPointsDict.Keys)
-            {
-                foreach (var spawnPoint in tagToSpawnPointsDict[tag])
-                {
-                    Gizmos.color = Color.green;
-                    Gizmos.DrawSphere(spawnPoint.transform.position, .5f);
-                }
-            }
-        }
+        
+        #endregion
+        
     }
 }
