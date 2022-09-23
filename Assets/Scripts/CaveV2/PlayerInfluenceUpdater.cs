@@ -63,16 +63,16 @@ namespace BML.Scripts.CaveV2
                             return;
                         }
 
-                        bool areOtherCurrentNodes = (_currentNodes.Count > 0);
-                        bool newNodeAdjacentToCurrentNodes = _currentNodes.Values
-                            .Any(currentNode => 
-                                _caveGenerator.CaveGraph.TryGetEdge(currentNode, caveNodeData, out var edge1)
-                                || _caveGenerator.CaveGraph.TryGetEdge(caveNodeData, currentNode, out var edge2));
-                        if (areOtherCurrentNodes && !newNodeAdjacentToCurrentNodes)
-                        {
-                            // Skip node which does not have direct connection to other current nodes
-                            return;
-                        }
+                        // bool areOtherCurrentNodes = (_currentNodes.Count > 0);
+                        // bool newNodeAdjacentToCurrentNodes = _currentNodes.Values
+                        //     .Any(currentNode => 
+                        //         _caveGenerator.CaveGraph.TryGetEdge(currentNode, caveNodeData, out var edge1)
+                        //         || _caveGenerator.CaveGraph.TryGetEdge(caveNodeData, currentNode, out var edge2));
+                        // if (areOtherCurrentNodes && !newNodeAdjacentToCurrentNodes)
+                        // {
+                        //     // Skip node which does not have direct connection to other current nodes
+                        //     return;
+                        // }
                         
                         caveNodeData.PlayerVisited = true;
                         caveNodeData.PlayerOccupied = true;
