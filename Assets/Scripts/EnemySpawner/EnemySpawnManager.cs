@@ -15,7 +15,8 @@ namespace BML.Scripts
     {
         #region Inspector
         
-        [SerializeField, Required] private CaveGenComponentV2 _caveGenerator;
+        [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
+        
         [SerializeField] private Transform _enemyContainer;
         [SerializeField] private Transform _player;
         [SerializeField] private float _spawnOffsetRadius = 5f;
@@ -31,6 +32,10 @@ namespace BML.Scripts
             "Controls range within spawn points will be considered for active spawning. 'Player Distance' is defined by the CaveNodeData, in terms of graph distance from the player's current location.")]
         [SerializeField, MinMaxSlider(0, 10, true)]
         private Vector2Int _minMaxSpawnPlayerDistance = new Vector2Int(1, 3);
+        
+        [Required, SerializeField] private SphereCollider _enemyDeleteRadius;
+        [Required, SerializeField] private LayerMask _enemyLayerMask;
+        [Required, SerializeField] private float _despawnDelay = 1f;
 
         [UnityEngine.Tooltip("While exit challenge is active, the spawner will override the 'Min Max Player Spawn Distance' to 0, meaning enemies will only spawn in the same room as the player. (This works only because the exit challenge is constructed as a single 'room' in the level data.")]
         [SerializeField] private BoolReference _isExitChallengeActive;
@@ -44,13 +49,10 @@ namespace BML.Scripts
 
         private float lastSpawnTime = Mathf.NegativeInfinity;
         private float percentToMaxSpawn;
+
+        private float lastDespawnTime = Mathf.NegativeInfinity;
         
         #region Unity lifecycle
-
-        private void Awake()
-        {
-            // InitSpawnPoints();
-        }
 
         private void OnEnable()
         {
@@ -69,6 +71,7 @@ namespace BML.Scripts
             percentToMaxSpawn = (Time.time - _levelStartTime.Value) / (_minutesToMaxSpawn.Value * 60f);
             _currentSpawnDelay.Value = _spawnDelayCurve.Value.Evaluate(percentToMaxSpawn);
 
+            HandleDespawning();
             HandleSpawning();
         }
         
@@ -93,6 +96,14 @@ namespace BML.Scripts
                         }
                     }
                 }
+            }
+
+            if (_enemyDeleteRadius != null)
+            {
+                var center = _enemyDeleteRadius.transform.position + _enemyDeleteRadius.center;
+                var radius = _enemyDeleteRadius.radius;
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(center, radius);
             }
         }
 
@@ -149,10 +160,39 @@ namespace BML.Scripts
         #endregion
         
         #region Spawning
+        
+        private void HandleDespawning()
+        {
+            if (Time.time < lastDespawnTime + _despawnDelay)
+                return;
+
+            lastDespawnTime = Time.time;
+
+            var center = _enemyDeleteRadius.transform.position + _enemyDeleteRadius.center;
+            var radius = _enemyDeleteRadius.radius;
+            var despawnablesInRange = Physics.OverlapSphere(center, radius, _enemyLayerMask)
+                .Select(coll => coll.GetComponent<Despawnable>())
+                .Where(despawnable => despawnable != null)
+                .ToList();
+            
+            Debug.Log($"HandleDespawning Found {despawnablesInRange.Count}/{_enemyContainer.childCount} enemies in active range.");
+            
+            for (int i = 0; i < _enemyContainer.childCount; i++)
+            {
+                var childEnemy = _enemyContainer.GetChild(i).GetComponent<Despawnable>();
+                if (childEnemy == null) continue;
+
+                bool foundInActive = despawnablesInRange.Contains(childEnemy);
+                if (!foundInActive)
+                {
+                    childEnemy.Despawn();
+                }
+            }
+        }
 
         private void HandleSpawning()
         {
-            if (lastSpawnTime + _currentSpawnDelay.Value > Time.time)
+            if (Time.time < lastSpawnTime + _currentSpawnDelay.Value)
                 return;
 
             //Check against current enemy cap

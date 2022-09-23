@@ -1162,6 +1162,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8649190723377008977, guid: 63b40a4c395028042b809bf2c2b73aba, type: 3}
   m_PrefabInstance: {fileID: 8649190722741287802}
   m_PrefabAsset: {fileID: 0}
+--- !u!135 &1026495651 stripped
+SphereCollider:
+  m_CorrespondingSourceObject: {fileID: 9153873520445241092, guid: ccceb3b5f456b79488302c32fa59a2c1, type: 3}
+  m_PrefabInstance: {fileID: 3835178114251414922}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1191531236
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,7 +1182,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1191531237
 Transform:
   m_ObjectHideFlags: 0
@@ -4491,6 +4496,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3835178114251414924}
     - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
+      propertyPath: _despawnDelay
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
       propertyPath: _caveGenerator
       value: 
       objectReference: {fileID: 771419349}
@@ -4499,9 +4508,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1751489072}
     - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
+      propertyPath: _despawnFrequency
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
+      propertyPath: _enemyDeleteRadius
+      value: 
+      objectReference: {fileID: 1026495651}
+    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
+      propertyPath: _enemyLayerMask.m_Bits
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
+    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
+      propertyPath: _minMaxSpawnPlayerDistance.x
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
       propertyPath: _isExitChallengeActive.Variable
       value: 
