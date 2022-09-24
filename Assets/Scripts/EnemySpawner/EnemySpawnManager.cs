@@ -111,6 +111,7 @@ namespace BML.Scripts
                 var radius = _enemyDeleteRadius.radius;
                 Gizmos.color = Color.green;
                 Gizmos.DrawWireSphere(center, radius);
+                Gizmos.DrawSphere(center, 0.75f);
             }
         }
 
