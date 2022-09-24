@@ -15,10 +15,13 @@ namespace BML.Scripts
     {
         #region Inspector
         
+        [TitleGroup("Scene References")]
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
-        
         [SerializeField] private Transform _enemyContainer;
         [SerializeField] private Transform _player;
+        [Required, SerializeField] private SphereCollider _enemyDeleteRadius;
+
+        [TitleGroup("Spawning Parameters")]
         [SerializeField] private float _spawnOffsetRadius = 5f;
         [SerializeField] private FloatVariable _levelStartTime;
         [SerializeField] private FloatVariable _minutesToMaxSpawn;
@@ -27,20 +30,24 @@ namespace BML.Scripts
         [SerializeField] private FloatVariable _currentSpawnDelay;
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
-        
+
         [UnityEngine.Tooltip(
             "Controls range within spawn points will be considered for active spawning. 'Player Distance' is defined by the CaveNodeData, in terms of graph distance from the player's current location.")]
         [SerializeField, MinMaxSlider(0, 10, true)]
         private Vector2Int _minMaxSpawnPlayerDistance = new Vector2Int(1, 3);
         
-        [Required, SerializeField] private SphereCollider _enemyDeleteRadius;
-        [Required, SerializeField] private LayerMask _enemyLayerMask;
-        [Required, SerializeField] private float _despawnDelay = 1f;
-
         [UnityEngine.Tooltip("While exit challenge is active, the spawner will override the 'Min Max Player Spawn Distance' to 0, meaning enemies will only spawn in the same room as the player. (This works only because the exit challenge is constructed as a single 'room' in the level data.")]
         [SerializeField] private BoolReference _isExitChallengeActive;
         
+        [TitleGroup("Despawning Parameters")]
+        [Required, SerializeField] private LayerMask _enemyLayerMask;
+        [Required, SerializeField] private float _despawnDelay = 1f;
+
+        [TitleGroup("Enemy Types")]
         [Required, SerializeField] [InlineEditor()] private EnemySpawnerParams _enemySpawnerParams;
+        
+        [TitleGroup("Debug")]
+        [SerializeField] private bool _enableLogs = false;
 
         #endregion
 
@@ -175,7 +182,7 @@ namespace BML.Scripts
                 .Where(despawnable => despawnable != null)
                 .ToList();
             
-            Debug.Log($"HandleDespawning Found {despawnablesInRange.Count}/{_enemyContainer.childCount} enemies in active range.");
+            if (_enableLogs) Debug.Log($"HandleDespawning Found {despawnablesInRange.Count}/{_enemyContainer.childCount} enemies in active range.");
             
             for (int i = 0; i < _enemyContainer.childCount; i++)
             {
@@ -221,6 +228,8 @@ namespace BML.Scripts
             newGameObject.transform.position = SpawnObjectsUtil.GetPointUnder(spawnPoint,
                 _enemySpawnerParams.TerrainLayerMask,
                 _enemySpawnerParams.MaxRaycastLength);
+            
+            Debug.Log($"HandleSpawning Spawned {randomEnemy.Prefab.name} {spawnPoint}");
             
             lastSpawnTime = Time.time;
         }
