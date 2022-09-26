@@ -38,6 +38,11 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolReference _isGodModeEnabled;
 		[SerializeField] private BoolReference _isNoClipEnabled;
 		[SerializeField] private GameEvent _onAddEnemyHealth;
+		[SerializeField] private GameEvent _onFreezeTime;
+		[SerializeField] private GameEvent _onResetTimeScale;
+		[SerializeField] private GameEvent _onIncreaseTimeScale;
+		[SerializeField] private GameEvent _onDecreaseTimeScale;
+		[SerializeField] private GameEvent _onSkipFrame;
 
 		[SerializeField] private VariableContainer _containerUiMenuStates;
 		
@@ -199,6 +204,31 @@ namespace BML.Scripts.Player
 		public void SprintInput(bool newSprintState)
 		{
 			sprint = newSprintState;
+		}
+
+		public void OnFreezeTime()
+		{
+			_onFreezeTime.Raise();
+		}
+		
+		public void OnIncreaseTimeScale()
+		{
+			_onIncreaseTimeScale.Raise();
+		}
+		
+		public void OnDecreaseTimeScale()
+		{
+			_onDecreaseTimeScale.Raise();
+		}
+		
+		public void OnResetTimeScale()
+		{
+			_onResetTimeScale.Raise();
+		}
+		
+		public void OnSkipFrame()
+		{
+			_onSkipFrame.Raise();
 		}
 		
 		#endregion

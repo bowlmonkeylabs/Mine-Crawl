@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6358346553283009996}
   - component: {fileID: 6358346553283010002}
-  - component: {fileID: 6358346553283009997}
   - component: {fileID: 6358346553283010003}
+  - component: {fileID: 5328654534423212273}
   m_Layer: 0
   m_Name: DebugCanvasController
   m_TagString: Untagged
@@ -108,64 +108,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6358346553283009997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6358346553283009999}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b30e1dba8ca5434283cb2b68a1e91bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: FloatValues
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[BML.ScriptableObjectCore.Scripts.Variables.ValueReferences.FloatValueReference,
-        ScriptableObjectSystem]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-  BoolVariables:
-  - {fileID: 11400000, guid: 9d57b34e568e42b42a939f4170f96fd4, type: 2}
-  TriggerVariables: []
-  FloatVariables: []
-  IntVariables: []
-  TimerVariables: []
-  Vector2Variables: []
-  Vector3Variables: []
-  OnUpdate:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6358346553283010002}
-        m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
-          StateMachine
-        m_MethodName: TryRaise
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &6358346553283010003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,6 +142,54 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &5328654534423212273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6358346553283009999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bac3452c3d166594f8e8494b57ab1162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoolVariables:
+  - {fileID: 11400000, guid: 9d57b34e568e42b42a939f4170f96fd4, type: 2}
+  FloatVariables: []
+  IntVariables: []
+  Vector2Variables: []
+  Vector3Variables: []
+  OnIncrease:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6358346554959081701}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnDecrease:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6358346554959081701}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6358346553319218701
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,7 +469,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &6358346554369937834
 MonoBehaviour:
   m_ObjectHideFlags: 0

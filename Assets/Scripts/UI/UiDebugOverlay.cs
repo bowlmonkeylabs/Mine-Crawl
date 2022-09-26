@@ -32,6 +32,7 @@ namespace BML.Scripts.UI
         protected void UpdateText()
         {
             _text.text = $@"Player Coordinates: {this.formatVector3(_playerTransformSceneReference.Value.position)}
+Timescale: {Time.timeScale.ToString("0.00")}
 Enemy Spawn Params: Delay: {_currentSpawnDelay.Value.ToString("0.00")}
 Cap: {_currentSpawnCap.Value.ToString("0.00")}
 Count: {_currentEnemyCount.Value}
