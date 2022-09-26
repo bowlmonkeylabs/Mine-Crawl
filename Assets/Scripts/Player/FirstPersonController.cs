@@ -1,11 +1,13 @@
 //FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
 //https://assetstore.unity.com/packages/essentials/starter-assets-first-person-character-controller-196525
 
+using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Utils;
 using KinematicCharacterController;
 using UnityEngine;
 using MoreMountains.Tools;
+using UnityEngine.Serialization;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -29,6 +31,10 @@ namespace BML.Scripts.Player
 		public float SpeedChangeRate = 10.0f;
 		[Tooltip("Curve for analog look input smoothing")]
 		public AnimationCurve AnalogMovementCurve;
+		[Tooltip("Factor for look acceleration setting")]
+		public float lookAccelerationFactor = .0001f;
+		[FormerlySerializedAs("lookAcceleration")] [Tooltip("Rate of look acceleration")]
+		public FloatReference LookAcceleration;
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -78,7 +84,6 @@ namespace BML.Scripts.Player
 		// player
 		private float _speed;
 		private float _rotationVelocity;
-		public float lookAcceleration = .05f;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
 
@@ -343,6 +348,7 @@ namespace BML.Scripts.Player
 			float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 			
 			float rotSpeed = RotationSpeed;
+			float lookAcceleration = LookAcceleration.Value * lookAccelerationFactor;
 			
 			if (!IsCurrentDeviceMouse)
 			{
@@ -363,6 +369,23 @@ namespace BML.Scripts.Player
 				rotSpeed = rotSpeedAccelerated;
 				previouRotSpeed = rotSpeedAccelerated;
 			}
+			else
+			{
+				float dummy = 0f;
+				float rotSpeedAccelerated;
+
+				//Accelerate to higher values but stop immediately
+				if (rotSpeed > previouRotSpeed)
+					rotSpeedAccelerated = Mathf.SmoothDamp(previouRotSpeed, rotSpeed, ref dummy, lookAcceleration);
+				else
+					rotSpeedAccelerated = rotSpeed;
+
+				rotSpeed = rotSpeedAccelerated;
+				previouRotSpeed = rotSpeedAccelerated;
+			}
+
+			if (Mathf.Approximately(0f, _input.look.magnitude))
+				previouRotSpeed = 0f;
 				
 			
 			_cinemachineTargetYaw += _input.look.x * rotSpeed * deltaTimeMultiplier;
