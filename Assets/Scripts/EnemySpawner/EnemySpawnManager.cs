@@ -36,6 +36,9 @@ namespace BML.Scripts
         [SerializeField, MinMaxSlider(0, 10, true)]
         private Vector2Int _minMaxSpawnPlayerDistance = new Vector2Int(1, 3);
         
+        [SerializeField] [Range(-1f, 1f), LabelText("Spawn in Unexplored")] private float _weightSpawningInUnexplored = 0f;
+        [SerializeField] [Range(-1f, 1f), LabelText("Spawn Towards Objective")] private float _weightSpawningTowardsObjective = 0f;
+        
         [UnityEngine.Tooltip("While exit challenge is active, the spawner will override the 'Min Max Player Spawn Distance' to 0, meaning enemies will only spawn in the same room as the player. (This works only because the exit challenge is constructed as a single 'room' in the level data.")]
         [SerializeField] private BoolReference _isExitChallengeActive;
         
@@ -111,7 +114,19 @@ namespace BML.Scripts
                 var radius = _enemyDeleteRadius.radius;
                 Gizmos.color = Color.green;
                 Gizmos.DrawWireSphere(center, radius);
+                Gizmos.DrawRay(center, _enemyDeleteRadius.transform.up * 30f);
                 Gizmos.DrawSphere(center, 0.75f);
+            }
+
+            if (_enemyContainer != null)
+            {
+                Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
+                for (int i = 0; i < _enemyContainer.childCount; i++)
+                {
+                    var enemy = _enemyContainer.GetChild(i);
+                    Gizmos.DrawSphere(enemy.position, 2f);
+                    Gizmos.DrawRay(enemy.position, enemy.up * 30f);
+                }
             }
         }
 
@@ -203,26 +218,59 @@ namespace BML.Scripts
             if (Time.time < lastSpawnTime + _currentSpawnDelay.Value)
                 return;
 
-            //Check against current enemy cap
+            // Check against current enemy cap
             _currentEnemyCount.Value = _enemyContainer.Cast<Transform>().Count(t => t.gameObject.activeSelf);
-
             _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(percentToMaxSpawn);
-
-            if (_currentEnemyCount.Value >= _currentSpawnCap.Value)
+            if (_currentEnemyCount.Value >= _currentSpawnCap.Value) 
                 return;
-            
 
             EnemySpawnParams randomEnemy = _enemySpawnerParams.SpawnAtTags.GetRandomElement();
             List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemy.Tag];
 
-            //If no spawn points in range for this tag, return
+            // If no spawn points in range for this tag, return
             if (potentialSpawnPointsForTag.Count == 0)
                 return;
+            
+            // TODO Refactor this to be stored data on each spawn point; it only needs to be recalculated when player occupied room changes (when UpdatePlayerDistance runs)
+            // Calculate spawn point weights
+            List<RandomUtils.WeightPair<SpawnPoint>> spawnPointWeights = potentialSpawnPointsForTag
+                .Select(spawnPoint =>
+                {
+                    float baseWeight = 1f;
 
-            Transform randomSpawnPoint = potentialSpawnPointsForTag.GetRandomElement().transform;
-
+                    float weightModifierUnexplored = 0;
+                    float weightModifierObjective = 0;
+                    if (!_isExitChallengeActive.Value)
+                    {
+                        weightModifierUnexplored = (spawnPoint.ParentNode.PlayerVisited ? -1f : 0f) 
+                                                         * _weightSpawningInUnexplored;
+                    
+                        int relativeObjectiveDirection = Math.Sign( _caveGenerator.CurrentMaxPlayerObjectiveDistance 
+                                                                    - spawnPoint.ParentNode.ObjectiveDistance );
+                        relativeObjectiveDirection = Math.Max(-1, relativeObjectiveDirection - 1);
+                        weightModifierObjective = (relativeObjectiveDirection * _weightSpawningTowardsObjective);
+                    }
+                    
+                    float modifiedWeight = Mathf.Max(0f, baseWeight + weightModifierUnexplored + weightModifierObjective);
+                    return new RandomUtils.WeightPair<SpawnPoint>(spawnPoint, modifiedWeight);
+                })
+                .Where(weightPair => weightPair.weight != 0)
+                .ToList();
+            
+            // Normalize spawn point weights
+            float sumSpawnPointWeights = spawnPointWeights.Sum(weightPair => weightPair.weight);
+            var spawnPointWeightsNormalized = spawnPointWeights.Select(weightPair =>
+            {
+                weightPair.weight /= sumSpawnPointWeights;
+                return weightPair;
+            }).ToList();
+            
+            // Choose weighted random spawn point
+            SpawnPoint randomSpawnPoint = RandomUtils.RandomWithWeights(spawnPointWeightsNormalized);
+            
+            
             var spawnOffset = Random.insideUnitCircle;
-            var spawnPoint = randomSpawnPoint.position +
+            var spawnPoint = randomSpawnPoint.transform.position +
                              new Vector3(spawnOffset.x, 0f, spawnOffset.y) * _spawnOffsetRadius;
             var newGameObject =
                 GameObjectUtils.SafeInstantiate(randomEnemy.InstanceAsPrefab, randomEnemy.Prefab, _enemyContainer);

@@ -93,6 +93,7 @@ namespace BML.Scripts.CaveV2
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxMainPathDistance { get; private set; }
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxObjectiveDistance { get; private set; }
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxPlayerDistance { get; private set; }
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int CurrentMaxPlayerObjectiveDistance { get; private set; }
         
         #endregion
 
@@ -517,7 +518,10 @@ namespace BML.Scripts.CaveV2
                 playerOccupidedNodes, 
                 (node, dist) => node.PlayerDistance = dist);
             
-            this.MaxPlayerDistance = _caveGraph.Vertices.Max(e => e.PlayerDistance);
+            this.MaxPlayerDistance = _caveGraph.Vertices.Max(node => node.PlayerDistance);
+            this.CurrentMaxPlayerObjectiveDistance = _caveGraph.Vertices
+                .Where(node => node.PlayerDistance == 0)
+                .Max(node => node.ObjectiveDistance);
             
             this.OnAfterUpdatePlayerDistance?.Invoke();
         }
