@@ -30,6 +30,7 @@ namespace BML.Scripts.Player
 		[FormerlySerializedAs("cursorLocked")] [Header("Mouse Cursor Settings")]
 		public bool playerCursorLocked = true;
 		[SerializeField] private FloatReference _mouseSensitivity;
+		[SerializeField] private BoolReference _invertedLookY;
 		
 		[SerializeField] private BoolReference _isPaused;
 		[SerializeField] private BoolReference _isStoreOpen;
@@ -190,6 +191,9 @@ namespace BML.Scripts.Player
 				look = lookUnscaled * lookScaleMouse * _mouseSensitivity.Value;
 			else
 				look = lookUnscaled * lookScaleGamepad * _mouseSensitivity.Value;
+
+			if (_invertedLookY.Value)
+				look.y = -look.y;
 		}
 
 		public void SprintInput(bool newSprintState)
