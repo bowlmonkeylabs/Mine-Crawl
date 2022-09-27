@@ -256,6 +256,12 @@ namespace BML.Scripts
                 })
                 .Where(weightPair => weightPair.weight != 0)
                 .ToList();
+
+            if (spawnPointWeights.Count == 0)
+            {
+                Debug.LogWarning($"HandleSpawning No valid spawn points available.");
+                return;
+            }
             
             // Normalize spawn point weights
             float sumSpawnPointWeights = spawnPointWeights.Sum(weightPair => weightPair.weight);
