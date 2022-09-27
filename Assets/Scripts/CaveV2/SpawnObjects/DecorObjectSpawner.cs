@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -11,24 +13,104 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private MeshCollider _meshCollider;
         [SerializeField] private LayerMask _roomBoundsLayerMask;
         [SerializeField] [MinMaxSlider(0f, 180f)] private Vector2 _minMaxAngle = new Vector2(0f, 180f);
-        [SerializeField] private float _dotMin = .5f;
+        [SerializeField] [Range(0, 1)] private float _noiseFilterValueMin = .5f;
         [SerializeField] private int _pointCount = 5000;
         [SerializeField] private float _pointRadius = .25f;
+        [SerializeField] private List<Vector3> debugPoints;
 
         private Vector3 randomPoint;
-        public List<Vector3> debugPoints;
 
         float[] sizes;
         float[] cumulativeSizes;
         float total = 0;
 
+        [SerializeField] private List<NoiseBox> _noiseBoxes = new List<NoiseBox>();
+        [SerializeField] private Vector3 _noiseBoxCount = new Vector3(100f, 100f, 100f);
+        [SerializeField] [Range(0, 1)] private float _noiseScale = 100f;
+
+        struct NoiseBox
+        {
+            public Vector3 pos;
+            public Vector3 scale;
+            public float value;
+        }
+
+        #region Unity Lifecycle
+
+        void OnDrawGizmosSelected()
+        {
+            foreach (Vector3 debugPoint in debugPoints)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(debugPoint, _pointRadius);
+            }
+
+            foreach (var noiseBox in _noiseBoxes)
+            {
+                //Recalc value to allow for changing dynamically while in editor
+                float value = Mathf.Clamp01(Perlin.Noise(noiseBox.pos * _noiseScale));
+                if (value >= _noiseFilterValueMin)
+                {
+                    Gizmos.color = new Color(.5f, .5f, .5f, .5f);
+                    Gizmos.DrawCube(noiseBox.pos, noiseBox.scale);
+                }
+            }
+        }
+
+        #endregion
+
+        [Button]
+        public void VisualizeNoise()
+        {
+            UnVisualizeNoise();
+            Bounds caveBounds = _caveGen.CaveGenBounds;
+            int countX = Mathf.FloorToInt(_noiseBoxCount.x);
+            int countY = Mathf.FloorToInt(_noiseBoxCount.y);
+            int countZ = Mathf.FloorToInt(_noiseBoxCount.z);
+            
+            Vector3 noiseBoxScale = new Vector3(
+                caveBounds.size.x / countX,
+                caveBounds.size.y / countY,
+                caveBounds.size.z / countZ
+            );
+            Vector3 caveBoundsWorldCenter = _caveGen.transform.position + _caveGen.CaveGenBounds.center;
+
+            for (int x = 0; x < countX; x++)
+            {
+                float xOffset = (x - countX / 2) * noiseBoxScale.x;
+                for (int y = 0; y < countY; y++)
+                {
+                    float yOffset = (y - countY / 2) * noiseBoxScale.y;
+                    for (int z = 0; z < countX; z++)
+                    {
+                        float zOffset = (z - countZ / 2) * noiseBoxScale.z;
+                        NoiseBox noiseBox = new NoiseBox();
+                        noiseBox.scale = noiseBoxScale;
+                        noiseBox.pos = caveBoundsWorldCenter + new Vector3(xOffset, yOffset, zOffset);
+                        noiseBox.value = Mathf.Clamp01(Perlin.Noise(noiseBox.pos * _noiseScale));
+                        _noiseBoxes.Add(noiseBox);
+                    }
+                }
+            }
+        }
+
+        [Button]
+        public void UnVisualizeNoise()
+        {
+            _noiseBoxes.Clear();
+        }
+
+        #region Modify Points
+
         [Button]
         public void AddDebugPoints()
         {
-            List<int> filteredTriangles = FilterTrianglesNormal(_meshCollider.sharedMesh);
+            List<int> filteredTriangles = FilterTrianglesNormal(_meshCollider.sharedMesh.triangles.ToList(), _meshCollider.sharedMesh.normals.ToList());
             CalcAreas(filteredTriangles, _meshCollider.sharedMesh.vertices);
             for (int i = 0; i < _pointCount; i++)
                 addDebugPoint(filteredTriangles);
+            
+            FilterDebugPointsNoise();
         }
 
         [Button]
@@ -52,6 +134,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 AssignPoints(edgeObj);
             }
         }
+        
 
         private void AssignPoints(GameObject nodeObj)
         {
@@ -76,18 +159,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [Button]
         public void ClearPointsFromRooms()
         {
-            foreach (var decorRend in GameObject.FindObjectsOfType<RenderDecorPoints>())
+            foreach (var decorRend in FindObjectsOfType<RenderDecorPoints>())
             {
                 decorRend.ClearDebugPoints();
-            }
-        }
-
-        void OnDrawGizmosSelected()
-        {
-            foreach (Vector3 debugPoint in debugPoints)
-            {
-                Gizmos.color = Color.red;
-                Gizmos.DrawSphere(debugPoint, _pointRadius);
             }
         }
 
@@ -98,12 +172,14 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             debugPoints.Add(randomPoint);
         }
 
-        private List<int> FilterTrianglesNormal(Mesh mesh)
+        #endregion
+
+        #region Filtering
+
+        private List<int> FilterTrianglesNormal(List<int> triangles, List<Vector3> normals)
         {
             List<int> filteredTriangles = new List<int>();
-            int[] triangles = mesh.triangles;
-            Vector3[] normals = mesh.normals;
-            for(int i = 0; i < triangles.Length;)
+            for(int i = 0; i < triangles.Count;)
             {
                 Vector3 N1 = normals[triangles[i]];
                 int T1 = triangles[i];
@@ -125,17 +201,26 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     filteredTriangles.Add(T2);
                     filteredTriangles.Add(T3);
                 }
-
-                // if (Vector3.Dot(faceNormal, Vector3.up) >= _dotMin)
-                // {
-                //     filteredTriangles.Add(triangles[i-3]);
-                //     filteredTriangles.Add(triangles[i-2]);
-                //     filteredTriangles.Add(triangles[i-1]);
-                // }
             }
 
             return filteredTriangles;
         }
+
+        private void FilterDebugPointsNoise()
+        {
+            List<Vector3> pointsToRemove = new List<Vector3>();
+            foreach (var point in debugPoints)
+            {
+                if (Mathf.Clamp01(Perlin.Noise(point * _noiseScale)) < _noiseFilterValueMin)
+                    pointsToRemove.Add(point);
+            }
+
+            debugPoints = debugPoints.Except(pointsToRemove).ToList();
+        }
+
+        #endregion
+
+        #region Util
 
         public void CalcAreas(List<int> filteredTriangles, Vector3[] vertices)
         {
@@ -198,5 +283,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
             return sizes;
         }
+
+        #endregion
     }
 }
