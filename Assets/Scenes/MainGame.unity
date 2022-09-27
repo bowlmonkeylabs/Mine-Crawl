@@ -1207,9 +1207,63 @@ Transform:
   - {fileID: 1191531237}
   - {fileID: 1231575174}
   - {fileID: 1496774519}
+  - {fileID: 933053840}
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &933053839
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 933053840}
+  - component: {fileID: 933053841}
+  m_Layer: 0
+  m_Name: DecorLevelSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &933053840
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933053839}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 771419350}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &933053841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933053839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bcb1a751e2645129de690ad4a69e6c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _caveGen: {fileID: 771419349}
+  _meshCollider: {fileID: 0}
+  _roomBoundsLayerMask:
+    serializedVersion: 2
+    m_Bits: 65536
+  _minMaxAngle: {x: 0, y: 48.907566}
+  _dotMin: -100
+  _pointCount: 5000
+  _pointRadius: 0.25
+  debugPoints: []
 --- !u!224 &988064299 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8649190723377008977, guid: 63b40a4c395028042b809bf2c2b73aba, type: 3}
