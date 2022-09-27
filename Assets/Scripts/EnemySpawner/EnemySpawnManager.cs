@@ -5,6 +5,7 @@ using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2;
 using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Utils;
+using Shapes;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -178,6 +179,38 @@ namespace BML.Scripts
                 // Debug.Log($"CacheActiveSpawnPoints {kv.Key}");
                 _activeSpawnPointsByTag[kv.Key] = kv.Value.Where(SpawnPointIsActive).ToList();
             }
+            
+            CalculateSpawnPointWeight();
+        }
+
+        private void CalculateSpawnPointWeight()
+        {
+            foreach (var caveNodeData in _caveGenerator.CaveGraph.Vertices)
+            {
+                float baseWeight = 1f;
+
+                float weightModifierUnexplored = 0;
+                float weightModifierObjective = 0;
+                if (!_isExitChallengeActive.Value)
+                {
+                    weightModifierUnexplored = (caveNodeData.PlayerVisited ? -1f : 0f) 
+                                               * _weightSpawningInUnexplored;
+                    
+                    int relativeObjectiveDirection = Math.Sign( _caveGenerator.CurrentMaxPlayerObjectiveDistance 
+                                                                - caveNodeData.ObjectiveDistance );
+                    relativeObjectiveDirection = Math.Max(-1, relativeObjectiveDirection - 1);
+                    weightModifierObjective = (relativeObjectiveDirection * _weightSpawningTowardsObjective);
+                }
+                    
+                float modifiedWeight = Mathf.Max(0f, baseWeight + weightModifierUnexplored + weightModifierObjective);
+
+                caveNodeData.SpawnPoints.Where(spawnPoint =>
+                    _activeSpawnPointsByTag.ContainsKey(spawnPoint.tag))
+                    .ForEach(spawnPoint =>
+                    {
+                        spawnPoint.EnemySpawnWeight = modifiedWeight;
+                    });
+            }
         }
         
         #endregion
@@ -225,54 +258,31 @@ namespace BML.Scripts
                 return;
 
             EnemySpawnParams randomEnemy = _enemySpawnerParams.SpawnAtTags.GetRandomElement();
-            List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemy.Tag];
-
+            List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemy.Tag]
+                .Where(spawnPoint => spawnPoint.EnemySpawnWeight != 0)
+                .ToList();
+            
             // If no spawn points in range for this tag, return
             if (potentialSpawnPointsForTag.Count == 0)
-                return;
-            
-            // TODO Refactor this to be stored data on each spawn point; it only needs to be recalculated when player occupied room changes (when UpdatePlayerDistance runs)
-            // Calculate spawn point weights
-            List<RandomUtils.WeightPair<SpawnPoint>> spawnPointWeights = potentialSpawnPointsForTag
-                .Select(spawnPoint =>
-                {
-                    float baseWeight = 1f;
-
-                    float weightModifierUnexplored = 0;
-                    float weightModifierObjective = 0;
-                    if (!_isExitChallengeActive.Value)
-                    {
-                        weightModifierUnexplored = (spawnPoint.ParentNode.PlayerVisited ? -1f : 0f) 
-                                                         * _weightSpawningInUnexplored;
-                    
-                        int relativeObjectiveDirection = Math.Sign( _caveGenerator.CurrentMaxPlayerObjectiveDistance 
-                                                                    - spawnPoint.ParentNode.ObjectiveDistance );
-                        relativeObjectiveDirection = Math.Max(-1, relativeObjectiveDirection - 1);
-                        weightModifierObjective = (relativeObjectiveDirection * _weightSpawningTowardsObjective);
-                    }
-                    
-                    float modifiedWeight = Mathf.Max(0f, baseWeight + weightModifierUnexplored + weightModifierObjective);
-                    return new RandomUtils.WeightPair<SpawnPoint>(spawnPoint, modifiedWeight);
-                })
-                .Where(weightPair => weightPair.weight != 0)
-                .ToList();
-
-            if (spawnPointWeights.Count == 0)
             {
                 Debug.LogWarning($"HandleSpawning No valid spawn points available.");
                 return;
             }
             
             // Normalize spawn point weights
-            float sumSpawnPointWeights = spawnPointWeights.Sum(weightPair => weightPair.weight);
-            var spawnPointWeightsNormalized = spawnPointWeights.Select(weightPair =>
-            {
-                weightPair.weight /= sumSpawnPointWeights;
-                return weightPair;
-            }).ToList();
+            var sumSpawnPointWeights = potentialSpawnPointsForTag.Sum(spawnPoint => spawnPoint.EnemySpawnWeight);
+            List<RandomUtils.WeightPair<SpawnPoint>> spawnPointWeights = 
+                potentialSpawnPointsForTag
+                    .Select(spawnPoint =>
+                    {
+                        float spawnWeightNormalized = spawnPoint.EnemySpawnWeight / sumSpawnPointWeights;
+                        spawnPoint.SpawnChance = spawnWeightNormalized;
+                        return new RandomUtils.WeightPair<SpawnPoint>(spawnPoint, spawnWeightNormalized);
+                    })
+                    .ToList();
             
             // Choose weighted random spawn point
-            SpawnPoint randomSpawnPoint = RandomUtils.RandomWithWeights(spawnPointWeightsNormalized);
+            SpawnPoint randomSpawnPoint = RandomUtils.RandomWithWeights(spawnPointWeights);
             
             
             var spawnOffset = Random.insideUnitCircle;
