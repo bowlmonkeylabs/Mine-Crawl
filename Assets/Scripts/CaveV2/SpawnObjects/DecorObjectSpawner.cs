@@ -14,10 +14,12 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private LayerMask _roomBoundsLayerMask;
         [SerializeField] [MinMaxSlider(0f, 180f)] private Vector2 _minMaxAngle = new Vector2(0f, 180f);
         [SerializeField] [Range(0, 1)] private float _noiseFilterValueMin = .5f;
-        [SerializeField] private int _pointCount = 5000;
+        [SerializeField] private float _pointDensity = .25f;
         [SerializeField] private float _pointRadius = .25f;
         [SerializeField] private List<Vector3> debugPoints;
 
+        [ShowInInspector, ReadOnly] private int _pointCount;
+        
         private Vector3 randomPoint;
 
         float[] sizes;
@@ -105,6 +107,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [Button]
         public void AddDebugPoints()
         {
+            RemoveDebugPoints();
             List<int> filteredTriangles = FilterTrianglesNormal(_meshCollider.sharedMesh.triangles.ToList(), _meshCollider.sharedMesh.normals.ToList());
             CalcAreas(filteredTriangles, _meshCollider.sharedMesh.vertices);
             for (int i = 0; i < _pointCount; i++)
@@ -233,6 +236,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 total += sizes[i];
                 cumulativeSizes[i] = total;
             }
+
+            _pointCount = Mathf.FloorToInt(total / _pointDensity);
         }
 
         public Vector3 GetRandomPointOnMesh(List<int> filteredTriangles, Mesh mesh)
