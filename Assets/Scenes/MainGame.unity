@@ -1154,7 +1154,7 @@ MonoBehaviour:
   _levelObjectSpawner: {fileID: 1496774518}
   _enableLogs: 0
   _showTraversabilityCheck: 1
-  _generateDebugObjects: 0
+  _generateDebugObjects: 1
   _debugObjectsContainer: {fileID: 1191531237}
   GizmoColorScheme_Inner: 0
   GizmoColorScheme_Outer: 1
@@ -1255,13 +1255,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _caveGen: {fileID: 771419349}
-  _meshCollider: {fileID: 0}
+  _mudRendererObj: {fileID: 1231575171}
   _roomBoundsLayerMask:
     serializedVersion: 2
     m_Bits: 65536
-  _minMaxAngle: {x: 0, y: 40.41102}
-  _noiseFilterValueMin: 0.117
-  _pointCount: 1000
+  _minMaxAngle: {x: 0, y: 31.337734}
+  _noiseFilterValueMin: 0
+  _maxDistanceFromMainPath: 1
+  _mainPathDecayCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.75
+      outSlope: -0.75
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.25
+      inSlope: -0.75
+      outSlope: -0.75
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _assignPointsToTunnels: 0
+  _pointDensity: 5
   _pointRadius: 0.25
   debugPoints: []
   _noiseBoxCount: {x: 50, y: 25, z: 50}
@@ -1340,7 +1366,7 @@ MonoBehaviour:
   _generateOnChange: 1
   _maxGeneratesPerSecond: 4
   _lockAfterGenerate: 1
-  _lockInEditMode: 0
+  _lockInEditMode: 1
   _requireManualUnlock: 0
   _mudRenderer: {fileID: 1231575173}
   _invertNormals: 1

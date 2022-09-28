@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -10,17 +11,27 @@ namespace BML.Scripts.CaveV2.SpawnObjects
     public class DecorObjectSpawner : MonoBehaviour
     {
         [SerializeField] private CaveGenComponentV2 _caveGen;
-        [SerializeField] private MeshCollider _meshCollider;
+        [SerializeField] private GameObject _mudRendererObj;
         [SerializeField] private LayerMask _roomBoundsLayerMask;
         [SerializeField] [MinMaxSlider(0f, 180f)] private Vector2 _minMaxAngle = new Vector2(0f, 180f);
         [SerializeField] [Range(0, 1)] private float _noiseFilterValueMin = .5f;
+        [SerializeField] private int _maxDistanceFromMainPath = 10;
+        [SerializeField] private AnimationCurve _mainPathDecayCurve;
+        
+        [Tooltip("Defaulting to false for now just because tunnels dont store cave graph data at the moment. i.e. distance to main path")]
+        [SerializeField] private bool _assignPointsToTunnels = false;
+        
         [SerializeField] private float _pointDensity = .25f;
         [SerializeField] private float _pointRadius = .25f;
         [SerializeField] private List<Vector3> debugPoints;
 
-        [ShowInInspector, ReadOnly] private int _pointCount;
+        [ShowInInspector, ReadOnly] private int pointCount;
         
         private Vector3 randomPoint;
+        private MeshCollider meshCollider;
+
+        private Dictionary<CaveNodeData, List<Vector3>> caveNodePointDict =
+            new Dictionary<CaveNodeData, List<Vector3>>();
 
         float[] sizes;
         float[] cumulativeSizes;
@@ -60,6 +71,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         }
 
         #endregion
+
+        #region Visualize Noise
 
         [Button]
         public void VisualizeNoise()
@@ -102,15 +115,18 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             _noiseBoxes.Clear();
         }
 
-        #region Modify Points
+        #endregion
+
+        #region Show/Remove Points
 
         [Button]
-        public void AddDebugPoints()
+        public void GenerateDebugPoints()
         {
             RemoveDebugPoints();
-            List<int> filteredTriangles = FilterTrianglesNormal(_meshCollider.sharedMesh.triangles.ToList(), _meshCollider.sharedMesh.normals.ToList());
-            CalcAreas(filteredTriangles, _meshCollider.sharedMesh.vertices);
-            for (int i = 0; i < _pointCount; i++)
+            meshCollider = _mudRendererObj.GetComponent<MeshCollider>();
+            List<int> filteredTriangles = FilterTrianglesNormal(meshCollider.sharedMesh.triangles.ToList(), meshCollider.sharedMesh.normals.ToList());
+            CalcAreas(filteredTriangles, meshCollider.sharedMesh.vertices);
+            for (int i = 0; i < pointCount; i++)
                 addDebugPoint(filteredTriangles);
             
             FilterDebugPointsNoise();
@@ -121,16 +137,32 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             debugPoints.Clear();
         }
+        
+        private void addDebugPoint(List<int> filteredTriangles)
+        {
+            randomPoint = GetRandomPointOnMesh(filteredTriangles, meshCollider.sharedMesh);
+            randomPoint += meshCollider.transform.position;
+            debugPoints.Add(randomPoint);
+        }
+
+        #endregion
+
+        #region Points to Rooms
 
         [Button]
         public void AssignPointsToRooms()
         {
+            caveNodePointDict.Clear();
+            
             foreach (var vert in _caveGen.CaveGraph.Vertices)
             {
                 GameObject roomObj = vert.GameObject;
                 AssignPoints(roomObj);
             }
             
+            if (!_assignPointsToTunnels)
+                return;
+                
             foreach (var edge in _caveGen.CaveGraph.Edges)
             {
                 GameObject edgeObj = edge.GameObject;
@@ -144,16 +176,32 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             List<Vector3> roomPoints = new List<Vector3>();
             Collider roomBounds = nodeObj.GetComponentInChildren<Collider>();
             
+            CaveNodeDataDebugComponent nodeDataDebug = nodeObj.GetComponent<CaveNodeDataDebugComponent>();
+            int distanceFromMainPath = nodeDataDebug.CaveNodeData.MainPathDistance;
+
             //TODO: Make sure this collider is on the room bounds layer
-                
+
+            // Add point to room if within room collider bounds
+            // Remove point from master list if too far from main path
+            List<Vector3> pointsToRemove = new List<Vector3>();
             foreach (var point in debugPoints)
             {
                 if (roomBounds.bounds.Contains(point))
                 {
-                    roomPoints.Add(point);
+                    float stayChance =
+                        _mainPathDecayCurve.Evaluate((float) distanceFromMainPath / _maxDistanceFromMainPath);
+                    
+                    //Use curve to remove points
+                    if (Random.value < stayChance)
+                        roomPoints.Add(point);
+                    else
+                        pointsToRemove.Add(point);
                 }
             }
-                
+
+            debugPoints = debugPoints.Except(pointsToRemove).ToList();
+            
+            //Set points to room gizmo
             RenderDecorPoints roomDecorRend = nodeObj.GetComponentInChildren<RenderDecorPoints>();
             roomDecorRend.ClearDebugPoints();
             roomDecorRend.SetDebugPoints(roomPoints, _pointRadius);
@@ -168,15 +216,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
         }
 
-        private void addDebugPoint(List<int> filteredTriangles)
-        {
-            randomPoint = GetRandomPointOnMesh(filteredTriangles, _meshCollider.sharedMesh);
-            randomPoint += _meshCollider.transform.position;
-            debugPoints.Add(randomPoint);
-        }
-
         #endregion
-
+        
         #region Filtering
 
         private List<int> FilterTrianglesNormal(List<int> triangles, List<Vector3> normals)
@@ -237,7 +278,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 cumulativeSizes[i] = total;
             }
 
-            _pointCount = Mathf.FloorToInt(total / _pointDensity);
+            pointCount = Mathf.FloorToInt(total / _pointDensity);
         }
 
         public Vector3 GetRandomPointOnMesh(List<int> filteredTriangles, Mesh mesh)
