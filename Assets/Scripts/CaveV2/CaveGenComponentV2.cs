@@ -250,7 +250,8 @@ namespace BML.Scripts.CaveV2
             {
                 // var pointRelativeToBoundsCenter = (point - poissonBoundsWithPadding.size / 2);
                 var pointRelativeToBoundsCenter = point;
-                var size = Random.Range(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y);
+                // var size = Random.Range(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y);
+                var size = caveGenParams.RoomScaling.x;
                 var node = new CaveNodeData(pointRelativeToBoundsCenter, size);
                 return node;
             });
@@ -485,6 +486,21 @@ namespace BML.Scripts.CaveV2
             
             // Calculate graph properties for use in later generation steps (e.g. object spawning, enemy spawning)
             {
+                // Calculate size
+                {
+                    foreach (var caveNodeData in caveGraph.Vertices)
+                    {
+                        var averageEdgeLength = 
+                            caveGraph.AdjacentEdges(caveNodeData)
+                                .Average(e => e.Length);
+                        var edgeLengthFactor =
+                            averageEdgeLength / caveGenParams.PoissonSampleRadius;
+                        var fac = Mathf.InverseLerp(1f, caveGenParams.MaxEdgeLengthFactor, edgeLengthFactor);
+                        var size = Mathf.Lerp(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y, fac);
+                        caveNodeData.Size = size;
+                    }
+                }
+                
                 // Calculate distance from objective
                 {
                     var objectiveVertices = new List<CaveNodeData> { caveGraph.EndNode };
@@ -502,7 +518,6 @@ namespace BML.Scripts.CaveV2
 
                     this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
                 }
-                
             }
 
             if (_enableLogs) Debug.Log($"Cave graph generated");
