@@ -93,14 +93,17 @@ namespace BML.Scripts.CaveV2
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxMainPathDistance { get; private set; }
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxObjectiveDistance { get; private set; }
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxPlayerDistance { get; private set; }
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int CurrentMaxPlayerObjectiveDistance { get; private set; }
         
         #endregion
 
         #region Events
         
         public delegate void AfterGenerate();
-
         public AfterGenerate OnAfterGenerate;
+        
+        public delegate void AfterUpdatePlayerDistance();
+        public AfterUpdatePlayerDistance OnAfterUpdatePlayerDistance;
         
         #endregion
         
@@ -509,11 +512,18 @@ namespace BML.Scripts.CaveV2
 
         public void UpdatePlayerDistance(IEnumerable<CaveNodeData> playerOccupidedNodes)
         {
+            if (!IsGenerated) return;
+            
             _caveGraph.FloodFillDistance(
                 playerOccupidedNodes, 
                 (node, dist) => node.PlayerDistance = dist);
             
-            this.MaxPlayerDistance = _caveGraph.Vertices.Max(e => e.PlayerDistance);
+            this.MaxPlayerDistance = _caveGraph.Vertices.Max(node => node.PlayerDistance);
+            this.CurrentMaxPlayerObjectiveDistance = _caveGraph.Vertices
+                .Where(node => node.PlayerDistance == 0)
+                .Max(node => node.ObjectiveDistance);
+            
+            this.OnAfterUpdatePlayerDistance?.Invoke();
         }
 
         private CaveGraphV2 _minimumSpanningTreeGraphTEMP;

@@ -1669,8 +1669,6 @@ Transform:
   - {fileID: 7730667928466908284}
   - {fileID: 6208237424393012298}
   - {fileID: 6535237234419854927}
-  - {fileID: 6078848040517108800}
-  - {fileID: 4436233225091218773}
   - {fileID: 872260361183828327}
   m_Father: {fileID: 8722278798120057416}
   m_RootOrder: 2
@@ -2352,6 +2350,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 65536
   _caveGenerator: {fileID: 0}
+  _isExitChallengeActive:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 581c62d8d27167049b20ffc6d8c7c015, type: 2}
 --- !u!1 &3089256189035123441
 GameObject:
   m_ObjectHideFlags: 0
@@ -2692,7 +2697,6 @@ GameObject:
   m_Component:
   - component: {fileID: 872260361183828327}
   - component: {fileID: 9153873520445241092}
-  - component: {fileID: 3322045946328878279}
   m_Layer: 0
   m_Name: EnemyDeleteRadius
   m_TagString: Untagged
@@ -2712,7 +2716,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3383630610286495642}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &9153873520445241092
 SphereCollider:
@@ -2727,81 +2731,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 40
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3322045946328878279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3941690580459077509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788a6eeedfb74d5ca92b5920831593e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _enemyMask:
-    serializedVersion: 2
-    m_Bits: 1024
---- !u!1 &4282338064541794770
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4436233225091218773}
-  - component: {fileID: 7403666042743127390}
-  - component: {fileID: 8666587990276847864}
-  m_Layer: 0
-  m_Name: EnemySpawnRadiusOuter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4436233225091218773
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4282338064541794770}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 3383630610286495642}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &7403666042743127390
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4282338064541794770}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 30
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8666587990276847864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4282338064541794770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d957518793224bb9916d37937806f27a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _onSpawnPointEnterSpawnTrigger: {fileID: 11400000, guid: a46e307e43e986f41a09941cfbac9ac0, type: 2}
-  _onSpawnPointExitSpawnTrigger: {fileID: 11400000, guid: 0b04ca2028126624e93c9d748fc233e5, type: 2}
-  _enemySpawnerParams: {fileID: 11400000, guid: ceabea79e797e2b4898d9dc95f70dffb, type: 2}
 --- !u!1 &4292042580474181362
 GameObject:
   m_ObjectHideFlags: 0
@@ -3011,66 +2940,6 @@ MonoBehaviour:
         RolloffMode: 0
         MinDistance: 1
         MaxDistance: 500
---- !u!1 &4473930142348354941
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6078848040517108800}
-  - component: {fileID: 8698761325846743793}
-  - component: {fileID: 5380562975934463125}
-  m_Layer: 0
-  m_Name: EnemySpawnRadiusInner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6078848040517108800
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4473930142348354941}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 3383630610286495642}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &8698761325846743793
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4473930142348354941}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 13
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5380562975934463125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4473930142348354941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d957518793224bb9916d37937806f27a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _onSpawnPointEnterSpawnTrigger: {fileID: 11400000, guid: 526cceb8abc888a458ae739799b5a8b4, type: 2}
-  _onSpawnPointExitSpawnTrigger: {fileID: 11400000, guid: f118043f602e5054cb06cd58aa6c6b5e, type: 2}
-  _enemySpawnerParams: {fileID: 11400000, guid: ceabea79e797e2b4898d9dc95f70dffb, type: 2}
 --- !u!1 &4507583159405323060
 GameObject:
   m_ObjectHideFlags: 0
@@ -3811,7 +3680,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 40.43891
+  field of view: 58.72517
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
