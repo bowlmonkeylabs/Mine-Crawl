@@ -88,6 +88,10 @@ namespace BML.Scripts.CaveV2
         public int MaxEdgeSteepnessAngle = 30;
         
         [TitleGroup("Graph processing")]
+        [UnityEngine.Tooltip("If true, cave node scaling is calculated based adjacency before nodes are filtered to the resulting level path.")]
+        public bool CalculateRoomSizeBasedOnRawAdjacency = false;
+        
+        [TitleGroup("Graph processing")]
         public bool OnlyShortestPathBetweenStartAndEnd = true;
         
         [TitleGroup("Graph processing")]
@@ -98,7 +102,7 @@ namespace BML.Scripts.CaveV2
 
         [TitleGroup("Graph processing")] [MinMaxSlider(1, 50, true)]
         public Vector2Int MinMaxOffshootLength = new Vector2Int(1, 3);
-        
+
         [TitleGroup("Graph processing")]
         public bool MinimumSpanningTree = true;
         
