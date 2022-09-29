@@ -13,7 +13,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
     {
         // Fundamental properties
         [ShowInInspector] public Vector3 LocalPosition { get; private set; }
-        [ShowInInspector] public float Size { get; private set; }
+        [ShowInInspector] public float Size { get; set; }
         
         // Calculated properties
         [ShowInInspector] public int MainPathDistance { get; set; }
