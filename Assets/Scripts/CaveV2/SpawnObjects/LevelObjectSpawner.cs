@@ -28,7 +28,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private int _maxGeneratesPerSecond = 1;
         private float _generateMinCooldownSeconds => 1f / (float) _maxGeneratesPerSecond;
 
-        [SerializeField] private GameEvent _onAfterGenerateEvent;
+        [SerializeField] private GameEvent _onAfterGenerateLevelObjects;
         
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
         
@@ -110,7 +110,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             CatalogSpawnPoints(_caveGenerator);
             SpawnObjectsAtTags(this.transform, retryOnFailure);
             
-            _onAfterGenerateEvent.Raise();
+            _onAfterGenerateLevelObjects.Raise();
         }
 
         [Button, PropertyOrder(-1)]

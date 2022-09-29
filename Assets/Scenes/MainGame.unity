@@ -1152,9 +1152,10 @@ MonoBehaviour:
   _caveGenParams: {fileID: 11400000, guid: 422f7183a1db541439442b7b906dee8c, type: 2}
   _caveGraphMudBunRenderer: {fileID: 1231575172}
   _levelObjectSpawner: {fileID: 1496774518}
+  _decorObjectSpawner: {fileID: 933053841}
   _enableLogs: 0
   _showTraversabilityCheck: 1
-  _generateDebugObjects: 1
+  _generateDebugObjects: 0
   _debugObjectsContainer: {fileID: 1191531237}
   GizmoColorScheme_Inner: 0
   GizmoColorScheme_Outer: 1
@@ -1254,15 +1255,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bcb1a751e2645129de690ad4a69e6c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _generateOnSpawnLevelObjects: 1
+  _onAfterGenerateLevelObjects: {fileID: 11400000, guid: 6b14c457b3e8a0446918006e4929ed06, type: 2}
   _caveGen: {fileID: 771419349}
   _mudRendererObj: {fileID: 1231575171}
-  _prefabToSpawn: {fileID: 9210952453367320576, guid: 398c9bc148b0469438c059ebf2c6a52c, type: 3}
-  _spawnAsPrefab: 1
   _roomBoundsLayerMask:
     serializedVersion: 2
     m_Bits: 65536
-  _minMaxAngle: {x: 0, y: 63.525475}
+  _prefabToSpawn: {fileID: 6699885072510457110, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+  _spawnAsPrefab: 1
+  _pointDensity: 0.015
+  _minMaxAngle: {x: 0, y: 50.1376}
+  _noiseScale: 0.156
   _noiseFilterValueMin: 0
+  _spawnInStartRoom: 0
+  _spawnInEndRoom: 0
   _maxDistanceFromMainPath: 0
   _mainPathDecayCurve:
     serializedVersion: 2
@@ -1288,12 +1295,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _pointDensity: 0.025
   _pointRadiusDebug: 0.25
   _pointNormalLengthDebug: 1
   _drawClosestPoints: 0
   _noiseBoxCount: {x: 50, y: 25, z: 50}
-  _noiseScale: 0.156
 --- !u!224 &988064299 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8649190723377008977, guid: 63b40a4c395028042b809bf2c2b73aba, type: 3}
@@ -1674,7 +1679,7 @@ MonoBehaviour:
   _mudBunGenerator: {fileID: 1231575172}
   _generateOnChange: 0
   _maxGeneratesPerSecond: 1
-  _onAfterGenerateEvent: {fileID: 11400000, guid: 6b14c457b3e8a0446918006e4929ed06, type: 2}
+  _onAfterGenerateLevelObjects: {fileID: 11400000, guid: 6b14c457b3e8a0446918006e4929ed06, type: 2}
   _caveGenerator: {fileID: 771419349}
   _player: {fileID: 1817189599}
   _levelObjectSpawnerParams: {fileID: 11400000, guid: e5ddf7d6a91ecf644b6fb463f2cc3e6a, type: 2}
@@ -2455,6 +2460,63 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9569d39d8cde1524685af524ae2396c6, type: 3}
+--- !u!1001 &2079930809857677769
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_RootOrder
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 510026533372983349, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699885072510457110, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
+      propertyPath: m_Name
+      value: MainPathMarker
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b212838b50f861a47b94c92ea6845e52, type: 3}
 --- !u!1001 &3052951379666484987
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -41,9 +41,9 @@ namespace BML.Scripts.Utils
             // mesh.triangles = triangles;
         }
         
-        public static (float[] sizes, float[] cumulativeSizes, float totalArea) CalcAreas(List<int> filteredTriangles, Vector3[] vertices)
+        public static (float[] sizes, float[] cumulativeSizes, float totalArea) CalcAreas(List<int> triangles, List<Vector3> vertices)
         {
-            float[] sizes = GetTriSizes(filteredTriangles, vertices);
+            float[] sizes = GetTriSizes(triangles, vertices);
             float[] cumulativeSizes = new float[sizes.Length];
             float totalArea = 0;
 
@@ -56,8 +56,8 @@ namespace BML.Scripts.Utils
             return (sizes, cumulativeSizes, totalArea);
         }
 
-        public static (Vector3 point, Vector3 faceNormal) GetRandomPointOnMeshAreaWeighted(List<int> filteredTriangles, 
-            Mesh mesh, float[] sizes, float[]cumulativeSizes, float totalArea)
+        public static (Vector3 point, Vector3 faceNormal) GetRandomPointOnMeshAreaWeighted(List<int> triangles, 
+            List<Vector3> vertices, List<Vector3> normals, float[] sizes, float[]cumulativeSizes, float totalArea)
         {
             float randomsample = Random.value * totalArea;
             int triIndex = -1;
@@ -74,9 +74,9 @@ namespace BML.Scripts.Utils
             if (triIndex == -1)
                 Debug.LogError("triIndex should never be -1");
 
-            Vector3 a = mesh.vertices[filteredTriangles[triIndex * 3]];
-            Vector3 b = mesh.vertices[filteredTriangles[triIndex * 3 + 1]];
-            Vector3 c = mesh.vertices[filteredTriangles[triIndex * 3 + 2]];
+            Vector3 a = vertices[triangles[triIndex * 3]];
+            Vector3 b = vertices[triangles[triIndex * 3 + 1]];
+            Vector3 c = vertices[triangles[triIndex * 3 + 2]];
 
             // Generate random barycentric coordinates
             float r = Random.value;
@@ -92,20 +92,20 @@ namespace BML.Scripts.Utils
             Vector3 pointOnMesh = a + r * (b - a) + s * (c - a);
             
             // Get Face Normal at Point
-            Vector3 faceNormal = GetTriangleFaceNormal(filteredTriangles, mesh.normals.ToList(), triIndex);
+            Vector3 faceNormal = GetTriangleFaceNormal(triangles, normals, triIndex);
             
             return (pointOnMesh, faceNormal);
         }
 
-        public static float[] GetTriSizes(List<int> tris, Vector3[] verts)
+        public static float[] GetTriSizes(List<int> triangles, List<Vector3> verts)
         {
-            int triCount = tris.Count / 3;
+            int triCount = triangles.Count / 3;
             float[] sizes = new float[triCount];
             for (int i = 0; i < triCount; i++)
             {
                 sizes[i] = .5f * Vector3.Cross(
-                    verts[tris[i * 3 + 1]] - verts[tris[i * 3]],
-                    verts[tris[i * 3 + 2]] - verts[tris[i * 3]]).magnitude;
+                    verts[triangles[i * 3 + 1]] - verts[triangles[i * 3]],
+                    verts[triangles[i * 3 + 2]] - verts[triangles[i * 3]]).magnitude;
             }
             return sizes;
         }
