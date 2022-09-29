@@ -41,7 +41,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         
         float[] sizes;
         float[] cumulativeSizes;
-        float total = 0;
+        float totalArea = 0;
 
         [SerializeField] private List<NoiseBox> _noiseBoxes = new List<NoiseBox>();
         [SerializeField] private Vector3 _noiseBoxCount = new Vector3(100f, 100f, 100f);
@@ -145,12 +145,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         #region Show/Remove Points
 
         [Button]
-        public void GenerateDebugPoints()
+        public void GeneratePoints()
         {
-            RemoveDebugPoints();
+            RemovePoints();
             meshCollider = _mudRendererObj.GetComponent<MeshCollider>();
             List<int> filteredTriangles = FilterTrianglesNormal(meshCollider.sharedMesh.triangles.ToList(), meshCollider.sharedMesh.normals.ToList());
-            CalcAreas(filteredTriangles, meshCollider.sharedMesh.vertices);
+            (sizes, cumulativeSizes, totalArea) = MeshUtils.CalcAreas(filteredTriangles, meshCollider.sharedMesh.vertices);
+            pointCount = Mathf.FloorToInt(totalArea * _pointDensity);
             for (int i = 0; i < pointCount; i++)
                 AddPoint(filteredTriangles);
             
@@ -158,7 +159,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         }
 
         [Button]
-        public void RemoveDebugPoints()
+        public void RemovePoints()
         {
             _points.Clear();
         }
@@ -166,7 +167,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private void AddPoint(List<int> filteredTriangles)
         {
             Point randomPoint = new Point();
-            (randomPoint.pos, randomPoint.normal) = GetRandomPointOnMesh(filteredTriangles, meshCollider.sharedMesh);
+            (randomPoint.pos, randomPoint.normal) = 
+                MeshUtils.GetRandomPointOnMeshAreaWeighted(filteredTriangles, meshCollider.sharedMesh, sizes, cumulativeSizes, totalArea);
             randomPoint.pos += meshCollider.transform.position;
             _points.Add(randomPoint);
         }
@@ -333,7 +335,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             List<int> filteredTriangles = new List<int>();
             for(int i = 0; i < triangles.Count; i+=3)
             {
-                Vector3 faceNormal = GetTriangleFaceNormal(triangles, normals, i);
+                Vector3 faceNormal = MeshUtils.GetTriangleFaceNormal(triangles, normals, i);
 
                 if (Vector3.Angle(faceNormal, Vector3.up) >= _minMaxAngle.x &&
                     Vector3.Angle(faceNormal, Vector3.up) <= _minMaxAngle.y)
@@ -388,91 +390,6 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         }
 
         #endregion
-
-        #region Util
-
-        public void CalcAreas(List<int> filteredTriangles, Vector3[] vertices)
-        {
-            sizes = GetTriSizes(filteredTriangles, vertices);
-            cumulativeSizes = new float[sizes.Length];
-            total = 0;
-
-            for (int i = 0; i < sizes.Length; i++)
-            {
-                total += sizes[i];
-                cumulativeSizes[i] = total;
-            }
-
-            pointCount = Mathf.FloorToInt(total * _pointDensity);
-        }
-
-        public (Vector3, Vector3) GetRandomPointOnMesh(List<int> filteredTriangles, Mesh mesh)
-        {
-            float randomsample = Random.value * total;
-            int triIndex = -1;
-
-            for (int i = 0; i < sizes.Length; i++)
-            {
-                if (randomsample <= cumulativeSizes[i])
-                {
-                    triIndex = i;
-                    break;
-                }
-            }
-
-            if (triIndex == -1)
-                Debug.LogError("triIndex should never be -1");
-
-            Vector3 a = mesh.vertices[filteredTriangles[triIndex * 3]];
-            Vector3 b = mesh.vertices[filteredTriangles[triIndex * 3 + 1]];
-            Vector3 c = mesh.vertices[filteredTriangles[triIndex * 3 + 2]];
-
-            // Generate random barycentric coordinates
-            float r = Random.value;
-            float s = Random.value;
-
-            if (r + s >= 1)
-            {
-                r = 1 - r;
-                s = 1 - s;
-            }
-
-            // Turn point back to a Vector3
-            Vector3 pointOnMesh = a + r * (b - a) + s * (c - a);
-            
-            // Get Face Normal at Point
-            Vector3 faceNormal = GetTriangleFaceNormal(filteredTriangles, mesh.normals.ToList(), triIndex);
-            
-            return (pointOnMesh, faceNormal);
-        }
-
-        public float[] GetTriSizes(List<int> tris, Vector3[] verts)
-        {
-            int triCount = tris.Count / 3;
-            float[] sizes = new float[triCount];
-            for (int i = 0; i < triCount; i++)
-            {
-                sizes[i] = .5f * Vector3.Cross(
-                    verts[tris[i * 3 + 1]] - verts[tris[i * 3]],
-                    verts[tris[i * 3 + 2]] - verts[tris[i * 3]]).magnitude;
-            }
-            return sizes;
-        }
         
-        private Vector3 GetTriangleFaceNormal(List<int> triangles, List<Vector3> normals, int triangleStartIndex)
-        {
-            int i = triangleStartIndex;
-            
-            Vector3 N1 = normals[triangles[i]];
-            i++;
-            Vector3 N2 = normals[triangles[i]];
-            i++;
-            Vector3 N3 = normals[triangles[i]];
-            i++;
-
-            return (N1 + N2 + N3) / 3;
-        }
-
-        #endregion
     }
 }
