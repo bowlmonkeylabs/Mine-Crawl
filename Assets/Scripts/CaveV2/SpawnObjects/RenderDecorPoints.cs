@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace BML.Scripts.CaveV2.SpawnObjects
 {
     public class RenderDecorPoints : MonoBehaviour
     {
-        public List<Vector3> _debugPoints;
+        public List<DecorObjectSpawner.Point> _debugPoints = new List<DecorObjectSpawner.Point>();
 
         private float _pointRadius;
 
-        public void SetDebugPoints(List<Vector3> points, float radius)
+        public void SetDebugPoints(List<DecorObjectSpawner.Point> points, float radius)
         {
             _debugPoints = points;
             _pointRadius = radius;
@@ -22,10 +23,12 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         
         void OnDrawGizmosSelected()
         {
-            foreach (Vector3 debugPoint in _debugPoints)
+            if (_debugPoints.IsNullOrEmpty()) return;
+            
+            foreach (DecorObjectSpawner.Point debugPoint in _debugPoints)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawSphere(debugPoint, _pointRadius);
+                Gizmos.DrawSphere(debugPoint.pos, _pointRadius);
             }
         }
     }

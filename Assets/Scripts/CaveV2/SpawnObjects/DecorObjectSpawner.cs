@@ -12,22 +12,21 @@ namespace BML.Scripts.CaveV2.SpawnObjects
     {
         [SerializeField] private CaveGenComponentV2 _caveGen;
         [SerializeField] private GameObject _mudRendererObj;
+        [SerializeField] private GameObject _prefabToSpawn;
+        [SerializeField] private bool _spawnAsPrefab = true;
         [SerializeField] private LayerMask _roomBoundsLayerMask;
         [SerializeField] [MinMaxSlider(0f, 180f)] private Vector2 _minMaxAngle = new Vector2(0f, 180f);
         [SerializeField] [Range(0, 1)] private float _noiseFilterValueMin = .5f;
         [SerializeField] private int _maxDistanceFromMainPath = 10;
         [SerializeField] private AnimationCurve _mainPathDecayCurve;
-        
-        [Tooltip("Defaulting to false for now just because tunnels dont store cave graph data at the moment. i.e. distance to main path")]
-        [SerializeField] private bool _assignPointsToTunnels = false;
-        
+
         [SerializeField] private float _pointDensity = .25f;
-        [SerializeField] private float _pointRadius = .25f;
-        [SerializeField] private List<Vector3> debugPoints;
+        [SerializeField] private float _pointRadiusDebug = .25f;
+        [SerializeField] private float _pointNormalLengthDebug = 1f;
+        [SerializeField, ReadOnly] private List<Point> _points = new List<Point>();
 
         [ShowInInspector, ReadOnly] private int pointCount;
         
-        private Vector3 randomPoint;
         private MeshCollider meshCollider;
 
         private Dictionary<CaveNodeData, List<Vector3>> caveNodePointDict =
@@ -41,6 +40,12 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private Vector3 _noiseBoxCount = new Vector3(100f, 100f, 100f);
         [SerializeField] [Range(0, 1)] private float _noiseScale = 100f;
 
+        public struct Point
+        {
+            public Vector3 pos;
+            public Vector3 normal;
+        }
+
         struct NoiseBox
         {
             public Vector3 pos;
@@ -52,10 +57,12 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         void OnDrawGizmosSelected()
         {
-            foreach (Vector3 debugPoint in debugPoints)
+            foreach (Point debugPoint in _points)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawSphere(debugPoint, _pointRadius);
+                Gizmos.DrawSphere(debugPoint.pos, _pointRadiusDebug);
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(debugPoint.pos, debugPoint.pos + debugPoint.normal * _pointNormalLengthDebug);
             }
 
             foreach (var noiseBox in _noiseBoxes)
@@ -135,14 +142,43 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [Button]
         public void RemoveDebugPoints()
         {
-            debugPoints.Clear();
+            _points.Clear();
         }
         
         private void addDebugPoint(List<int> filteredTriangles)
         {
-            randomPoint = GetRandomPointOnMesh(filteredTriangles, meshCollider.sharedMesh);
-            randomPoint += meshCollider.transform.position;
-            debugPoints.Add(randomPoint);
+            Point randomPoint = new Point();
+            (randomPoint.pos, randomPoint.normal) = GetRandomPointOnMesh(filteredTriangles, meshCollider.sharedMesh);
+            randomPoint.pos += meshCollider.transform.position;
+            _points.Add(randomPoint);
+        }
+
+        #endregion
+
+        #region Spawn Objects
+
+        [Button]
+        public void SpawnObjects()
+        {
+            RemoveObjects();
+            foreach (var point in _points)
+            {
+                var newGameObj = GameObjectUtils.SafeInstantiate(_spawnAsPrefab, _prefabToSpawn, transform);
+                newGameObj.transform.position = point.pos;
+                newGameObj.transform.up = point.normal;
+            }
+        }
+
+        [Button]
+        public void RemoveObjects()
+        {
+            var children = Enumerable.Range(0, this.transform.childCount)
+                .Select(i => this.transform.GetChild(i).gameObject)
+                .ToList();
+            foreach (var childObject in children)
+            {
+                GameObject.DestroyImmediate(childObject);
+            }
         }
 
         #endregion
@@ -154,43 +190,48 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             caveNodePointDict.Clear();
             
+            if (_caveGen.CaveGraph.VertexCount < 1)
+                Debug.LogError("Cave graph has no vertices.");
+            if (_caveGen.CaveGraph.EdgeCount < 1)
+                Debug.LogError("Cave graph has no edges.");
+            
             foreach (var vert in _caveGen.CaveGraph.Vertices)
             {
                 GameObject roomObj = vert.GameObject;
-                AssignPoints(roomObj);
+                CaveNodeDataDebugComponent nodeDataDebug = roomObj.GetComponent<CaveNodeDataDebugComponent>();
+                int distanceFromMainPath = nodeDataDebug.CaveNodeData.MainPathDistance;
+                AssignPoints(roomObj, distanceFromMainPath);
             }
-            
-            if (!_assignPointsToTunnels)
-                return;
-                
+
             foreach (var edge in _caveGen.CaveGraph.Edges)
             {
                 GameObject edgeObj = edge.GameObject;
-                AssignPoints(edgeObj);
+                CaveNodeConnectionDataDebugComponent  edgeDataDebug = edgeObj.GetComponent<CaveNodeConnectionDataDebugComponent>();
+                int distanceFromMainPath = Mathf.Max(edgeDataDebug.CaveNodeConnectionData.Source.MainPathDistance,
+                                                    edgeDataDebug.CaveNodeConnectionData.Target.MainPathDistance);
+                AssignPoints(edgeObj, distanceFromMainPath);
             }
         }
         
 
-        private void AssignPoints(GameObject nodeObj)
+        private void AssignPoints(GameObject nodeObj, int distToMainPath)
         {
-            List<Vector3> roomPoints = new List<Vector3>();
+            List<Point> roomPoints = new List<Point>();
             Collider roomBounds = nodeObj.GetComponentInChildren<Collider>();
-            
-            CaveNodeDataDebugComponent nodeDataDebug = nodeObj.GetComponent<CaveNodeDataDebugComponent>();
-            int distanceFromMainPath = nodeDataDebug.CaveNodeData.MainPathDistance;
 
             //TODO: Make sure this collider is on the room bounds layer
 
             // Add point to room if within room collider bounds
             // Remove point from master list if too far from main path
-            List<Vector3> pointsToRemove = new List<Vector3>();
-            foreach (var point in debugPoints)
+            List<Point> pointsToRemove = new List<Point>();
+            foreach (var point in _points)
             {
-                if (roomBounds.bounds.Contains(point))
+                if (roomBounds.bounds.Contains(point.pos))
                 {
-                    float stayChance =
-                        _mainPathDecayCurve.Evaluate((float) distanceFromMainPath / _maxDistanceFromMainPath);
-                    
+                    float stayChance = distToMainPath > _maxDistanceFromMainPath ?
+                                        0f : 
+                                        _mainPathDecayCurve.Evaluate((float) distToMainPath / _maxDistanceFromMainPath);
+
                     //Use curve to remove points
                     if (Random.value < stayChance)
                         roomPoints.Add(point);
@@ -199,12 +240,12 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 }
             }
 
-            debugPoints = debugPoints.Except(pointsToRemove).ToList();
+            _points = _points.Except(pointsToRemove).ToList();
             
             //Set points to room gizmo
             RenderDecorPoints roomDecorRend = nodeObj.GetComponentInChildren<RenderDecorPoints>();
             roomDecorRend.ClearDebugPoints();
-            roomDecorRend.SetDebugPoints(roomPoints, _pointRadius);
+            roomDecorRend.SetDebugPoints(roomPoints, _pointRadiusDebug);
         }
 
         [Button]
@@ -223,27 +264,16 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private List<int> FilterTrianglesNormal(List<int> triangles, List<Vector3> normals)
         {
             List<int> filteredTriangles = new List<int>();
-            for(int i = 0; i < triangles.Count;)
+            for(int i = 0; i < triangles.Count; i+=3)
             {
-                Vector3 N1 = normals[triangles[i]];
-                int T1 = triangles[i];
-                i++;
-                Vector3 N2 = normals[triangles[i]];
-                int T2 = triangles[i];
-                i++;
-                Vector3 N3 = normals[triangles[i]];
-                int T3 = triangles[i];
-                i++;
-
-                Vector3 faceNormal = (N1 + N2 + N3) / 3;
-                
+                Vector3 faceNormal = GetTriangleFaceNormal(triangles, normals, i);
 
                 if (Vector3.Angle(faceNormal, Vector3.up) >= _minMaxAngle.x &&
                     Vector3.Angle(faceNormal, Vector3.up) <= _minMaxAngle.y)
                 {
-                    filteredTriangles.Add(T1);
-                    filteredTriangles.Add(T2);
-                    filteredTriangles.Add(T3);
+                    filteredTriangles.Add(triangles[i]);
+                    filteredTriangles.Add(triangles[i+1]);
+                    filteredTriangles.Add(triangles[i+2]);
                 }
             }
 
@@ -252,14 +282,14 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private void FilterDebugPointsNoise()
         {
-            List<Vector3> pointsToRemove = new List<Vector3>();
-            foreach (var point in debugPoints)
+            List<Point> pointsToRemove = new List<Point>();
+            foreach (var point in _points)
             {
-                if (Mathf.Clamp01(Perlin.Noise(point * _noiseScale)) < _noiseFilterValueMin)
+                if (Mathf.Clamp01(Perlin.Noise(point.pos * _noiseScale)) < _noiseFilterValueMin)
                     pointsToRemove.Add(point);
             }
 
-            debugPoints = debugPoints.Except(pointsToRemove).ToList();
+            _points = _points.Except(pointsToRemove).ToList();
         }
 
         #endregion
@@ -278,10 +308,10 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 cumulativeSizes[i] = total;
             }
 
-            pointCount = Mathf.FloorToInt(total / _pointDensity);
+            pointCount = Mathf.FloorToInt(total * _pointDensity);
         }
 
-        public Vector3 GetRandomPointOnMesh(List<int> filteredTriangles, Mesh mesh)
+        public (Vector3, Vector3) GetRandomPointOnMesh(List<int> filteredTriangles, Mesh mesh)
         {
             float randomsample = Random.value * total;
             int triIndex = -1;
@@ -314,7 +344,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
             // Turn point back to a Vector3
             Vector3 pointOnMesh = a + r * (b - a) + s * (c - a);
-            return pointOnMesh;
+            
+            // Get Face Normal at Point
+            Vector3 faceNormal = GetTriangleFaceNormal(filteredTriangles, mesh.normals.ToList(), triIndex);
+            
+            return (pointOnMesh, faceNormal);
         }
 
         public float[] GetTriSizes(List<int> tris, Vector3[] verts)
@@ -328,6 +362,20 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     verts[tris[i * 3 + 2]] - verts[tris[i * 3]]).magnitude;
             }
             return sizes;
+        }
+        
+        private Vector3 GetTriangleFaceNormal(List<int> triangles, List<Vector3> normals, int triangleStartIndex)
+        {
+            int i = triangleStartIndex;
+            
+            Vector3 N1 = normals[triangles[i]];
+            i++;
+            Vector3 N2 = normals[triangles[i]];
+            i++;
+            Vector3 N3 = normals[triangles[i]];
+            i++;
+
+            return (N1 + N2 + N3) / 3;
         }
 
         #endregion
