@@ -10,13 +10,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private float _pointRadius;
 
-        public void SetDebugPoints(List<DecorObjectSpawner.Point> points, float radius)
+        public void AddPoint(DecorObjectSpawner.Point point, float radius)
         {
-            _debugPoints = points;
+            _debugPoints.Add(point);
             _pointRadius = radius;
         }
 
-        public void ClearDebugPoints()
+        public void ClearPoints()
         {
             _debugPoints.Clear();
         }

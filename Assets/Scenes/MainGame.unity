@@ -1256,40 +1256,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _caveGen: {fileID: 771419349}
   _mudRendererObj: {fileID: 1231575171}
+  _prefabToSpawn: {fileID: 9210952453367320576, guid: 398c9bc148b0469438c059ebf2c6a52c, type: 3}
+  _spawnAsPrefab: 1
   _roomBoundsLayerMask:
     serializedVersion: 2
     m_Bits: 65536
-  _minMaxAngle: {x: 0, y: 31.337734}
+  _minMaxAngle: {x: 0, y: 63.525475}
   _noiseFilterValueMin: 0
-  _maxDistanceFromMainPath: 1
+  _maxDistanceFromMainPath: 0
   _mainPathDecayCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: -0.75
-      outSlope: -0.75
+      inSlope: 0
+      outSlope: 0
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.33333334
+      outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 0.25
-      inSlope: -0.75
-      outSlope: -0.75
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 34
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _assignPointsToTunnels: 0
-  _pointDensity: 5
-  _pointRadius: 0.25
-  debugPoints: []
+  _pointDensity: 0.025
+  _pointRadiusDebug: 0.25
+  _pointNormalLengthDebug: 1
+  _drawClosestPoints: 0
   _noiseBoxCount: {x: 50, y: 25, z: 50}
   _noiseScale: 0.156
 --- !u!224 &988064299 stripped
@@ -1366,7 +1368,7 @@ MonoBehaviour:
   _generateOnChange: 1
   _maxGeneratesPerSecond: 4
   _lockAfterGenerate: 1
-  _lockInEditMode: 1
+  _lockInEditMode: 0
   _requireManualUnlock: 0
   _mudRenderer: {fileID: 1231575173}
   _invertNormals: 1

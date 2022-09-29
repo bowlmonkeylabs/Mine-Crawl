@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2.SpawnObjects
 {
@@ -23,15 +26,19 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private float _pointDensity = .25f;
         [SerializeField] private float _pointRadiusDebug = .25f;
         [SerializeField] private float _pointNormalLengthDebug = 1f;
+        [SerializeField] private bool _drawClosestPoints;
         [SerializeField, ReadOnly] private List<Point> _points = new List<Point>();
 
         [ShowInInspector, ReadOnly] private int pointCount;
         
         private MeshCollider meshCollider;
 
-        private Dictionary<CaveNodeData, List<Vector3>> caveNodePointDict =
-            new Dictionary<CaveNodeData, List<Vector3>>();
+        // Room obj and dist to main path
+        private Dictionary<GameObject, int> roomDataDict =
+            new Dictionary<GameObject, int>();
 
+        private Dictionary<Point, Vector3> pointToClosestPoint = new Dictionary<Point, Vector3>();
+        
         float[] sizes;
         float[] cumulativeSizes;
         float total = 0;
@@ -40,7 +47,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private Vector3 _noiseBoxCount = new Vector3(100f, 100f, 100f);
         [SerializeField] [Range(0, 1)] private float _noiseScale = 100f;
 
-        public struct Point
+        public class Point
         {
             public Vector3 pos;
             public Vector3 normal;
@@ -57,13 +64,24 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         void OnDrawGizmosSelected()
         {
-            foreach (Point debugPoint in _points)
+            foreach (var point in _points)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawSphere(debugPoint.pos, _pointRadiusDebug);
+                Gizmos.DrawSphere(point.pos, _pointRadiusDebug);
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(debugPoint.pos, debugPoint.pos + debugPoint.normal * _pointNormalLengthDebug);
+                Gizmos.DrawLine(point.pos, point.pos + point.normal * _pointNormalLengthDebug);
             }
+
+            if (_drawClosestPoints)
+            {
+                foreach (var pointKV in pointToClosestPoint)
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawLine(pointKV.Key.pos, pointKV.Value);
+                    Gizmos.DrawSphere(pointKV.Value, _pointRadiusDebug/2f);
+                }
+            }
+            
 
             foreach (var noiseBox in _noiseBoxes)
             {
@@ -134,9 +152,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             List<int> filteredTriangles = FilterTrianglesNormal(meshCollider.sharedMesh.triangles.ToList(), meshCollider.sharedMesh.normals.ToList());
             CalcAreas(filteredTriangles, meshCollider.sharedMesh.vertices);
             for (int i = 0; i < pointCount; i++)
-                addDebugPoint(filteredTriangles);
+                AddPoint(filteredTriangles);
             
-            FilterDebugPointsNoise();
+            FilterPointsNoise();
         }
 
         [Button]
@@ -145,7 +163,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             _points.Clear();
         }
         
-        private void addDebugPoint(List<int> filteredTriangles)
+        private void AddPoint(List<int> filteredTriangles)
         {
             Point randomPoint = new Point();
             (randomPoint.pos, randomPoint.normal) = GetRandomPointOnMesh(filteredTriangles, meshCollider.sharedMesh);
@@ -188,64 +206,113 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [Button]
         public void AssignPointsToRooms()
         {
-            caveNodePointDict.Clear();
-            
+            GetRoomData();
+
+            List<Point> pointsToRemove = new List<Point>();
+            pointToClosestPoint.Clear();
+            foreach (var point in _points)
+            {
+                bool foundRoom = false;
+                (GameObject roomObj, int distFromMainPath) currentRoomInfo = (null, Int32.MaxValue);
+                (GameObject roomObj, int distFromMainPath, float distanceFromPoint, Vector3 closestPoint) closestRoomInfo = (null, Int32.MaxValue, Mathf.Infinity, Vector3.zero);
+                foreach (var roomData in roomDataDict)
+                {
+                    //TODO: Move to other method to fetch collider?
+                    Collider boundsCollider = roomData.Key.GetComponentInChildren<Collider>();
+                    Collider[] allRoomColliders = roomData.Key.GetComponentsInChildren<Collider>();
+                    foreach (var col in allRoomColliders)
+                    {
+                        if (col.gameObject.IsInLayerMask(_roomBoundsLayerMask))
+                        {
+                            boundsCollider = col;
+                            break;
+                        }
+                    }
+                    
+                    currentRoomInfo.roomObj = roomData.Key;
+                    currentRoomInfo.distFromMainPath = roomData.Value;
+
+                    //Stop if contained by room
+                    if (IsPointWithinCollider(boundsCollider, point.pos))
+                    {
+                        foundRoom = true;
+                        closestRoomInfo.closestPoint = point.pos;
+                        break;
+                    }
+                    
+                    //Else see how far this room is. Keep track of closest room
+                    //TODO: dont calculate ClosestPoint twice (already done in IsPointWithinCollider)
+                    Vector3 closestPoint = boundsCollider.ClosestPoint(point.pos);
+                    float distToCollider = Vector3.Distance(point.pos , closestPoint);  //TODO: change to sqr dist
+                    if (distToCollider < closestRoomInfo.distanceFromPoint)
+                    {
+                        closestRoomInfo.roomObj = currentRoomInfo.roomObj;
+                        closestRoomInfo.distFromMainPath = currentRoomInfo.distFromMainPath;
+                        closestRoomInfo.distanceFromPoint = distToCollider;
+                        closestRoomInfo.closestPoint = closestPoint;
+                    }
+                }
+
+                //TODO: Maybe theres better way to decouple this method call from this one
+                bool removePoint;
+                if (foundRoom)
+                    removePoint = FilterPointDistanceToMainPath(point, currentRoomInfo.roomObj, currentRoomInfo.distFromMainPath);
+                else
+                    removePoint = FilterPointDistanceToMainPath(point, closestRoomInfo.roomObj, closestRoomInfo.distFromMainPath);
+
+                if (removePoint)
+                {
+                    pointsToRemove.Add(point);
+                }
+                else
+                {
+                    pointToClosestPoint[point] = closestRoomInfo.closestPoint;
+                }
+            }
+
+            _points = _points.Except(pointsToRemove).ToList();
+        }
+
+        private void GetRoomData()
+        {
             if (_caveGen.CaveGraph.VertexCount < 1)
                 Debug.LogError("Cave graph has no vertices.");
             if (_caveGen.CaveGraph.EdgeCount < 1)
                 Debug.LogError("Cave graph has no edges.");
-            
+
+            roomDataDict.Clear();
+
             foreach (var vert in _caveGen.CaveGraph.Vertices)
             {
-                GameObject roomObj = vert.GameObject;
-                CaveNodeDataDebugComponent nodeDataDebug = roomObj.GetComponent<CaveNodeDataDebugComponent>();
-                int distanceFromMainPath = nodeDataDebug.CaveNodeData.MainPathDistance;
-                AssignPoints(roomObj, distanceFromMainPath);
+                GameObject vertObj = vert.GameObject;
+                CaveNodeDataDebugComponent nodeDataDebug = vertObj.GetComponent<CaveNodeDataDebugComponent>();
+
+                roomDataDict[vertObj] = nodeDataDebug.CaveNodeData.MainPathDistance;
+                
+                RenderDecorPoints roomDecorRend = vertObj.GetComponentInChildren<RenderDecorPoints>();
+                roomDecorRend.ClearPoints();
             }
 
             foreach (var edge in _caveGen.CaveGraph.Edges)
             {
                 GameObject edgeObj = edge.GameObject;
                 CaveNodeConnectionDataDebugComponent  edgeDataDebug = edgeObj.GetComponent<CaveNodeConnectionDataDebugComponent>();
-                int distanceFromMainPath = Mathf.Max(edgeDataDebug.CaveNodeConnectionData.Source.MainPathDistance,
-                                                    edgeDataDebug.CaveNodeConnectionData.Target.MainPathDistance);
-                AssignPoints(edgeObj, distanceFromMainPath);
+                
+                // For edges, the dist to main path is max of connected rooms
+                roomDataDict[edgeObj] = Mathf.Max(edgeDataDebug.CaveNodeConnectionData.Source.MainPathDistance,
+                    edgeDataDebug.CaveNodeConnectionData.Target.MainPathDistance);
+                
+                RenderDecorPoints roomDecorRend = edgeObj.GetComponentInChildren<RenderDecorPoints>();
+                roomDecorRend.ClearPoints();
             }
         }
+
         
 
-        private void AssignPoints(GameObject nodeObj, int distToMainPath)
+        //TODO: Put this in some util class?
+        private bool IsPointWithinCollider(Collider collider, Vector3 point)
         {
-            List<Point> roomPoints = new List<Point>();
-            Collider roomBounds = nodeObj.GetComponentInChildren<Collider>();
-
-            //TODO: Make sure this collider is on the room bounds layer
-
-            // Add point to room if within room collider bounds
-            // Remove point from master list if too far from main path
-            List<Point> pointsToRemove = new List<Point>();
-            foreach (var point in _points)
-            {
-                if (roomBounds.bounds.Contains(point.pos))
-                {
-                    float stayChance = distToMainPath > _maxDistanceFromMainPath ?
-                                        0f : 
-                                        _mainPathDecayCurve.Evaluate((float) distToMainPath / _maxDistanceFromMainPath);
-
-                    //Use curve to remove points
-                    if (Random.value < stayChance)
-                        roomPoints.Add(point);
-                    else
-                        pointsToRemove.Add(point);
-                }
-            }
-
-            _points = _points.Except(pointsToRemove).ToList();
-            
-            //Set points to room gizmo
-            RenderDecorPoints roomDecorRend = nodeObj.GetComponentInChildren<RenderDecorPoints>();
-            roomDecorRend.ClearDebugPoints();
-            roomDecorRend.SetDebugPoints(roomPoints, _pointRadiusDebug);
+            return collider.ClosestPoint(point) == point;
         }
 
         [Button]
@@ -253,7 +320,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             foreach (var decorRend in FindObjectsOfType<RenderDecorPoints>())
             {
-                decorRend.ClearDebugPoints();
+                decorRend.ClearPoints();
             }
         }
 
@@ -280,7 +347,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             return filteredTriangles;
         }
 
-        private void FilterDebugPointsNoise()
+        private void FilterPointsNoise()
         {
             List<Point> pointsToRemove = new List<Point>();
             foreach (var point in _points)
@@ -290,6 +357,34 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
 
             _points = _points.Except(pointsToRemove).ToList();
+        }
+        
+        private bool FilterPointDistanceToMainPath(Point point, GameObject roomObj, int distToMainPath)
+        {
+            float stayChance;
+
+            if (distToMainPath > _maxDistanceFromMainPath)
+                stayChance = 0f;
+            // Avoid divide by 0
+            else if (_maxDistanceFromMainPath == 0 &&
+                     distToMainPath == _maxDistanceFromMainPath)
+                stayChance = _mainPathDecayCurve.Evaluate(0);
+            else
+                stayChance = _mainPathDecayCurve.Evaluate((float) distToMainPath / _maxDistanceFromMainPath);
+
+            //Use curve to remove points
+            if (Random.value < stayChance)
+            {
+                //Set points to room
+                RenderDecorPoints roomDecorRend = roomObj.GetComponentInChildren<RenderDecorPoints>();
+                roomDecorRend.AddPoint(point, _pointRadiusDebug);
+                return false;
+            }
+            else
+            {
+                //Tell caller to remove this point
+                return true;
+            }
         }
 
         #endregion
