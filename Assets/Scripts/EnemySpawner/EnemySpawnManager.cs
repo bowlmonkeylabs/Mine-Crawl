@@ -251,6 +251,12 @@ namespace BML.Scripts
             if (Time.time < lastSpawnTime + _currentSpawnDelay.Value)
                 return;
 
+            bool noActiveSpawnPoints = _activeSpawnPointsByTag == null
+                                       || _activeSpawnPointsByTag.Count == 0
+                                       || _activeSpawnPointsByTag.All(kv => kv.Value.Count == 0);
+            if (noActiveSpawnPoints)
+                return;
+
             // Check against current enemy cap
             _currentEnemyCount.Value = _enemyContainer.Cast<Transform>().Count(t => t.gameObject.activeSelf);
             _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(percentToMaxSpawn);
