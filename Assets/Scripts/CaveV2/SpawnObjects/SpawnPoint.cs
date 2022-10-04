@@ -15,6 +15,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         
         [SerializeField] [Range(0f, 1f)] private float _startingSpawnChance = 1f;
         [ShowInInspector, ReadOnly] public float SpawnChance { get; set; } = 1f;
+        [ShowInInspector, ReadOnly] public float EnemySpawnWeight { get; set; } = 1f;
 
         // TODO fetch current object tag and display it. Show a warning/error if object is NOT tagged.
         

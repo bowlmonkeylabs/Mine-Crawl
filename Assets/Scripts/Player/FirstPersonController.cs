@@ -1,8 +1,9 @@
-//FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
+﻿//FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
 //https://assetstore.unity.com/packages/essentials/starter-assets-first-person-character-controller-196525
 
 using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.Utils;
 using KinematicCharacterController;
 using UnityEngine;
@@ -58,8 +59,8 @@ namespace BML.Scripts.Player
 		public AnimationCurve KnockbackHorizontalForceCurve;
 
         [Header("RopeMovement")]
+        [SerializeField] private GameEvent _playerEnteredRopeEvent;
         [SerializeField] private BoolReference _isRopeMovementEnabled;
-        [SerializeField] private LayerMask _ropeLayerMask;
         [SerializeField] private float _ropeMovementSpeed = 15;
         [SerializeField] private float _ropeGravitySpeed = 1;
 
@@ -145,11 +146,13 @@ namespace BML.Scripts.Player
 		private void OnEnable()
 		{
 			isNoClipEnabled.Subscribe(SetNoClip);
+            _playerEnteredRopeEvent.Subscribe(OnPlayerEnteredRope);
 		}
 
 		private void OnDisable()
 		{
 			isNoClipEnabled.Unsubscribe(SetNoClip);
+            _playerEnteredRopeEvent.Unsubscribe(OnPlayerEnteredRope);
 		}
 
 		private void Update()
@@ -306,13 +309,6 @@ namespace BML.Scripts.Player
 	        ref HitStabilityReport hitStabilityReport)
 	    {
             // This is called when the motor's movement logic detects a hit
-
-            if(!_isRopeMovementEnabled.Value && _ropeLayerMask.MMContains(hitCollider.gameObject)) {
-                originalGravity = Gravity;
-				Gravity = 0f;
-                _motor.ForceUnground();
-                _isRopeMovementEnabled.Value = true;
-            }
 	    }
 
 	    public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint,
@@ -474,6 +470,15 @@ namespace BML.Scripts.Player
 			knockbackStartTime = Time.time;
 			_knockbackActive = true;
 		}
+
+        private void OnPlayerEnteredRope() {
+            if(!_isRopeMovementEnabled.Value) {
+                 originalGravity = Gravity;
+                Gravity = 0f;
+                _motor.ForceUnground();
+                _isRopeMovementEnabled.Value = true;
+            }
+        }
 
 		private void SetNoClip()
 		{

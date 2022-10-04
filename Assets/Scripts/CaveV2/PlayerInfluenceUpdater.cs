@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace BML.Scripts.CaveV2
 
         [SerializeField] private LayerMask _nodeBoundsLayerMask;
         [SerializeField] private CaveGenComponentV2 _caveGenerator;
+        [SerializeField] private BoolReference _isExitChallengeActive;
 
         #endregion
 
@@ -26,6 +28,16 @@ namespace BML.Scripts.CaveV2
             _currentNodeConnections = new Dictionary<Collider, CaveNodeConnectionData>();
         }
 
+        private void OnEnable()
+        {
+            _isExitChallengeActive.Subscribe(UpdatePlayerDistanceToCurrent);
+        }
+        
+        private void OnDisable()
+        {
+            _isExitChallengeActive.Unsubscribe(UpdatePlayerDistanceToCurrent);
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             var layerName = LayerMask.LayerToName(other.gameObject.layer);
@@ -37,10 +49,38 @@ namespace BML.Scripts.CaveV2
             if (isNodeBoundsLayer)
             {
                 // Debug.Log($"PlayerInfluenceUpdater: OnTriggerEnter");
-                if (!_currentNodes.ContainsKey(other) && !_currentNodeConnections.ContainsKey(other))
+                bool isAlreadyEntered =
+                    (!_currentNodes.ContainsKey(other) && !_currentNodeConnections.ContainsKey(other));
+                if (isAlreadyEntered)
                 {
                     var caveNodeDataComponent = other.GetComponentInParent<CaveNodeDataDebugComponent>();
-                    if (caveNodeDataComponent == null)
+                    if (caveNodeDataComponent != null)
+                    {
+                        var caveNodeData = caveNodeDataComponent.CaveNodeData;
+                        if (caveNodeData == null)
+                        {
+                            // Debug.LogError($"Cave node data NULL for this {other.gameObject.layer} collider");
+                            return;
+                        }
+
+                        // bool areOtherCurrentNodes = (_currentNodes.Count > 0);
+                        // bool newNodeAdjacentToCurrentNodes = _currentNodes.Values
+                        //     .Any(currentNode => 
+                        //         _caveGenerator.CaveGraph.TryGetEdge(currentNode, caveNodeData, out var edge1)
+                        //         || _caveGenerator.CaveGraph.TryGetEdge(caveNodeData, currentNode, out var edge2));
+                        // if (areOtherCurrentNodes && !newNodeAdjacentToCurrentNodes)
+                        // {
+                        //     // Skip node which does not have direct connection to other current nodes
+                        //     return;
+                        // }
+                        
+                        caveNodeData.PlayerVisited = true;
+                        caveNodeData.PlayerOccupied = true;
+                        _currentNodes.Add(other, caveNodeData);
+                        _caveGenerator.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
+                        // Debug.Log($"PLAYER IN {caveNodeData.LocalPosition}");
+                    }
+                    else
                     {
                         var caveNodeConnectionDataComponent =
                             other.GetComponentInParent<CaveNodeConnectionDataDebugComponent>();
@@ -62,21 +102,6 @@ namespace BML.Scripts.CaveV2
                         _currentNodeConnections.Add(other, caveNodeConnectionData);
                         // _caveGenerator.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
                         // Debug.Log($"PLAYER IN {caveNodeConnectionData.Source.LocalPosition} <-> {caveNodeConnectionData.Target.LocalPosition}");
-                    }
-                    else
-                    {
-                        var caveNodeData = caveNodeDataComponent.CaveNodeData;
-                        if (caveNodeData == null)
-                        {
-                            // Debug.LogError($"Cave node data NULL for this {other.gameObject.layer} collider");
-                            return;
-                        }
-                        
-                        caveNodeData.PlayerVisited = true;
-                        caveNodeData.PlayerOccupied = true;
-                        _currentNodes.Add(other, caveNodeData);
-                        _caveGenerator.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
-                        // Debug.Log($"PLAYER IN {caveNodeData.LocalPosition}");
                     }
                 }
                 else
@@ -119,5 +144,10 @@ namespace BML.Scripts.CaveV2
         }
 
         #endregion
+
+        private void UpdatePlayerDistanceToCurrent()
+        {
+            _caveGenerator.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
+        }
     }
 }
