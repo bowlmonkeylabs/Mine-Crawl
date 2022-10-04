@@ -57,6 +57,9 @@ namespace BML.Scripts.CaveV2
 
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private LevelObjectSpawner _levelObjectSpawner;
+        
+        [Required] [InlineEditor, Space(10f)]
+        [SerializeField] private DecorObjectSpawner _decorObjectSpawner;
 
         [TitleGroup("Debug")]
         [SerializeField] private bool _enableLogs = false;
@@ -206,6 +209,8 @@ namespace BML.Scripts.CaveV2
             
             _caveGraphMudBunRenderer.DestroyMudBun();
             _levelObjectSpawner.DestroyLevelObjects();
+            _decorObjectSpawner.DestroyDecor();
+            
         }
         
         private CaveGraphV2 GenerateCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)

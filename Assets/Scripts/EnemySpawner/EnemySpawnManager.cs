@@ -55,8 +55,8 @@ namespace BML.Scripts
 
         #endregion
 
-        private Dictionary<string, List<SpawnPoint>> _allSpawnPointsByTag;
-        private Dictionary<string, List<SpawnPoint>> _activeSpawnPointsByTag;
+        [ReadOnly, ShowInInspector] private Dictionary<string, List<SpawnPoint>> _allSpawnPointsByTag;
+        [ReadOnly, ShowInInspector] private Dictionary<string, List<SpawnPoint>> _activeSpawnPointsByTag;
 
         private float lastSpawnTime = Mathf.NegativeInfinity;
         private float percentToMaxSpawn;
