@@ -36,7 +36,8 @@ namespace BML.Scripts.Player
 		
 		[SerializeField] private BoolReference _isPaused;
 		[SerializeField] private BoolReference _isStoreOpen;
-		[SerializeField] private BoolReference _isDebugOverlayOpen; // This is specifically exluceded from _containerUiMenuStates, so this acts as an overlay rather than an interactable menu.
+		[SerializeField] private BoolReference _isDebugConsoleOpen;
+		[SerializeField] private BoolReference _isDebugOverlayOpen; // This is specifically excluded from _containerUiMenuStates, so this acts as an overlay rather than an interactable menu.
 		[SerializeField] private BoolReference _isGodModeEnabled;
 		[SerializeField] private BoolReference _isNoClipEnabled;
 		[SerializeField] private GameEvent _onAddEnemyHealth;
@@ -103,6 +104,7 @@ namespace BML.Scripts.Player
 			ApplyInputState();
 			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
+			_isDebugConsoleOpen.Subscribe(ApplyInputState);
 
 			jumpAction.performed += SetJumpHeld;
 			jumpAction.canceled += SetJumpHeld;
@@ -114,7 +116,8 @@ namespace BML.Scripts.Player
 		{
 			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
-			
+			_isDebugConsoleOpen.Unsubscribe(ApplyInputState);
+
 			jumpAction.performed -= SetJumpHeld;
 			jumpAction.canceled -= SetJumpHeld;
 			crouchAction.performed -= SetCrouchHeld;
@@ -125,6 +128,12 @@ namespace BML.Scripts.Player
 		{
 			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
+			_isDebugConsoleOpen.Unsubscribe(ApplyInputState);
+			
+			jumpAction.performed -= SetJumpHeld;
+			jumpAction.canceled -= SetJumpHeld;
+			crouchAction.performed -= SetCrouchHeld;
+			crouchAction.canceled -= SetCrouchHeld;
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)
@@ -282,19 +291,24 @@ namespace BML.Scripts.Player
 		public void ApplyInputState()
 		{
 			if (_enableLogs) Debug.Log($"ApplyInputState: Previous state is (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
-			if (isUsingUi_NoPlayerControl)
+			if (_isDebugConsoleOpen.Value)
 			{
-				SwitchCurrentActionMap(playerInput, true, "Debug", "UI");
+				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "UI");
+				SetCursorState(false);
+			}
+			else if (isUsingUi_NoPlayerControl)
+			{
+				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "UI");
 				SetCursorState(false);
 			}
 			else if (isUsingUi_InteractableOverlay)
 			{
-				SwitchCurrentActionMap(playerInput, true, "Debug", "UI", "Player_UI_Limited");
+				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "UI", "UI_Player");
 				SetCursorState(false);
 			}
 			else
 			{
-				SwitchCurrentActionMap(playerInput, true, "Debug", "Player");
+				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "Debug_FKeys", "Player");
 				SetCursorState(playerCursorLocked);
 			}
 			if (_enableLogs) Debug.Log($"ApplyInputState Inputs (NoPlayerControl {isUsingUi_NoPlayerControl}) (InteractableOverlay {isUsingUi_InteractableOverlay}) => updated input state to: (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
