@@ -252,7 +252,9 @@ namespace BML.Scripts
                 return;
 
             // Check against current enemy cap
+            Debug.Log($"b4: {_currentEnemyCount.Value}");
             _currentEnemyCount.Value = _enemyContainer.Cast<Transform>().Count(t => t.gameObject.activeSelf);
+            Debug.Log($"after: {_currentEnemyCount.Value}");
             _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(percentToMaxSpawn);
             if (_currentEnemyCount.Value >= _currentSpawnCap.Value) 
                 return;
@@ -295,6 +297,7 @@ namespace BML.Scripts
                 _enemySpawnerParams.MaxRaycastLength);
             
             Debug.Log($"HandleSpawning Spawned {randomEnemy.Prefab.name} {spawnPoint}");
+            _currentEnemyCount.Value = _enemyContainer.Cast<Transform>().Count(t => t.gameObject.activeSelf);
             
             lastSpawnTime = Time.time;
         }
