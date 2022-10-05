@@ -9,39 +9,62 @@ namespace BML.Scripts
     public class AudioMixerController : MonoBehaviour
     {
         [SerializeField] private AudioMixer _audioMixer;
-        [SerializeField] private FloatReference _settingVolume;
+        [SerializeField] private FloatReference _settingMasterVolume;
+        [SerializeField] private FloatReference _settingMusicVolume;
+        [SerializeField] private FloatReference _settingSfxVolume;
 
         private void Start()
         {
-            SetVolume( _settingVolume.Value);
+            SetMasterVolume(0f, _settingMasterVolume.Value);
+            SetMusicVolume(0f, _settingMusicVolume.Value);
+            SetSfxVolume(0f, _settingSfxVolume.Value);
         }
 
         private void OnEnable()
         {
-            SetVolume( _settingVolume.Value);
-            _settingVolume.Subscribe(SetVolume);
+            SetMasterVolume(0f, _settingMasterVolume.Value);
+            SetMusicVolume(0f, _settingMusicVolume.Value);
+            SetSfxVolume(0f, _settingSfxVolume.Value);
+            _settingMasterVolume.Subscribe(SetMasterVolume);
+            _settingMusicVolume.Subscribe(SetMusicVolume);
+            _settingSfxVolume.Subscribe(SetSfxVolume);
         }
         
         private void OnDisable()
         {
-            _settingVolume.Unsubscribe(SetVolume);
+            _settingMasterVolume.Unsubscribe(SetMasterVolume);
+            _settingMusicVolume.Unsubscribe(SetMusicVolume);
+            _settingSfxVolume.Unsubscribe(SetSfxVolume);
         }
 
-        private void SetVolume(float newVolume)
+        private void SetMasterVolume(float previousVolume, float newVolume)
         {
-            SetVolume(0f, newVolume);
-        }
-
-        private void SetVolume(float previousVolume, float newVolume)
-        {
-            float volume;
-
-            if (Mathf.Approximately(newVolume, 0f))
-                volume = -80f;
-            else
-                volume = Mathf.Log10(newVolume) * 20f;
-            
+            float volume = ProcessVolume(newVolume);
             _audioMixer.SetFloat("MasterVolume", volume);
+        }
+
+        private void SetMusicVolume(float previousVolume, float newVolume)
+        {
+            float volume = ProcessVolume(newVolume);
+            _audioMixer.SetFloat("MusicVolume", volume);
+        }
+
+        private void SetSfxVolume(float previousVolume, float newVolume)
+        {
+            float volume = ProcessVolume(newVolume);
+            _audioMixer.SetFloat("SfxVolume", volume);
+        }
+
+        private float ProcessVolume(float volume)
+        {
+            float processedVolume;
+            
+            if (Mathf.Approximately(volume, 0f))
+                processedVolume = -80f;
+            else
+                processedVolume = Mathf.Log10(volume) * 20f;
+
+            return processedVolume;
         }
     }
 }
