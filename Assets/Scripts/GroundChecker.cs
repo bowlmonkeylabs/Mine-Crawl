@@ -12,8 +12,11 @@ namespace BML.Scripts
         [SerializeField] private float _groundCheckDistance = .25f;
         [SerializeField] private float _updateDelay = .1f;
         [SerializeField] private UnityEvent<bool> OnUpdateGroundingStatus;
+        [SerializeField] private UnityEvent OnGrounded;
+        [SerializeField] private UnityEvent OnUnGrounded;
 
         private float lastUpdateTime = Mathf.NegativeInfinity;
+        private bool isGrounded;
 
         private void Update()
         {
@@ -32,10 +35,20 @@ namespace BML.Scripts
             if (Physics.CapsuleCast(p1 + offset, p2, _charController.radius, Vector3.down, out hit, _groundCheckDistance + _charController.height * 0.5f, _groundCheckLayer))
             {
                 OnUpdateGroundingStatus.Invoke(true);
+                if (!isGrounded)
+                {
+                    isGrounded = true;
+                    OnGrounded.Invoke();
+                }
             }
             else
             {
                 OnUpdateGroundingStatus.Invoke(false);
+                if (isGrounded)
+                {
+                    isGrounded = false;
+                    OnUnGrounded.Invoke();
+                }
             }
         }
     }
