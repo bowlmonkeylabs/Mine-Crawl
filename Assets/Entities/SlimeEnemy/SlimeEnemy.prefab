@@ -195,7 +195,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3863838144634906233}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8612595693272683746
 MonoBehaviour:
@@ -233,7 +233,7 @@ MonoBehaviour:
   OnGrounded:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6040175186082019167}
+      - m_Target: {fileID: 848130451159028002}
         m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
         m_MethodName: set_enabled
         m_Mode: 6
@@ -248,7 +248,7 @@ MonoBehaviour:
   OnUnGrounded:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6040175186082019167}
+      - m_Target: {fileID: 848130451159028002}
         m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
         m_MethodName: set_enabled
         m_Mode: 6
@@ -1102,7 +1102,7 @@ Transform:
   - {fileID: 6299747843050923129}
   - {fileID: 4682394310514927578}
   m_Father: {fileID: 3863838144634906233}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3866844170686915094
 GameObject:
@@ -1135,6 +1135,65 @@ Transform:
   m_Father: {fileID: 3863838144634906233}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4381742848491983084
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2531688582993289452}
+  - component: {fileID: 848130451159028002}
+  m_Layer: 10
+  m_Name: FootstepController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2531688582993289452
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4381742848491983084}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3863838144634906233}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &848130451159028002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4381742848491983084}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dfe1cd021b7400fa96c91c44e96daab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _distanceToStep: 1
+  _onFootstep:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6622375879337553160}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4620692805458620433
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,7 +1696,6 @@ GameObject:
   - component: {fileID: 8938272265875241819}
   - component: {fileID: 3048715361028435507}
   - component: {fileID: 6285006183099339563}
-  - component: {fileID: 6040175186082019167}
   m_Layer: 10
   m_Name: SlimeEnemy
   m_TagString: Untagged
@@ -1659,6 +1717,7 @@ Transform:
   - {fileID: 7027011478481368823}
   - {fileID: 2287203994363527987}
   - {fileID: 1696863875396757283}
+  - {fileID: 2531688582993289452}
   - {fileID: 9174083210776630603}
   - {fileID: 5623698896020516926}
   m_Father: {fileID: 0}
@@ -2200,34 +2259,6 @@ MonoBehaviour:
   _onDespawn:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6040175186082019167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6194658959717897337}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5dfe1cd021b7400fa96c91c44e96daab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _distanceToStep: 1
-  _onFootstep:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6622375879337553160}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &6203064935531965250
 GameObject:
   m_ObjectHideFlags: 0

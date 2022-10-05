@@ -52,6 +52,7 @@ namespace BML.Scripts.Player
 		[Header("Player Grounded")]
 		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
 		public bool Grounded = true;
+		public BoolVariable IsGrounded;
 		
 		[Header("Knockback")]
 		public float KnockbackVerticalForce = 10f;
@@ -336,6 +337,10 @@ namespace BML.Scripts.Player
                 _motor.ForceUnground();
                 Grounded = false;
             }
+            
+            //Only update when changed
+            if (IsGrounded.Value != Grounded)
+	            IsGrounded.Value = Grounded;
 		}
 
 		private void CameraRotation()
