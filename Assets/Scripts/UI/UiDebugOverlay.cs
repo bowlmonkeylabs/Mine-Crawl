@@ -14,6 +14,8 @@ namespace BML.Scripts.UI
         [SerializeField] private IntVariable _currentEnemyCount;
         [SerializeField] private IntReference _seedDebugReference;
         [SerializeField] private EvaluateCurveVariable _statPickaxeSwingSpeed;
+        [SerializeField] private BoolVariable _playerInCombat;
+        [SerializeField] private TimerVariable _playerCombatTimer;
 
         #region Unity lifecycle
 
@@ -37,7 +39,9 @@ Enemy Spawn Params: Delay: {_currentSpawnDelay.Value.ToString("0.00")}
 Cap: {_currentSpawnCap.Value.ToString("0.00")}
 Count: {_currentEnemyCount.Value}
 Seed: {_seedDebugReference.Value}
-Pickaxe Swing Speed: {_statPickaxeSwingSpeed.Value}";
+Pickaxe Swing Speed: {_statPickaxeSwingSpeed.Value}
+Player In Combat: {_playerInCombat.Value}
+Combat Timer: {_playerCombatTimer.RemainingTime}";
         }
 
         private string formatVector3(Vector3 vector3) {

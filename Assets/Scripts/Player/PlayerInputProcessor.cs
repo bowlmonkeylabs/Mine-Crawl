@@ -33,7 +33,6 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolReference _invertedLookY;
 		
 		[SerializeField] private BoolReference _isPaused;
-		[SerializeField] private BoolReference _isStoreOpen;
 		[SerializeField] private BoolReference _isDebugOverlayOpen; // This is specifically exluceded from _containerUiMenuStates, so this acts as an overlay rather than an interactable menu.
 		[SerializeField] private BoolReference _isGodModeEnabled;
 		[SerializeField] private BoolReference _isNoClipEnabled;
@@ -148,12 +147,6 @@ namespace BML.Scripts.Player
 				// SetCursorState(false);
 			}
 		}
-
-		public void OnToggleStore()
-		{
-			_isStoreOpen.Value = !_isStoreOpen.Value;
-		}
-
 		public void OnToggleGodMode()
 		{
 			_isGodModeEnabled.Value = !_isGodModeEnabled.Value;
