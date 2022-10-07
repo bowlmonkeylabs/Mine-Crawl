@@ -50,6 +50,13 @@ namespace BML.Scripts.Player
         [SerializeField] private IntReference _health;
         [SerializeField] private IntReference _maxHealth;
 
+        [TitleGroup("Combat State")]
+        [SerializeField] private BoolVariable _inCombat;
+        [SerializeField] private TimerVariable _combatTimer;
+
+        [TitleGroup("Store")]
+        [SerializeField] private BoolReference _isStoreOpen;
+
         [TitleGroup("GodMode")]
         [SerializeField] private BoolVariable _isGodModeEnabled;
 
@@ -64,6 +71,8 @@ namespace BML.Scripts.Player
         {
             _isGodModeEnabled.Subscribe(SetGodMode);
             _health.Subscribe(ClampHealth);
+            _combatTimer.SubscribeFinished(SetNotInCombat);
+            
             SetGodMode();
         }
 
@@ -71,12 +80,14 @@ namespace BML.Scripts.Player
         {
             _isGodModeEnabled.Unsubscribe(SetGodMode);
             _health.Unsubscribe(ClampHealth);
+            _combatTimer.UnsubscribeFinished(SetNotInCombat);
         }
 
         private void Update()
         {
             if (pickaxeInputHeld) TryUsePickaxe();
             HandleHover();
+            _combatTimer.UpdateTime();
         }
 
         #endregion
@@ -209,6 +220,31 @@ namespace BML.Scripts.Player
             
             this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer);
         }
+        
+        #endregion
+
+        #region Combat State
+
+        public void SetInCombat()
+        {
+            _inCombat.Value = true;
+            _isStoreOpen.Value = false;
+            _combatTimer.StartTimer();
+        }
+
+        private void SetNotInCombat() {
+            _inCombat.Value = false;
+            _combatTimer.ResetTimer();
+        }
+        
+        #endregion
+
+        #region Store
+
+        public void OnToggleStore()
+		{
+			_isStoreOpen.Value = !_isStoreOpen.Value && !_inCombat.Value;
+		}
         
         #endregion
 

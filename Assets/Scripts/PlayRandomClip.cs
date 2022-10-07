@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BML.Scripts.CaveV2;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,12 +14,37 @@ namespace BML.Scripts
         [SerializeField] private CaveGenComponentV2 _caveGenComponent;
         [SerializeField] private List<AudioClip> _clips = new List<AudioClip>();
 
+        [ShowInInspector, ReadOnly] private List<AudioClip> randomizedList = new List<AudioClip>();
+
+        private int playingIndex = 0;
         private void Start()
         {
-            Random.InitState(_caveGenComponent.CaveGenParams.Seed);
-            int randomIndex = Random.Range(0, _clips.Count);
-            _audioSource.clip = _clips[randomIndex];
+            OrderListRandomly();
+            PlayNextClip();
+        }
+
+        private void Update()
+        {
+            if (!_audioSource.isPlaying)
+                PlayNextClip();
+        }
+
+        private void PlayNextClip()
+        {
+            _audioSource.clip = randomizedList[playingIndex];
             _audioSource.Play();
+            playingIndex++;
+            
+            // Wrap around
+            if (playingIndex > randomizedList.Count - 1)
+                playingIndex = 0;
+        }
+
+        private void OrderListRandomly()
+        {
+            randomizedList.Clear();
+            Random.InitState(_caveGenComponent.CaveGenParams.Seed);
+            randomizedList = _clips.OrderBy(c => Random.value).ToList();
         }
     }
 }

@@ -167,14 +167,7 @@ namespace BML.Scripts.Player
 			// playerInput.SwitchCurrentActionMap("UI");
 			// SetCursorState(false);
 		}
-
-		public void OnToggleStore()
-		{
-			if (_isPaused.Value && !_isStoreOpen.Value) return;
-				
-			_isStoreOpen.Value = !_isStoreOpen.Value;
-		}
-
+		
 		public void OnToggleGodMode()
 		{
 			_isGodModeEnabled.Value = !_isGodModeEnabled.Value;

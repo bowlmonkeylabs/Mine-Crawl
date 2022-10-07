@@ -1,4 +1,5 @@
 ﻿using System;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.CaveV2;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -12,14 +13,20 @@ namespace BML.Scripts
         #region Inspector
 
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
+        [Required, SerializeField] private GameEvent _onAfterGenerateLevelObjects;
         
         #endregion 
         
         #region Unity lifecycle
 
-        private void Awake()
+        private void OnEnable()
         {
-           InitLootRandomizers();
+            _onAfterGenerateLevelObjects.Subscribe(InitLootRandomizers);
+        }
+        
+        private void OnDisable()
+        {
+            _onAfterGenerateLevelObjects.Unsubscribe(InitLootRandomizers);
         }
 
         #endregion
