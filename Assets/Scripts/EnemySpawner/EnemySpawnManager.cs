@@ -31,6 +31,7 @@ namespace BML.Scripts
         [SerializeField] private FloatVariable _currentSpawnDelay;
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
+        [SerializeField] private FloatVariable _currentPercentToMaxSpawn;
 
         [UnityEngine.Tooltip(
             "Controls range within spawn points will be considered for active spawning. 'Player Distance' is defined by the CaveNodeData, in terms of graph distance from the player's current location.")]
@@ -59,14 +60,13 @@ namespace BML.Scripts
         [ReadOnly, ShowInInspector] private Dictionary<string, List<SpawnPoint>> _activeSpawnPointsByTag;
 
         private float lastSpawnTime = Mathf.NegativeInfinity;
-        private float percentToMaxSpawn;
-
         private float lastDespawnTime = Mathf.NegativeInfinity;
         
         #region Unity lifecycle
 
         private void OnEnable()
         {
+            _currentPercentToMaxSpawn.Value = 0;
             _caveGenerator.OnAfterGenerate += InitSpawnPoints;
             _caveGenerator.OnAfterUpdatePlayerDistance += CacheActiveSpawnPoints;
         }
@@ -79,8 +79,8 @@ namespace BML.Scripts
 
         private void Update()
         {
-            percentToMaxSpawn = (Time.time - _levelStartTime.Value) / (_minutesToMaxSpawn.Value * 60f);
-            _currentSpawnDelay.Value = _spawnDelayCurve.Value.Evaluate(percentToMaxSpawn);
+            _currentPercentToMaxSpawn.Value += (Time.deltaTime) / (_minutesToMaxSpawn.Value * 60f);
+            _currentSpawnDelay.Value = _spawnDelayCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
 
             HandleDespawning();
             HandleSpawning();
@@ -216,6 +216,17 @@ namespace BML.Scripts
         #endregion
         
         #region Spawning
+
+        public void DespawnAll()
+        {
+            for (int i = 0; i < _enemyContainer.childCount; i++)
+            {
+                var childEnemy = _enemyContainer.GetChild(i).GetComponent<Despawnable>();
+                if (childEnemy == null) continue;
+
+                childEnemy.Despawn();
+            }
+        }
         
         private void HandleDespawning()
         {
@@ -260,8 +271,9 @@ namespace BML.Scripts
             // Check against current enemy cap
             Debug.Log($"b4: {_currentEnemyCount.Value}");
             _currentEnemyCount.Value = _enemyContainer.Cast<Transform>().Count(t => t.gameObject.activeSelf);
+            _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
             Debug.Log($"after: {_currentEnemyCount.Value}");
-            _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(percentToMaxSpawn);
+            _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
             if (_currentEnemyCount.Value >= _currentSpawnCap.Value) 
                 return;
 
