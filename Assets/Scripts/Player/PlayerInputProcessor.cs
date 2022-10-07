@@ -15,8 +15,6 @@ namespace BML.Scripts.Player
 {
 	public class PlayerInputProcessor : MonoBehaviour
 	{
-		[SerializeField] private bool _enableLogs = true;
-		
 		[Header("Character Input Values")]
 		public Vector2 move;
 		public Vector2 look;
@@ -35,7 +33,6 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolReference _invertedLookY;
 		
 		[SerializeField] private BoolReference _isPaused;
-		[SerializeField] private BoolReference _isStoreOpen;
 		[SerializeField] private BoolReference _isDebugOverlayOpen; // This is specifically exluceded from _containerUiMenuStates, so this acts as an overlay rather than an interactable menu.
 		[SerializeField] private BoolReference _isGodModeEnabled;
 		[SerializeField] private BoolReference _isNoClipEnabled;
@@ -46,13 +43,8 @@ namespace BML.Scripts.Player
 		[SerializeField] private GameEvent _onDecreaseTimeScale;
 		[SerializeField] private GameEvent _onSkipFrame;
 
-		[FormerlySerializedAs("_containerUiMenuStates")]
-		[Tooltip("Include UI INTERACTABLE states which should take FULL CONTROL (meaning they need to DISABLE player control)")]
-		[SerializeField] private VariableContainer _containerUiMenuStates_NoPlayerControl;
+		[SerializeField] private VariableContainer _containerUiMenuStates;
 		
-		[Tooltip("Include UI INTERACTABLE states which OVERLAY gameplay (meaning player still has movement, but mouse is unlocked to interact with the overlays)")]
-		[SerializeField] private VariableContainer _containerUiMenuStates_InteractableOverlay;
-
 		[SerializeField] private PlayerInput playerInput;
 
 		private InputAction jumpAction;
@@ -64,21 +56,11 @@ namespace BML.Scripts.Player
 		public bool JumpHeld => jumpHeld;
 		public bool CrouchHeld => crouchHeld;
 		
-		private bool isUsingUi_NoPlayerControl
+		private bool isUsingUi
 		{
 			get
 			{
-				return _containerUiMenuStates_NoPlayerControl
-					.GetBoolVariables()
-					.Any(b => (b != null && b.Value));
-			}
-		}
-		
-		private bool isUsingUi_InteractableOverlay
-		{
-			get
-			{
-				return _containerUiMenuStates_InteractableOverlay
+				return _containerUiMenuStates
 					.GetBoolVariables()
 					.Any(b => (b != null && b.Value));
 			}
@@ -100,9 +82,8 @@ namespace BML.Scripts.Player
 
 		private void OnEnable()
 		{
-			ApplyInputState();
-			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
-			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
+			ApplyUiState();
+			_containerUiMenuStates.GetBoolVariables().ForEach(b => b.Subscribe(ApplyUiState));
 
 			jumpAction.performed += SetJumpHeld;
 			jumpAction.canceled += SetJumpHeld;
@@ -112,8 +93,7 @@ namespace BML.Scripts.Player
 
 		private void OnDisable()
 		{
-			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
-			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
+			_containerUiMenuStates.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyUiState));
 			
 			jumpAction.performed -= SetJumpHeld;
 			jumpAction.canceled -= SetJumpHeld;
@@ -123,14 +103,13 @@ namespace BML.Scripts.Player
 
 		private void OnDestroy()
 		{
-			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
-			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
+			_containerUiMenuStates.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyUiState));
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			// SetCursorState(playerCursorLocked);
-			ApplyInputState();
+			ApplyUiState();
 		}
 		
 		#endregion
@@ -160,14 +139,14 @@ namespace BML.Scripts.Player
 		
 		public void OnPause()
 		{
-			if (_isStoreOpen.Value && !_isPaused.Value) return;
-			
-			_isPaused.Value = true;
-			// The action map switching should now be handled by a subscription to value changes of _isPaused
-			// playerInput.SwitchCurrentActionMap("UI");
-			// SetCursorState(false);
+			if (_isPaused != null)
+			{
+				_isPaused.Value = true;
+				// The action map switching should now be handled by a subscription to value changes of _isPaused
+				// playerInput.SwitchCurrentActionMap("UI");
+				// SetCursorState(false);
+			}
 		}
-		
 		public void OnToggleGodMode()
 		{
 			_isGodModeEnabled.Value = !_isGodModeEnabled.Value;
@@ -262,42 +241,21 @@ namespace BML.Scripts.Player
 			else if (ctx.canceled)
 				crouchHeld = false;
 		}
-
-		private static void SwitchCurrentActionMap(PlayerInput playerInput, bool disableAllOthers, params string[] actionMapNames)
+		
+		public void ApplyUiState()
 		{
-			if (disableAllOthers)
+			// Debug.Log($"Apply Ui State: {isUsingUi} => {playerInput.currentActionMap.name} {Cursor.lockState}");
+			if (isUsingUi)
 			{
-				foreach (var actionsActionMap in playerInput.actions.actionMaps)
-				{
-					actionsActionMap.Disable();
-				}
-			}
-			
-			foreach (var actionMapName in actionMapNames)
-			{
-				playerInput.actions.FindActionMap(actionMapName, true).Enable();
-			}
-		}
-
-		public void ApplyInputState()
-		{
-			if (_enableLogs) Debug.Log($"ApplyInputState: Previous state is (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
-			if (isUsingUi_NoPlayerControl)
-			{
-				SwitchCurrentActionMap(playerInput, true, "Debug", "UI");
-				SetCursorState(false);
-			}
-			else if (isUsingUi_InteractableOverlay)
-			{
-				SwitchCurrentActionMap(playerInput, true, "Debug", "UI", "Player_UI_Limited");
+				playerInput.SwitchCurrentActionMap("UI");
 				SetCursorState(false);
 			}
 			else
 			{
-				SwitchCurrentActionMap(playerInput, true, "Debug", "Player");
+				playerInput.SwitchCurrentActionMap("Player");
 				SetCursorState(playerCursorLocked);
 			}
-			if (_enableLogs) Debug.Log($"ApplyInputState Inputs (NoPlayerControl {isUsingUi_NoPlayerControl}) (InteractableOverlay {isUsingUi_InteractableOverlay}) => updated input state to: (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
+			// Debug.Log($"Updated to: {playerInput.currentActionMap.name} {Cursor.lockState}");
 		}
 		
 		private void SetCursorState(bool newState)
