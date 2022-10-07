@@ -1123,6 +1123,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224130951485110974, guid: 58829a8703e8aa946b9fee0f190c21de, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224130951485110974, guid: 58829a8703e8aa946b9fee0f190c21de, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -1480,7 +1484,7 @@ MonoBehaviour:
   _decorObjectSpawner: {fileID: 820661968}
   _enableLogs: 0
   _showTraversabilityCheck: 1
-  _generateDebugObjects: 0
+  _generateDebugObjects: 1
   _debugObjectsContainer: {fileID: 1191531237}
   GizmoColorScheme_Inner: 0
   GizmoColorScheme_Outer: 1
@@ -2317,6 +2321,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1471086885 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9182727736491517645, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
+  m_PrefabInstance: {fileID: 9182727735177154347}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1496774517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2463,7 +2472,9 @@ MonoBehaviour:
     sceneValue: {fileID: 3835178114251414924}
   - sceneReference: {fileID: 11400000, guid: 4f3c154bd5d34bd4e8e4d93472fefad9, type: 2}
     sceneValue: {fileID: 3835178114251414925}
-  GameObjectSceneList: []
+  GameObjectSceneList:
+  - sceneReference: {fileID: 11400000, guid: 5d486f1a84e15ac488d7a8272329b42e, type: 2}
+    sceneValue: {fileID: 1471086885}
   ParticleSystemSceneList: []
   AnimatorSceneList: []
   CameraSceneList: []
@@ -6191,6 +6202,10 @@ PrefabInstance:
       propertyPath: _enemyDeleteRadius
       value: 
       objectReference: {fileID: 1026495651}
+    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
+      propertyPath: _currentPercentToMaxSpawn
+      value: 
+      objectReference: {fileID: 11400000, guid: 88289707eab0e224fa8a2607ca189c06, type: 2}
     - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
       propertyPath: _weightSpawningInUnexplored
       value: 0.5

@@ -37,11 +37,14 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolReference _isPaused;
 		[SerializeField] private BoolReference _isStoreOpen;
 		[SerializeField] private BoolReference _isDebugConsoleOpen;
+		[SerializeField] private BoolReference _settingDoFreezeOnDebugConsole;
 		[SerializeField] private BoolReference _isDebugOverlayOpen; // This is specifically excluded from _containerUiMenuStates, so this acts as an overlay rather than an interactable menu.
 		[SerializeField] private BoolReference _isGodModeEnabled;
 		[SerializeField] private BoolReference _isNoClipEnabled;
 		[SerializeField] private GameEvent _onAddEnemyHealth;
+		[FormerlySerializedAs("_onFreezeTime")] [SerializeField] private GameEvent _onToggleFreezeTime;
 		[SerializeField] private GameEvent _onFreezeTime;
+		[SerializeField] private GameEvent _onUnfreezeTime;
 		[SerializeField] private GameEvent _onResetTimeScale;
 		[SerializeField] private GameEvent _onIncreaseTimeScale;
 		[SerializeField] private GameEvent _onDecreaseTimeScale;
@@ -105,6 +108,7 @@ namespace BML.Scripts.Player
 			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
 			_isDebugConsoleOpen.Subscribe(ApplyInputState);
+			_isDebugConsoleOpen.Subscribe(OnIsDebugConsoleOpenUpdated);
 
 			jumpAction.performed += SetJumpHeld;
 			jumpAction.canceled += SetJumpHeld;
@@ -117,6 +121,7 @@ namespace BML.Scripts.Player
 			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_isDebugConsoleOpen.Unsubscribe(ApplyInputState);
+			_isDebugConsoleOpen.Unsubscribe(OnIsDebugConsoleOpenUpdated);
 
 			jumpAction.performed -= SetJumpHeld;
 			jumpAction.canceled -= SetJumpHeld;
@@ -129,6 +134,7 @@ namespace BML.Scripts.Player
 			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_isDebugConsoleOpen.Unsubscribe(ApplyInputState);
+			_isDebugConsoleOpen.Unsubscribe(OnIsDebugConsoleOpenUpdated);
 			
 			jumpAction.performed -= SetJumpHeld;
 			jumpAction.canceled -= SetJumpHeld;
@@ -200,8 +206,8 @@ namespace BML.Scripts.Player
             Debug.Log($"Pressed Debug Ui");
 			_isDebugOverlayOpen.Value = !_isDebugOverlayOpen.Value;
 		}
-        
-		public void OnUnlockCursor()
+
+        public void OnUnlockCursor()
 		{
 			SetCursorState(false);
 		}
@@ -231,7 +237,7 @@ namespace BML.Scripts.Player
 
 		public void OnFreezeTime()
 		{
-			_onFreezeTime.Raise();
+			_onToggleFreezeTime.Raise();
 		}
 		
 		public void OnIncreaseTimeScale()
@@ -270,6 +276,14 @@ namespace BML.Scripts.Player
 				crouchHeld = true;
 			else if (ctx.canceled)
 				crouchHeld = false;
+		}
+
+		private void OnIsDebugConsoleOpenUpdated()
+		{
+			if (!_settingDoFreezeOnDebugConsole.Value) return;
+				
+			if (_isDebugConsoleOpen.Value) _onFreezeTime.Raise();
+			else _onUnfreezeTime.Raise();
 		}
 
 		private static void SwitchCurrentActionMap(PlayerInput playerInput, bool disableAllOthers, params string[] actionMapNames)
