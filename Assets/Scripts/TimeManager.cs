@@ -6,7 +6,9 @@ namespace BML.Scripts
 {
     public class TimeManager : MonoBehaviour
     { 
+        [SerializeField] private GameEvent _onToggleFreezeTime;
         [SerializeField] private GameEvent _onFreezeTime;
+        [SerializeField] private GameEvent _onUnfreezeTime;
         [SerializeField] private GameEvent _onResetTimeScale;
         [SerializeField] private GameEvent _onIncreaseTimeScale;
         [SerializeField] private GameEvent _onDecreaseTimeScale;
@@ -23,7 +25,9 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
-            _onFreezeTime.Subscribe(ToggleFreezeGame);
+            _onToggleFreezeTime.Subscribe(ToggleFreezeGame);
+            _onFreezeTime.Subscribe(FreezeGame);
+            _onUnfreezeTime.Subscribe(UnFreezeGame);
             _onSkipFrame.Subscribe(SkipFrame);
             _onIncreaseTimeScale.Subscribe(IncreaseTimeScale);
             _onDecreaseTimeScale.Subscribe(DecreaseTimeScale);
@@ -32,7 +36,9 @@ namespace BML.Scripts
         
         private void OnDisable()
         {
-            _onFreezeTime.Unsubscribe(ToggleFreezeGame);
+            _onToggleFreezeTime.Unsubscribe(ToggleFreezeGame);
+            _onFreezeTime.Unsubscribe(FreezeGame);
+            _onUnfreezeTime.Unsubscribe(UnFreezeGame);
             _onSkipFrame.Unsubscribe(SkipFrame);
             _onIncreaseTimeScale.Unsubscribe(IncreaseTimeScale);
             _onDecreaseTimeScale.Unsubscribe(DecreaseTimeScale);

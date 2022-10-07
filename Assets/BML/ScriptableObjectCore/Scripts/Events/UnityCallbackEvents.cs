@@ -119,7 +119,7 @@ namespace BML.ScriptableObjectCore.Scripts.Events
                 if (e != null && e.UnityCallback == unityCallback)
                 {
                     if (Mathf.Approximately(0f, e.Delay))
-                        e.unityEvent.Invoke();
+                        e.unityEvent?.Invoke();
                     else
                         LeanTween.value(0f, 1f, e.Delay)
                             .setOnComplete(_ => e.unityEvent?.Invoke());

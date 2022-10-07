@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BML.Scripts.QuantumConsoleExtensions
 {
-    public class QuantumConsoleStateReader : MonoBehaviour
+    public class QuantumConsoleStateController : MonoBehaviour
     {
         #region Inspector
 
@@ -18,21 +18,33 @@ namespace BML.Scripts.QuantumConsoleExtensions
 
         private void OnEnable()
         {
-            _quantumConsole.OnActivate += UpdateIsActive;
-            _quantumConsole.OnDeactivate += UpdateIsActive;
+            _quantumConsole.OnActivate += ReadIsActive;
+            _quantumConsole.OnDeactivate += ReadIsActive;
+            
+            _isActive.Subscribe(SetIsActive);
         }
 
         private void OnDisable()
         {
-            _quantumConsole.OnActivate -= UpdateIsActive;
-            _quantumConsole.OnDeactivate -= UpdateIsActive;
+            _quantumConsole.OnActivate -= ReadIsActive;
+            _quantumConsole.OnDeactivate -= ReadIsActive;
+            
+            _isActive.Unsubscribe(SetIsActive);
         }
 
         #endregion
 
-        private void UpdateIsActive()
+        private void ReadIsActive()
         {
+            _isActive.Unsubscribe(SetIsActive);
             _isActive.Value = _quantumConsole.IsActive;
+            _isActive.Subscribe(SetIsActive);
+        }
+        
+        private void SetIsActive(bool previousValue, bool currentValue)
+        {
+            if (currentValue) _quantumConsole.Activate();
+            else _quantumConsole.Deactivate();
         }
     }
 }
