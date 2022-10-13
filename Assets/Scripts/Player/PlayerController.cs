@@ -56,6 +56,7 @@ namespace BML.Scripts.Player
 
         [TitleGroup("Store")]
         [SerializeField] private BoolReference _isStoreOpen;
+        [SerializeField] private GameEvent _onStoreFailOpen;
 
         [TitleGroup("GodMode")]
         [SerializeField] private BoolVariable _isGodModeEnabled;
@@ -243,7 +244,12 @@ namespace BML.Scripts.Player
 
         public void OnToggleStore()
 		{
-			_isStoreOpen.Value = !_isStoreOpen.Value && !_inCombat.Value;
+            if(!_isStoreOpen.Value && _inCombat.Value) {
+                _onStoreFailOpen.Raise();
+                return;
+            }
+
+            _isStoreOpen.Value = !_isStoreOpen.Value && !_inCombat.Value;
 		}
         
         #endregion
