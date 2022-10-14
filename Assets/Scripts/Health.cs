@@ -60,6 +60,16 @@ namespace BML.Scripts
             startingHealth = _value;
         }
 
+        private void OnEnable()
+        {
+            if (_useHealthVariable) _healthReference.Subscribe(OnHealthReferenceUpdated);
+        }
+
+        private void OnDisable()
+        {
+            if (_useHealthVariable) _healthReference.Unsubscribe(OnHealthReferenceUpdated);
+        }
+
         #endregion
 
         public bool DecrementHealth(int amount) {
@@ -71,8 +81,8 @@ namespace BML.Scripts
 
             lastDamageTime = Time.time;
 
-            _onHealthChange.Invoke(Value - amount, Value);
-            OnHealthChange?.Invoke(Value - amount, Value);
+            _onHealthChange.Invoke(Value, Value - amount);
+            OnHealthChange?.Invoke(Value, Value - amount);
             if (amount < 0) _onTakeDamage.Invoke();
             
             _value -= amount;
@@ -96,7 +106,8 @@ namespace BML.Scripts
 
         public void Revive()
         {
-            _onHealthChange.Invoke(Value, startingHealth);
+            _onHealthChange?.Invoke(Value, startingHealth);
+            OnHealthChange?.Invoke(Value, startingHealth);
             _value = startingHealth;
             _onRevive.Invoke();
             OnRevive?.Invoke();
@@ -105,6 +116,19 @@ namespace BML.Scripts
         public void SetInvincible(bool isInvincible)
         {
             _isInvincible = isInvincible;
+        }
+
+        private void OnHealthReferenceUpdated(int previousValue, int currentValue)
+        {
+            int delta = currentValue - previousValue;
+            if (delta < 0) _onTakeDamage?.Invoke();
+            if (previousValue <= 0 && currentValue > 0)
+            {
+                _onRevive?.Invoke();
+                OnRevive?.Invoke();
+            }
+            _onHealthChange.Invoke(previousValue, currentValue);
+            OnHealthChange?.Invoke(previousValue, currentValue);
         }
     }
 }
