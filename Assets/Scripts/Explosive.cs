@@ -55,6 +55,21 @@ namespace BML.Scripts
             //NOTE: This will damage player and enemies on a per-collider basis.
             //      Does not check if multiple colliders belong to same entity.
             
+            if (_damagePlayer.Value > 0)
+                TryDamagePlayer();
+            
+            if (_damageEnemy.Value > 0)
+                TryDamageEnemy();
+            
+            if (_damageOre.Value > 0 || _damageExitBarrier.Value > 0)
+                TryDamageOre();
+
+            isActive = false;
+            _onExplosion.Invoke();
+        }
+
+        private void TryDamagePlayer()
+        {
             Collider[] playerColliders = Physics.OverlapSphere(transform.position, _explosionRadius.Value, _playerMask);
 
             foreach (var col in playerColliders)
@@ -62,7 +77,10 @@ namespace BML.Scripts
                 ExplosiveDamageable damageable = col.GetComponent<ExplosiveDamageable>();
                 damageable.TakeDamage(new HitInfo(_damagePlayer.Value, (col.transform.position - transform.position).normalized));
             }
-            
+        }
+
+        private void TryDamageEnemy()
+        {
             Collider[] enemyColliders = Physics.OverlapSphere(transform.position, _explosionRadius.Value, _enemyMask);
 
             foreach (var col in enemyColliders)
@@ -74,7 +92,10 @@ namespace BML.Scripts
                 }
                 damageable.TakeDamage(new HitInfo(_damageEnemy.Value, (col.transform.position - transform.position).normalized));
             }
-            
+        }
+
+        private void TryDamageOre()
+        {
             Collider[] interactableColliders = Physics.OverlapSphere(transform.position, _explosionRadius.Value, _interactableMask);
 
             foreach (var col in interactableColliders)
@@ -92,9 +113,6 @@ namespace BML.Scripts
                     damageable.TakeDamage(new HitInfo(_damageExitBarrier.Value, (col.transform.position - transform.position).normalized));
                 }
             }
-
-            isActive = false;
-            _onExplosion.Invoke();
         }
     }
 }

@@ -37,6 +37,9 @@ namespace BML.Scripts
 
         private void SampleAudioSourceVolume()
         {
+            if (_audioSource.clip == null || !_audioSource.isPlaying)
+                return;
+            
             _audioSource.clip.GetData(clipSampleData, _audioSource.timeSamples); //I read 1024 samples, which is about 80 ms on a 44khz stereo clip, beginning at the current sample position of the clip.
             clipLoudness = 0f;
             foreach (var sample in clipSampleData) {
