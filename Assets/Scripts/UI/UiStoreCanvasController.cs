@@ -95,7 +95,7 @@ namespace BML.Scripts.UI
             foreach (var purchaseItem in storeItem.PurchaseItems)
             {
                 if (!purchaseItem._storeText.IsNullOrWhitespace())  //Dont add if left blank (Ex. for max health also inc health but dont show)
-                    resultText += $" + {purchaseItem._incrementAmount} {purchaseItem._storeText}";
+                    resultText += $" + {purchaseItem._storeText}";
             }
 
             //Remove leading +

@@ -19,9 +19,20 @@ MonoBehaviour:
   _rareResourceCost: 2
   _enemyResourceCost: 0
   PurchaseItems:
-  - _incrementOnPurchase: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
-    _storeText: MH
-    _incrementAmount: 1
-  - _incrementOnPurchase: {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
-    _storeText: 
-    _incrementAmount: 1
+  - _storeText: 1 MH
+    OnPurchase:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
+          m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
+            ScriptableObjectSystem
+          m_MethodName: Increment
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2

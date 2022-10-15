@@ -61,7 +61,7 @@ namespace BML.Scripts
         {
             foreach (var purchaseItem in storeItem.PurchaseItems)
             {
-                purchaseItem._incrementOnPurchase.Value += purchaseItem._incrementAmount;
+                purchaseItem.OnPurchase.Invoke();
             }
         }
     }

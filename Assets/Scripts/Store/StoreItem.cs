@@ -3,6 +3,7 @@ using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace BML.Scripts.Store
 {
@@ -40,9 +41,8 @@ namespace BML.Scripts.Store
     [System.Serializable]
     public class PurchaseItem
     {
-        public IntVariable _incrementOnPurchase;
         [Tooltip("Leave blank to hide this element in store text")]
         public string _storeText;
-        public int _incrementAmount;
+        public UnityEvent OnPurchase;
     }
 }
