@@ -285,12 +285,26 @@ namespace BML.Scripts.Player
                 _uiAimReticle.SetReticleHover(false);
             }
         }
+        
+        #region Health
 
+        public int SetHealth(int value)
+        {
+            return _healthController.SetHealth(value);
+        }
+
+        public void Revive()
+        {
+            _healthController.Revive();
+        }
+        
         private void ClampHealth()
         {
             if (_health.Value > _maxHealth.Value)
                 _health.Value = _maxHealth.Value;
         }
+        
+        #endregion
 
     }
 }
