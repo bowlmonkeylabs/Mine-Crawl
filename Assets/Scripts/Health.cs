@@ -72,7 +72,15 @@ namespace BML.Scripts
 
         #endregion
 
-        public bool DecrementHealth(int amount) {
+        #region Public interface
+
+        public void IncrementHealth(int amount) 
+        {
+            this.DecrementHealth(-amount);
+        }
+        
+        public bool DecrementHealth(int amount) 
+        {
             if (IsDead) return false;
             
             if (_isInvincible || 
@@ -93,15 +101,23 @@ namespace BML.Scripts
 
             return true;
         }
-
-        public void IncrementHealth(int amount) {
-            this.DecrementHealth(-amount);
-        }
-
-        private void Death()
+        
+        public int SetHealth(int newValue)
         {
-            _onDeath.Invoke();
-            OnDeath?.Invoke();
+            var oldValue = Value;
+            _value = newValue;
+            var delta = Value - oldValue;
+            
+            _onHealthChange?.Invoke(oldValue, Value);
+            OnHealthChange?.Invoke(oldValue, Value);
+            if (delta < 0) _onTakeDamage?.Invoke();
+            
+            if (Value <= 0)
+            {
+                Death();
+            }
+
+            return Value;
         }
 
         public void Revive()
@@ -116,6 +132,14 @@ namespace BML.Scripts
         public void SetInvincible(bool isInvincible)
         {
             _isInvincible = isInvincible;
+        }
+        
+        #endregion
+        
+        private void Death()
+        {
+            _onDeath.Invoke();
+            OnDeath?.Invoke();
         }
 
         private void OnHealthReferenceUpdated(int previousValue, int currentValue)
