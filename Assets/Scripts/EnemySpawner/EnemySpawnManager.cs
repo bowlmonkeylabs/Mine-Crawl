@@ -221,7 +221,7 @@ namespace BML.Scripts
         {
             for (int i = 0; i < _enemyContainer.childCount; i++)
             {
-                var childEnemy = _enemyContainer.GetChild(i).GetComponent<Despawnable>();
+                var childEnemy = _enemyContainer.GetChild(i).GetComponent<EnemySpawnable>();
                 if (childEnemy == null) continue;
 
                 childEnemy.Despawn();
@@ -238,7 +238,7 @@ namespace BML.Scripts
             var center = _enemyDeleteRadius.transform.position + _enemyDeleteRadius.center;
             var radius = _enemyDeleteRadius.radius;
             var despawnablesInRange = Physics.OverlapSphere(center, radius, _enemyLayerMask)
-                .Select(coll => coll.GetComponent<Despawnable>())
+                .Select(coll => coll.GetComponent<EnemySpawnable>())
                 .Where(despawnable => despawnable != null)
                 .ToList();
             
@@ -246,7 +246,7 @@ namespace BML.Scripts
             
             for (int i = 0; i < _enemyContainer.childCount; i++)
             {
-                var childEnemy = _enemyContainer.GetChild(i).GetComponent<Despawnable>();
+                var childEnemy = _enemyContainer.GetChild(i).GetComponent<EnemySpawnable>();
                 if (childEnemy == null) continue;
 
                 bool foundInActive = despawnablesInRange.Contains(childEnemy);
@@ -269,7 +269,9 @@ namespace BML.Scripts
                 return;
 
             // Check against current enemy cap
-            _currentEnemyCount.Value = _enemyContainer.Cast<Transform>().Count(t => t.gameObject.activeSelf);
+            _currentEnemyCount.Value = _enemyContainer.Cast<Transform>()
+                .Select(child => child.GetComponent<EnemySpawnable>())
+                .Count(d => d != null && d.DoCountTowardsSpawnCap && d.gameObject.activeSelf);
             _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
             _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
             if (_currentEnemyCount.Value >= _currentSpawnCap.Value) 
