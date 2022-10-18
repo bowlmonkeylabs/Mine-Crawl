@@ -201,8 +201,10 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     {
                         var newGameObject =
                             GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
-                        newGameObject.transform.position = SpawnObjectsUtil.GetPointUnder(spawnPoint.transform.position,
-                            _levelObjectSpawnerParams.TerrainLayerMask,
+                        var spawnOffset = spawnPoint.transform.position -
+                                          spawnAtTagParameters.RaycastDirection * spawnAtTagParameters.RaycastOffset;
+                        newGameObject.transform.position = SpawnObjectsUtil.GetPointTowards(spawnOffset,
+                            spawnAtTagParameters.RaycastDirection, _levelObjectSpawnerParams.TerrainLayerMask,
                             _levelObjectSpawnerParams.MaxRaycastLength);
                             
                         CatalogSpawnPoints(newGameObject.transform, spawnPoint.ParentNode);

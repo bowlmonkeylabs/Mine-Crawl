@@ -308,8 +308,10 @@ namespace BML.Scripts
                              new Vector3(spawnOffset.x, 0f, spawnOffset.y) * _spawnOffsetRadius;
             var newGameObject =
                 GameObjectUtils.SafeInstantiate(randomEnemy.InstanceAsPrefab, randomEnemy.Prefab, _enemyContainer);
-            newGameObject.transform.position = SpawnObjectsUtil.GetPointUnder(spawnPoint,
-                _enemySpawnerParams.TerrainLayerMask,
+            var spawnPointOffset = newGameObject.transform.position -
+                                   randomEnemy.RaycastDirection * randomEnemy.RaycastOffset;
+            newGameObject.transform.position = SpawnObjectsUtil.GetPointTowards(spawnPointOffset,
+                randomEnemy.RaycastDirection, _enemySpawnerParams.TerrainLayerMask,
                 _enemySpawnerParams.MaxRaycastLength);
             
             if (_enableLogs) Debug.Log($"HandleSpawning Spawned {randomEnemy.Prefab.name} {spawnPoint}");

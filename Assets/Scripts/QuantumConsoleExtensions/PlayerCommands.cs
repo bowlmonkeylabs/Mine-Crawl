@@ -31,6 +31,14 @@ namespace BML.Scripts.QuantumConsoleExtensions
 
             playerController.Revive();
         }
+        
+        [Command("pickaxe_distance", "Sets player pickaxe interact range.")]
+        private static async void SetPickaxeDistance(float dist)
+        {
+            var playerController = await GetActivePlayerController();
+
+            playerController.SetPickaxeDistance(dist);
+        }
 
         private static async Task<PlayerController> GetActivePlayerController()
         {

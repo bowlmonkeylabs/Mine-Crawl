@@ -147,7 +147,7 @@ namespace BML.Scripts.Player
             lastSwingTime = Time.time;
             
             if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
-                _interactMask, QueryTriggerInteraction.Collide))
+                _interactMask, QueryTriggerInteraction.Ignore))
             {
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
                 if (interactionReceiver == null) return;
@@ -156,6 +156,11 @@ namespace BML.Scripts.Player
                 interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
             }
             
+        }
+
+        public void SetPickaxeDistance(float dist)
+        {
+            _interactDistance = dist;
         }
 
         #endregion
@@ -273,7 +278,8 @@ namespace BML.Scripts.Player
             lastHoverUpdateTime = Time.time;
             
             RaycastHit hit;
-            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance, _interactMask, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
+                _interactMask, QueryTriggerInteraction.Ignore))
             {
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
                 if (interactionReceiver == null) return;

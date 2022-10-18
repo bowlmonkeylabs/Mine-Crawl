@@ -21,5 +21,7 @@ namespace BML.Scripts
         public string Tag;
         public GameObject Prefab;
         public bool InstanceAsPrefab;
+        public Vector3 RaycastDirection = Vector3.down;
+        public float RaycastOffset = 0f;
     }
 }

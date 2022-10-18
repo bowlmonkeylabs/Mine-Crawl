@@ -27,6 +27,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             [PropertySpace(10,0)]
             public string Tag;
             public GameObject Prefab;
+            public Vector3 RaycastDirection = Vector3.down;
+            public float RaycastOffset = 0f;
             public bool InstanceAsPrefab;
             public bool ChooseWithoutReplacement;
             [Range(0f, 1f)] public float SpawnProbability;
