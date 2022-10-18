@@ -493,7 +493,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2431304983410293306}
   - component: {fileID: 7498356029230016916}
-  - component: {fileID: 7854316345454648298}
   m_Layer: 0
   m_Name: AOEDamageFeedback_DontHurtPlayer
   m_TagString: Untagged
@@ -600,9 +599,9 @@ MonoBehaviour:
         PlayEvents:
           m_PersistentCalls:
             m_Calls:
-            - m_Target: {fileID: 7854316345454648298}
-              m_TargetAssemblyTypeName: BML.Scripts.Explosive, BML.Scripts
-              m_MethodName: Activate
+            - m_Target: {fileID: 6818201605707674197}
+              m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+              m_MethodName: PlayFeedbacks
               m_Mode: 1
               m_Arguments:
                 m_ObjectArgument: {fileID: 0}
@@ -621,89 +620,6 @@ MonoBehaviour:
         ResetEvents:
           m_PersistentCalls:
             m_Calls: []
---- !u!114 &7854316345454648298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3804708347981807753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 476d57a1661a4a559138142354d10596, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _explosionTime:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: ed13bc158f476ed4e89e03cb41fe48b1, type: 2}
-  _explosionRadius:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 3
-    Variable: {fileID: 11400000, guid: b41314ecf7913ca4cad02827a2b590c5, type: 2}
-  _damagePlayer:
-    UseConstant: 1
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: ad0e588480a686542bfd8df35e7f544f, type: 2}
-  _damageEnemy:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 11400000, guid: febb5c7f35f4bc448b21abf4d5f13cbe, type: 2}
-  _damageOre:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 11400000, guid: 5f10f4d9a858e434ca95a32e7f01a581, type: 2}
-  _damageExitBarrier:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 11400000, guid: 41759c0c3ec429447b6a6443e99eee8e, type: 2}
-  _playerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  _enemyMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  _interactableMask:
-    serializedVersion: 2
-    m_Bits: 64
-  _oreTag: Ore
-  _exitBarrierTag: Exit_Barrier
-  _onActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  _onExplosion:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6818201605707674197}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &3842831154187108027
 GameObject:
   m_ObjectHideFlags: 0
