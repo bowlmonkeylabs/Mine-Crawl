@@ -20,7 +20,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
     {
         #region Inspector
 
-        [SerializeField] private bool _generateOnLockMudBunMesh;
+        [SerializeField] private bool _generateOnSeparateMudbunMesh;
         [SerializeField] private MudBunGenerator _mudBunGenerator;
         
         [InfoBox("DO NOT LEAVE ON IN PLAY MODE!", InfoMessageType.Error, "_generateOnChange")]
@@ -28,6 +28,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private int _maxGeneratesPerSecond = 1;
         private float _generateMinCooldownSeconds => 1f / (float) _maxGeneratesPerSecond;
 
+        [SerializeField] private GameEvent _onAfterSeparateMudbunMesh;
         [SerializeField] private GameEvent _onAfterGenerateLevelObjects;
         
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
@@ -43,13 +44,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private void OnEnable()
         {
-            _mudBunGenerator.OnAfterFinished += TrySpawnLevelObjects;
+            _onAfterSeparateMudbunMesh.Subscribe(TrySpawnLevelObjects);
             _levelObjectSpawnerParams.OnValidateEvent += TrySpawnLevelObjectsWithCooldown;
         }
 
         private void OnDisable()
         {
-            _mudBunGenerator.OnAfterFinished -= TrySpawnLevelObjects;
+            _onAfterSeparateMudbunMesh.Unsubscribe(TrySpawnLevelObjects);
             _levelObjectSpawnerParams.OnValidateEvent -= TrySpawnLevelObjectsWithCooldown;
         }
 
@@ -61,7 +62,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         
         private void TrySpawnLevelObjects()
         {
-            if (_generateOnLockMudBunMesh)
+            if (_generateOnSeparateMudbunMesh)
             {
                 this.SpawnLevelObjects(_caveGenerator.RetryOnFailure);
             }

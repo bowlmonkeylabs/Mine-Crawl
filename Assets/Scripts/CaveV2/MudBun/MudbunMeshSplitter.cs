@@ -56,13 +56,13 @@ namespace BML.Scripts.CaveV2.MudBun
         private void OnEnable()
         {
             _mudRenderer.OnAfterAddCollider += SeparateMeshOnLock;
-            _mudRenderer.OnAfterUnlockMesh += UndoSeparatedMesh;
+            _mudRenderer.OnAfterUnlockMesh += UndoSeparatedMeshOnUnlock;
         }
 
         private void OnDisable()
         {
             _mudRenderer.OnAfterAddCollider -= SeparateMeshOnLock;
-            _mudRenderer.OnAfterUnlockMesh -= UndoSeparatedMesh;
+            _mudRenderer.OnAfterUnlockMesh -= UndoSeparatedMeshOnUnlock;
         }
 
         #endregion
@@ -243,6 +243,13 @@ namespace BML.Scripts.CaveV2.MudBun
         #region Cleanup
 
         public bool IsMeshNotSeparated => !IsMeshSeparated;
+        
+        private void UndoSeparatedMeshOnUnlock()
+        {
+            if (!_undoSeparateAfterMudbunUnlocked) return;
+            UndoSeparatedMesh();
+        }
+
         
         [Button, PropertyOrder(-1), EnableIf("IsMeshSeparated")]
         [InfoBox("Separated mesh does not exist.", InfoMessageType.Warning, "IsMeshNotSeparated")]
