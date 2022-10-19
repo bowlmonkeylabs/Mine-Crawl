@@ -91,7 +91,7 @@ namespace BML.Scripts
 
             _onHealthChange.Invoke(Value, Value - amount);
             OnHealthChange?.Invoke(Value, Value - amount);
-            if (amount < 0) _onTakeDamage.Invoke();
+            if (amount > 0) _onTakeDamage.Invoke();
             
             _value -= amount;
             if (Value <= 0)

@@ -27,16 +27,16 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             [PropertySpace(10,0)]
             public string Tag;
             public GameObject Prefab;
-            public Vector3 RaycastDirection = Vector3.down;
-            public float RaycastOffset = 0f;
-            public bool InstanceAsPrefab;
-            public bool ChooseWithoutReplacement;
-            [Range(0f, 1f)] public float SpawnProbability;
+            [FoldoutGroup("Parameters")] public Vector3 RaycastDirection = Vector3.down;
+            [FoldoutGroup("Parameters")] public float RaycastOffset = 0f;
+            [FoldoutGroup("Parameters")] public bool InstanceAsPrefab;
+            [FoldoutGroup("Parameters")] public bool ChooseWithoutReplacement;
+            [FoldoutGroup("Parameters")] [Range(0f, 1f)] public float SpawnProbability;
 
-            public MinMax MinMaxGlobalAmount;
-            public MinMax MinMaxClusterSize;
+            [FoldoutGroup("Parameters")] public MinMax MinMaxGlobalAmount;
+            [FoldoutGroup("Parameters")] public MinMax MinMaxClusterSize;
             [PropertySpace(0,10)] [Tooltip("Curve sample space is 0 to 1; this will be 'current room's distance from the main path', divided by 'maximum main path distance present in the level' (this /should/ be close to MaxOffshootLength of the level gen params)")]
-            public AnimationCurve MainPathProbabilityFalloff = AnimationCurve.Constant(0f, 1f, 1f);
+            [FoldoutGroup("Parameters")] public AnimationCurve MainPathProbabilityFalloff = AnimationCurve.Constant(0f, 1f, 1f);
         }
         public List<SpawnAtTagParameters> SpawnAtTags;
 

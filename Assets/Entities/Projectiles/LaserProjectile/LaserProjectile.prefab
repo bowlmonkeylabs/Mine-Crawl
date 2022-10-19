@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &89591218749747603
+--- !u!1 &536514868622201177
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2651237330656416387}
-  - component: {fileID: 6818201605707674197}
+  - component: {fileID: 2488038258834174537}
+  - component: {fileID: 6400531992245932703}
   m_Layer: 0
   m_Name: CollideFeedbacks
   m_TagString: Untagged
@@ -17,27 +17,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2651237330656416387
+--- !u!4 &2488038258834174537
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 89591218749747603}
+  m_GameObject: {fileID: 536514868622201177}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
-  m_Father: {fileID: 6570127876733545234}
-  m_RootOrder: 2
+  m_Father: {fileID: 6728826089667005400}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6818201605707674197
+--- !u!114 &6400531992245932703
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 89591218749747603}
+  m_GameObject: {fileID: 536514868622201177}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
@@ -113,61 +113,21 @@ MonoBehaviour:
           TrackID: 0
           Quantized: 0
           TargetBPM: 120
-        Owner: {fileID: 6818201605707674197}
+        Owner: {fileID: 6400531992245932703}
         DebugActive: 0
         Mode: 1
         CachedRecycle: 1
-        ParticlesPrefab: {fileID: 19806542, guid: a13e3c30b47e7aa43a1da0b89a1ef53e, type: 3}
+        ParticlesPrefab: {fileID: 278604225926879919, guid: 2b2d901ed72e0ce4b9aec84efa9c85c6, type: 3}
         RandomParticlePrefabs: []
         ForceSetActiveOnPlay: 0
         PositionMode: 1
-        InstantiateParticlesPosition: {fileID: 5288251007313022591}
+        InstantiateParticlesPosition: {fileID: 5706055877880786613}
         TargetWorldPosition: {x: 0, y: 0, z: 0}
         Offset: {x: 0, y: 0, z: 0}
         NestParticles: 0
         ApplyRotation: 0
         ApplyScale: 1
     00000001:
-      type: {class: MMF_SetActive, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: -1002984839
-        Label: Set Active
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 6818201605707674197}
-        DebugActive: 0
-        TargetGameObject: {fileID: 3842831154187108027}
-        SetStateOnInit: 0
-        StateOnInit: 1
-        SetStateOnPlay: 1
-        StateOnPlay: 1
-        SetStateOnStop: 0
-        StateOnStop: 1
-        SetStateOnReset: 0
-        StateOnReset: 1
-    00000002:
       type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
       data:
         Active: 1
@@ -196,9 +156,9 @@ MonoBehaviour:
           TrackID: 0
           Quantized: 0
           TargetBPM: 120
-        Owner: {fileID: 6818201605707674197}
+        Owner: {fileID: 6400531992245932703}
         DebugActive: 0
-        Sfx: {fileID: 8300000, guid: b7a210df23bd255428bdf4def67109f2, type: 3}
+        Sfx: {fileID: 8300000, guid: 074cee5e8624aa4428300be00e1d2bd2, type: 3}
         RandomSfx: []
         TestPlayButton:
           ButtonText: Debug Play Sound
@@ -262,7 +222,47 @@ MonoBehaviour:
         RolloffMode: 0
         MinDistance: 20
         MaxDistance: 70
---- !u!1 &2978616512284213579
+    00000002:
+      type: {class: MMF_SetActive, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: -1002984839
+        Label: Set Active
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 6400531992245932703}
+        DebugActive: 0
+        TargetGameObject: {fileID: 3681733652271849073}
+        SetStateOnInit: 0
+        StateOnInit: 1
+        SetStateOnPlay: 1
+        StateOnPlay: 1
+        SetStateOnStop: 0
+        StateOnStop: 1
+        SetStateOnReset: 0
+        StateOnReset: 1
+--- !u!1 &3394153073725399425
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -270,8 +270,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 927852333388546703}
-  - component: {fileID: 375488145453395549}
+  - component: {fileID: 769054597481751109}
+  - component: {fileID: 250617910999715479}
   m_Layer: 15
   m_Name: DeflectFeedbacks
   m_TagString: Untagged
@@ -279,27 +279,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &927852333388546703
+--- !u!4 &769054597481751109
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2978616512284213579}
+  m_GameObject: {fileID: 3394153073725399425}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
-  m_Father: {fileID: 6570127876733545234}
-  m_RootOrder: 3
+  m_Father: {fileID: 6728826089667005400}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &375488145453395549
+--- !u!114 &250617910999715479
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2978616512284213579}
+  m_GameObject: {fileID: 3394153073725399425}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
@@ -374,7 +374,7 @@ MonoBehaviour:
           TrackID: 0
           Quantized: 0
           TargetBPM: 120
-        Owner: {fileID: 375488145453395549}
+        Owner: {fileID: 250617910999715479}
         DebugActive: 0
         Sfx: {fileID: 8300000, guid: 268a6fab250ce4e40be876ebe05a7470, type: 3}
         RandomSfx: []
@@ -469,21 +469,21 @@ MonoBehaviour:
           TrackID: 0
           Quantized: 0
           TargetBPM: 120
-        Owner: {fileID: 375488145453395549}
+        Owner: {fileID: 250617910999715479}
         DebugActive: 0
         Mode: 1
         CachedRecycle: 1
-        ParticlesPrefab: {fileID: 2896570785054396639, guid: 73632dc2d91de6b44af8326e3b65ca13, type: 3}
+        ParticlesPrefab: {fileID: 278604225926879919, guid: 2b2d901ed72e0ce4b9aec84efa9c85c6, type: 3}
         RandomParticlePrefabs: []
         ForceSetActiveOnPlay: 0
         PositionMode: 1
-        InstantiateParticlesPosition: {fileID: 5288251007313022591}
+        InstantiateParticlesPosition: {fileID: 5706055877880786613}
         TargetWorldPosition: {x: 0, y: 0, z: 0}
         Offset: {x: 0, y: 0, z: 0}
         NestParticles: 0
         ApplyRotation: 0
-        ApplyScale: 0
---- !u!1 &3804708347981807753
+        ApplyScale: 1
+--- !u!1 &3576483534664552707
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -491,193 +491,88 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2431304983410293306}
-  - component: {fileID: 7498356029230016916}
-  m_Layer: 0
-  m_Name: AOEDamageFeedback_DontHurtPlayer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2431304983410293306
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3804708347981807753}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 6570127876733545234}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7498356029230016916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3804708347981807753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Feedbacks: []
-  InitializationMode: 2
-  SafeMode: 3
-  Direction: 0
-  AutoChangeDirectionOnEnd: 0
-  AutoPlayOnStart: 0
-  AutoPlayOnEnable: 0
-  DurationMultiplier: 1
-  DisplayFullDurationDetails: 0
-  CooldownDuration: 0
-  InitialDelay: 0
-  CanPlayWhileAlreadyPlaying: 1
-  ChanceToPlay: 100
-  FeedbacksIntensity: 1
-  Events:
-    TriggerMMFeedbacksEvents: 0
-    TriggerUnityEvents: 1
-    OnPlay:
-      m_PersistentCalls:
-        m_Calls: []
-    OnPause:
-      m_PersistentCalls:
-        m_Calls: []
-    OnResume:
-      m_PersistentCalls:
-        m_Calls: []
-    OnRevert:
-      m_PersistentCalls:
-        m_Calls: []
-    OnComplete:
-      m_PersistentCalls:
-        m_Calls: []
-  DebugActive: 0
-  FeedbacksList:
-  - id: 0
-  KeepPlayModeChanges: 0
-  PerformanceMode: 0
-  references:
-    version: 1
-    00000000:
-      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: 1963320866
-        Label: Events
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 7498356029230016916}
-        DebugActive: 0
-        PlayEvents:
-          m_PersistentCalls:
-            m_Calls:
-            - m_Target: {fileID: 6818201605707674197}
-              m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-              m_MethodName: PlayFeedbacks
-              m_Mode: 1
-              m_Arguments:
-                m_ObjectArgument: {fileID: 0}
-                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-                m_IntArgument: 0
-                m_FloatArgument: 0
-                m_StringArgument: 
-                m_BoolArgument: 0
-              m_CallState: 2
-        StopEvents:
-          m_PersistentCalls:
-            m_Calls: []
-        InitializationEvents:
-          m_PersistentCalls:
-            m_Calls: []
-        ResetEvents:
-          m_PersistentCalls:
-            m_Calls: []
---- !u!1 &3842831154187108027
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5288251007313022591}
-  - component: {fileID: 4857403441773518273}
-  - component: {fileID: 1055045570431319519}
-  - component: {fileID: 6154356577252716534}
-  - component: {fileID: 2990244573342088102}
-  - component: {fileID: 3585069758602082574}
-  - component: {fileID: 8961123966017565186}
+  - component: {fileID: 6728826089667005400}
   m_Layer: 15
-  m_Name: FireProjectile
+  m_Name: Feedbacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5288251007313022591
+--- !u!4 &6728826089667005400
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3842831154187108027}
+  m_GameObject: {fileID: 3576483534664552707}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7054799883476273308}
-  - {fileID: 6570127876733545234}
+  - {fileID: 2488038258834174537}
+  - {fileID: 769054597481751109}
+  m_Father: {fileID: 5706055877880786613}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3681733652271849073
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5706055877880786613}
+  - component: {fileID: 4982293329468734731}
+  - component: {fileID: 641791019595848981}
+  - component: {fileID: 5991183197921021756}
+  - component: {fileID: 4948957645291477217}
+  - component: {fileID: 4002827195551275460}
+  - component: {fileID: 8795548866206552776}
+  m_Layer: 15
+  m_Name: LaserProjectile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5706055877880786613
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3681733652271849073}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1788531948861840606}
+  - {fileID: 6728826089667005400}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &4857403441773518273
+--- !u!135 &4982293329468734731
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3842831154187108027}
+  m_GameObject: {fileID: 3681733652271849073}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.25
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &1055045570431319519
+--- !u!54 &641791019595848981
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3842831154187108027}
+  m_GameObject: {fileID: 3681733652271849073}
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
@@ -687,39 +582,41 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6154356577252716534
+--- !u!114 &5991183197921021756
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3842831154187108027}
+  m_GameObject: {fileID: 3681733652271849073}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 294a90d4b495407f889152a6d854fa48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 1055045570431319519}
+  rb: {fileID: 641791019595848981}
   speed: 7
---- !u!114 &2990244573342088102
+--- !u!114 &4948957645291477217
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3842831154187108027}
+  m_GameObject: {fileID: 3681733652271849073}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 007ea1391362e4845aee91886eb0cda3, type: 3}
+  m_Script: {fileID: 11500000, guid: 55a54da962a84ab88878ca6c1a7f3602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CollisionLayerMask:
+  _damage: 1
+  _damageMask:
     serializedVersion: 2
-    m_Bits: 9417
-  OnCollisionEnterEvent:
+    m_Bits: 1216
+  _damageCooldown: 2
+  _onCollisionEnter:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5724992600455042474}
+      - m_Target: {fileID: 6400531992245932703}
         m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
         m_MethodName: PlayFeedbacks
         m_Mode: 1
@@ -731,55 +628,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnCollisionExitEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCollisionStayEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  TriggerLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  OnTriggerEnterEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnTriggerExitEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnTriggerStayEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  Collision2DLayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  OnCollision2DEnterEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCollision2DExitEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCollision2DStayEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  Trigger2DLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  OnTrigger2DEnterEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnTrigger2DExitEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnTrigger2DStayEvent:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &3585069758602082574
+--- !u!114 &4002827195551275460
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3842831154187108027}
+  m_GameObject: {fileID: 3681733652271849073}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 96e5457f6d8871d4a9d6dc9518bc622e, type: 3}
@@ -791,7 +646,7 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8961123966017565186}
+      - m_Target: {fileID: 8795548866206552776}
         m_TargetAssemblyTypeName: BML.Scripts.PlayerDeflectable, BML.Scripts
         m_MethodName: TryDeflect
         m_Mode: 0
@@ -803,13 +658,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8961123966017565186
+--- !u!114 &8795548866206552776
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3842831154187108027}
+  m_GameObject: {fileID: 3681733652271849073}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d26ed6cd9f940cf90bfa5b00b9b5022, type: 3}
@@ -819,7 +674,7 @@ MonoBehaviour:
   _onDeflectSuccess:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6154356577252716534}
+      - m_Target: {fileID: 5991183197921021756}
         m_TargetAssemblyTypeName: BML.Scripts.ProjectileDriver, BML.Scripts
         m_MethodName: ChangeDirection
         m_Mode: 0
@@ -831,7 +686,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 6154356577252716534}
+      - m_Target: {fileID: 5991183197921021756}
         m_TargetAssemblyTypeName: BML.Scripts.ProjectileDriver, BML.Scripts
         m_MethodName: SetSpeed
         m_Mode: 4
@@ -843,7 +698,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 375488145453395549}
+      - m_Target: {fileID: 250617910999715479}
         m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
         m_MethodName: PlayFeedbacks
         m_Mode: 1
@@ -858,7 +713,7 @@ MonoBehaviour:
   _onDeflectFailure:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7498356029230016916}
+      - m_Target: {fileID: 6400531992245932703}
         m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
         m_MethodName: PlayFeedbacks
         m_Mode: 1
@@ -870,304 +725,65 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!1 &4030271968200978889
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6570127876733545234}
-  m_Layer: 15
-  m_Name: Feedbacks
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6570127876733545234
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4030271968200978889}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 2969795257375107267}
-  - {fileID: 2431304983410293306}
-  - {fileID: 2651237330656416387}
-  - {fileID: 927852333388546703}
-  m_Father: {fileID: 5288251007313022591}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5146407502711030151
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2969795257375107267}
-  - component: {fileID: 5724992600455042474}
-  - component: {fileID: 8206672051476013122}
-  m_Layer: 0
-  m_Name: AOEDamageFeedback
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2969795257375107267
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5146407502711030151}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 6570127876733545234}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5724992600455042474
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5146407502711030151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Feedbacks: []
-  InitializationMode: 2
-  SafeMode: 3
-  Direction: 0
-  AutoChangeDirectionOnEnd: 0
-  AutoPlayOnStart: 0
-  AutoPlayOnEnable: 0
-  DurationMultiplier: 1
-  DisplayFullDurationDetails: 0
-  CooldownDuration: 0
-  InitialDelay: 0
-  CanPlayWhileAlreadyPlaying: 1
-  ChanceToPlay: 100
-  FeedbacksIntensity: 1
-  Events:
-    TriggerMMFeedbacksEvents: 0
-    TriggerUnityEvents: 1
-    OnPlay:
-      m_PersistentCalls:
-        m_Calls: []
-    OnPause:
-      m_PersistentCalls:
-        m_Calls: []
-    OnResume:
-      m_PersistentCalls:
-        m_Calls: []
-    OnRevert:
-      m_PersistentCalls:
-        m_Calls: []
-    OnComplete:
-      m_PersistentCalls:
-        m_Calls: []
-  DebugActive: 0
-  FeedbacksList:
-  - id: 0
-  KeepPlayModeChanges: 0
-  PerformanceMode: 0
-  references:
-    version: 1
-    00000000:
-      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: 1963320866
-        Label: Events
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 5724992600455042474}
-        DebugActive: 0
-        PlayEvents:
-          m_PersistentCalls:
-            m_Calls:
-            - m_Target: {fileID: 8206672051476013122}
-              m_TargetAssemblyTypeName: BML.Scripts.Explosive, BML.Scripts
-              m_MethodName: Activate
-              m_Mode: 1
-              m_Arguments:
-                m_ObjectArgument: {fileID: 0}
-                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-                m_IntArgument: 0
-                m_FloatArgument: 0
-                m_StringArgument: 
-                m_BoolArgument: 0
-              m_CallState: 2
-        StopEvents:
-          m_PersistentCalls:
-            m_Calls: []
-        InitializationEvents:
-          m_PersistentCalls:
-            m_Calls: []
-        ResetEvents:
-          m_PersistentCalls:
-            m_Calls: []
---- !u!114 &8206672051476013122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5146407502711030151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 476d57a1661a4a559138142354d10596, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _explosionTime:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: ed13bc158f476ed4e89e03cb41fe48b1, type: 2}
-  _explosionRadius:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 3
-    Variable: {fileID: 11400000, guid: b41314ecf7913ca4cad02827a2b590c5, type: 2}
-  _damagePlayer:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 11400000, guid: ad0e588480a686542bfd8df35e7f544f, type: 2}
-  _damageEnemy:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 11400000, guid: febb5c7f35f4bc448b21abf4d5f13cbe, type: 2}
-  _damageOre:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 11400000, guid: 5f10f4d9a858e434ca95a32e7f01a581, type: 2}
-  _damageExitBarrier:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 1
-    Variable: {fileID: 11400000, guid: 41759c0c3ec429447b6a6443e99eee8e, type: 2}
-  _playerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  _enemyMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  _interactableMask:
-    serializedVersion: 2
-    m_Bits: 64
-  _oreTag: Ore
-  _exitBarrierTag: Exit_Barrier
-  _onActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  _onExplosion:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6818201605707674197}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!1001 &3316192421738628761
+--- !u!1001 &5248839006732880512
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 5288251007313022591}
+    m_TransformParent: {fileID: 5706055877880786613}
     m_Modifications:
-    - target: {fileID: 5756396841310670341, guid: a1c469276b5f57641884e04cc4299ea1, type: 3}
+    - target: {fileID: 5766220577574124970, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
+      propertyPath: m_Name
+      value: p_LaserMissileRed
+      objectReference: {fileID: 0}
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5756396841310670341, guid: a1c469276b5f57641884e04cc4299ea1, type: 3}
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5756396841310670341, guid: a1c469276b5f57641884e04cc4299ea1, type: 3}
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5756396841310670341, guid: a1c469276b5f57641884e04cc4299ea1, type: 3}
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5756396841310670341, guid: a1c469276b5f57641884e04cc4299ea1, type: 3}
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 5756396841310670341, guid: a1c469276b5f57641884e04cc4299ea1, type: 3}
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 5756396841310670341, guid: a1c469276b5f57641884e04cc4299ea1, type: 3}
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
       propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5756396841310906227, guid: a1c469276b5f57641884e04cc4299ea1, type: 3}
-      propertyPath: m_Name
-      value: p_BulletFatFire
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a1c469276b5f57641884e04cc4299ea1, type: 3}
---- !u!4 &7054799883476273308 stripped
+  m_SourcePrefab: {fileID: 100100000, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
+--- !u!4 &1788531948861840606 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 5756396841310670341, guid: a1c469276b5f57641884e04cc4299ea1, type: 3}
-  m_PrefabInstance: {fileID: 3316192421738628761}
+  m_CorrespondingSourceObject: {fileID: 5766220577574475358, guid: be245360c50805943ba9dbe3ab3ea79b, type: 3}
+  m_PrefabInstance: {fileID: 5248839006732880512}
   m_PrefabAsset: {fileID: 0}
