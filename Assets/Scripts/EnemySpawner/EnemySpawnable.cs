@@ -1,16 +1,18 @@
-﻿using Shapes;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace BML.Scripts
 {
-    public class Despawnable : MonoBehaviour
+    public class EnemySpawnable : MonoBehaviour
     {
         #region Inspector
 
+        [SerializeField] public bool DoCountTowardsSpawnCap = true;
         [SerializeField] private UnityEvent _onDespawn;
         
         #endregion
+
+        #region Public interface
         
         public void Despawn()
         {
@@ -18,5 +20,8 @@ namespace BML.Scripts
             
             Destroy(this.gameObject);
         }
+
+        #endregion
+
     }
 }
