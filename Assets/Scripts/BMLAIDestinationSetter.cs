@@ -12,4 +12,14 @@ public class BMLAIDestinationSetter : AIDestinationSetter
         base.target = transformSceneReference.Value;
         base.Awake();
     }
+
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
+    }
+    
+    public void ResetTargetToReference()
+    {
+        target = transformSceneReference.Value;
+    }
 }

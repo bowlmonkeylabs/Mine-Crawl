@@ -18,6 +18,8 @@ namespace BML.Scripts.Tasks
         public SharedTransform _target;
         [BehaviorDesigner.Runtime.Tasks.Tooltip("If true, will only rotate about the world up axis")]
         public bool _horizontalOnly = true;
+        [BehaviorDesigner.Runtime.Tasks.Tooltip("If true, will keep running task each frame")]
+        public bool _keepRunning = true;
 
         private Transform currentTarget;
         
@@ -41,7 +43,10 @@ namespace BML.Scripts.Tasks
             Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
             _targetTransform.Value.rotation = rot;
 
-            return TaskStatus.Running;
+            if (_keepRunning)
+                return TaskStatus.Running;
+            
+            return TaskStatus.Success;
         }
     }
 }
