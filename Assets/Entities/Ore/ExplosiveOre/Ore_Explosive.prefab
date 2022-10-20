@@ -851,6 +851,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7379165262754171365, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: uniqueID
+      value: 8332022417688565239
+      objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _health
       value: 7
@@ -956,45 +960,17 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: deb0116f2dce187439f33946f472cc05, type: 2}
-  _damagePlayer:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: '{I} '
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: e621fb5db1f2a7548b56e9ace8a0ab9c, type: 2}
-  _damageEnemy:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: '{I} '
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 8d2950fa142af984c94607aacebfeccc, type: 2}
-  _damageOre:
-    UseConstant: 0
+  _explosionMask:
+    serializedVersion: 2
+    m_Bits: 33984
+  _damageType: 128
+  _damage:
+    UseConstant: 1
     EnableInstanceOptions: 0
     InstanceName: 
     InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 1c6f1f82120c3b844a61f165b6892f99, type: 2}
-  _damageExitBarrier:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 23f9ea4a276ba5247bf020a950b64aab, type: 2}
-  _playerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  _enemyMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  _interactableMask:
-    serializedVersion: 2
-    m_Bits: 64
-  _oreTag: Ore
-  _exitBarrierTag: ExitBarrier
+    ConstantValue: 999
+    Variable: {fileID: 0}
   _onActivate:
     m_PersistentCalls:
       m_Calls:

@@ -2430,6 +2430,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _damageCooldown: 1
+  _damageType: 32
   _onTriggerEnter:
     m_PersistentCalls:
       m_Calls:
@@ -2484,7 +2485,6 @@ GameObject:
   - component: {fileID: 8446087147361510360}
   - component: {fileID: 2778969576223554307}
   - component: {fileID: 6090566992771475838}
-  - component: {fileID: 1520453490479982863}
   - component: {fileID: 4199499473240118132}
   - component: {fileID: 6999498052096669613}
   - component: {fileID: 5178630630282638017}
@@ -2496,10 +2496,10 @@ GameObject:
   - component: {fileID: 6727436383868643110}
   - component: {fileID: 3045753009962011587}
   - component: {fileID: 5225949785509531780}
-  - component: {fileID: 6574438273452170678}
   - component: {fileID: 7908423297764247877}
   - component: {fileID: 3503164420953813447}
   - component: {fileID: 863989278844779370}
+  - component: {fileID: 8708097249451836691}
   m_Layer: 10
   m_Name: ZombieEnemy
   m_TagString: Untagged
@@ -2612,44 +2612,6 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
---- !u!114 &1520453490479982863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8446087147361510364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 5225949785509531780}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1394027252896268576}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &4199499473240118132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2668,9 +2630,9 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1520453490479982863}
-        m_TargetAssemblyTypeName: PickaxeDamageable, BML.Scripts
-        m_MethodName: TakeDamage
+      - m_Target: {fileID: 5025452799971188646}
+        m_TargetAssemblyTypeName: BML.Scripts.Knockbackable, BML.Scripts
+        m_MethodName: SetKnockback
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2680,9 +2642,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5025452799971188646}
-        m_TargetAssemblyTypeName: BML.Scripts.Knockbackable, BML.Scripts
-        m_MethodName: SetKnockback
+      - m_Target: {fileID: 8708097249451836691}
+        m_TargetAssemblyTypeName: BML.Scripts.Damageables, BML.Scripts
+        m_MethodName: TakeDamage
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2958,32 +2920,6 @@ MonoBehaviour:
   _onRevive:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6574438273452170678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8446087147361510364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04ecd871b7dcf0e47840fbb6de206a44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 5225949785509531780}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &7908423297764247877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3058,6 +2994,49 @@ MonoBehaviour:
   _onDespawn:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8708097249451836691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8446087147361510364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 5225949785509531780}
+  _damageables:
+  - _damageType: 147
+    _damageModifierType: 0
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  _onDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1394027252896268576}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8769558815352529025
 GameObject:
   m_ObjectHideFlags: 0
