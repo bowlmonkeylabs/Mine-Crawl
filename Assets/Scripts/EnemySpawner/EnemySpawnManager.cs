@@ -17,8 +17,13 @@ namespace BML.Scripts
     {
         #region Inspector
 
+        #if UNITY_EDITOR
         [FormerlySerializedAs("_isSpawningPaused")] [SerializeField] public bool IsSpawningPaused = false;
         [FormerlySerializedAs("_isDespawningPaused")] [SerializeField] public bool IsDespawningPaused = false;
+        #else
+        public bool IsSpawningPaused = false;
+        public bool IsDespawningPaused = false;
+        #endif
         
         [TitleGroup("Scene References")]
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
