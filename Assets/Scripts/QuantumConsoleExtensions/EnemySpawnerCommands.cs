@@ -19,6 +19,22 @@ namespace BML.Scripts.QuantumConsoleExtensions
 
         #region Commands
         
+        [Command("pause-spawning", "Pauses enemy spawning and difficulty curve.")]
+        private static async void SetSpawningPaused(bool paused = true)
+        {
+            var enemySpawnManager = await GetActiveEnemySpawnManager();
+
+            enemySpawnManager.IsSpawningPaused = paused;
+        }
+        
+        [Command("pause-despawning", "Pauses enemy despawning.")]
+        private static async void SetDespawningPaused(bool paused = true)
+        {
+            var enemySpawnManager = await GetActiveEnemySpawnManager();
+
+            enemySpawnManager.IsDespawningPaused = paused;
+        }
+        
         [Command("difficulty-curve-factor", "Sets the _currentPercentToMaxSpawn of the EnemySpawnManager")]
         private static async void SetDifficultyCurveFactor(float factor)
         {

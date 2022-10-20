@@ -8,6 +8,7 @@ using BML.Scripts.Utils;
 using Shapes;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts
@@ -15,6 +16,9 @@ namespace BML.Scripts
     public class EnemySpawnManager : MonoBehaviour
     {
         #region Inspector
+
+        [FormerlySerializedAs("_isSpawningPaused")] [SerializeField] public bool IsSpawningPaused = false;
+        [FormerlySerializedAs("_isDespawningPaused")] [SerializeField] public bool IsDespawningPaused = false;
         
         [TitleGroup("Scene References")]
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
@@ -79,11 +83,14 @@ namespace BML.Scripts
 
         private void Update()
         {
-            _currentPercentToMaxSpawn.Value += (Time.deltaTime) / (_minutesToMaxSpawn.Value * 60f);
-            _currentSpawnDelay.Value = _spawnDelayCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
+            if (!IsSpawningPaused)
+            {
+                _currentPercentToMaxSpawn.Value += (Time.deltaTime) / (_minutesToMaxSpawn.Value * 60f);
+                _currentSpawnDelay.Value = _spawnDelayCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
+            }
 
-            HandleDespawning();
-            HandleSpawning();
+            if (!IsDespawningPaused) HandleDespawning();
+            if (!IsSpawningPaused) HandleSpawning();
         }
         
         private void OnDrawGizmosSelected()
