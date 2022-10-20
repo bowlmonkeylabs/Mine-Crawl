@@ -60,7 +60,7 @@ namespace BML.Scripts.QuantumConsoleExtensions
 
             for (int i = 0; i < count; i++)
             {
-                var newEnemy = enemySpawner.SpawnEnemyByName(playerTransform.position, enemyName, false, true);
+                var newEnemy = enemySpawner.SpawnEnemyByName(playerTransform.position, enemyName, false, 3);
 
                 if (health >= 0)
                 {

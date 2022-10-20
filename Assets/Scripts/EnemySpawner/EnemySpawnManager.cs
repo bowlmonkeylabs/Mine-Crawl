@@ -317,18 +317,18 @@ namespace BML.Scripts
             SpawnPoint randomSpawnPoint = RandomUtils.RandomWithWeights(spawnPointWeights);
             
             // Spawn chosen enemy at chosen spawn point
-            var newEnemy = SpawnEnemy(randomSpawnPoint.transform.position, randomEnemy, true, true);
+            var newEnemy = SpawnEnemy(randomSpawnPoint.transform.position, randomEnemy, true, _spawnOffsetRadius);
             
             // Update last spawn time
             lastSpawnTime = Time.time;
         }
         
-        private GameObject SpawnEnemy(Vector3 position, EnemySpawnParams enemy, bool doCountForSpawnCap, bool useRandomOffset = true)
+        private GameObject SpawnEnemy(Vector3 position, EnemySpawnParams enemy, bool doCountForSpawnCap, float randomOffsetRadius)
         {
             // Calculate random spawn position offset
-            var spawnOffset = (useRandomOffset ? Random.insideUnitCircle : Vector2.zero);
+            var randomOffset = Random.insideUnitCircle;
             var spawnPoint = position +
-                             new Vector3(spawnOffset.x, 0f, spawnOffset.y) * _spawnOffsetRadius;
+                             new Vector3(randomOffset.x, 0f, randomOffset.y) * randomOffsetRadius;
             
             // Instantiate new enemy game object
             var newGameObject =
@@ -355,7 +355,7 @@ namespace BML.Scripts
             return newGameObject;
         }
 
-        public GameObject SpawnEnemyByName(Vector3 position, string enemyName, bool doCountForSpawnCap, bool useRandomOffset)
+        public GameObject SpawnEnemyByName(Vector3 position, string enemyName, bool doCountForSpawnCap, float randomOffsetRadius)
         {
             var enemy = _enemySpawnerParams.SpawnAtTags
                 .FirstOrDefault(e => e.Prefab.name.StartsWith(enemyName, StringComparison.OrdinalIgnoreCase));
@@ -364,7 +364,7 @@ namespace BML.Scripts
                 throw new ArgumentException($"EnemySpawnManager: '{enemyName}' Enemy not found in spawner list");
             }
 
-            return SpawnEnemy(position, enemy, doCountForSpawnCap, useRandomOffset);
+            return SpawnEnemy(position, enemy, doCountForSpawnCap, randomOffsetRadius);
         }
         
         #endregion
