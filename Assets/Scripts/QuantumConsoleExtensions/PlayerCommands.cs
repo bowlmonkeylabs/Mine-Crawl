@@ -16,8 +16,10 @@ namespace BML.Scripts.QuantumConsoleExtensions
     {
         private static string _playerControllerTransformSceneReferenceAddress = "Assets/Entities/Player/PlayerTransformSceneReference.asset";
 
+        #region Commands
+
         [Command("health", "Sets player health.")]
-        private static async void DespawnAll(int health)
+        private static async void SetHealth(int health)
         {
             var playerController = await GetActivePlayerController();
 
@@ -39,8 +41,12 @@ namespace BML.Scripts.QuantumConsoleExtensions
 
             playerController.SetPickaxeDistance(dist);
         }
-
-        private static async Task<PlayerController> GetActivePlayerController()
+        
+        #endregion
+        
+        #region Asset access
+        
+        public static async Task<PlayerController> GetActivePlayerController()
         {
             var asyncHandle =
                 Addressables.LoadAssetAsync<TransformSceneReference>(_playerControllerTransformSceneReferenceAddress);
@@ -59,5 +65,22 @@ namespace BML.Scripts.QuantumConsoleExtensions
 
             return playerController;
         }
+        
+        public static async Task<Transform> GetActivePlayerTransform()
+        {
+            var asyncHandle =
+                Addressables.LoadAssetAsync<TransformSceneReference>(_playerControllerTransformSceneReferenceAddress);
+            
+            await asyncHandle.Task;
+            if (asyncHandle.Result.Value == null)
+            {
+                throw new Exception($"Player controller scene instance is not assigned.");
+            }
+
+            return asyncHandle.Result.Value;
+        }
+        
+        #endregion
+        
     }
 }

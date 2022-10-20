@@ -51,7 +51,7 @@ namespace BML.Scripts
 
                 var newEnemySpawnable = newGameObject.GetComponent<EnemySpawnable>();
                 bool isSuccssor = (i == spawnCapSuccessorIndex);
-                newEnemySpawnable.DoCountTowardsSpawnCap = isSuccssor;
+                newEnemySpawnable.DoCountForSpawnCap = isSuccssor;
             }
         }
 
