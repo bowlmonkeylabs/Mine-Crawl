@@ -938,56 +938,6 @@ MonoBehaviour:
   _critMarker: {fileID: 2238584893062115824}
   _critMarkerMinMaxAngle: {x: 15, y: 41.42908}
   _critMarkerSurfaceOffset: 0.1
---- !u!114 &1425103801302272645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7225383730169331457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 7664960571339365045}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3454127850065686866}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5116163273417737045}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &2643451606169161808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1010,32 +960,6 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 48b25f76d712c95489c66247d650c352, type: 2}
---- !u!114 &2678112690150122818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7225383730169331457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04ecd871b7dcf0e47840fbb6de206a44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 7664960571339365045}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &7664960571339365045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1103,36 +1027,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: {fileID: 7664960571339365045}
-  _damageables:
-  - _damageType: 1
-    _damageModifierType: 0
-    _damageMultiplier: 1
-    _damageResistance: 0
-    _damageOverride: 0
-    _onDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onFailDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onDeath:
-      m_PersistentCalls:
-        m_Calls: []
-  - _damageType: 128
-    _damageModifierType: 0
-    _damageMultiplier: 1
-    _damageResistance: 0
-    _damageOverride: 0
-    _onDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onFailDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onDeath:
-      m_PersistentCalls:
-        m_Calls: []
-  - _damageType: 2
+  _damageable:
+  - _damageType: 147
+    _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
+      Ore_Explosive
     _damageModifierType: 0
     _damageMultiplier: 1
     _damageResistance: 0
@@ -1161,6 +1059,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _logHitInfo: 1
 --- !u!1001 &8399686363568519638
 PrefabInstance:
   m_ObjectHideFlags: 0

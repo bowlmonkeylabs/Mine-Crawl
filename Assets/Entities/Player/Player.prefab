@@ -2617,118 +2617,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5114166186670533046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2719825288227953952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29cebd238f046634a8fc10d13a640260, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 1905872712608776435}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2501227245172862259}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6318842967923595271}
-        m_TargetAssemblyTypeName: BML.Scripts.Player.FirstPersonController, BML.Scripts
-        m_MethodName: Knockback
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 4112429824577967131}
-        m_TargetAssemblyTypeName: BML.Scripts.Player.PlayerController, BML.Scripts
-        m_MethodName: SetInCombat
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &4629854512246394567
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2719825288227953952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04ecd871b7dcf0e47840fbb6de206a44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 1905872712608776435}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2501227245172862259}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6318842967923595271}
-        m_TargetAssemblyTypeName: BML.Scripts.Player.FirstPersonController, BML.Scripts
-        m_MethodName: Knockback
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &3069818814161535491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2765,38 +2653,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: {fileID: 1905872712608776435}
-  _damageables:
-  - _damageType: 108
-    _damageModifierType: 0
+  _damageable:
+  - _damageType: 146
+    _damageModifierType: 2
     _damageMultiplier: 1
     _damageResistance: 0
-    _damageOverride: 0
+    _damageOverride: 1
     _onDamage:
       m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4112429824577967131}
-          m_TargetAssemblyTypeName: BML.Scripts.Player.PlayerController, BML.Scripts
-          m_MethodName: SetInCombat
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     _onFailDamage:
       m_PersistentCalls:
         m_Calls: []
     _onDeath:
       m_PersistentCalls:
         m_Calls: []
-  - _damageType: 128
-    _damageModifierType: 2
+  - _damageType: 108
+    _damageModifierType: 0
     _damageMultiplier: 1
     _damageResistance: 0
-    _damageOverride: 1
+    _damageOverride: 0
     _onDamage:
       m_PersistentCalls:
         m_Calls: []
@@ -2825,6 +2701,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: BML.Scripts.Player.FirstPersonController, BML.Scripts
         m_MethodName: Knockback
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4112429824577967131}
+        m_TargetAssemblyTypeName: BML.Scripts.Player.PlayerController, BML.Scripts
+        m_MethodName: SetInCombat
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6730,7 +6618,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 58.73946
+  field of view: 40.43891
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

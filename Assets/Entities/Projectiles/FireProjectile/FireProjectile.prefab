@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 6570127876733545234}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6818201605707674197
 MonoBehaviour:
@@ -291,7 +291,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6570127876733545234}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &375488145453395549
 MonoBehaviour:
@@ -483,198 +483,6 @@ MonoBehaviour:
         NestParticles: 0
         ApplyRotation: 0
         ApplyScale: 0
---- !u!1 &3804708347981807753
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2431304983410293306}
-  - component: {fileID: 7498356029230016916}
-  m_Layer: 0
-  m_Name: AOEDamageFeedback_DontHurtPlayer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2431304983410293306
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3804708347981807753}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 6570127876733545234}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7498356029230016916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3804708347981807753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Feedbacks: []
-  InitializationMode: 2
-  SafeMode: 3
-  Direction: 0
-  AutoChangeDirectionOnEnd: 0
-  AutoPlayOnStart: 0
-  AutoPlayOnEnable: 0
-  DurationMultiplier: 1
-  DisplayFullDurationDetails: 0
-  CooldownDuration: 0
-  InitialDelay: 0
-  CanPlayWhileAlreadyPlaying: 1
-  ChanceToPlay: 100
-  FeedbacksIntensity: 1
-  Events:
-    TriggerMMFeedbacksEvents: 0
-    TriggerUnityEvents: 1
-    OnPlay:
-      m_PersistentCalls:
-        m_Calls: []
-    OnPause:
-      m_PersistentCalls:
-        m_Calls: []
-    OnResume:
-      m_PersistentCalls:
-        m_Calls: []
-    OnRevert:
-      m_PersistentCalls:
-        m_Calls: []
-    OnComplete:
-      m_PersistentCalls:
-        m_Calls: []
-  DebugActive: 0
-  FeedbacksList:
-  - id: 0
-  KeepPlayModeChanges: 0
-  PerformanceMode: 0
-  references:
-    version: 1
-    00000000:
-      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: 1963320866
-        Label: Events
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 7498356029230016916}
-        DebugActive: 0
-        PlayEvents:
-          m_PersistentCalls:
-            m_Calls:
-            - m_Target: {fileID: 6818201605707674197}
-              m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-              m_MethodName: PlayFeedbacks
-              m_Mode: 1
-              m_Arguments:
-                m_ObjectArgument: {fileID: 0}
-                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-                m_IntArgument: 0
-                m_FloatArgument: 0
-                m_StringArgument: 
-                m_BoolArgument: 0
-              m_CallState: 2
-        StopEvents:
-          m_PersistentCalls:
-            m_Calls: []
-        InitializationEvents:
-          m_PersistentCalls:
-            m_Calls: []
-        ResetEvents:
-          m_PersistentCalls:
-            m_Calls: []
---- !u!114 &7854316345454648298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3804708347981807753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 476d57a1661a4a559138142354d10596, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _explosionTime:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: ed13bc158f476ed4e89e03cb41fe48b1, type: 2}
-  _explosionRadius:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 3
-    Variable: {fileID: 11400000, guid: b41314ecf7913ca4cad02827a2b590c5, type: 2}
-  _explosionMask:
-    serializedVersion: 2
-    m_Bits: 0
-  _damageType: 0
-  _damage:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
-  _onActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  _onExplosion:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6818201605707674197}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &3842831154187108027
 GameObject:
   m_ObjectHideFlags: 0
@@ -770,7 +578,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CollisionLayerMask:
     serializedVersion: 2
-    m_Bits: 9417
+    m_Bits: 42185
   OnCollisionEnterEvent:
     m_PersistentCalls:
       m_Calls:
@@ -913,7 +721,7 @@ MonoBehaviour:
   _onDeflectFailure:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7498356029230016916}
+      - m_Target: {fileID: 6818201605707674197}
         m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
         m_MethodName: PlayFeedbacks
         m_Mode: 1
@@ -953,7 +761,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2969795257375107267}
-  - {fileID: 2431304983410293306}
   - {fileID: 2651237330656416387}
   - {fileID: 927852333388546703}
   m_Father: {fileID: 5288251007313022591}

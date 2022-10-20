@@ -9,6 +9,7 @@ namespace BML.Scripts
         [SerializeField] private int _damage = 1;
         [SerializeField] private LayerMask _damageMask;
         [SerializeField] private float _damageCooldown = 2;
+        [SerializeField] private DamageType _damageType;
         [SerializeField] private UnityEvent _onCollisionEnter;
 
         private float _lastDamageTime = Mathf.NegativeInfinity;
@@ -33,7 +34,7 @@ namespace BML.Scripts
                 damageable = other.attachedRigidbody.GetComponent<Damageable>();
             
             if (damageable != null) {
-                damageable.TakeDamage(new HitInfo(_damage, (other.transform.position - transform.position).normalized));
+                damageable.TakeDamage(new HitInfo(_damageType, _damage, (other.transform.position - transform.position).normalized));
                 _lastDamageTime = Time.time;
                 _onCollisionEnter.Invoke();
             }

@@ -2,7 +2,8 @@ using UnityEngine.Events;
 using UnityEngine;
 using System;
 using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor;
+using System.Linq;
+using System.Collections.Generic;
 using BML.Scripts.Attributes;
 
 namespace BML.Scripts {
@@ -12,11 +13,13 @@ namespace BML.Scripts {
         private enum DamageModifierType {
             Multiplier,
             Integer,
-            Override
+            Override,
+            None
         }
         
-        [EnumFlags] [SerializeField] private DamageType _damageType;
-        [SerializeField] private DamageModifierType _damageModifierType;
+        [ValidateInput("DisplayValues")] [EnumFlags] [SerializeField] private DamageType _damageType;
+        [TextArea, SerializeField, ReadOnly, FoldoutGroup("Damage Types Preview", expanded: true)] private string _damageTypesPreview;
+        [SerializeField] private DamageModifierType _damageModifierType = DamageModifierType.None;
         [ShowIf("_damageModifierType", DamageModifierType.Multiplier)] [SerializeField] private int _damageMultiplier = 1;
         [ShowIf("_damageModifierType", DamageModifierType.Integer)] [SerializeField] private int _damageResistance = 0;
         [ShowIf("_damageModifierType", DamageModifierType.Override)] [SerializeField] private int _damageOverride = 0;
@@ -30,6 +33,10 @@ namespace BML.Scripts {
         public UnityEvent<HitInfo> OnDeath { get {return _onDeath;}}
 
         public int ApplyDamage(int damage) {
+            if(_damageModifierType == DamageModifierType.None) {
+                return damage;
+            }
+
             if(_damageModifierType == DamageModifierType.Override) {
                 return _damageOverride;
             }
@@ -39,6 +46,11 @@ namespace BML.Scripts {
             }
 
             return damage * _damageMultiplier;
+        }
+
+        private bool DisplayValues(DamageType selectedDamageTypes) {
+            _damageTypesPreview = selectedDamageTypes.ToString("F");
+            return true;
         }
     }
 }

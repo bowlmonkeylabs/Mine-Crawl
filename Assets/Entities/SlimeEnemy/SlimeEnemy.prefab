@@ -2928,6 +2928,7 @@ GameObject:
   - component: {fileID: 3048715361028435507}
   - component: {fileID: 4763329971739013840}
   - component: {fileID: 3108614823935819041}
+  - component: {fileID: 7107060283421443552}
   m_Layer: 10
   m_Name: SlimeEnemy
   m_TagString: Untagged
@@ -3058,8 +3059,8 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3038268066916491400}
-        m_TargetAssemblyTypeName: BML.Scripts.Damageables, BML.Scripts
+      - m_Target: {fileID: 7107060283421443552}
+        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
         m_Arguments:
@@ -3455,6 +3456,50 @@ MonoBehaviour:
   _spawnPoint: {fileID: 3863838144634906233}
   _rotationSpreadDegrees: 360
   _randomRotationDegrees: 10
+--- !u!114 &7107060283421443552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6194658959717897337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 8410107962314987275}
+  _damageable:
+  - _damageType: 147
+    _damageTypesPreview: 147
+    _damageModifierType: 3
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  _onDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6234188384059194629}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6203064935531965250
 GameObject:
   m_ObjectHideFlags: 0
