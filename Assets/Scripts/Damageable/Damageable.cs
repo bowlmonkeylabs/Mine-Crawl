@@ -11,7 +11,6 @@ namespace BML.Scripts {
         [SerializeField] private Health health;
         [SerializeField] private List<DamageableItem> _damageable;
         [SerializeField] private UnityEvent<HitInfo> _onDamage;
-        public bool _logHitInfo = false;
 
         // public Dictionary<DamageType, DamageableItem> Value { get {return _value;}}
 
