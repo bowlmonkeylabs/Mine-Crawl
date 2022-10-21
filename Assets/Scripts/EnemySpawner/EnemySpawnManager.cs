@@ -167,7 +167,7 @@ namespace BML.Scripts
             bool isExitChallengeActive = (_isExitChallengeActive.Value);
             bool isCurrentRoom = (spawnPoint.ParentNode.PlayerDistance == 0);
 
-            return (!isExitChallengeActive && inRangeOfPlayer)
+            return (inRangeOfPlayer)
                    || (isExitChallengeActive && isCurrentRoom);
         }
 
