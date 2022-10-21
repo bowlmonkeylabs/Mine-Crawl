@@ -697,7 +697,7 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7710783138476378305}
+      - m_Target: {fileID: 1802998898250526308}
         m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
@@ -1063,7 +1063,6 @@ GameObject:
   - component: {fileID: 2741980953628335077}
   - component: {fileID: 5590460861288197962}
   - component: {fileID: 2381022238226313942}
-  - component: {fileID: 7710783138476378305}
   - component: {fileID: 4227720001531621336}
   - component: {fileID: 9074094384445705794}
   - component: {fileID: 2250415067097219474}
@@ -1072,10 +1071,10 @@ GameObject:
   - component: {fileID: 6633851303243929378}
   - component: {fileID: 3950317093959747029}
   - component: {fileID: 718974734636025617}
-  - component: {fileID: 3413713176696294404}
   - component: {fileID: 92293353881086785}
   - component: {fileID: 6270080935600750121}
   - component: {fileID: 8871026455219955088}
+  - component: {fileID: 1802998898250526308}
   m_Layer: 10
   m_Name: BatEnemy
   m_TagString: Untagged
@@ -1187,44 +1186,6 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
---- !u!114 &7710783138476378305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2934977605014848611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 718974734636025617}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3154967639440813343}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!54 &4227720001531621336
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1463,32 +1424,6 @@ MonoBehaviour:
   _onRevive:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3413713176696294404
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2934977605014848611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04ecd871b7dcf0e47840fbb6de206a44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 718974734636025617}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &92293353881086785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1560,9 +1495,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7be757edf6e4dc9920a0a8af410acf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DoCountTowardsSpawnCap: 1
   _onDespawn:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1802998898250526308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2934977605014848611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 718974734636025617}
+  _damageable:
+  - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
+      Ore_Explosive, Enemy_Snake_Projectile
+    _damageType: 467
+    _damageModifierType: 0
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  _onDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3154967639440813343}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3123613190795983704
 GameObject:
   m_ObjectHideFlags: 0
@@ -1958,6 +1939,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _damageCooldown: 1
+  _damageType: 8
   _onTriggerEnter:
     m_PersistentCalls:
       m_Calls: []

@@ -929,9 +929,8 @@ GameObject:
   - component: {fileID: 3753042385917312093}
   - component: {fileID: 3753042385917312082}
   - component: {fileID: 3753042385917312083}
-  - component: {fileID: 3753042385917312080}
-  - component: {fileID: 3753042385917312081}
   - component: {fileID: 3753042385917312095}
+  - component: {fileID: 6127132723132569765}
   m_Layer: 10
   m_Name: Mimic
   m_TagString: Untagged
@@ -1083,58 +1082,6 @@ MonoBehaviour:
   _onRevive:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3753042385917312080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3753042385917312087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 3753042385917312083}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &3753042385917312081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3753042385917312087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04ecd871b7dcf0e47840fbb6de206a44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 3753042385917312083}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &3753042385917312095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1153,10 +1100,55 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3753042385917312080}
+      - m_Target: {fileID: 6127132723132569765}
         m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6127132723132569765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3753042385917312087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 3753042385917312083}
+  _damageable:
+  - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
+      Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile
+    _damageType: 467
+    _damageModifierType: 0
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  _onDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3753042385848122384}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2313,6 +2305,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3753042384557655052}
     m_Modifications:
+    - target: {fileID: 5664728504856003165, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _damageable.Array.data[0]._damageTypesPreview
+      value: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile, Enemy_Mimic_Projectile,
+        Ore_Explosive, Enemy_Snake_Projectile
+      objectReference: {fileID: 0}
     - target: {fileID: 7225383730169331457, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: m_Name
       value: Ore
@@ -2395,11 +2392,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
---- !u!4 &5787341105279705194 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7225383730169331487, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
-  m_PrefabInstance: {fileID: 3753042384793345909}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6794266272815728064 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
@@ -2411,3 +2403,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &5787341105279705194 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7225383730169331487, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+  m_PrefabInstance: {fileID: 3753042384793345909}
+  m_PrefabAsset: {fileID: 0}

@@ -26,6 +26,7 @@ namespace BML.Scripts.Player
         [SerializeField] private LayerMask _interactMask;
         [SerializeField] private EvaluateCurveVariable _pickaxeSwingCooldown;
         [SerializeField] private IntReference _pickaxeDamage;
+        [SerializeField] private DamageType _damageType;
         
         [TitleGroup("Torch")]
         [SerializeField] private GameObject _torchPrefab;
@@ -152,7 +153,7 @@ namespace BML.Scripts.Player
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
                 if (interactionReceiver == null) return;
 
-                HitInfo pickaxeHitInfo = new HitInfo(_pickaxeDamage.Value, _mainCamera.forward, hit.point);
+                HitInfo pickaxeHitInfo = new HitInfo(_damageType, _pickaxeDamage.Value, _mainCamera.forward, hit.point);
                 interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
             }
             
@@ -263,9 +264,7 @@ namespace BML.Scripts.Player
 
         private void SetGodMode()
         {
-            foreach(Damageable damageable in GetComponents<Damageable>()) {
-                _healthController.SetInvincible(_isGodModeEnabled.Value);
-            }
+            _healthController.SetInvincible(_isGodModeEnabled.Value);
         }
 
         #endregion

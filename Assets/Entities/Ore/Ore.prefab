@@ -231,6 +231,7 @@ GameObject:
   - component: {fileID: 182695390771352254}
   - component: {fileID: 202682029861605475}
   - component: {fileID: 7379165262754171365}
+  - component: {fileID: 5432566915175241370}
   m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
@@ -346,18 +347,6 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1425103801302272645}
-        m_TargetAssemblyTypeName: PickaxeDamageable, BML.Scripts
-        m_MethodName: TakeDamage
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 2450872905461499138}
         m_TargetAssemblyTypeName: BML.Scripts.OreCritMarker, BML.Scripts
         m_MethodName: MoveCritMarker
@@ -382,6 +371,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 5432566915175241370}
+        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7379165262754171365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,6 +399,51 @@ MonoBehaviour:
   uniqueID: 4888581186691438577
   updateError: 1
   checkTime: 0.2
+--- !u!114 &5432566915175241370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454127850101988312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 7664960571339365045}
+  _damageable:
+  - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
+      Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile
+    _damageType: 467
+    _damageModifierType: 0
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  _onDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3454127850065686866}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3454127850225854728
 GameObject:
   m_ObjectHideFlags: 0
@@ -895,9 +941,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7225383730169331487}
   - component: {fileID: 2450872905461499138}
-  - component: {fileID: 1425103801302272645}
   - component: {fileID: 2643451606169161808}
-  - component: {fileID: 2678112690150122818}
   - component: {fileID: 7664960571339365045}
   m_Layer: 0
   m_Name: Ore
@@ -939,56 +983,6 @@ MonoBehaviour:
   _critMarker: {fileID: 2238584893062115824}
   _critMarkerMinMaxAngle: {x: 15, y: 41.42908}
   _critMarkerSurfaceOffset: 0.1
---- !u!114 &1425103801302272645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7225383730169331457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 7664960571339365045}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3454127850065686866}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5116163273417737045}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &2643451606169161808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1011,32 +1005,6 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 48b25f76d712c95489c66247d650c352, type: 2}
---- !u!114 &2678112690150122818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7225383730169331457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04ecd871b7dcf0e47840fbb6de206a44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 7664960571339365045}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &7664960571339365045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1099,116 +1067,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 7225383730169331487}
     m_Modifications:
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnInteract.m_PersistentCalls.m_Calls.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnInteract.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1425103801302272645}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 2450872905461499138}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1425103801302272645}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
       objectReference: {fileID: 2450872905461499138}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TakeCritDamage
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: MoveCritMarker
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TakeCritDamage
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: MoveCritMarker
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PickaxeDamageable, BML.Scripts
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: OreCritMarker, BML.Scripts
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PickaxeDamageable, BML.Scripts
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: OreCritMarker, BML.Scripts
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: OnPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
+    - target: {fileID: 1468530653753540892, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: health
+      value: 
+      objectReference: {fileID: 7664960571339365045}
+    - target: {fileID: 1468530653753540892, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onDamage.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3454127850065686866}
     - target: {fileID: 7746370747038451750, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: m_Name
       value: CritMarker
-      objectReference: {fileID: 0}
-    - target: {fileID: 7746370747038451750, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8340204686617603418, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: m_RootOrder

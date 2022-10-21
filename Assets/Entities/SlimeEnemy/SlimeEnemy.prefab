@@ -2556,6 +2556,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _damageCooldown: 1
+  _damageType: 4
   _onTriggerEnter:
     m_PersistentCalls:
       m_Calls: []
@@ -2912,7 +2913,6 @@ GameObject:
   - component: {fileID: 6575680084310051839}
   - component: {fileID: 3520044267730943824}
   - component: {fileID: 6649542895747916492}
-  - component: {fileID: 1607450253214800091}
   - component: {fileID: 8916652686144834905}
   - component: {fileID: 5181140566826893250}
   - component: {fileID: 45409624996634200}
@@ -2924,11 +2924,11 @@ GameObject:
   - component: {fileID: 5448972247774647759}
   - component: {fileID: 8410107962314987275}
   - component: {fileID: 3369585170427526246}
-  - component: {fileID: 5914080734385249310}
   - component: {fileID: 8938272265875241819}
   - component: {fileID: 3048715361028435507}
   - component: {fileID: 4763329971739013840}
   - component: {fileID: 3108614823935819041}
+  - component: {fileID: 7107060283421443552}
   m_Layer: 10
   m_Name: SlimeEnemy
   m_TagString: Untagged
@@ -3041,44 +3041,6 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
---- !u!114 &1607450253214800091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6194658959717897337}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 8410107962314987275}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6234188384059194629}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &8916652686144834905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3097,7 +3059,7 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1607450253214800091}
+      - m_Target: {fileID: 7107060283421443552}
         m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
@@ -3403,32 +3365,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.375
   m_Center: {x: 0, y: 0.33333334, z: 0}
---- !u!114 &5914080734385249310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6194658959717897337}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04ecd871b7dcf0e47840fbb6de206a44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 8410107962314987275}
-  _critMultiplier: 2
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onFailDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &8938272265875241819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3520,6 +3456,51 @@ MonoBehaviour:
   _spawnPoint: {fileID: 3863838144634906233}
   _rotationSpreadDegrees: 360
   _randomRotationDegrees: 10
+--- !u!114 &7107060283421443552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6194658959717897337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 8410107962314987275}
+  _damageable:
+  - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
+      Ore_Explosive, Enemy_Snake_Projectile
+    _damageType: 467
+    _damageModifierType: 3
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  _onDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6234188384059194629}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6203064935531965250
 GameObject:
   m_ObjectHideFlags: 0

@@ -259,11 +259,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3000336959785077408}
-  - component: {fileID: 9198729175416441857}
   - component: {fileID: 2426635321772833314}
   - component: {fileID: 152893675504039563}
   - component: {fileID: 1525200595836623026}
-  - component: {fileID: 7972474629112012132}
+  - component: {fileID: 894637699616354325}
   m_Layer: 10
   m_Name: CubeSpikeEnemy
   m_TagString: Untagged
@@ -289,80 +288,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9198729175416441857
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3000336959785077410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0571194e5e3378846b365ccf0d6e11eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 1525200595836623026}
-  _critMultiplier: 2
-  _invincibilitySeconds: 0
-  _isInvincible: 0
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3000336961166879906}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3799401582140118235}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: b9a983d04d699924c9535bedda6840d3, type: 2}
-        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
-          ScriptableObjectSystem
-        m_MethodName: Increment
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3000336959854452572}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!65 &2426635321772833314
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -394,8 +319,8 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9198729175416441857}
-        m_TargetAssemblyTypeName: PickaxeDamageable, BML.Scripts
+      - m_Target: {fileID: 894637699616354325}
+        m_TargetAssemblyTypeName: BML.Scripts.Damageables, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
         m_Arguments:
@@ -421,7 +346,12 @@ MonoBehaviour:
   _healthReference: {fileID: 0}
   _health: 3
   _useHealthVariable: 0
+  _invincibilitySeconds: 0
+  _isInvincible: 0
   _onHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  _onTakeDamage:
     m_PersistentCalls:
       m_Calls: []
   _onDeath:
@@ -439,7 +369,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7972474629112012132
+  _onRevive:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &894637699616354325
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -448,22 +381,79 @@ MonoBehaviour:
   m_GameObject: {fileID: 3000336959785077410}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04ecd871b7dcf0e47840fbb6de206a44, type: 3}
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   health: {fileID: 1525200595836623026}
-  _critMultiplier: 2
-  _invincibilitySeconds: 0
-  _isInvincible: 0
+  _damageables:
+  - _damageType: 3
+    _damageModifierType: 0
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: b9a983d04d699924c9535bedda6840d3, type: 2}
+          m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
+            ScriptableObjectSystem
+          m_MethodName: Increment
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - _damageType: 144
+    _damageModifierType: 0
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
   _onDamage:
     m_PersistentCalls:
-      m_Calls: []
-  _onCrit:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDeath:
-    m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3000336961166879906}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3799401582140118235}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3000336959854452575
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,6 +663,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _damageCooldown: 2
+  _damageType: 0
+  _onTriggerEnter:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3000336961166879916
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,6 +970,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
+--- !u!4 &3104066529416524042 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
+  m_PrefabInstance: {fileID: 3213711351615608545}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2330626703123901360 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
@@ -984,11 +983,6 @@ GameObject:
 --- !u!137 &7391696399828045555 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -3887185075125053422, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
-  m_PrefabInstance: {fileID: 3213711351615608545}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &3104066529416524042 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
   m_PrefabInstance: {fileID: 3213711351615608545}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &7230225398867700184
