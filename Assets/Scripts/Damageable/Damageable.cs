@@ -8,9 +8,9 @@ using UnityEngine.Events;
 namespace BML.Scripts {
     public class Damageable : MonoBehaviour
     {
-        [SerializeField] private Health health;
+        [SerializeField, PropertySpace(0f, 10f)] private Health health;
         [SerializeField] private List<DamageableItem> _damageable;
-        [SerializeField] private UnityEvent<HitInfo> _onDamage;
+        [SerializeField, PropertySpace(10f, 0f)] private UnityEvent<HitInfo> _onDamage;
 
         // public Dictionary<DamageType, DamageableItem> Value { get {return _value;}}
 

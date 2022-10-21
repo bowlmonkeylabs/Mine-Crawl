@@ -231,6 +231,7 @@ GameObject:
   - component: {fileID: 182695390771352254}
   - component: {fileID: 202682029861605475}
   - component: {fileID: 7379165262754171365}
+  - component: {fileID: 5432566915175241370}
   m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
@@ -370,8 +371,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5664728504856003165}
-        m_TargetAssemblyTypeName: BML.Scripts.Damageables, BML.Scripts
+      - m_Target: {fileID: 5432566915175241370}
+        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
         m_Arguments:
@@ -398,6 +399,51 @@ MonoBehaviour:
   uniqueID: 4888581186691438577
   updateError: 1
   checkTime: 0.2
+--- !u!114 &5432566915175241370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454127850101988312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 7664960571339365045}
+  _damageable:
+  - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
+      Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile
+    _damageType: 467
+    _damageModifierType: 0
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  _onDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3454127850065686866}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3454127850225854728
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,7 +943,6 @@ GameObject:
   - component: {fileID: 2450872905461499138}
   - component: {fileID: 2643451606169161808}
   - component: {fileID: 7664960571339365045}
-  - component: {fileID: 5664728504856003165}
   m_Layer: 0
   m_Name: Ore
   m_TagString: Ore
@@ -1014,52 +1059,6 @@ MonoBehaviour:
   _onRevive:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5664728504856003165
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7225383730169331457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 7664960571339365045}
-  _damageable:
-  - _damageType: 147
-    _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
-      Ore_Explosive
-    _damageModifierType: 0
-    _damageMultiplier: 1
-    _damageResistance: 0
-    _damageOverride: 0
-    _onDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onFailDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onDeath:
-      m_PersistentCalls:
-        m_Calls: []
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3454127850065686866}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _logHitInfo: 1
 --- !u!1001 &8399686363568519638
 PrefabInstance:
   m_ObjectHideFlags: 0

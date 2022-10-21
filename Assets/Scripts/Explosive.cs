@@ -64,10 +64,6 @@ namespace BML.Scripts
                     damageable = col.attachedRigidbody?.GetComponent<Damageable>();
                 }
 
-                if(damageable == null) {
-                    damageable = col.transform.parent?.GetComponent<Damageable>();
-                }
-
                 if(damageable != null) {
                     damageable.TakeDamage(new HitInfo(_damageType, _damage.Value, (col.transform.position - transform.position).normalized));
                 }

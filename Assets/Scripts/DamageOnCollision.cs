@@ -36,8 +36,9 @@ namespace BML.Scripts
             if (damageable != null) {
                 damageable.TakeDamage(new HitInfo(_damageType, _damage, (other.transform.position - transform.position).normalized));
                 _lastDamageTime = Time.time;
-                _onCollisionEnter.Invoke();
             }
+            
+            _onCollisionEnter.Invoke();
         }
     }
 }

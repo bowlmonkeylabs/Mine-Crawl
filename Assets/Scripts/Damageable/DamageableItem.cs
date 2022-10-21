@@ -16,9 +16,9 @@ namespace BML.Scripts {
             Override,
             None
         }
-        
+
+        [TextArea, SerializeField, HideLabel, FoldoutGroup("Preview", expanded: true)] private string _damageTypesPreview;
         [ValidateInput("DisplayValues")] [EnumFlags] [SerializeField] private DamageType _damageType;
-        [TextArea, SerializeField, ReadOnly, FoldoutGroup("Damage Types Preview", expanded: true)] private string _damageTypesPreview;
         [SerializeField] private DamageModifierType _damageModifierType = DamageModifierType.None;
         [ShowIf("_damageModifierType", DamageModifierType.Multiplier)] [SerializeField] private int _damageMultiplier = 1;
         [ShowIf("_damageModifierType", DamageModifierType.Integer)] [SerializeField] private int _damageResistance = 0;

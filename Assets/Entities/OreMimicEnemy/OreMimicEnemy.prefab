@@ -1126,7 +1126,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: {fileID: 3753042385917312083}
   _damageable:
-  - _damageType: 147
+  - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
+      Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile
+    _damageType: 467
     _damageModifierType: 0
     _damageMultiplier: 1
     _damageResistance: 0
@@ -2303,6 +2305,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3753042384557655052}
     m_Modifications:
+    - target: {fileID: 5664728504856003165, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _damageable.Array.data[0]._damageTypesPreview
+      value: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile, Enemy_Mimic_Projectile,
+        Ore_Explosive, Enemy_Snake_Projectile
+      objectReference: {fileID: 0}
     - target: {fileID: 7225383730169331457, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: m_Name
       value: Ore
