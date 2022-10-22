@@ -24,7 +24,7 @@ namespace BML.Scripts.Player
         [SerializeField] private GameEvent _onUsePickaxe;
         [SerializeField] private float _interactDistance = 5f;
         [SerializeField] private LayerMask _interactMask;
-        [SerializeField] private EvaluateCurveVariable _pickaxeSwingCooldown;
+        [SerializeField] private TimerReference _pickaxeSwingCooldown;
         [SerializeField] private IntReference _pickaxeDamage;
         [SerializeField] private DamageType _damageType;
         
@@ -62,7 +62,6 @@ namespace BML.Scripts.Player
         [TitleGroup("GodMode")]
         [SerializeField] private BoolVariable _isGodModeEnabled;
 
-        private float lastSwingTime = Mathf.NegativeInfinity;
         private bool pickaxeInputHeld = false;
 
         #endregion
@@ -90,6 +89,7 @@ namespace BML.Scripts.Player
             if (pickaxeInputHeld) TryUsePickaxe();
             HandleHover();
             _combatTimer.UpdateTime();
+            _pickaxeSwingCooldown.UpdateTime();
         }
 
         #endregion
@@ -141,11 +141,13 @@ namespace BML.Scripts.Player
         {
             RaycastHit hit;
 
-            if (lastSwingTime + _pickaxeSwingCooldown.Value > Time.time)
+            if (_pickaxeSwingCooldown.IsStarted && !_pickaxeSwingCooldown.IsFinished)
+            {
                 return;
+            }
             
             _onUsePickaxe.Raise();
-            lastSwingTime = Time.time;
+            _pickaxeSwingCooldown.RestartTimer();
             
             if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
                 _interactMask, QueryTriggerInteraction.Ignore))
