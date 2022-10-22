@@ -8,6 +8,7 @@ using BML.Scripts.Utils;
 using Shapes;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts
@@ -15,6 +16,14 @@ namespace BML.Scripts
     public class EnemySpawnManager : MonoBehaviour
     {
         #region Inspector
+
+        #if UNITY_EDITOR
+        [FormerlySerializedAs("_isSpawningPaused")] [SerializeField] public bool IsSpawningPaused = false;
+        [FormerlySerializedAs("_isDespawningPaused")] [SerializeField] public bool IsDespawningPaused = false;
+        #else
+        public bool IsSpawningPaused = false;
+        public bool IsDespawningPaused = false;
+        #endif
         
         [TitleGroup("Scene References")]
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
@@ -79,11 +88,14 @@ namespace BML.Scripts
 
         private void Update()
         {
-            _currentPercentToMaxSpawn.Value += (Time.deltaTime) / (_minutesToMaxSpawn.Value * 60f);
-            _currentSpawnDelay.Value = _spawnDelayCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
+            if (!IsSpawningPaused)
+            {
+                _currentPercentToMaxSpawn.Value += (Time.deltaTime) / (_minutesToMaxSpawn.Value * 60f);
+                _currentSpawnDelay.Value = _spawnDelayCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
+            }
 
-            HandleDespawning();
-            HandleSpawning();
+            if (!IsDespawningPaused) HandleDespawning();
+            if (!IsSpawningPaused) HandleSpawning();
         }
         
         private void OnDrawGizmosSelected()
@@ -227,7 +239,7 @@ namespace BML.Scripts
                 childEnemy.Despawn();
             }
         }
-        
+
         private void HandleDespawning()
         {
             if (Time.time < lastDespawnTime + _despawnDelay)
@@ -271,7 +283,7 @@ namespace BML.Scripts
             // Check against current enemy cap
             _currentEnemyCount.Value = _enemyContainer.Cast<Transform>()
                 .Select(child => child.GetComponent<EnemySpawnable>())
-                .Count(d => d != null && d.DoCountTowardsSpawnCap && d.gameObject.activeSelf);
+                .Count(d => d != null && d.DoCountForSpawnCap && d.gameObject.activeSelf);
             _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
             _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
             if (_currentEnemyCount.Value >= _currentSpawnCap.Value) 
@@ -304,22 +316,55 @@ namespace BML.Scripts
             // Choose weighted random spawn point
             SpawnPoint randomSpawnPoint = RandomUtils.RandomWithWeights(spawnPointWeights);
             
+            // Spawn chosen enemy at chosen spawn point
+            var newEnemy = SpawnEnemy(randomSpawnPoint.transform.position, randomEnemy, true, _spawnOffsetRadius);
             
-            var spawnOffset = Random.insideUnitCircle;
-            var spawnPoint = randomSpawnPoint.transform.position +
-                             new Vector3(spawnOffset.x, 0f, spawnOffset.y) * _spawnOffsetRadius;
+            // Update last spawn time
+            lastSpawnTime = Time.time;
+        }
+        
+        private GameObject SpawnEnemy(Vector3 position, EnemySpawnParams enemy, bool doCountForSpawnCap, float randomOffsetRadius)
+        {
+            // Calculate random spawn position offset
+            var randomOffset = Random.insideUnitCircle;
+            var spawnPoint = position +
+                             new Vector3(randomOffset.x, 0f, randomOffset.y) * randomOffsetRadius;
+            
+            // Instantiate new enemy game object
             var newGameObject =
-                GameObjectUtils.SafeInstantiate(randomEnemy.InstanceAsPrefab, randomEnemy.Prefab, _enemyContainer);
-            var spawnPointOffset = spawnPoint -
-                                   randomEnemy.RaycastDirection * randomEnemy.RaycastOffset;
-            newGameObject.transform.position = SpawnObjectsUtil.GetPointTowards(spawnPointOffset,
-                randomEnemy.RaycastDirection, _enemySpawnerParams.TerrainLayerMask,
+                GameObjectUtils.SafeInstantiate(true, enemy.Prefab, _enemyContainer);
+
+            // Raycast from spawn position to place new game object along the level surface
+            newGameObject.transform.position = SpawnObjectsUtil.GetPointTowards(
+                (spawnPoint - enemy.RaycastDirection * enemy.RaycastOffset),
+                enemy.RaycastDirection,
+                _enemySpawnerParams.TerrainLayerMask,
                 _enemySpawnerParams.MaxRaycastLength);
             
-            if (_enableLogs) Debug.Log($"HandleSpawning Spawned {randomEnemy.Prefab.name} {spawnPoint}");
+            // Set parameters on enemy despawnable instance
+            var enemySpawnable = newGameObject.GetComponent<EnemySpawnable>();
+            if (enemySpawnable != null)
+            {
+                enemySpawnable.DoCountForSpawnCap = doCountForSpawnCap;
+            }
+
+            // Log and update enemy count
+            if (_enableLogs) Debug.Log($"SpawnEnemy {enemy.Prefab.name} {spawnPoint}");
             _currentEnemyCount.Value = _enemyContainer.Cast<Transform>().Count(t => t.gameObject.activeSelf);
-            
-            lastSpawnTime = Time.time;
+
+            return newGameObject;
+        }
+
+        public GameObject SpawnEnemyByName(Vector3 position, string enemyName, bool doCountForSpawnCap, float randomOffsetRadius)
+        {
+            var enemy = _enemySpawnerParams.SpawnAtTags
+                .FirstOrDefault(e => e.Prefab.name.StartsWith(enemyName, StringComparison.OrdinalIgnoreCase));
+            if (enemy == null)
+            {
+                throw new ArgumentException($"EnemySpawnManager: '{enemyName}' Enemy not found in spawner list");
+            }
+
+            return SpawnEnemy(position, enemy, doCountForSpawnCap, randomOffsetRadius);
         }
         
         #endregion

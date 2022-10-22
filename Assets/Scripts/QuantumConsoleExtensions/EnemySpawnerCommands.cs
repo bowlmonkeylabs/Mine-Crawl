@@ -16,6 +16,24 @@ namespace BML.Scripts.QuantumConsoleExtensions
         private static string _percentToMaxSpawnAddress = "Assets/ScriptableObjects/EnemySpawner/Spawner_CurrentPercentToMaxSpawn.asset";
 
         private static string _enemySpawnerGameObjectSceneReferenceAddress = "Assets/ScriptableObjects/EnemySpawner/Spawner_GameObjectSceneReference.asset";
+
+        #region Commands
+        
+        [Command("pause-spawning", "Pauses enemy spawning and difficulty curve.")]
+        private static async void SetSpawningPaused(bool paused = true)
+        {
+            var enemySpawnManager = await GetActiveEnemySpawnManager();
+
+            enemySpawnManager.IsSpawningPaused = paused;
+        }
+        
+        [Command("pause-despawning", "Pauses enemy despawning.")]
+        private static async void SetDespawningPaused(bool paused = true)
+        {
+            var enemySpawnManager = await GetActiveEnemySpawnManager();
+
+            enemySpawnManager.IsDespawningPaused = paused;
+        }
         
         [Command("difficulty-curve-factor", "Sets the _currentPercentToMaxSpawn of the EnemySpawnManager")]
         private static async void SetDifficultyCurveFactor(float factor)
@@ -34,6 +52,29 @@ namespace BML.Scripts.QuantumConsoleExtensions
             enemySpawner.DespawnAll();
         }
 
+        [Command("spawn-at-player", "Spawn an enemy at the player's position. Enemies are referenced by name (e.g. Zombie, Slime)")]
+        private static async void Spawn(string enemyName, int count = 1, int health = -1)
+        {
+            var enemySpawner = await GetActiveEnemySpawnManager();
+            var playerTransform = await PlayerCommands.GetActivePlayerTransform();
+
+            for (int i = 0; i < count; i++)
+            {
+                var newEnemy = enemySpawner.SpawnEnemyByName(playerTransform.position, enemyName, false, 3);
+
+                if (health >= 0)
+                {
+                    var healthComponent = newEnemy.GetComponent<Health>();
+                    healthComponent.SetHealth(health);
+                }
+                
+            }
+        }
+        
+        #endregion
+
+        #region Asset access
+        
         private static async Task<EnemySpawnManager> GetActiveEnemySpawnManager()
         {
             var asyncHandle =
@@ -53,5 +94,8 @@ namespace BML.Scripts.QuantumConsoleExtensions
 
             return enemySpawner;
         }
+        
+        #endregion
+
     }
 }

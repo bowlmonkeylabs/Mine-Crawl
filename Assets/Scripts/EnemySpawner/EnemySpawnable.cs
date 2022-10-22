@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts
 {
@@ -7,7 +8,7 @@ namespace BML.Scripts
     {
         #region Inspector
 
-        [SerializeField] public bool DoCountTowardsSpawnCap = true;
+        [FormerlySerializedAs("DoCountTowardsSpawnCap")] [SerializeField] public bool DoCountForSpawnCap = true;
         [SerializeField] private UnityEvent _onDespawn;
         
         #endregion

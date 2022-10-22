@@ -20,6 +20,8 @@ namespace BML.Scripts.Tasks
         public TransformSceneReference _transformReference2;
         [BehaviorDesigner.Runtime.Tasks.Tooltip("Ignore the Y axis (take just the horizontal of direction)")]
         public bool ignoreUpAxis = false;
+        [BehaviorDesigner.Runtime.Tasks.Tooltip("Normalize the direction.")]
+        public bool normalize = true;
 
         [BehaviorDesigner.Runtime.Tasks.Tooltip("The direction")]
         [RequiredField]
@@ -35,11 +37,17 @@ namespace BML.Scripts.Tasks
                 : _transform2.Value;
 
             Vector3 delta = (transform2.position - transform1.position);
-            
-            if (ignoreUpAxis)
-                delta.xoz();
 
-            storeResult.Value = delta.normalized;
+            if (ignoreUpAxis)
+            {
+                delta = delta.xoz();
+            }
+            if (normalize)
+            {
+                delta = delta.normalized;
+            }
+
+            storeResult.Value = delta;
 
             return TaskStatus.Success;
         }
