@@ -852,11 +852,11 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
       data:
         Active: 1
-        UniqueID: 1600883981
-        Label: MMSoundManager Sound
+        UniqueID: 424996033
+        Label: BMLSoundManager Sound
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -901,7 +901,8 @@ MonoBehaviour:
         RecycleAudioSource: {fileID: 0}
         Loop: 0
         Persistent: 0
-        DoNotPlayIfClipAlreadyPlaying: 0
+        LimitConsecutivePlays: 1
+        MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
         Fade: 0
         FadeInitialVolume: 0
@@ -1474,11 +1475,11 @@ MonoBehaviour:
           m_PersistentCalls:
             m_Calls: []
     00000001:
-      type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
       data:
         Active: 1
-        UniqueID: -46841723
-        Label: MMSoundManager Sound
+        UniqueID: -18237181
+        Label: BMLSoundManager Sound
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -1521,7 +1522,8 @@ MonoBehaviour:
         RecycleAudioSource: {fileID: 0}
         Loop: 0
         Persistent: 0
-        DoNotPlayIfClipAlreadyPlaying: 0
+        LimitConsecutivePlays: 1
+        MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
         Fade: 0
         FadeInitialVolume: 0
@@ -1565,7 +1567,7 @@ MonoBehaviour:
         ReverbZoneMix: 1
         DopplerLevel: 1
         Spread: 0
-        RolloffMode: 0
+        RolloffMode: 1
         MinDistance: 10
         MaxDistance: 30
     00000002:
@@ -2657,11 +2659,50 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
+      type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
         Active: 1
-        UniqueID: -151560815
-        Label: MMSoundManager Sound
+        UniqueID: -980285228
+        Label: Flicker
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 6234188384059194629}
+        DebugActive: 0
+        BoundRenderer: {fileID: 552779942105051271}
+        Mode: 0
+        PropertyName: _Tint
+        FlickerDuration: 0.1
+        FlickerOctave: 0.04
+        FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
+        MaterialIndexes: 
+        UseMaterialPropertyBlocks: 0
+    00000001:
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
+      data:
+        Active: 1
+        UniqueID: -1628485876
+        Label: BMLSoundManager Sound
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -2704,7 +2745,8 @@ MonoBehaviour:
         RecycleAudioSource: {fileID: 0}
         Loop: 0
         Persistent: 0
-        DoNotPlayIfClipAlreadyPlaying: 0
+        LimitConsecutivePlays: 1
+        MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
         Fade: 0
         FadeInitialVolume: 0
@@ -2751,45 +2793,6 @@ MonoBehaviour:
         RolloffMode: 1
         MinDistance: 5
         MaxDistance: 30
-    00000001:
-      type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: -980285228
-        Label: Flicker
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 6234188384059194629}
-        DebugActive: 0
-        BoundRenderer: {fileID: 552779942105051271}
-        Mode: 0
-        PropertyName: _Tint
-        FlickerDuration: 0.1
-        FlickerOctave: 0.04
-        FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
-        MaterialIndexes: 
-        UseMaterialPropertyBlocks: 0
 --- !u!1 &5801621293163199799
 GameObject:
   m_ObjectHideFlags: 0
@@ -3436,7 +3439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7be757edf6e4dc9920a0a8af410acf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DoCountTowardsSpawnCap: 1
+  DoCountForSpawnCap: 1
   _onDespawn:
     m_PersistentCalls:
       m_Calls: []
@@ -3584,11 +3587,11 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
       data:
         Active: 1
-        UniqueID: 976521993
-        Label: MMSoundManager Sound
+        UniqueID: 457025370
+        Label: BMLSoundManager Sound
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -3631,7 +3634,8 @@ MonoBehaviour:
         RecycleAudioSource: {fileID: 0}
         Loop: 0
         Persistent: 0
-        DoNotPlayIfClipAlreadyPlaying: 0
+        LimitConsecutivePlays: 1
+        MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
         Fade: 0
         FadeInitialVolume: 0
@@ -3762,11 +3766,44 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
+      type: {class: MMF_Destroy, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
         Active: 1
-        UniqueID: 144129975
-        Label: MMSoundManager Sound
+        UniqueID: 1189821925
+        Label: Destroy
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 4105760494233487220}
+        DebugActive: 0
+        TargetGameObject: {fileID: 6194658959717897337}
+        Mode: 0
+    00000001:
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
+      data:
+        Active: 1
+        UniqueID: -733708128
+        Label: BMLSoundManager Sound
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -3809,7 +3846,8 @@ MonoBehaviour:
         RecycleAudioSource: {fileID: 0}
         Loop: 0
         Persistent: 0
-        DoNotPlayIfClipAlreadyPlaying: 0
+        LimitConsecutivePlays: 1
+        MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
         Fade: 0
         FadeInitialVolume: 0
@@ -3853,42 +3891,9 @@ MonoBehaviour:
         ReverbZoneMix: 1
         DopplerLevel: 1
         Spread: 0
-        RolloffMode: 0
+        RolloffMode: 1
         MinDistance: 5
         MaxDistance: 30
-    00000001:
-      type: {class: MMF_Destroy, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: 1189821925
-        Label: Destroy
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 4105760494233487220}
-        DebugActive: 0
-        TargetGameObject: {fileID: 6194658959717897337}
-        Mode: 0
 --- !u!1 &6943291091864387953
 GameObject:
   m_ObjectHideFlags: 0

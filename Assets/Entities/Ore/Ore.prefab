@@ -84,11 +84,11 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
       data:
         Active: 1
-        UniqueID: 207943916
-        Label: MMSoundManager Sound
+        UniqueID: 2117083795
+        Label: BMLSoundManager Sound
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -131,7 +131,8 @@ MonoBehaviour:
         RecycleAudioSource: {fileID: 0}
         Loop: 0
         Persistent: 0
-        DoNotPlayIfClipAlreadyPlaying: 0
+        LimitConsecutivePlays: 1
+        MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
         Fade: 0
         FadeInitialVolume: 0
@@ -396,7 +397,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 4888581186691438577
+  uniqueID: 394633677827904747
   updateError: 1
   checkTime: 0.2
 --- !u!114 &5432566915175241370
@@ -561,11 +562,11 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
       data:
         Active: 1
-        UniqueID: 554320319
-        Label: MMSoundManager Sound
+        UniqueID: 1052570606
+        Label: BMLSoundManager Sound
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -608,7 +609,8 @@ MonoBehaviour:
         RecycleAudioSource: {fileID: 0}
         Loop: 0
         Persistent: 0
-        DoNotPlayIfClipAlreadyPlaying: 0
+        LimitConsecutivePlays: 1
+        MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
         Fade: 0
         FadeInitialVolume: 0
@@ -806,11 +808,54 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
+      type: {class: MMF_ParticlesInstantiation, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
         Active: 1
-        UniqueID: 678614005
-        Label: MMSoundManager Sound
+        UniqueID: 1103606950
+        Label: Particles Instantiation
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 5116163273417737045}
+        DebugActive: 0
+        Mode: 1
+        CachedRecycle: 1
+        ParticlesPrefab: {fileID: 6501570417714043461, guid: f9fe6109983674e40880b0589862b8f3, type: 3}
+        RandomParticlePrefabs: []
+        ForceSetActiveOnPlay: 0
+        PositionMode: 1
+        InstantiateParticlesPosition: {fileID: 517902721090737292}
+        TargetWorldPosition: {x: 0, y: 0, z: 0}
+        Offset: {x: 0, y: 0, z: 0}
+        NestParticles: 0
+        ApplyRotation: 0
+        ApplyScale: 0
+    00000001:
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
+      data:
+        Active: 1
+        UniqueID: 730122217
+        Label: BMLSoundManager Sound
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -853,7 +898,8 @@ MonoBehaviour:
         RecycleAudioSource: {fileID: 0}
         Loop: 0
         Persistent: 0
-        DoNotPlayIfClipAlreadyPlaying: 0
+        LimitConsecutivePlays: 1
+        MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
         Fade: 0
         FadeInitialVolume: 0
@@ -900,49 +946,6 @@ MonoBehaviour:
         RolloffMode: 1
         MinDistance: 5
         MaxDistance: 30
-    00000001:
-      type: {class: MMF_ParticlesInstantiation, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: 1103606950
-        Label: Particles Instantiation
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 5116163273417737045}
-        DebugActive: 0
-        Mode: 1
-        CachedRecycle: 1
-        ParticlesPrefab: {fileID: 6501570417714043461, guid: f9fe6109983674e40880b0589862b8f3, type: 3}
-        RandomParticlePrefabs: []
-        ForceSetActiveOnPlay: 0
-        PositionMode: 1
-        InstantiateParticlesPosition: {fileID: 517902721090737292}
-        TargetWorldPosition: {x: 0, y: 0, z: 0}
-        Offset: {x: 0, y: 0, z: 0}
-        NestParticles: 0
-        ApplyRotation: 0
-        ApplyScale: 0
 --- !u!1 &7225383730169331457
 GameObject:
   m_ObjectHideFlags: 0
