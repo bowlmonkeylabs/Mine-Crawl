@@ -810,7 +810,7 @@ namespace BML.Scripts.MMFFeedbacks
             List<AudioSource> audioSources = new List<AudioSource>();
             foreach (MMSoundManagerSound sound in _sounds)
             {
-                if (sound.Source.clip == clip)
+                if (sound.Source.clip == clip && sound.Source.isPlaying)
                 {
                     audioSources.Add(sound.Source);
                 }

@@ -393,6 +393,8 @@ GameObject:
   - component: {fileID: 7269776325212470143}
   - component: {fileID: 5309297457865363653}
   - component: {fileID: 8472506614584694035}
+  - component: {fileID: 4708090958953502232}
+  - component: {fileID: 6357244687184541398}
   m_Layer: 11
   m_Name: Bomb
   m_TagString: Untagged
@@ -451,6 +453,13 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 2da017c7f7d1f66459ef94aac426499f, type: 2}
+  _explosionShortFuseTime:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0.1
+    Variable: {fileID: 0}
   _explosionRadius:
     UseConstant: 0
     EnableInstanceOptions: 0
@@ -460,7 +469,7 @@ MonoBehaviour:
     Variable: {fileID: 11400000, guid: deb0116f2dce187439f33946f472cc05, type: 2}
   _explosionMask:
     serializedVersion: 2
-    m_Bits: 33984
+    m_Bits: 36032
   _damageType: 2
   _damage:
     UseConstant: 1
@@ -574,6 +583,79 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   _onGrounded:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4708090958953502232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8692043269319617905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _healthReference: {fileID: 0}
+  _health: 1
+  _useHealthVariable: 0
+  _invincibilitySeconds: 0
+  _isInvincible: 0
+  _onHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  _onTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  _onRevive:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &6357244687184541398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8692043269319617905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 4708090958953502232}
+  _damageable:
+  - _damageTypesPreview: Player_Bomb, Enemy_Sentinel_Projectile, Ore_Explosive
+    _damageType: 146
+    _damageModifierType: 2
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7269776325212470143}
+          m_TargetAssemblyTypeName: BML.Scripts.Explosive, BML.Scripts
+          m_MethodName: ActivateShortFuse
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  _onDamage:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &8692043271137078942

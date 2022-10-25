@@ -10,6 +10,7 @@ namespace BML.Scripts
     {
         
         [SerializeField] private FloatReference _explosionTime;
+        [SerializeField] private FloatReference _explosionShortFuseTime;
         [SerializeField] private FloatReference _explosionRadius;
         [SerializeField] private LayerMask _explosionMask;
         [SerializeField] private DamageType _damageType;
@@ -20,15 +21,30 @@ namespace BML.Scripts
 
         private bool isActive;
         private float activateTime;
+        private float currentFuseTime;
 
         public void Activate()
         {
             if (isActive)
                 return;
+            
+            Activate(false);
+        }
+        
+        public void ActivateShortFuse()
+        {
+            Activate(true);
+        }
 
+
+        private void Activate(bool isShortFuse)
+        {
+            if (!isActive)
+                _onActivate.Invoke();
+            
             activateTime = Time.time;
             isActive = true;
-            _onActivate.Invoke();
+            currentFuseTime = isShortFuse ? _explosionShortFuseTime.Value : _explosionTime.Value;
         }
 
         public void Deactivate()
@@ -41,7 +57,7 @@ namespace BML.Scripts
             if (!isActive)
                 return;
 
-            if (activateTime + _explosionTime.Value < Time.time)
+            if (activateTime + currentFuseTime < Time.time)
                 Explode();
         }
 
