@@ -62,7 +62,7 @@ namespace BML.Scripts
         
         [TitleGroup("Debug")]
         [SerializeField] private bool _enableLogs = false;
-
+        
         #endregion
 
         [ReadOnly, ShowInInspector] private Dictionary<string, List<SpawnPoint>> _allSpawnPointsByTag;
@@ -70,30 +70,14 @@ namespace BML.Scripts
 
         private float lastSpawnTime = Mathf.NegativeInfinity;
         private float lastDespawnTime = Mathf.NegativeInfinity;
+        private int totalEnemySpawnCount;
         
         #region Unity lifecycle
 
         private void Awake()
         {
-            // int totalCost = _enemySpawnerParams.SpawnAtTags.Sum(e => e.Cost);
-            // var complementCost = _enemySpawnerParams.SpawnAtTags.Select(e => totalCost - e.Cost).ToList();
-            // var totalComplementCost = complementCost.Sum();
-            // Debug.Log($"Total Cost: {totalCost}");
-            // for (int i = 0; i < _enemySpawnerParams.SpawnAtTags.Count; i++)
-            // {
-            //     _enemySpawnerParams.SpawnAtTags[i].NormalizedSpawnWeight = complementCost[i] / (float) totalComplementCost;
-            //     Debug.Log($"{_enemySpawnerParams.SpawnAtTags[i].Prefab.name} " +
-            //               $"NormSpawnWeight: {_enemySpawnerParams.SpawnAtTags[i].NormalizedSpawnWeight}");
-            // }
-            
-            int totalCost = _enemySpawnerParams.SpawnAtTags.Sum(e => e.Cost);
-            Debug.Log($"Total Cost: {totalCost}");
-            foreach (var e in _enemySpawnerParams.SpawnAtTags)
-            {
-                e.NormalizedSpawnWeight = e.Cost / (float) totalCost;
-                Debug.Log($"{e.Prefab.name} " +
-                          $"NormSpawnWeight: {e.NormalizedSpawnWeight}");
-            }
+            InitSpawnCosts();
+            totalEnemySpawnCount = 0;
         }
 
         private void OnEnable()
@@ -169,6 +153,27 @@ namespace BML.Scripts
         #endregion
         
         #region Spawn points
+
+        private int StepID = 4;
+
+        [Button("Debug Init Spawn Costs")]
+        private void InitSpawnCosts()
+        {
+            Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount);
+            int minCost = _enemySpawnerParams.SpawnAtTags.Min(e => e.Cost);
+            int maxCost = _enemySpawnerParams.SpawnAtTags.Max(e => e.Cost);
+
+            var intermediate = _enemySpawnerParams.SpawnAtTags.Select(e => ((float) maxCost / e.Cost) * minCost).ToList();
+            var total = intermediate.Sum();
+
+            for (int i = 0; i < intermediate.Count; i++)
+            {
+                _enemySpawnerParams.SpawnAtTags[i].NormalizedSpawnWeight = intermediate[i] / (float) total;
+                Debug.Log($"{_enemySpawnerParams.SpawnAtTags[i].Prefab.name} | " +
+                          $"Cost: {_enemySpawnerParams.SpawnAtTags[i].Cost}" +
+                          $"| Norm: {_enemySpawnerParams.SpawnAtTags[i].NormalizedSpawnWeight}");
+            }
+        }
 
         private void InitSpawnPoints()
         {
@@ -314,6 +319,7 @@ namespace BML.Scripts
             var weightPairs =  _enemySpawnerParams.SpawnAtTags.Select(e => 
                 new RandomUtils.WeightPair<EnemySpawnParams>(e, e.NormalizedSpawnWeight)).ToList();
 
+            Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount);
             EnemySpawnParams randomEnemy = RandomUtils.RandomWithWeights(weightPairs);
             
             List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemy.Tag]
@@ -344,6 +350,7 @@ namespace BML.Scripts
             
             // Spawn chosen enemy at chosen spawn point
             var newEnemy = SpawnEnemy(randomSpawnPoint.transform.position, randomEnemy, true, _spawnOffsetRadius);
+            totalEnemySpawnCount++;
             
             // Update last spawn time
             lastSpawnTime = Time.time;

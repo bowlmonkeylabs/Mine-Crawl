@@ -15,6 +15,7 @@ namespace BML.Scripts.Tasks
     {
         [SerializeField] private SharedTransform _swoopTransform;
         [SerializeField] private TransformSceneReference _targetRef;
+        [SerializeField] private Transform _rotationPivot;
         [SerializeField] private SharedFloat _swoopTime;
         [SerializeField] private SharedFloat _swoopYOffset;
         [SerializeField] private AnimationCurve _horizontalMoveCurve;
@@ -46,6 +47,7 @@ namespace BML.Scripts.Tasks
         {
             ai.enabled = true;
             charController.enabled = false;
+            //_rotationPivot.rotation = Quaternion.identity;
         }
         
         public override TaskStatus OnUpdate()
@@ -69,7 +71,9 @@ namespace BML.Scripts.Tasks
             var verticalTarget = startPos.oyo() + verticalDir * verticalDelta * _verticalMoveCurve.Evaluate(percentComplete);
             var verticalMove = (verticalTarget - _swoopTransform.Value.position.oyo()).magnitude * verticalDir;
 
-            charController.Move(horizontalMove + verticalMove);
+            var velocity = horizontalMove + verticalMove;
+            charController.Move(velocity);
+            _rotationPivot.rotation = Quaternion.LookRotation(velocity.normalized, Vector3.up);
         }
     }
 }
