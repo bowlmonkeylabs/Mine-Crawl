@@ -47,7 +47,7 @@ namespace BML.Scripts.Tasks
         {
             ai.enabled = true;
             charController.enabled = false;
-            //_rotationPivot.rotation = Quaternion.identity;
+            _rotationPivot.localRotation = Quaternion.identity;
         }
         
         public override TaskStatus OnUpdate()
@@ -73,7 +73,8 @@ namespace BML.Scripts.Tasks
 
             var velocity = horizontalMove + verticalMove;
             charController.Move(velocity);
-            _rotationPivot.rotation = Quaternion.LookRotation(velocity.normalized, Vector3.up);
+            if (velocity.magnitude > 0)
+                _rotationPivot.rotation = Quaternion.LookRotation(velocity.normalized, Vector3.up);
         }
     }
 }
