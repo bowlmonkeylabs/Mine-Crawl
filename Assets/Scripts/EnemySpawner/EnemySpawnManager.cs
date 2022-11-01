@@ -73,6 +73,29 @@ namespace BML.Scripts
         
         #region Unity lifecycle
 
+        private void Awake()
+        {
+            // int totalCost = _enemySpawnerParams.SpawnAtTags.Sum(e => e.Cost);
+            // var complementCost = _enemySpawnerParams.SpawnAtTags.Select(e => totalCost - e.Cost).ToList();
+            // var totalComplementCost = complementCost.Sum();
+            // Debug.Log($"Total Cost: {totalCost}");
+            // for (int i = 0; i < _enemySpawnerParams.SpawnAtTags.Count; i++)
+            // {
+            //     _enemySpawnerParams.SpawnAtTags[i].NormalizedSpawnWeight = complementCost[i] / (float) totalComplementCost;
+            //     Debug.Log($"{_enemySpawnerParams.SpawnAtTags[i].Prefab.name} " +
+            //               $"NormSpawnWeight: {_enemySpawnerParams.SpawnAtTags[i].NormalizedSpawnWeight}");
+            // }
+            
+            int totalCost = _enemySpawnerParams.SpawnAtTags.Sum(e => e.Cost);
+            Debug.Log($"Total Cost: {totalCost}");
+            foreach (var e in _enemySpawnerParams.SpawnAtTags)
+            {
+                e.NormalizedSpawnWeight = e.Cost / (float) totalCost;
+                Debug.Log($"{e.Prefab.name} " +
+                          $"NormSpawnWeight: {e.NormalizedSpawnWeight}");
+            }
+        }
+
         private void OnEnable()
         {
             _currentPercentToMaxSpawn.Value = 0;
@@ -285,11 +308,14 @@ namespace BML.Scripts
                 .Select(child => child.GetComponent<EnemySpawnable>())
                 .Count(d => d != null && d.DoCountForSpawnCap && d.gameObject.activeSelf);
             _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
-            _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
-            if (_currentEnemyCount.Value >= _currentSpawnCap.Value) 
+            if (_currentEnemyCount.Value >= _currentSpawnCap.Value)
                 return;
+            
+            var weightPairs =  _enemySpawnerParams.SpawnAtTags.Select(e => 
+                new RandomUtils.WeightPair<EnemySpawnParams>(e, e.NormalizedSpawnWeight)).ToList();
 
-            EnemySpawnParams randomEnemy = _enemySpawnerParams.SpawnAtTags.GetRandomElement();
+            EnemySpawnParams randomEnemy = RandomUtils.RandomWithWeights(weightPairs);
+            
             List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemy.Tag]
                 .Where(spawnPoint => spawnPoint.EnemySpawnWeight != 0)
                 .ToList();
