@@ -741,6 +741,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 834423957878578015}
   m_Mesh: {fileID: 0}
+--- !u!1 &845233883066563456
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3898038306012718468}
+  m_Layer: 10
+  m_Name: Center
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3898038306012718468
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 845233883066563456}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2286462633395921408}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &945296049495908797
 GameObject:
   m_ObjectHideFlags: 0
@@ -773,7 +803,7 @@ Transform:
   - {fileID: 9027758737200291840}
   - {fileID: 4247693216260108801}
   m_Father: {fileID: 2286462633395921408}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1785383481893781539
 GameObject:
@@ -1790,7 +1820,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2286462633395921408}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &3525348637963634643
 AudioSource:
@@ -2755,7 +2785,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2286462633395921408}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &5374926373882041288
 SphereCollider:
@@ -3637,6 +3667,7 @@ GameObject:
   m_Component:
   - component: {fileID: 516039574733119888}
   - component: {fileID: 1359716131690726157}
+  - component: {fileID: 4415392943354603617}
   m_Layer: 0
   m_Name: DeathFeedback
   m_TagString: Untagged
@@ -3839,6 +3870,61 @@ MonoBehaviour:
         RolloffMode: 1
         MinDistance: 5
         MaxDistance: 30
+--- !u!114 &4415392943354603617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8342698528038205484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f680a7afde40b49d9741bdbc7aa5bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _firePoint: {fileID: 3898038306012718468}
+  _container: {fileID: 11400000, guid: eddf651308826cd46a3e62a45a34c7cd, type: 2}
+  _forceMode: 1
+  _direction:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 4ce6a649ad996fc4db299c21ed33231c, type: 2}
+  _directionVariance:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 6f2d74543750f50488792649a1c06eaa, type: 2}
+  _force:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: 67851cd4d7b4c1e42867187f80fac7c7, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _forceVariance:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: a4365917159380b49a1411371b092d44, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _torque:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 437a6cb823740bd43a36c4d249851ab8, type: 2}
+  _torqueVariance:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 4697d588ccb41c94992b189d006afeef, type: 2}
 --- !u!1 &8425948706477598704
 GameObject:
   m_ObjectHideFlags: 0
@@ -4113,6 +4199,7 @@ Transform:
   m_Children:
   - {fileID: 2320387067001729001}
   - {fileID: 5449580132155830926}
+  - {fileID: 3898038306012718468}
   - {fileID: 4442872779332821850}
   - {fileID: 7219091725348435015}
   - {fileID: 4946894290672081985}
@@ -4227,19 +4314,6 @@ MonoBehaviour:
   _onDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11400000, guid: b9a983d04d699924c9535bedda6840d3, type: 2}
-        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
-          ScriptableObjectSystem
-        m_MethodName: Increment
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 1359716131690726157}
         m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
         m_MethodName: PlayFeedbacks
@@ -4247,6 +4321,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4415392943354603617}
+        m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
+        m_MethodName: Launch
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2593184574423224280, guid: 031888ecd2537c742b2ebfda7fc8fa7d, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4444,9 +4530,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
---- !u!137 &3619701985408020845 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: -3887185075125053422, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
+--- !u!4 &9204385114191072916 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
   m_PrefabInstance: {fileID: 8662165925752859007}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &8428306185315210286 stripped
@@ -4454,9 +4540,9 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
   m_PrefabInstance: {fileID: 8662165925752859007}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &9204385114191072916 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
+--- !u!137 &3619701985408020845 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -3887185075125053422, guid: e17eb55e10c4e114c96cd0e2554cf8f8, type: 3}
   m_PrefabInstance: {fileID: 8662165925752859007}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &8875923303345054713

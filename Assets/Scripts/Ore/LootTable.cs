@@ -13,11 +13,12 @@ namespace BML.Scripts
         {
             public float DropChance;
             public UnityEvent OnDrop;
+            public List<GameObject> DropPrefabs;
         }
 
         [SerializeField] private List<TableEntry> _entries;
 
-        public void Evaluate(float value)
+        public List<GameObject> Evaluate(float value)
         {
             float acc = 0;
             foreach (var tableEntry in _entries)
@@ -27,9 +28,10 @@ namespace BML.Scripts
                 if (value <= acc)
                 {
                     tableEntry.OnDrop?.Invoke();
-                    break;
+                    return tableEntry.DropPrefabs;
                 }
             }
+            return null;
         }
     }
 }
