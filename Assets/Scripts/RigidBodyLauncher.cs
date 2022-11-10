@@ -33,6 +33,8 @@ namespace BML.Scripts
 
         public void Launch(GameObject prefab)
         {
+            Debug.Log($"Launch Rigid Body: {prefab.name}");
+            
             var position = (!_firePoint.SafeIsUnityNull() ? _firePoint.position : this.transform.position);
             var parent = (_container.Value != null ? _container.Value : this.transform);
             
