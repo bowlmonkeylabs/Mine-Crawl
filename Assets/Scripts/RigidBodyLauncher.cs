@@ -1,4 +1,5 @@
 ﻿using BML.ScriptableObjectCore.Scripts.SceneReferences;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Utils;
 using Sirenix.Utilities;
@@ -15,14 +16,14 @@ namespace BML.Scripts
         
         [SerializeField] private ForceMode _forceMode;
         
-        [SerializeField] private Vector3 _direction;
-        [SerializeField] private Vector3 _directionVariance;
+        [SerializeField] private Vector3Reference _direction;
+        [SerializeField] private Vector3Reference _directionVariance;
 
         [SerializeField] private SafeFloatValueReference _force;
         [SerializeField] private SafeFloatValueReference _forceVariance;
 
-        [SerializeField] private Vector3 _torque;
-        [SerializeField] private Vector3 _torqueVariance;
+        [SerializeField] private Vector3Reference _torque;
+        [SerializeField] private Vector3Reference _torqueVariance;
         
         #endregion
 
@@ -43,20 +44,20 @@ namespace BML.Scripts
             {
                 // Calculate initial force and direction
                 var directionVariance = new Vector3(
-                    Random.Range(-_directionVariance.x, _directionVariance.x),
-                    Random.Range(-_directionVariance.y, _directionVariance.y),
-                    Random.Range(-_directionVariance.z, _directionVariance.z)
+                    Random.Range(-1, 1) *  _directionVariance.Value.x,
+                    Random.Range(-1, 1) *  _directionVariance.Value.y,
+                    Random.Range(-1, 1) *  _directionVariance.Value.z
                 );
-                var forceVariance = Random.Range(-_forceVariance.Value, _forceVariance.Value);
-                var force = (_force.Value + forceVariance) * (_direction + directionVariance);
+                var forceVariance = Random.Range(-1, 1) *  _forceVariance.Value;
+                var force = (_force.Value + forceVariance) * (_direction.Value.normalized + directionVariance);
 
                 // Calculate initial torque
                 var torqueVariance = new Vector3(
-                    Random.Range(-_torqueVariance.x, _torqueVariance.x),
-                    Random.Range(-_torqueVariance.y, _torqueVariance.y),
-                    Random.Range(-_torqueVariance.z, _torqueVariance.z)
+                    Random.Range(-1, 1) * _torqueVariance.Value.x,
+                    Random.Range(-1, 1) * _torqueVariance.Value.y,
+                    Random.Range(-1, 1) * _torqueVariance.Value.z
                 );
-                var torque = _torque + torqueVariance;
+                var torque = _torque.Value + torqueVariance;
                 
                 // Apply force and torque
                 newRigidBody.AddForce(force, _forceMode);
