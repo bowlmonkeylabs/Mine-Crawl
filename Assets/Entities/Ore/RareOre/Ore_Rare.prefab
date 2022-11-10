@@ -194,20 +194,32 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 11400000, guid: 4aeaf25be48b2b544a06b963e7101d44, type: 2}
+      objectReference: {fileID: 7465009430006410467}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: Increment
+      value: Launch
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: BML.ScriptableObjectCore.Scripts.Variables.IntVariable, ScriptableObjectSystem
+      value: BML.Scripts.RigidBodyLauncher, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+    - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
@@ -216,3 +228,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7225383730169331487, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
   m_PrefabInstance: {fileID: 6078468993030459640}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7465009430006410467 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3729549894264273947, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+  m_PrefabInstance: {fileID: 6078468993030459640}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f680a7afde40b49d9741bdbc7aa5bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
