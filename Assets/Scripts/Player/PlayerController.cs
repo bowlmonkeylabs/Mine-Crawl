@@ -3,6 +3,7 @@ using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.UI;
 using BML.Scripts.Utils;
+using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Pathfinding;
@@ -14,53 +15,48 @@ namespace BML.Scripts.Player
     {
         #region Inspector
         
-        [TitleGroup("Interactable hover")]
-        [SerializeField] private Transform _mainCamera;
-        [SerializeField] private UiAimReticle _uiAimReticle;
-        [SerializeField] private int _hoverUpdatesPerSecond = 20;
+        [SerializeField, FoldoutGroup("Interactable hover")] private Transform _mainCamera;
+        [SerializeField, FoldoutGroup("Interactable hover")] private UiAimReticle _uiAimReticle;
+        [SerializeField, FoldoutGroup("Interactable hover")] private int _hoverUpdatesPerSecond = 20;
         private float lastHoverUpdateTime;
 
-        [TitleGroup("Pickaxe")]
-        [SerializeField] private GameEvent _onUsePickaxe;
-        [SerializeField] private float _interactDistance = 5f;
-        [SerializeField] private LayerMask _interactMask;
-        [SerializeField] private TimerReference _pickaxeSwingCooldown;
-        [SerializeField] private IntReference _pickaxeDamage;
-        [SerializeField] private DamageType _damageType;
+        [SerializeField, FoldoutGroup("Pickaxe")] private float _interactDistance = 5f;
+        [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _interactMask;
+        [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
+        [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
+        [SerializeField, FoldoutGroup("Pickaxe")] private IntReference _pickaxeDamage;
+        [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingPickaxeFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingHitFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _missSwingFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitTerrainFeedback;
         
-        [TitleGroup("Torch")]
-        [SerializeField] private GameObject _torchPrefab;
-        [SerializeField] private float _torchThrowForce;
-        [SerializeField] private Transform _torchInstanceContainer;
-        [SerializeField] private IntReference _inventoryTorchCount;
+        [SerializeField, FoldoutGroup("Torch")] private GameObject _torchPrefab;
+        [SerializeField, FoldoutGroup("Torch")] private float _torchThrowForce;
+        [SerializeField, FoldoutGroup("Torch")] private Transform _torchInstanceContainer;
+        [SerializeField, FoldoutGroup("Torch")] private IntReference _inventoryTorchCount;
         
-        [TitleGroup("Bomb")]
-        [SerializeField] private GameObject _bombPrefab;
-        [SerializeField] private float _bombThrowForce;
-        [SerializeField] private Transform _bombInstanceContainer;
-        [SerializeField] private IntReference _inventoryBombCount;
+        [SerializeField, FoldoutGroup("Bomb")] private GameObject _bombPrefab;
+        [SerializeField, FoldoutGroup("Bomb")] private float _bombThrowForce;
+        [SerializeField, FoldoutGroup("Bomb")] private Transform _bombInstanceContainer;
+        [SerializeField, FoldoutGroup("Bomb")] private IntReference _inventoryBombCount;
 
-        [TitleGroup("Rope")]
-        [SerializeField] private GameObject _ropePrefab;
-        [SerializeField] private float _ropeThrowForce;
-        [SerializeField] private Transform _ropeInstanceContainer;
-        [SerializeField] private IntReference _inventoryRopeCount;
+        [SerializeField, FoldoutGroup("Rope")] private GameObject _ropePrefab;
+        [SerializeField, FoldoutGroup("Rope")] private float _ropeThrowForce;
+        [SerializeField, FoldoutGroup("Rope")] private Transform _ropeInstanceContainer;
+        [SerializeField, FoldoutGroup("Rope")] private IntReference _inventoryRopeCount;
         
-        [TitleGroup("Health")]
-        [SerializeField] private Health _healthController;
-        [SerializeField] private IntReference _health;
-        [SerializeField] private IntReference _maxHealth;
+        [SerializeField, FoldoutGroup("Health")] private Health _healthController;
+        [SerializeField, FoldoutGroup("Health")] private IntReference _health;
+        [SerializeField, FoldoutGroup("Health")] private IntReference _maxHealth;
 
-        [TitleGroup("Combat State")]
-        [SerializeField] private BoolVariable _inCombat;
-        [SerializeField] private TimerVariable _combatTimer;
+        [SerializeField, FoldoutGroup("Combat State")] private BoolVariable _inCombat;
+        [SerializeField, FoldoutGroup("Combat State")] private TimerVariable _combatTimer;
 
-        [TitleGroup("Store")]
-        [SerializeField] private BoolReference _isStoreOpen;
-        [SerializeField] private GameEvent _onStoreFailOpen;
+        [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
+        [SerializeField, FoldoutGroup("Store")] private GameEvent _onStoreFailOpen;
 
-        [TitleGroup("GodMode")]
-        [SerializeField] private BoolVariable _isGodModeEnabled;
+        [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
 
         private bool pickaxeInputHeld = false;
 
@@ -146,17 +142,33 @@ namespace BML.Scripts.Player
                 return;
             }
             
-            _onUsePickaxe.Raise();
+            _swingPickaxeFeedback.PlayFeedbacks();
             _pickaxeSwingCooldown.RestartTimer();
             
             if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
                 _interactMask, QueryTriggerInteraction.Ignore))
             {
+                if (hit.collider.gameObject.IsInLayerMask(_terrainMask))
+                {
+                    _hitTerrainFeedback.transform.position = hit.point;
+                    _hitTerrainFeedback.PlayFeedbacks();
+                }
+                else
+                {
+                    _swingHitFeedbacks.transform.position = hit.point;
+                    _swingHitFeedbacks.PlayFeedbacks();
+                }
+                    
+                
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
                 if (interactionReceiver == null) return;
 
                 HitInfo pickaxeHitInfo = new HitInfo(_damageType, _pickaxeDamage.Value, _mainCamera.forward, hit.point);
                 interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
+            }
+            else
+            {
+                _missSwingFeedback.PlayFeedbacks();
             }
             
         }
