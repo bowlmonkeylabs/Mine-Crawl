@@ -8,6 +8,7 @@ using BML.Scripts.Utils;
 using KinematicCharacterController;
 using UnityEngine;
 using MoreMountains.Tools;
+using Sirenix.OdinInspector;
 using UnityEngine.Serialization;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
@@ -21,63 +22,62 @@ namespace BML.Scripts.Player
 #endif
 	public class FirstPersonController : MonoBehaviour, ICharacterController
 	{
-		[Header("Player")]
+
+		#region Inspector
+
 		[Tooltip("Move speed of the character in m/s")]
-		public float MoveSpeed = 4.0f;
+		[SerializeField, FoldoutGroup("Player")] float MoveSpeed = 4.0f;
 		[Tooltip("Sprint speed of the character in m/s")]
-		public float SprintSpeed = 6.0f;
+		[SerializeField, FoldoutGroup("Player")] float SprintSpeed = 6.0f;
 		[Tooltip("Rotation speed of the character")]
-		public float RotationSpeed = 1.0f;
+		[SerializeField, FoldoutGroup("Player")] float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
-		public float SpeedChangeRate = 10.0f;
+		[SerializeField, FoldoutGroup("Player")] float SpeedChangeRate = 10.0f;
 		[Tooltip("Curve for analog look input smoothing")]
-		public AnimationCurve AnalogMovementCurve;
+		[SerializeField, FoldoutGroup("Player")] AnimationCurve AnalogMovementCurve;
 		[Tooltip("Factor for look acceleration setting")]
-		public float lookAccelerationFactor = .0001f;
-		[FormerlySerializedAs("lookAcceleration")] [Tooltip("Rate of look acceleration")]
-		public FloatReference LookAcceleration;
+		[SerializeField, FoldoutGroup("Player")] float lookAccelerationFactor = .0001f;
+		[Tooltip("Rate of look acceleration")]
+		[SerializeField, FoldoutGroup("Player")] FloatReference LookAcceleration;
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
-		public float JumpHeight = 1.2f;
+		[SerializeField, FoldoutGroup("Player")] float JumpHeight = 1.2f;
 		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
-		public float Gravity = -15.0f;
+		[SerializeField, FoldoutGroup("Player")] float Gravity = -15.0f;
 
 		[Space(10)]
 		[Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-		public float JumpTimeout = 0.1f;
+		[SerializeField, FoldoutGroup("Player")] float JumpTimeout = 0.1f;
 		[Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
-		public float FallTimeout = 0.15f;
-
-		[Header("Player Grounded")]
-		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
-		public bool Grounded = true;
-		public BoolVariable IsGrounded;
+		[SerializeField, FoldoutGroup("Player")] float FallTimeout = 0.15f;
 		
-		[Header("Knockback")]
-		public float KnockbackVerticalForce = 10f;
-		public float KnockbackDuration = .2f;
-		public AnimationCurve KnockbackHorizontalForceCurve;
+		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
+		[SerializeField, FoldoutGroup("Player Grounded")] bool Grounded = true;
+		[SerializeField, FoldoutGroup("Player Grounded")] BoolVariable IsGrounded;
+		
+		[SerializeField, FoldoutGroup("Knockback")] float KnockbackVerticalForce = 10f;
+		[SerializeField, FoldoutGroup("Knockback")] float KnockbackDuration = .2f;
+		[SerializeField, FoldoutGroup("Knockback")] AnimationCurve KnockbackHorizontalForceCurve;
 
-        [Header("RopeMovement")]
-        [SerializeField] private GameEvent _playerEnteredRopeEvent;
-        [SerializeField] private BoolReference _isRopeMovementEnabled;
-        [SerializeField] private float _ropeMovementSpeed = 15;
-        [SerializeField] private float _ropeGravitySpeed = 1;
+		[SerializeField, FoldoutGroup("RopeMovement")] private GameEvent _playerEnteredRopeEvent;
+		[SerializeField, FoldoutGroup("RopeMovement")] private BoolReference _isRopeMovementEnabled;
+		[SerializeField, FoldoutGroup("RopeMovement")] private float _ropeMovementSpeed = 15;
+		[SerializeField, FoldoutGroup("RopeMovement")] private float _ropeGravitySpeed = 1;
+        
+		[SerializeField, FoldoutGroup("No Clip Mode")] private BoolVariable isNoClipEnabled;
+		[SerializeField, FoldoutGroup("No Clip Mode")] private float noClipUpDownVelocity = 15f;
+		[SerializeField, FoldoutGroup("No Clip Mode")] private float noClipSprintMultiplier = 3f;
+		[SerializeField, FoldoutGroup("No Clip Mode")] private LayerMask noClipCollisionMask;
 
-		[Header("No Clip Mode")] 
-		[SerializeField] private BoolVariable isNoClipEnabled;
-		[SerializeField] private float noClipUpDownVelocity = 15f;
-		[SerializeField] private float noClipSprintMultiplier = 3f;
-		[SerializeField] private LayerMask noClipCollisionMask;
-
-		[Header("Cinemachine")]
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
-		public GameObject CinemachineCameraTarget;
+		[SerializeField, FoldoutGroup("Cinemachine")] GameObject CinemachineCameraTarget;
 		[Tooltip("How far in degrees can you move the camera up")]
-		public float TopClamp = 90.0f;
+		[SerializeField, FoldoutGroup("Cinemachine")] float TopClamp = 90.0f;
 		[Tooltip("How far in degrees can you move the camera down")]
-		public float BottomClamp = -90.0f;
+		[SerializeField, FoldoutGroup("Cinemachine")] float BottomClamp = -90.0f;
+
+		#endregion
 
 		// cinemachine
 		private float _cinemachineTargetYaw;
