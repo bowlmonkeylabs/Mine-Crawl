@@ -142,6 +142,7 @@ namespace BML.Scripts.Player
                 return;
             }
             
+            _swingPickaxeFeedback.StopFeedbacks();
             _swingPickaxeFeedback.PlayFeedbacks();
             _pickaxeSwingCooldown.RestartTimer();
             
