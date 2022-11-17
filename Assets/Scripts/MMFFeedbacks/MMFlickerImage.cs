@@ -94,15 +94,15 @@ namespace BML.Scripts.MMFFeedbacks
         protected override void CustomReset()
         {
             base.CustomReset();
+            
+            if (Active && FeedbackTypeAuthorized && (Image != null))
+            {
+                SetColor(_initialFlickerColor);
+            }
 
             if (InCooldown)
             {
                 return;
-            }
-
-            if (Active && FeedbackTypeAuthorized && (Image != null))
-            {
-                SetColor(_initialFlickerColor);
             }
         }
 
