@@ -69,15 +69,14 @@ namespace BML.Scripts.UI.PlayerHealthBar
         private void FindChildren()
         {
             _heartChildren.Clear();
-            for (int i = 0; i < this.transform.childCount; i++)
+            _heartChildren.AddRange(
+                this.GetComponentsInChildren<UiHealthHeartController>()
+            );
+            Debug.Log($"{_heartChildren.Count}");
+            foreach (var heartController in _heartChildren)
             {
-                var heartController = this.transform.GetChild(i).GetComponent<UiHealthHeartController>();
-                if (!heartController.SafeIsUnityNull())
-                {
-                    heartController.Initialize(this);
-                    heartController.gameObject.SetActive(false);
-                    _heartChildren.Add(heartController);
-                }
+                heartController.Initialize(this);
+                heartController.gameObject.SetActive(false);
             }
         }
 
