@@ -19,12 +19,11 @@ namespace BML.Scripts
         [SerializeField] private MMF_Player _quitFeedbacks;
 
         [SerializeField] private BoolVariable _isGameLost;
-        [SerializeField] private TimerVariable _levelTimer;
         [SerializeField] private FloatVariable _levelStartTime;
+        [SerializeField] private FloatVariable _levelElapsedTime;
 
         private void Start()
         {
-            _levelTimer.StartTimer();
             _levelStartTime.Value = Time.time;
         }
 
@@ -51,21 +50,19 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
-            _levelTimer.SubscribeFinished(LoseGame);
             _restartGame.Subscribe(RestartGame);
             _quitGame.Subscribe(QuitGame);
         }
 
         private void OnDisable()
         {
-            _levelTimer.UnsubscribeFinished(LoseGame);
             _restartGame.Unsubscribe(RestartGame);
             _quitGame.Unsubscribe(QuitGame);
         }
 
         private void FixedUpdate()
         {
-            _levelTimer.UpdateTime();
+            _levelElapsedTime.Value = Time.time - _levelStartTime.Value;
         }
 
         #endregion

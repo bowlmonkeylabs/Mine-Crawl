@@ -9,7 +9,7 @@ namespace BML.Scripts.UI
     {
         [SerializeField] private TMP_Text _text;
         [SerializeField] private TransformSceneReference _playerTransformSceneReference;
-        [SerializeField] private TimerVariable _levelTimer;
+        [SerializeField] private FloatVariable _levelTimeElapsed;
         [SerializeField] private FloatVariable _currentSpawnDelay;
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
@@ -36,7 +36,7 @@ namespace BML.Scripts.UI
         {
             _text.text = $@"Player Coordinates: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
 Timescale: {Time.timeScale.ToString("0.00")}
-Level Time: {this.FormatTime(_levelTimer.ElapsedTime)}
+Level Time: {this.FormatTime(_levelTimeElapsed.Value)}
 Enemy Spawn Params: Delay: {_currentSpawnDelay.Value.ToString("0.00")}
 Cap: {_currentSpawnCap.Value.ToString("0.00")}
 Count: {_currentEnemyCount.Value}
@@ -55,7 +55,9 @@ Combat Timer: {_playerCombatTimer.RemainingTime}";
         {
             int minutes = (int) seconds / 60;
             seconds %= 60;
-            return $"{minutes.ToString("00")}:{seconds.ToString("00")}";
+            int hours = (int) minutes / 60;
+            minutes %= 60;
+            return $"{hours.ToString("00")}:{minutes.ToString("00")}:{seconds.ToString("00")}";
         }
     }
 }
