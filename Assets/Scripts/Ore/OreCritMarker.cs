@@ -10,6 +10,7 @@ namespace BML.Scripts
     public class OreCritMarker : MonoBehaviour
 {
     [SerializeField] private Collider _oreCollider;
+    [SerializeField] private Health _health;
     [SerializeField] private GameObject _critMarker;
     [SerializeField] [MinMaxSlider(0, 90)] private Vector2 _critMarkerMinMaxAngle = new Vector2(15f, 30f);
     [SerializeField] private float _critMarkerSurfaceOffset = .05f;
@@ -23,6 +24,12 @@ namespace BML.Scripts
 
     public void MoveCritMarker(Vector3 hitPosition)
     {
+        if (_health.IsDead)
+        {
+            _critMarker.SetActive(false);
+            return;
+        }
+        
         if (!_critMarker.activeSelf) _critMarker.SetActive(true);
 
         centerToHit = hitPosition - _oreCollider.bounds.center;
