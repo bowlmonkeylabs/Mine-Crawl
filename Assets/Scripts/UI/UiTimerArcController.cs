@@ -13,6 +13,8 @@ namespace BML.Scripts.UI
 
         [Required, SerializeField] private TimerReference _timer;
         [Required, SerializeField] private Arc _arc;
+        [Required, SerializeField] private Color _colorRunning;
+        [Required, SerializeField] private Color _colorFinished;
         [SerializeField, Range(0f, 1f)] private float _maxFill = 1f;
 
         public enum DisplayMode
@@ -53,6 +55,7 @@ namespace BML.Scripts.UI
                     break;
             }
             _arc.ArcProperties.Length = fillPercent * _maxFill;
+            _arc.ShapeProperties.FillColor = (_timer.RemainingTime <= 0 ? _colorFinished : _colorRunning);
             _arc.ForceMeshUpdate();
         }
         

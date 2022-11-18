@@ -23,10 +23,10 @@ namespace BML.Scripts.UI
         {
             var color = isHovering ? _hoverColor : originalColor;
             _reticleImage.color = color;
-            _swingTimerArc.ShapeProperties.FillColor = color;
-            _swingTimerArc.ForceMeshUpdate();
-            _sweepTimerArc.ShapeProperties.FillColor = color;
-            _sweepTimerArc.ForceMeshUpdate();
+            // _swingTimerArc.ShapeProperties.FillColor = color;
+            // _swingTimerArc.ForceMeshUpdate();
+            // _sweepTimerArc.ShapeProperties.FillColor = color;
+            // _sweepTimerArc.ForceMeshUpdate();
         }
     }
 }
