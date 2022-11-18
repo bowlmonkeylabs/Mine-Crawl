@@ -156,8 +156,7 @@ namespace BML.Scripts.Player
                 }
                 else
                 {
-                    _swingHitFeedbacks.transform.position = hit.point;
-                    _swingHitFeedbacks.PlayFeedbacks();
+                    _swingHitFeedbacks.PlayFeedbacks(hit.point, 1f);
                 }
                     
                 
