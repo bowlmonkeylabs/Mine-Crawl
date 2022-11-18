@@ -211,6 +211,7 @@ namespace BML.Scripts.Player
             _swingPickaxeFeedback.PlayFeedbacks();
             _sweepFeedback.PlayFeedbacks();
             _pickaxeSweepCooldown.RestartTimer();
+            _pickaxeSwingCooldown.RestartTimer();
 
             var center = _sweepCollider.transform.TransformPoint(_sweepCollider.center);
             var halfExtents = _sweepCollider.size / 2f;
