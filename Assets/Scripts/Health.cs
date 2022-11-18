@@ -153,7 +153,7 @@ namespace BML.Scripts
         public void SetInvincible(bool isInvincible)
         {
             _isInvincible = isInvincible;
-            OnInvincibilityChange(isInvincible);
+            OnInvincibilityChange?.Invoke(IsInvincible);
         }
         
         #endregion
