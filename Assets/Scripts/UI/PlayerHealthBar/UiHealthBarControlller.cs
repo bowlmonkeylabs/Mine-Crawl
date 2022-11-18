@@ -25,6 +25,9 @@ namespace BML.Scripts.UI.PlayerHealthBar
         public bool IsLowHealth => _health.Value <= _lowHealthWarningThreshold;
 
         private List<UiHealthHeartController> _heartChildren;
+        
+        private Coroutine _coroutineInitChildren;
+        private bool _finishedInitChildren = false;
 
         #endregion
 
@@ -32,14 +35,21 @@ namespace BML.Scripts.UI.PlayerHealthBar
 
         private void Awake()
         {
+            _finishedInitChildren = false;
             _health = _healthTransformSceneReference.Value.GetComponent<Health>();
             _heartChildren = new List<UiHealthHeartController>();
         }
 
         private void OnEnable()
         {
+            if (_coroutineInitChildren != null)
+            {
+                StopCoroutine(_coroutineInitChildren);
+                _coroutineInitChildren = null;
+            }
             FindChildren();
-            StartCoroutine(InitChildren());
+            _coroutineInitChildren = StartCoroutine(InitChildren());
+            
             _health.OnHealthChange += UpdateHeartsFill;
             _healthMaxValue.Subscribe(OnMaxHealthChanged);
             _health.OnInvincibilityChange += UpdateInvincibility;
@@ -94,10 +104,15 @@ namespace BML.Scripts.UI.PlayerHealthBar
 
                 yield return new WaitForSeconds(_initAnimateSeconds);
             }
+
+            _finishedInitChildren = true;
+            _coroutineInitChildren = null;
         } 
 
         private void OnMaxHealthChanged(int prevMaxHealth, int currentMaxHealth)
         {
+            if (!_finishedInitChildren) return;
+            
             int delta = currentMaxHealth - prevMaxHealth;
             for (int i = 0; i < _heartChildren.Count; i++)
             {

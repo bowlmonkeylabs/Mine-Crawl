@@ -75,7 +75,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
             {
                 _lowHealthFeedbacks.PlayFeedbacks();
             }
-            else if (totalHealthDelta > 0)
+            else if (totalHealthDelta > 0 && _lowHealthFeedbacks.gameObject.activeInHierarchy)
             {
                 _lowHealthFeedbacks.StopFeedbacks();
                 _lowHealthFeedbacks.ResetFeedbacks();
@@ -92,7 +92,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
             {
                 _invincibleFeedbacks.PlayFeedbacks();
             }
-            else
+            else if (_incrementFeedbacks.gameObject.activeInHierarchy)
             {
                 _invincibleFeedbacks.StopFeedbacks();
                 _invincibleFeedbacks.ResetFeedbacks();
