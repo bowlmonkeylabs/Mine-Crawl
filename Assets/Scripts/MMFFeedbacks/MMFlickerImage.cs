@@ -72,6 +72,13 @@ namespace BML.Scripts.MMFFeedbacks
             _initialFlickerColor = Image.color;
         }
 
+        protected override void RegularPlay(Vector3 position, float feedbacksIntensity = 1.0f)
+        {
+            if (!Owner.gameObject.activeInHierarchy) return;
+            
+            base.RegularPlay(position, feedbacksIntensity);
+        }
+
         /// <summary>
         /// On play we make our renderer flicker
         /// </summary>
@@ -79,7 +86,7 @@ namespace BML.Scripts.MMFFeedbacks
         /// <param name="feedbacksIntensity"></param>
         protected override void CustomPlayFeedback(Vector3 position, float feedbacksIntensity = 1.0f)
         {
-            if (!Active || !FeedbackTypeAuthorized || (Image == null))
+            if (!Active || !Owner.gameObject.activeInHierarchy || !FeedbackTypeAuthorized || (Image == null))
             {
                 return;
             }
@@ -94,15 +101,15 @@ namespace BML.Scripts.MMFFeedbacks
         protected override void CustomReset()
         {
             base.CustomReset();
+            
+            if (Active && FeedbackTypeAuthorized && (Image != null))
+            {
+                SetColor(_initialFlickerColor);
+            }
 
             if (InCooldown)
             {
                 return;
-            }
-
-            if (Active && FeedbackTypeAuthorized && (Image != null))
-            {
-                SetColor(_initialFlickerColor);
             }
         }
 

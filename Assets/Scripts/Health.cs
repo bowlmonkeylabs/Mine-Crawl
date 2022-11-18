@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -14,8 +17,9 @@ namespace BML.Scripts
         [SerializeField] [ShowIf("_useHealthVariable")] [LabelText("health")] private IntVariable _healthReference;
         [SerializeField] [HideIf("_useHealthVariable")] private int _health;
         [SerializeField] private bool _useHealthVariable = false;
-        [SerializeField] private float _invincibilitySeconds = 0;
+        [SerializeField] private SafeFloatValueReference _invincibilitySeconds;
         [SerializeField] private bool _isInvincible = false;
+        [ShowInInspector, ReadOnly] private bool _isInvincibleFrames = false;
         [SerializeField] private UnityEvent<int, int> _onHealthChange;
         [SerializeField] private UnityEvent _onTakeDamage;
         [SerializeField] private UnityEvent _onDeath;
@@ -27,10 +31,12 @@ namespace BML.Scripts
         public delegate void _HealthChange(int prev, int current);
         public delegate void _Death();
         public delegate void _Revive();
+        public delegate void _InvincibilityChange(bool isInvincible);
 
         public _HealthChange OnHealthChange;
         public _Death OnDeath;
         public _Revive OnRevive;
+        public _InvincibilityChange OnInvincibilityChange;
 
         #endregion
         
@@ -48,6 +54,7 @@ namespace BML.Scripts
 
         public int Value {get => _useHealthVariable ? _healthReference.Value : _health;}
         public bool IsDead {get => Value <= 0;}
+        public bool IsInvincible => _isInvincible || _isInvincibleFrames;
 
         public int StartingHealth => startingHealth;
 
@@ -78,16 +85,30 @@ namespace BML.Scripts
         {
             this.DecrementHealth(-amount);
         }
+
+        private IEnumerator InvincibilityTimer()
+        {
+            _isInvincibleFrames = true;
+            OnInvincibilityChange?.Invoke(IsInvincible);
+
+            yield return new WaitForSeconds(_invincibilitySeconds.Value);
+            // if (
+            //     !Mathf.Approximately(0f, _invincibilitySeconds.Value) 
+            //     && lastDamageTime + _invincibilitySeconds.Value > Time.time
+            // ) {
+            //     yield return null;
+            // }
+            
+            _isInvincibleFrames = false;
+            OnInvincibilityChange?.Invoke(IsInvincible);
+        }
         
         public bool DecrementHealth(int amount) 
         {
-            if (IsDead) return false;
+            if (IsDead || IsInvincible) return false;
             
-            if (_isInvincible || 
-                !Mathf.Approximately(0f, _invincibilitySeconds) && lastDamageTime + _invincibilitySeconds > Time.time)
-                return false;
-
             lastDamageTime = Time.time;
+            StartCoroutine(InvincibilityTimer());
 
             _onHealthChange.Invoke(Value, Value - amount);
             OnHealthChange?.Invoke(Value, Value - amount);
@@ -132,6 +153,7 @@ namespace BML.Scripts
         public void SetInvincible(bool isInvincible)
         {
             _isInvincible = isInvincible;
+            OnInvincibilityChange(isInvincible);
         }
         
         #endregion
