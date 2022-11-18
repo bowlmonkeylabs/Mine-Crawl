@@ -178,7 +178,6 @@ namespace BML.Scripts.Player
                 }
                 else
                 {
-                    _swingHitFeedbacks.transform.position = hit.point;
                     _swingHitFeedbacks.PlayFeedbacks(hit.point, 1f);
                 }
                     
@@ -252,7 +251,6 @@ namespace BML.Scripts.Player
                     if (hit.collider.gameObject == interactionReceiver.gameObject)
                     {
                         hitPos = hit.point;
-                        _swingHitFeedbacks.transform.position = hitPos;
                         _swingHitFeedbacks.PlayFeedbacks(hitPos, 1f);
                         break;
                     }
