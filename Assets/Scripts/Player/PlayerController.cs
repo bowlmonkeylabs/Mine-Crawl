@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.UI;
@@ -23,13 +24,18 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private float _interactDistance = 5f;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _interactMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
+        [SerializeField, FoldoutGroup("Pickaxe")] private BoxCollider _sweepCollider;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
+        [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSweepCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private IntReference _pickaxeDamage;
+        [SerializeField, FoldoutGroup("Pickaxe")] private IntReference _sweepDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingPickaxeFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _missSwingFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitTerrainFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepReadyFeedback;
         
         [SerializeField, FoldoutGroup("Torch")] private GameObject _torchPrefab;
         [SerializeField, FoldoutGroup("Torch")] private float _torchThrowForce;
@@ -59,6 +65,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
 
         private bool pickaxeInputHeld = false;
+        private bool secondaryInputHeld = false;
 
         #endregion
 
@@ -69,6 +76,7 @@ namespace BML.Scripts.Player
             _isGodModeEnabled.Subscribe(SetGodMode);
             _health.Subscribe(ClampHealth);
             _combatTimer.SubscribeFinished(SetNotInCombat);
+            _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
             
             SetGodMode();
         }
@@ -78,14 +86,17 @@ namespace BML.Scripts.Player
             _isGodModeEnabled.Unsubscribe(SetGodMode);
             _health.Unsubscribe(ClampHealth);
             _combatTimer.UnsubscribeFinished(SetNotInCombat);
+            _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
         }
 
         private void Update()
         {
             if (pickaxeInputHeld) TryUsePickaxe();
+            if (secondaryInputHeld) TryUseSweep();
             HandleHover();
             _combatTimer.UpdateTime();
             _pickaxeSwingCooldown.UpdateTime();
+            _pickaxeSweepCooldown.UpdateTime();
         }
 
         #endregion
@@ -109,8 +120,18 @@ namespace BML.Scripts.Player
         {
             if (value.isPressed)
             {
-                TryPlaceTorch();
+                secondaryInputHeld = true;
+                TryUseSweep();
             }
+            else
+            {
+                secondaryInputHeld = false;
+            }
+        }
+        
+        private void OnThrowTorch(InputValue value)
+        {
+            TryPlaceTorch();
         }
 
         private void OnThrowBomb(InputValue value)
@@ -177,6 +198,53 @@ namespace BML.Scripts.Player
         public void SetPickaxeDistance(float dist)
         {
             _interactDistance = dist;
+        }
+
+        private void TryUseSweep()
+        {
+            if (_pickaxeSweepCooldown.IsStarted && !_pickaxeSweepCooldown.IsFinished)
+            {
+                return;
+            }
+            
+            _swingPickaxeFeedback.StopFeedbacks();
+            _swingPickaxeFeedback.PlayFeedbacks();
+            _sweepFeedback.PlayFeedbacks();
+            _pickaxeSweepCooldown.RestartTimer();
+
+            var center = _sweepCollider.transform.TransformPoint(_sweepCollider.center);
+            var halfExtents = _sweepCollider.size / 2f;
+            Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, _sweepCollider.transform.rotation,
+                _interactMask, QueryTriggerInteraction.Ignore);
+
+            if (hitColliders.Length < 1)
+            {
+                _missSwingFeedback.PlayFeedbacks();
+                return;
+            }
+
+            // HashSet to prevent duplicates
+            HashSet<PickaxeInteractionReceiver> interactionReceivers = new HashSet<PickaxeInteractionReceiver>();
+
+            foreach (var hitCollider in hitColliders)
+            {
+                PickaxeInteractionReceiver interactionReceiver = hitCollider.GetComponent<PickaxeInteractionReceiver>();
+                if (interactionReceiver == null) continue;
+                interactionReceivers.Add(interactionReceiver);
+            }
+
+            foreach (var interactionReceiver in interactionReceivers)
+            {
+                //TODO: make separate hit info for sweep (Ex. hit point does not apply)
+                HitInfo pickaxeHitInfo = new HitInfo(_damageType, _sweepDamage.Value, _mainCamera.forward, 
+                    interactionReceiver.transform.position);
+                interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
+            }
+        }
+
+        private void SweepReadyFeedbacks()
+        {
+            _sweepReadyFeedback.PlayFeedbacks();
         }
 
         #endregion
