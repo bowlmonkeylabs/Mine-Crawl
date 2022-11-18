@@ -179,7 +179,7 @@ namespace BML.Scripts.Player
                 else
                 {
                     _swingHitFeedbacks.transform.position = hit.point;
-                    _swingHitFeedbacks.PlayFeedbacks();
+                    _swingHitFeedbacks.PlayFeedbacks(hit.point, 1f);
                 }
                     
                 
@@ -200,7 +200,7 @@ namespace BML.Scripts.Player
         {
             _interactDistance = dist;
         }
-
+        
         private void TryUseSweep()
         {
             if (_pickaxeSweepCooldown.IsStarted && !_pickaxeSweepCooldown.IsFinished)
@@ -226,20 +226,40 @@ namespace BML.Scripts.Player
             }
 
             // HashSet to prevent duplicates
-            HashSet<PickaxeInteractionReceiver> interactionReceivers = new HashSet<PickaxeInteractionReceiver>();
+            HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)> interactionReceivers =
+                new HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)>();
 
             foreach (var hitCollider in hitColliders)
             {
                 PickaxeInteractionReceiver interactionReceiver = hitCollider.GetComponent<PickaxeInteractionReceiver>();
                 if (interactionReceiver == null) continue;
-                interactionReceivers.Add(interactionReceiver);
+                interactionReceivers.Add((interactionReceiver, hitCollider.bounds.center));
             }
 
-            foreach (var interactionReceiver in interactionReceivers)
+            foreach (var (interactionReceiver, colliderCenter) in interactionReceivers)
             {
-                //TODO: make separate hit info for sweep (Ex. hit point does not apply)
+                var hitPos = interactionReceiver.transform.position;
+                
+                // Use spherecast from camera to hit collider center to try approximate hit position
+                var delta = colliderCenter - _mainCamera.transform.position;
+                var dir = delta.normalized;
+                var dist = delta.magnitude + 5f;
+                RaycastHit[] hits = Physics.SphereCastAll(_mainCamera.position, .5f, dir, dist, _interactMask,
+                    QueryTriggerInteraction.Ignore);
+
+                foreach (var hit in hits)
+                {
+                    if (hit.collider.gameObject == interactionReceiver.gameObject)
+                    {
+                        hitPos = hit.point;
+                        _swingHitFeedbacks.transform.position = hitPos;
+                        _swingHitFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        break;
+                    }
+                }
+
                 HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, _sweepDamage.Value, _mainCamera.forward, 
-                    interactionReceiver.transform.position);
+                    hitPos);
                 interactionReceiver.ReceiveSecondaryInteraction(pickaxeHitInfo);
             }
         }
