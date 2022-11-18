@@ -30,6 +30,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private IntReference _pickaxeDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private IntReference _sweepDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
+        [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _sweepDamageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingPickaxeFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _missSwingFeedback;
@@ -237,9 +238,9 @@ namespace BML.Scripts.Player
             foreach (var interactionReceiver in interactionReceivers)
             {
                 //TODO: make separate hit info for sweep (Ex. hit point does not apply)
-                HitInfo pickaxeHitInfo = new HitInfo(_damageType, _sweepDamage.Value, _mainCamera.forward, 
+                HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, _sweepDamage.Value, _mainCamera.forward, 
                     interactionReceiver.transform.position);
-                interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
+                interactionReceiver.ReceiveSecondaryInteraction(pickaxeHitInfo);
             }
         }
 

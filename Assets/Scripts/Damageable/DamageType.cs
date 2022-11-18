@@ -10,6 +10,7 @@ namespace BML.Scripts {
         Enemy_Mimic_Projectile = 64,
         Ore_Explosive = 128,
         Enemy_Snake_Projectile = 256,
-        Fall_Damage = 512
+        Fall_Damage = 512,
+        Player_Pickaxe_Secondary = 1024
     }
 }
