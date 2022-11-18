@@ -365,7 +365,11 @@ namespace BML.Scripts.Player
                 _interactMask, QueryTriggerInteraction.Ignore))
             {
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
-                if (interactionReceiver == null) return;
+                if (interactionReceiver == null)
+                {
+                    _uiAimReticle.SetReticleHover(false);
+                    return;
+                }
 
                 _uiAimReticle.SetReticleHover(true);
             }

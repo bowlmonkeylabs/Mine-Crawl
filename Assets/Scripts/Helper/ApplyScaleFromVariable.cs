@@ -8,6 +8,7 @@ namespace Helper
     public class ApplyScaleFromVariable : MonoBehaviour
     {
         [SerializeField] private FloatVariable _scaleToApply;
+        [SerializeField] private float _multiplier = 1f;
         [SerializeField] private bool _applyOnEnable = true;
 
         private void OnEnable()
@@ -21,7 +22,7 @@ namespace Helper
         [Button]
         public void Apply()
         {
-            transform.localScale = Vector3.one * _scaleToApply.Value;
+            transform.localScale = Vector3.one * _scaleToApply.Value * _multiplier;
         }
     }
 }
