@@ -36,16 +36,16 @@ namespace BML.Scripts.UI.PlayerHealthBar
         private void OnEnable()
         {
             UpdateChildren();
-            UpdateHealthUi_NoDelta();
-            _health.OnHealthChange += UpdateHealthUi;
-            _healthMaxValue.Subscribe(UpdateHealthUi_NoDelta);
+            OnMaxHealthChanged(_healthMaxValue.Value, _healthMaxValue.Value);
+            _health.OnHealthChange += UpdateHeartsFill;
+            _healthMaxValue.Subscribe(OnMaxHealthChanged);
             _health.OnInvincibilityChange += UpdateInvincibility;
         }
 
         private void OnDisable()
         {
-            _health.OnHealthChange -= UpdateHealthUi;
-            _healthMaxValue.Unsubscribe(UpdateHealthUi_NoDelta);
+            _health.OnHealthChange -= UpdateHeartsFill;
+            _healthMaxValue.Unsubscribe(OnMaxHealthChanged);
             _health.OnInvincibilityChange -= UpdateInvincibility;
         }
 
@@ -53,12 +53,30 @@ namespace BML.Scripts.UI.PlayerHealthBar
         
         #region UI control
 
-        private void UpdateHealthUi_NoDelta()
+        private void OnMaxHealthChanged(int prevMaxHealth, int currentMaxHealth)
         {
-            UpdateHealthUi(_health.Value, _health.Value);
+            int delta = currentMaxHealth - prevMaxHealth;
+            for (int i = 0; i < _heartChildren.Count; i++)
+            {
+                var heartController = _heartChildren[i];
+                int heartHealth = 2 * i;
+                
+                heartController.gameObject.SetActive(heartHealth < _healthMaxValue.Value);
+                heartController.SetValue(_health.Value - heartHealth, delta);
+
+                if (_health.IsInvincible)
+                {
+                    heartController.SetInvincible(false);
+                    heartController.SetInvincible(true);
+                }
+                else
+                {
+                    heartController.SetInvincible(false);
+                }
+            }
         }
 
-        private void UpdateHealthUi(int prevHealth, int currentHealth)
+        private void UpdateHeartsFill(int prevHealth, int currentHealth)
         {
             int delta = currentHealth - prevHealth;
             for (int i = 0; i < _heartChildren.Count; i++)
@@ -67,7 +85,6 @@ namespace BML.Scripts.UI.PlayerHealthBar
                 int heartHealth = 2 * i;
                 
                 heartController.SetValue(currentHealth - heartHealth, delta);
-                heartController.gameObject.SetActive(heartHealth < _healthMaxValue.Value);
             }
         }
 

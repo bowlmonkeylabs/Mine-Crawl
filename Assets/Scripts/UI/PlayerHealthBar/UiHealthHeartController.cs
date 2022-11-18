@@ -14,6 +14,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
         [SerializeField] private bool _invincible;
         
         [SerializeField] private GameObject _heartOutline;
+        [SerializeField] private GameObject _heartFillRoot;
         [SerializeField] private GameObject _heartHalf;
         [SerializeField] private GameObject _heartFull;
         
