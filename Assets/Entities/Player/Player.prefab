@@ -1876,11 +1876,11 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MMF_ParticlesInstantiation, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      type: {class: MMF_InstantiateObject, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
         Active: 1
-        UniqueID: 983006919
-        Label: Particles Instantiation
+        UniqueID: -1557798107
+        Label: Instantiate Object
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -1906,18 +1906,16 @@ MonoBehaviour:
           TargetBPM: 120
         Owner: {fileID: 9155316783490342460}
         DebugActive: 0
-        Mode: 1
-        CachedRecycle: 1
-        ParticlesPrefab: {fileID: 3016129860860797307, guid: a8909cc3531786d4dba05d2eb787aded, type: 3}
-        RandomParticlePrefabs: []
-        ForceSetActiveOnPlay: 0
-        PositionMode: 0
-        InstantiateParticlesPosition: {fileID: 0}
-        TargetWorldPosition: {x: 0, y: 0, z: 0}
-        Offset: {x: 0, y: 0, z: 0}
-        NestParticles: 0
-        ApplyRotation: 0
-        ApplyScale: 1
+        GameObjectToInstantiate: {fileID: 3107119887265525273, guid: a8909cc3531786d4dba05d2eb787aded, type: 3}
+        PositionMode: 3
+        AlsoApplyRotation: 0
+        AlsoApplyScale: 1
+        TargetTransform: {fileID: 0}
+        TargetPosition: {x: 0, y: 0, z: 0}
+        PositionOffset: {x: 0, y: 0, z: 0}
+        CreateObjectPool: 0
+        ObjectPoolSize: 10
+        MutualizePools: 0
 --- !u!1 &1371359312104772329
 GameObject:
   m_ObjectHideFlags: 0
@@ -2975,8 +2973,7 @@ MonoBehaviour:
   _invincibilitySeconds:
     ReferenceTypeSelector: 1
     ConstantValue: 0
-    ReferenceValue_FloatVariable: {fileID: 11400000, guid: 5c0c6371089aaba47b3c6f1d36c29e80,
-      type: 2}
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: 5c0c6371089aaba47b3c6f1d36c29e80, type: 2}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
   _isInvincible: 0
