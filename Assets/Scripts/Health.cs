@@ -152,7 +152,6 @@ namespace BML.Scripts
         
         public void SetInvincible(bool isInvincible)
         {
-            Debug.Log($"Health SetInvincible {isInvincible}");
             _isInvincible = isInvincible;
             OnInvincibilityChange(isInvincible);
         }

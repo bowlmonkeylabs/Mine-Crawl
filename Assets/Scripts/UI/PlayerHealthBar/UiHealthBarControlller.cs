@@ -73,7 +73,6 @@ namespace BML.Scripts.UI.PlayerHealthBar
 
         private void UpdateInvincibility(bool isInvincible)
         {
-            Debug.Log($"UiHealthBarController Update invincibility {isInvincible}");
             for (int i = 0; i < _heartChildren.Count; i++)
             {
                 var heartController = _heartChildren[i];
