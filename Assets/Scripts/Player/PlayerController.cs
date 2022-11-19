@@ -1,6 +1,7 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.UI;
 using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
@@ -24,7 +25,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _interactMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
-        [SerializeField, FoldoutGroup("Pickaxe")] private IntReference _pickaxeDamage;
+        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _pickaxeDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingPickaxeFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingHitFeedbacks;
@@ -163,7 +164,7 @@ namespace BML.Scripts.Player
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
                 if (interactionReceiver == null) return;
 
-                HitInfo pickaxeHitInfo = new HitInfo(_damageType, _pickaxeDamage.Value, _mainCamera.forward, hit.point);
+                HitInfo pickaxeHitInfo = new HitInfo(_damageType, Mathf.FloorToInt(_pickaxeDamage.Value), _mainCamera.forward, hit.point);
                 interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
             }
             else

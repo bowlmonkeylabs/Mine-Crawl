@@ -2613,8 +2613,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a81b719b8a8448c97a90a54eeee041c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 4
-  SprintSpeed: 4
+  MoveSpeed:
+    ReferenceTypeSelector: 3
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 3eaaa5f19236c3b44b1bf9c07f9affd1, type: 2}
+  SprintSpeed:
+    ReferenceTypeSelector: 3
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 3eaaa5f19236c3b44b1bf9c07f9affd1, type: 2}
   RotationSpeed: 1
   SpeedChangeRate: 10
   AnalogMovementCurve:
@@ -2750,12 +2760,11 @@ MonoBehaviour:
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     Variable: {fileID: 11400000, guid: 9c6b7b0183a07ad4eb911d60aba4e885, type: 2}
   _pickaxeDamage:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: '{I} '
-    InstancePath: IntermediateProperties
+    ReferenceTypeSelector: 3
     ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 24cc2b3aa4293fb4f94460301ae1bdef, type: 2}
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 541798a3b6084cc46b8f1e48ee3f98be, type: 2}
   _damageType: 1
   _swingPickaxeFeedback: {fileID: 322946836}
   _swingHitFeedbacks: {fileID: 9155316783490342460}
@@ -7241,7 +7250,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 58.72517
+  field of view: 61.86292
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
