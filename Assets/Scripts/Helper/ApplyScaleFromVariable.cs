@@ -1,13 +1,14 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Helper
+namespace BML.Scripts.Helper
 {
     public class ApplyScaleFromVariable : MonoBehaviour
     {
-        [SerializeField] private FloatVariable _scaleToApply;
+        [SerializeField] private SafeFloatValueReference _scaleToApply;
         [SerializeField] private float _multiplier = 1f;
         [SerializeField] private bool _applyOnEnable = true;
 
