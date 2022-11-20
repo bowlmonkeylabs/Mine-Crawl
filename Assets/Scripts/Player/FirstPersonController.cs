@@ -4,6 +4,7 @@
 using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Utils;
 using KinematicCharacterController;
 using UnityEngine;
@@ -26,9 +27,9 @@ namespace BML.Scripts.Player
 		#region Inspector
 
 		[Tooltip("Move speed of the character in m/s")]
-		[SerializeField, FoldoutGroup("Player")] float MoveSpeed = 4.0f;
+		[SerializeField, FoldoutGroup("Player")] SafeFloatValueReference MoveSpeed;
 		[Tooltip("Sprint speed of the character in m/s")]
-		[SerializeField, FoldoutGroup("Player")] float SprintSpeed = 6.0f;
+		[SerializeField, FoldoutGroup("Player")] SafeFloatValueReference SprintSpeed;
 		[Tooltip("Rotation speed of the character")]
 		[SerializeField, FoldoutGroup("Player")] float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
@@ -220,8 +221,8 @@ namespace BML.Scripts.Player
             }
 		    
 		    // set target speed based on move speed, sprint speed and if sprint is pressed
-		    float sprintSpeed = isNoClipEnabled.Value ? SprintSpeed * noClipSprintMultiplier : SprintSpeed;
-		    float targetSpeed = _input.sprint ? sprintSpeed : MoveSpeed;
+		    float sprintSpeed = isNoClipEnabled.Value ? SprintSpeed.Value * noClipSprintMultiplier : SprintSpeed.Value;
+		    float targetSpeed = _input.sprint ? sprintSpeed : MoveSpeed.Value;
 
 		    // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
