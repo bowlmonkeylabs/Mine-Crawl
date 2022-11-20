@@ -29,7 +29,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSweepCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _pickaxeDamage;
-        [SerializeField, FoldoutGroup("Pickaxe")] private IntReference _sweepDamage;
+        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _sweepDamageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingPickaxeFeedback;
@@ -257,7 +257,7 @@ namespace BML.Scripts.Player
                     }
                 }
 
-                HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, _sweepDamage.Value, _mainCamera.forward, 
+                HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, Mathf.FloorToInt(_sweepDamage.Value), _mainCamera.forward, 
                     hitPos);
                 interactionReceiver.ReceiveSecondaryInteraction(pickaxeHitInfo);
             }
