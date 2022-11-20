@@ -23,6 +23,7 @@ namespace BML.Scripts.Player
         private float lastHoverUpdateTime;
 
         [SerializeField, FoldoutGroup("Pickaxe")] private float _interactDistance = 5f;
+        [SerializeField, FoldoutGroup("Pickaxe")] private float _interactCastRadius = .25f;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _interactMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoxCollider _sweepCollider;
@@ -159,6 +160,7 @@ namespace BML.Scripts.Player
         private void TryUsePickaxe()
         {
             RaycastHit hit;
+            RaycastHit? lowPriorityHit = null;
 
             if (_pickaxeSwingCooldown.IsStarted && !_pickaxeSwingCooldown.IsFinished)
             {
@@ -174,26 +176,55 @@ namespace BML.Scripts.Player
             {
                 if (hit.collider.gameObject.IsInLayerMask(_terrainMask))
                 {
-                    _hitTerrainFeedback.transform.position = hit.point;
-                    _hitTerrainFeedback.PlayFeedbacks();
+                    //If hit terrain, store this hit. Will try sphereCast in search of higher priority hit
+                    lowPriorityHit = hit;
                 }
                 else
                 {
-                    _swingHitFeedbacks.PlayFeedbacks(hit.point, 1f);
+                    HandlePickaxeHit(hit);
+                    return;
                 }
-                    
-                
-                PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
-                if (interactionReceiver == null) return;
+            }
 
-                HitInfo pickaxeHitInfo = new HitInfo(_damageType, Mathf.FloorToInt(_pickaxeDamage.Value), _mainCamera.forward, hit.point);
-                interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
+            //Don't consider terrain in sphere cast
+            LayerMask interactNoTerrainMask = _interactMask & ~_terrainMask;
+            if (Physics.SphereCast(_mainCamera.position, _interactCastRadius, _mainCamera.forward, out hit,
+                _interactDistance, interactNoTerrainMask, QueryTriggerInteraction.Ignore))
+            {
+                HandlePickaxeHit(hit);
+                return;
+            }
+
+            // If sphere cast didn't find anything and we already stored a low priority hit, use that
+            if (lowPriorityHit != null)
+            {
+                HandlePickaxeHit(lowPriorityHit.Value);
+                return;
+            }
+            
+            _missSwingFeedback.PlayFeedbacks();
+            
+        }
+        
+        private void HandlePickaxeHit(RaycastHit hit)
+        {
+            if (hit.collider.gameObject.IsInLayerMask(_terrainMask))
+            {
+                _hitTerrainFeedback.transform.position = hit.point;
+                _hitTerrainFeedback.PlayFeedbacks();
             }
             else
             {
-                _missSwingFeedback.PlayFeedbacks();
+                _swingHitFeedbacks.transform.position = hit.point;
+                _swingHitFeedbacks.PlayFeedbacks();
             }
-            
+                    
+                
+            PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
+            if (interactionReceiver == null) return;
+
+            HitInfo pickaxeHitInfo = new HitInfo(_damageType, Mathf.FloorToInt(_pickaxeDamage.Value), _mainCamera.forward, hit.point);
+            interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
         }
 
         public void SetPickaxeDistance(float dist)
@@ -385,18 +416,25 @@ namespace BML.Scripts.Player
                 _interactMask, QueryTriggerInteraction.Ignore))
             {
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
-                if (interactionReceiver == null)
+                if (interactionReceiver != null)
                 {
-                    _uiAimReticle.SetReticleHover(false);
+                    _uiAimReticle.SetReticleHover(true);
                     return;
                 }
-
-                _uiAimReticle.SetReticleHover(true);
             }
-            else
+            
+            if (Physics.SphereCast(_mainCamera.position, _interactCastRadius, _mainCamera.forward, out hit,
+                _interactDistance, _interactMask, QueryTriggerInteraction.Ignore))
             {
-                _uiAimReticle.SetReticleHover(false);
+                PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
+                if (interactionReceiver != null)
+                {
+                    _uiAimReticle.SetReticleHover(true);
+                    return;
+                }
             }
+            
+            _uiAimReticle.SetReticleHover(false);
         }
         
         #region Health
