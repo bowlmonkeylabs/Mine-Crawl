@@ -12,6 +12,7 @@ namespace BML.Scripts.UI
 
         [Required, SerializeField] private TimerReference _timer;
         [Required, SerializeField] private Image _image;
+        [SerializeField, Range(0f, 1f)] private float _maxFill;
 
         public enum DisplayMode
         {
@@ -50,7 +51,7 @@ namespace BML.Scripts.UI
                     fillPercent = (timerInactive ? 1 : _timer.ElapsedTime / _timer.Duration);
                     break;
             }
-            _image.fillAmount = fillPercent;
+            _image.fillAmount = fillPercent * _maxFill;
         }
         
     }
