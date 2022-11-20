@@ -2798,7 +2798,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 10
+  m_Radius: 20
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &4612740886441696734
 MonoBehaviour:
@@ -4371,6 +4371,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onPickaxeSecondaryInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6591323971832808907}
+        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!65 &684373710631326722
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4400,7 +4415,7 @@ MonoBehaviour:
   _damageable:
   - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
       Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile
-    _damageType: 467
+    _damageType: 1491
     _damageModifierType: 0
     _damageMultiplier: 1
     _damageResistance: 0

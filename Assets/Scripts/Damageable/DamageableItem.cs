@@ -17,15 +17,30 @@ namespace BML.Scripts {
             None
         }
 
-        [TextArea, SerializeField, HideLabel, FoldoutGroup("Preview", expanded: true)] private string _damageTypesPreview;
-        [ValidateInput("DisplayValues")] [EnumFlags] [SerializeField] private DamageType _damageType;
-        [SerializeField] private DamageModifierType _damageModifierType = DamageModifierType.None;
-        [ShowIf("_damageModifierType", DamageModifierType.Multiplier)] [SerializeField] private int _damageMultiplier = 1;
-        [ShowIf("_damageModifierType", DamageModifierType.Integer)] [SerializeField] private int _damageResistance = 0;
-        [ShowIf("_damageModifierType", DamageModifierType.Override)] [SerializeField] private int _damageOverride = 0;
-        [SerializeField] private UnityEvent<HitInfo> _onDamage;
-        [SerializeField] private UnityEvent<HitInfo> _onFailDamage;
-        [SerializeField] private UnityEvent<HitInfo> _onDeath;
+        [TextArea, SerializeField, HideLabel, FoldoutGroup("Preview", expanded: true)]
+        private string _damageTypesPreview;
+        
+        [SerializeField, FoldoutGroup("Params"), ValidateInput("DisplayValues"), EnumFlags]
+        private DamageType _damageType;
+        
+        [SerializeField, FoldoutGroup("Params")]
+        private DamageModifierType _damageModifierType = DamageModifierType.None;
+        
+        [SerializeField, FoldoutGroup("Params"), ShowIf("_damageModifierType", 
+             DamageModifierType.Multiplier)]
+        private int _damageMultiplier = 1;
+        
+        [SerializeField, FoldoutGroup("Params"), ShowIf("_damageModifierType", 
+             DamageModifierType.Integer)]
+        private int _damageResistance = 0;
+        
+        [SerializeField, FoldoutGroup("Params"), ShowIf("_damageModifierType", 
+             DamageModifierType.Override)]
+        private int _damageOverride = 0;
+        
+        [SerializeField, FoldoutGroup("Params")] private UnityEvent<HitInfo> _onDamage;
+        [SerializeField, FoldoutGroup("Params")] private UnityEvent<HitInfo> _onFailDamage;
+        [SerializeField, FoldoutGroup("Params")] private UnityEvent<HitInfo> _onDeath;
 
         public DamageType DamageType { get {return _damageType;}}
         public UnityEvent<HitInfo> OnDamage { get {return _onDamage;}}

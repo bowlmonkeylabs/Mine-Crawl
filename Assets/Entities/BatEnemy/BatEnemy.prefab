@@ -3644,6 +3644,33 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onPickaxeSecondaryInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1802998898250526308}
+        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2250415067097219474}
+        m_TargetAssemblyTypeName: BML.Scripts.Knockbackable, BML.Scripts
+        m_MethodName: SetKnockback
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!135 &1080256283352918145
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3998,7 +4025,7 @@ GameObject:
   - component: {fileID: 6270080935600750121}
   - component: {fileID: 8871026455219955088}
   - component: {fileID: 1802998898250526308}
-  m_Layer: 10
+  m_Layer: 19
   m_Name: BatEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4319,7 +4346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthReference: {fileID: 0}
-  _health: 2
+  _health: 1
   _useHealthVariable: 0
   _invincibilitySeconds: 0
   _isInvincible: 0
@@ -4450,7 +4477,7 @@ MonoBehaviour:
   _damageable:
   - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
       Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile
-    _damageType: 467
+    _damageType: 1491
     _damageModifierType: 0
     _damageMultiplier: 1
     _damageResistance: 0

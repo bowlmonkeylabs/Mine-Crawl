@@ -5,6 +5,7 @@ using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Store;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace BML.Scripts
 {
@@ -15,6 +16,7 @@ namespace BML.Scripts
         [SerializeField] private IntVariable _enemyResourceCount;
         [SerializeField] private BoolVariable _isGodModeEnabled;
         [SerializeField] private StoreInventory _storeInventory;
+        [SerializeField] private UnityEvent _onPurchaseItem;
 
 
         private void Awake()
@@ -63,6 +65,7 @@ namespace BML.Scripts
             {
                 purchaseItem.OnPurchase.Invoke();
             }
+            _onPurchaseItem.Invoke();
         }
     }
 }
