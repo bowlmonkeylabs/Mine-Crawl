@@ -15,6 +15,7 @@ namespace BML.Scripts
         [SerializeField] private IntVariable _rareResourceCount;
         [SerializeField] private IntVariable _enemyResourceCount;
         [SerializeField] private BoolVariable _isGodModeEnabled;
+        [SerializeField] private BoolVariable _inCombat;
         [SerializeField] private StoreInventory _storeInventory;
         [SerializeField] private UnityEvent _onPurchaseItem;
 
@@ -42,6 +43,10 @@ namespace BML.Scripts
             if (_isGodModeEnabled.Value)
             {
                 DoPurchase(storeItem);
+                return;
+            }
+
+            if(_inCombat.Value) {
                 return;
             }
 
