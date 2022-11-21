@@ -74,7 +74,7 @@ namespace BML.Scripts.Tasks
             var velocity = horizontalMove + verticalMove;
             charController.Move(velocity);
             if (velocity.magnitude > 0)
-                _rotationPivot.rotation = Quaternion.LookRotation(velocity.normalized, Vector3.up);
+                _rotationPivot.rotation = Quaternion.LookRotation(charController.velocity.normalized, Vector3.up);
         }
     }
 }
