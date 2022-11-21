@@ -136,6 +136,22 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 AddPoint(triangles, vertices, normals);
             
             FilterPointsNoise();
+            FilterPointsRadius();
+        }
+
+        public void FilterPointsRadius()
+        {
+            for (int i = 0; i < param._points.Count; i++)
+            {
+                List<Point> pointsToRemove = new List<Point>();
+                for (int j = i + 1; j < param._points.Count; j++)
+                {
+                    if (Vector3.SqrMagnitude(param._points[i].pos - param._points[j].pos) <= Mathf.Pow(param._minRadius, 2f))
+                        pointsToRemove.Add(param._points[j]);
+                }
+
+                param._points = param._points.Except(pointsToRemove).ToList();
+            }
         }
 
         [Button, FoldoutGroup("Debug")]

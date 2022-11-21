@@ -17,6 +17,7 @@ namespace BML.Scripts.CaveV2
         [TitleGroup("Filtering"), MinMaxSlider(0f, 180f)] public Vector2 _minMaxAngle = new Vector2(0f, 180f);
         [TitleGroup("Filtering"), Range(0, 1)] public float _noiseScale = 100f;
         [TitleGroup("Filtering"), Range(0, 1)] public float _noiseFilterValueMin = .5f;
+        [TitleGroup("Filtering")] public float _minRadius = 3f;
         [TitleGroup("Filtering")] public bool _spawnInStartRoom;
         [TitleGroup("Filtering")] public bool _spawnInEndRoom;
         [TitleGroup("Filtering")] public int _maxDistanceFromMainPath = 10;
