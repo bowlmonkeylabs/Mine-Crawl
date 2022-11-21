@@ -25,7 +25,7 @@ namespace BML.Scripts
 
         private void Update()
         {
-            if (!_audioSource.isPlaying)
+            if (!_audioSource.isPlaying && Time.timeScale != 0f)
                 PlayNextClip();
         }
 
