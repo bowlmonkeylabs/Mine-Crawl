@@ -78,14 +78,20 @@ namespace BML.Scripts.CaveV2
         {
             Inner, Outer
         }
+
+        [Serializable]
+        public struct SteepnessRange
+        {
+            [MinMaxSlider(0, 90, true), HideLabel]
+            public Vector2 Range;
+        }
         
         [TitleGroup("Graph processing")]
         [Range(0f, 10f)]
         public float MaxEdgeLengthFactor = 1.5f;
         
-        [TitleGroup("Graph processing")]
-        [Range(1, 90)]
-        public int MaxEdgeSteepnessAngle = 30;
+        [TitleGroup("Graph processing"), PropertySpace(10f, 10f)]
+        public List<SteepnessRange> SteepnessRanges = new List<SteepnessRange>();
         
         [TitleGroup("Graph processing")]
         [UnityEngine.Tooltip("If true, cave node scaling is calculated based adjacency before nodes are filtered to the resulting level path.")]
