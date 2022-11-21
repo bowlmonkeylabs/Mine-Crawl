@@ -73,6 +73,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
             
             if (_healthBarController.IsLowHealth)
             {
+                _lowHealthFeedbacks.StopFeedbacks();
                 _lowHealthFeedbacks.PlayFeedbacks();
             }
             else if (totalHealthDelta > 0 && _lowHealthFeedbacks.gameObject.activeInHierarchy)
@@ -90,6 +91,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
             _invincible = invincible;
             if (_invincible)
             {
+                _invincibleFeedbacks.StopFeedbacks();
                 _invincibleFeedbacks.PlayFeedbacks();
             }
             else if (_incrementFeedbacks.gameObject.activeInHierarchy)
