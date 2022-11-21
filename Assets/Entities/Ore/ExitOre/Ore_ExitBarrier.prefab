@@ -1195,9 +1195,13 @@ PrefabInstance:
     - target: {fileID: 182695390771352254, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+      objectReference: {fileID: -9085331004972601494, guid: cc4a4ad521e6ad64ebb2ea5ab0a0d2e0, type: 3}
     - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeSecondaryInteract.m_PersistentCalls.m_Calls.Array.size
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
@@ -1225,6 +1229,22 @@ PrefabInstance:
       value: TakeDamage
       objectReference: {fileID: 0}
     - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeSecondaryInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeSecondaryInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 8537203387600411174}
+    - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeSecondaryInteract.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeSecondaryInteract.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: TakeDamage
+      objectReference: {fileID: 0}
+    - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: BML.Scripts.AlertEnemies, BML.Scripts
       objectReference: {fileID: 0}
@@ -1233,7 +1253,15 @@ PrefabInstance:
       value: BML.Scripts.Damageable, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeSecondaryInteract.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: BML.Scripts.Damageable, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 202682029861605475, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeSecondaryInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 345021140219112773, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
@@ -1794,7 +1822,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5432566915175241370, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _damageable.Array.data[0]._damageType
-      value: 451
+      value: 1475
       objectReference: {fileID: 0}
     - target: {fileID: 5432566915175241370, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _damageable.Array.data[1]._damageType
@@ -1811,7 +1839,7 @@ PrefabInstance:
     - target: {fileID: 5432566915175241370, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _damageable.Array.data[0]._damageTypesPreview
       value: Player_Pickaxe, Player_Bomb, Enemy_Mimic_Projectile, Ore_Explosive,
-        Enemy_Snake_Projectile
+        Enemy_Snake_Projectile, Player_Pickaxe_Secondary
       objectReference: {fileID: 0}
     - target: {fileID: 5432566915175241370, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _damageable.Array.data[1]._damageModifierType
@@ -1951,7 +1979,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7379165262754171365, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: uniqueID
-      value: 2281283198300620444
+      value: 736089491674510313
       objectReference: {fileID: 0}
     - target: {fileID: 7446825106882959702, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: m_Mesh
