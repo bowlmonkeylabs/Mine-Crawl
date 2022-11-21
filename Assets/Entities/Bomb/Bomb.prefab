@@ -227,7 +227,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d303737af573472ebbecf9e56975bfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scaleToApply: {fileID: 11400000, guid: deb0116f2dce187439f33946f472cc05, type: 2}
+  _scaleToApply:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: deb0116f2dce187439f33946f472cc05, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
   _multiplier: 2
   _applyOnEnable: 1
 --- !u!1 &5654645116384045316
@@ -703,7 +708,12 @@ MonoBehaviour:
   _healthReference: {fileID: 0}
   _health: 1
   _useHealthVariable: 0
-  _invincibilitySeconds: 0
+  _invincibilitySeconds:
+    ReferenceTypeSelector: 0
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
   _isInvincible: 0
   _onHealthChange:
     m_PersistentCalls:
