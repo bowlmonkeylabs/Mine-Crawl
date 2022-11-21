@@ -472,7 +472,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d303737af573472ebbecf9e56975bfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scaleToApply: {fileID: 11400000, guid: deb0116f2dce187439f33946f472cc05, type: 2}
+  _scaleToApply:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: deb0116f2dce187439f33946f472cc05, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _multiplier: 1
   _applyOnEnable: 1
 --- !u!1 &4466660159638306558
 GameObject:
@@ -859,6 +865,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onPickaxeSecondaryInteract:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &2179066638743915286
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1436,7 +1445,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7379165262754171365, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: uniqueID
-      value: 3475236556312014113
+      value: 8759816798196864822
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _health
