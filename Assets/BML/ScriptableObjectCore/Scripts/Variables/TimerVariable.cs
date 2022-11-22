@@ -35,11 +35,14 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         // public float Duration => duration;
         public float? RemainingTime => remainingTime;
+        [ShowInInspector, ReadOnly]
         public float ElapsedTime => Duration - (remainingTime ?? Duration);
         public bool IsFinished => isFinished;
-
+        
+        [ShowInInspector, ReadOnly]
         public bool IsStopped => isStopped;
 
+        [ShowInInspector, ReadOnly]
         public bool IsStarted => isStarted;
 
         [NonSerialized]
