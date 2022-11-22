@@ -82,8 +82,10 @@ namespace BML.Scripts.CaveV2
         [Serializable]
         public struct SteepnessRange
         {
-            [MinMaxSlider(0, 90, true), HideLabel]
-            public Vector2 Range;
+            [MinMaxSlider(0, 90, true)]
+            public Vector2 Angle;
+            [MinMaxSlider(0, 90, true)]
+            public Vector2 EdgeRadius;
         }
         
         [TitleGroup("Graph processing")]
