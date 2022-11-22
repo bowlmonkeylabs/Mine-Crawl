@@ -103,15 +103,21 @@ namespace BML.Scripts.Level
             Quaternion targetRotation = Quaternion.LookRotation(rotationDirection);
 
             //Figure out the error for each axis
-            float xAngleError = Mathf.DeltaAngle(rotation.eulerAngles.x, targetRotation.eulerAngles.x);
-            float xTorqueCorrection = _xAxisPIDController.GetOutput(xAngleError, Time.fixedDeltaTime);
+            float xTorqueCorrection = _xAxisPIDController.GetOutput(
+                transform.rotation.eulerAngles.x, 
+                targetRotation.eulerAngles.x, 
+                Time.fixedDeltaTime);
 
-            float yAngleError = Mathf.DeltaAngle(rotation.eulerAngles.y, targetRotation.eulerAngles.y);
-            float yTorqueCorrection = _yAxisPIDController.GetOutput(yAngleError, Time.fixedDeltaTime);
+            float yTorqueCorrection = _yAxisPIDController.GetOutput(
+                transform.rotation.eulerAngles.y, 
+                targetRotation.eulerAngles.y, 
+                Time.fixedDeltaTime);
 
-            float zAngleError = Mathf.DeltaAngle(rotation.eulerAngles.z, targetRotation.eulerAngles.z);
-            float zTorqueCorrection = _zAxisPIDController.GetOutput(zAngleError, Time.fixedDeltaTime);
-
+            float zTorqueCorrection = _zAxisPIDController.GetOutput(
+                transform.rotation.eulerAngles.z, 
+                targetRotation.eulerAngles.z, 
+                Time.fixedDeltaTime);
+            
             var torque = (xTorqueCorrection * Vector3.right) + (yTorqueCorrection * Vector3.up) +
                          (zTorqueCorrection * Vector3.forward);
             var sqrDistance = (targetPosition - _rb.position).sqrMagnitude;
