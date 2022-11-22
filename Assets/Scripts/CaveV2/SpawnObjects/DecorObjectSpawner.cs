@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.CaveV2.CaveGraph;
+using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2.SpawnObjects
@@ -41,10 +40,6 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] private List<NoiseBox> _noiseBoxes = new List<NoiseBox>();
 
         private MeshCollider meshCollider;
-
-        // Room obj and dist to main path
-        private Dictionary<GameObject, int> roomDataDict =
-            new Dictionary<GameObject, int>();
 
         private Dictionary<Point, Vector3> pointToClosestPointDebug = new Dictionary<Point, Vector3>();
         
@@ -125,7 +120,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         public void DestroyDecor()
         {
             RemovePoints();
-            ClearPointsFromRooms();
+            ClearPointsFromRoomsDebug();
             RemoveObjects();
         }
         
@@ -217,57 +212,27 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [Button, FoldoutGroup("Debug")]
         public void AssignPointsToRooms()
         {
-            GetRoomData();
+#if UNITY_EDITOR
+            // Only needed to clear debug point renderers
+            ClearPointsFromRooms();
+#endif
 
             List<Point> pointsToRemove = new List<Point>();
             pointToClosestPointDebug.Clear();
+            
             foreach (var point in _points)
             {
-                bool foundRoom = false;
-                (GameObject roomObj, int distFromMainPath) currentRoomInfo = (null, Int32.MaxValue);
-                (GameObject roomObj, int distFromMainPath, float sqrDistanceFromPoint, Vector3 closestPoint) closestRoomInfo = (null, Int32.MaxValue, Mathf.Infinity, Vector3.zero);
-                foreach (var roomData in roomDataDict)
-                {
-                    List<Collider> boundsColliders = GetRoomBoundsColliders(roomData.Key);
-                    
-                    if (boundsColliders.Count <= 0)
-                        Debug.LogError($"Room object {roomData.Key.name} is missing bounds collider!");
-
-                    currentRoomInfo.roomObj = roomData.Key;
-                    currentRoomInfo.distFromMainPath = roomData.Value;
-
-                    //Stop if contained by room
-                    Vector3 closestPoint = Vector3.zero;
-                    foreach (var boundsCollider in boundsColliders)
-                    {
-                        bool isInCollider;
-                        (isInCollider, closestPoint) = IsPointWithinCollider(boundsCollider, point.pos);
-                        if (isInCollider)
-                        {
-                            foundRoom = true;
-                            closestRoomInfo.closestPoint = point.pos;
-                            goto roomLoopEnd;
-                        }
-                    }
-
-                    //Else see how far this room is from the current point. Keep track of closest room.
-                    float sqrDistToCollider = Vector3.SqrMagnitude(point.pos - closestPoint);
-                    if (sqrDistToCollider < closestRoomInfo.sqrDistanceFromPoint)
-                    {
-                        closestRoomInfo.roomObj = currentRoomInfo.roomObj;
-                        closestRoomInfo.distFromMainPath = currentRoomInfo.distFromMainPath;
-                        closestRoomInfo.sqrDistanceFromPoint = sqrDistToCollider;
-                        closestRoomInfo.closestPoint = closestPoint;
-                    }
-                }
-                roomLoopEnd:
+                bool removePoint = false;
                 
-                GameObject roomObj = foundRoom ? currentRoomInfo.roomObj : closestRoomInfo.roomObj;
-                int distMainPath = foundRoom ? currentRoomInfo.distFromMainPath : closestRoomInfo.distFromMainPath;
+                var containingRoom = _caveGen.CaveGraph.FindContainingRoom(point.pos);
+                if (containingRoom.nodeData == null)
+                {
+                    removePoint = true;
+                }
                 
                 Random.InitState(STEP_ID);
-                bool removePoint = FilterPointDistanceToMainPath(point, roomObj, distMainPath);
-                removePoint |= FilterPointStartEndRoom(roomObj);
+                removePoint |= FilterPointDistanceToMainPath(containingRoom.nodeData.MainPathDistance);
+                removePoint |= FilterPointStartEndRoom(containingRoom.nodeData);
 
                 if (removePoint)
                 {
@@ -275,10 +240,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 }
                 else
                 {
-                    //Set points to room
-                    RenderDecorPoints roomDecorRend = roomObj.GetComponentInChildren<RenderDecorPoints>();
+                    // Set points to room
+                    RenderDecorPoints roomDecorRend = containingRoom.nodeData
+                        .GameObject.GetComponentInChildren<RenderDecorPoints>();
                     roomDecorRend.AddPoint(point, _pointRadiusDebug);
-                    pointToClosestPointDebug[point] = closestRoomInfo.closestPoint;
+                    pointToClosestPointDebug[point] = containingRoom.closestPoint.Value;
                 }
             }
 
@@ -286,42 +252,28 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             pointCount = _points.Count;
         }
 
-        private void GetRoomData()
+        private void ClearPointsFromRooms()
         {
             if (_caveGen.CaveGraph.VertexCount < 1)
                 Debug.LogError("Cave graph has no vertices.");
             if (_caveGen.CaveGraph.EdgeCount < 1)
                 Debug.LogError("Cave graph has no edges.");
 
-            roomDataDict.Clear();
-
             foreach (var vert in _caveGen.CaveGraph.Vertices)
             {
-                GameObject vertObj = vert.GameObject;
-                CaveNodeDataDebugComponent nodeDataDebug = vertObj.GetComponent<CaveNodeDataDebugComponent>();
-
-                roomDataDict[vertObj] = nodeDataDebug.CaveNodeData.MainPathDistance;
-                
-                RenderDecorPoints roomDecorRend = vertObj.GetComponentInChildren<RenderDecorPoints>();
+                RenderDecorPoints roomDecorRend = vert.GameObject.GetComponentInChildren<RenderDecorPoints>();
                 roomDecorRend.ClearPoints();
             }
 
             foreach (var edge in _caveGen.CaveGraph.Edges)
             {
-                GameObject edgeObj = edge.GameObject;
-                CaveNodeConnectionDataDebugComponent  edgeDataDebug = edgeObj.GetComponent<CaveNodeConnectionDataDebugComponent>();
-                
-                // For edges, the dist to main path is max of connected rooms
-                roomDataDict[edgeObj] = Mathf.Max(edgeDataDebug.CaveNodeConnectionData.Source.MainPathDistance,
-                    edgeDataDebug.CaveNodeConnectionData.Target.MainPathDistance);
-                
-                RenderDecorPoints roomDecorRend = edgeObj.GetComponentInChildren<RenderDecorPoints>();
+                RenderDecorPoints roomDecorRend = edge.GameObject.GetComponentInChildren<RenderDecorPoints>();
                 roomDecorRend.ClearPoints();
             }
         }
 
-        [Button, FoldoutGroup("Debug")]
-        public void ClearPointsFromRooms()
+        [Button, FoldoutGroup("Debug"), LabelText("Clear points from all rooms")]
+        public void ClearPointsFromRoomsDebug()
         {
             foreach (var decorRend in FindObjectsOfType<RenderDecorPoints>())
             {
@@ -365,7 +317,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         }
         
         
-        private bool FilterPointDistanceToMainPath(Point point, GameObject roomObj, int distToMainPath)
+        private bool FilterPointDistanceToMainPath(int distToMainPath)
         {
             float stayChance;
 
@@ -386,11 +338,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             
         }
 
-        private bool FilterPointStartEndRoom(GameObject roomObj)
+        private bool FilterPointStartEndRoom(ICaveNodeData caveNodeData)
         {
-            if (!_spawnInStartRoom && roomObj == _caveGen.CaveGraph.StartNode.GameObject)
+            if (!_spawnInStartRoom && caveNodeData == _caveGen.CaveGraph.StartNode)
                 return true;
-            if (!_spawnInEndRoom && roomObj == _caveGen.CaveGraph.EndNode.GameObject)
+            if (!_spawnInEndRoom && caveNodeData == _caveGen.CaveGraph.EndNode)
                 return true;
 
             return false;   
@@ -438,32 +390,6 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         public void UnVisualizeNoise()
         {
             _noiseBoxes.Clear();
-        }
-
-        #endregion
-
-        #region Util
-
-        private List<Collider> GetRoomBoundsColliders(GameObject roomObj)
-        {
-            List<Collider> boundsColliders = new List<Collider>();
-            Collider[] allRoomColliders = roomObj.GetComponentsInChildren<Collider>();
-            foreach (var col in allRoomColliders)
-            {
-                if (col.gameObject.IsInLayerMask(_roomBoundsLayerMask))
-                {
-                    boundsColliders.Add(col);
-                }
-            }
-
-            return boundsColliders;
-        }
-        
-        
-        private (bool isInCollider, Vector3 closestPoint) IsPointWithinCollider(Collider col, Vector3 point)
-        {
-            Vector3 closestPoint = col.ClosestPoint(point);
-            return (closestPoint == point, closestPoint);
         }
 
         #endregion

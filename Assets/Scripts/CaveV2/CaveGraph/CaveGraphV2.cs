@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
+using BML.Scripts.Utils;
 using Sirenix.Utilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -80,6 +81,64 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 .AsParallel();
             var nearestVertex = distances.FirstOrDefault().vertex;
             return nearestVertex;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <warning>Potentially expensive method invocation; Need to consider a more efficient implementation.</warning>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public (ICaveNodeData nodeData, Vector3? closestPoint) FindContainingRoom(Vector3 position, float allowableRadius = -1f)
+        {
+            if (!AllNodes.Any()) return (null, null);
+            
+            bool foundExactRoom = false;
+            (ICaveNodeData nodeData, float sqlDistanceToPoint, Vector3 closestPoint) closestRoomInfo 
+                = (null, sqlDistanceToPoint: Mathf.Infinity, closestPoint: Vector3.zero);
+
+            foreach (var nodeData in AllNodes)
+            {
+                if (nodeData.BoundsColliders.Count <= 0)
+                { 
+                    Debug.LogError($"Room object {nodeData.GameObject.name} is missing bounds collider!");
+                }
+
+                // Stop if contained by room
+                Vector3 closestPoint = Vector3.zero;
+                foreach (var collider in nodeData.BoundsColliders)
+                {
+                    bool isInCollider;
+                    (isInCollider, closestPoint) = collider.IsPointInsideCollider(position);
+                    if (isInCollider)
+                    {
+                        foundExactRoom = true;
+                        closestRoomInfo.nodeData = nodeData;
+                        closestRoomInfo.closestPoint = position;
+                        closestRoomInfo.sqlDistanceToPoint = 0;
+                        goto roomLoopEnd;
+                    }
+                }
+
+                // Else see how far this room is from the current point. Keep track of closest room.
+                float sqrDistanceToCollider = Vector3.SqrMagnitude(position - closestPoint);
+                if (sqrDistanceToCollider < closestRoomInfo.sqlDistanceToPoint)
+                {
+                    closestRoomInfo.nodeData = nodeData;
+                    closestRoomInfo.closestPoint = closestPoint;
+                    closestRoomInfo.sqlDistanceToPoint = sqrDistanceToCollider;
+                }
+            }
+            roomLoopEnd:
+
+            if (allowableRadius < 0f || closestRoomInfo.sqlDistanceToPoint <= Mathf.Pow(allowableRadius, 2))
+            {
+                return (closestRoomInfo.nodeData, closestRoomInfo.closestPoint);
+            }
+            else
+            {
+                return (null, null);
+            }
         }
 
         public void FloodFillDistance(IEnumerable<CaveNodeData> targetVertices, Action<CaveNodeData, int> updateStoredVertexDistance)

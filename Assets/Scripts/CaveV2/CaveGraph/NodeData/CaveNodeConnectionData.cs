@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Utils;
 using QuikGraph;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace BML.Scripts.CaveV2.CaveGraph.NodeData
@@ -30,7 +30,19 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public float PlayerInfluence { get; set; }
         
         // Scene object references
-        [ShowInInspector] public GameObject GameObject { get; set; }
+        [ShowInInspector]
+        public GameObject GameObject
+        {
+            get => _gameObject;
+            set
+            {
+                _gameObject = value;
+                BoundsColliders.Clear();
+                BoundsColliders.AddRange(CaveNodeDataUtils.GetRoomBoundsColliders(this, CaveNodeDataUtils.RoomBoundsLayerMask));
+            }
+        }
+        private GameObject _gameObject;
+        [ShowInInspector] public HashSet<Collider> BoundsColliders { get; set; }
 
         public CaveNodeConnectionData(CaveNodeData source, CaveNodeData target, float radius)
         {
@@ -51,6 +63,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             PlayerVisited = false;
             PlayerOccupied = false;
             PlayerInfluence = -1f;
+
+            BoundsColliders = new HashSet<Collider>();
         }
         
     }
