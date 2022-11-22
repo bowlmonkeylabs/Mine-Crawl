@@ -28,7 +28,7 @@ namespace BML.Scripts
 			}
 		}
 
-        private void OnColliderEnter (Collision collision)
+        private void OnCollisionEnter (Collision collision)
 		{
 			if (_stopOnGroundHit && !_grounded && _stickyLayerMask.MMContains(collision.gameObject))
 			{
