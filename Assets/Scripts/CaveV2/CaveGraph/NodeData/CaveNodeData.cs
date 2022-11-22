@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.CaveV2.SpawnObjects;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -37,6 +38,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         private GameObject _gameObject;
         [ShowInInspector] public HashSet<Collider> BoundsColliders { get; set; }
         [ShowInInspector] public HashSet<SpawnPoint> SpawnPoints { get; set; }
+        [ShowInInspector] public HashSet<Torch> Torches { get; set; }
 
         public CaveNodeData(Vector3 localPosition, float size)
         {
@@ -51,6 +53,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             PlayerInfluence = -1f;
             
             SpawnPoints = new HashSet<SpawnPoint>();
+            Torches = new HashSet<Torch>();
         }
     }
 }

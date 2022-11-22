@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.Utils;
 using QuikGraph;
 using Sirenix.OdinInspector;
@@ -43,6 +44,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         }
         private GameObject _gameObject;
         [ShowInInspector] public HashSet<Collider> BoundsColliders { get; set; }
+        [ShowInInspector] public HashSet<Torch> Torches { get; set; }
 
         public CaveNodeConnectionData(CaveNodeData source, CaveNodeData target, float radius)
         {
@@ -65,6 +67,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             PlayerInfluence = -1f;
 
             BoundsColliders = new HashSet<Collider>();
+            Torches = new HashSet<Torch>();
         }
         
     }

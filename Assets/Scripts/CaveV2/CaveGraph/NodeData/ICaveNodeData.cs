@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BML.Scripts.CaveV2.Objects;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -18,5 +19,6 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         // Scene object references
         [ShowInInspector] public GameObject GameObject { get; set; }
         [ShowInInspector] public HashSet<Collider> BoundsColliders { get; set; }
+        [ShowInInspector] public HashSet<Torch> Torches { get; set; }
     }
 }

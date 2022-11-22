@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using UnityEngine;
 using BML.Scripts.CaveV2.MudBun;
+using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.CaveV2.Util;
 using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Utils;
@@ -61,6 +63,9 @@ namespace BML.Scripts.CaveV2
         
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private DecorObjectSpawner _decorObjectSpawner;
+
+        [TitleGroup("Torches")] 
+        [SerializeField] private DynamicGameEvent _onTorchPlaced;
 
         [TitleGroup("Debug")]
         [SerializeField] private bool _enableLogs = false;
@@ -553,6 +558,12 @@ namespace BML.Scripts.CaveV2
             return caveGraph;
         }
 
+        private CaveGraphV2 _minimumSpanningTreeGraphTEMP;
+        
+        #endregion
+        
+        #region Player influence
+        
         public void UpdatePlayerDistance(IEnumerable<CaveNodeData> playerOccupidedNodes)
         {
             if (!IsGenerated) return;
@@ -568,8 +579,32 @@ namespace BML.Scripts.CaveV2
             
             this.OnAfterUpdatePlayerDistance?.Invoke();
         }
+        
+        #endregion
+        
+        #region Torch
 
-        private CaveGraphV2 _minimumSpanningTreeGraphTEMP;
+        public void OnTorchPlaced(object prevValue, object currValue)
+        {
+            var payload = currValue as TorchPlacedPayload;
+            if (payload == null) throw new ArgumentException("Invalid payload for OnTorchPlaced");
+            
+            OnTorchPlaced(payload);
+        }
+
+        public void OnTorchPlaced(TorchPlacedPayload payload)
+        {
+            var containingRoom = _caveGraph.FindContainingRoom(payload.Position);
+            if (containingRoom.nodeData == null)
+            {
+                Debug.LogError($"Torch placed outside any room in the cave graph. {payload.Position}");
+                return;
+            }
+
+            containingRoom.nodeData.Torches.Add(payload.Torch);
+            
+            Debug.Log($"CaveGen OnTorchPlaced: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
+        }
         
         #endregion
         
@@ -696,6 +731,7 @@ namespace BML.Scripts.CaveV2
         private void OnEnable()
         {
             _caveGenParams.OnValidateEvent += OnValidate;
+            _onTorchPlaced.Subscribe(OnTorchPlaced);
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += PlayModeStateChanged;
 #endif
@@ -704,6 +740,7 @@ namespace BML.Scripts.CaveV2
         private void OnDisable()
         {
             _caveGenParams.OnValidateEvent -= OnValidate;
+            _onTorchPlaced.Unsubscribe(OnTorchPlaced);
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged -= PlayModeStateChanged;
 #endif
