@@ -6,45 +6,10 @@ using QuikGraph;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace BML.Scripts.CaveV2.CaveGraph
+namespace BML.Scripts.CaveV2.CaveGraph.NodeData
 {
     [Serializable]
-    public class CaveNodeData
-    {
-        // Fundamental properties
-        [ShowInInspector] public Vector3 LocalPosition { get; private set; }
-        [ShowInInspector] public float Size { get; set; }
-        
-        // Calculated properties
-        [ShowInInspector] public int MainPathDistance { get; set; }
-        [ShowInInspector] public int ObjectiveDistance { get; set; }
-        [ShowInInspector] public int PlayerDistance { get; set; }
-        [ShowInInspector] public bool PlayerVisited { get; set; }
-        [ShowInInspector] public bool PlayerOccupied { get; set; }
-        [ShowInInspector] public float PlayerInfluence { get; set; }
-        
-        // Scene object references
-        [ShowInInspector] public GameObject GameObject { get; set; }
-        [ShowInInspector] public HashSet<SpawnPoint> SpawnPoints { get; set; }
-
-        public CaveNodeData(Vector3 localPosition, float size)
-        {
-            LocalPosition = localPosition;
-            Size = size;
-
-            MainPathDistance = -1;
-            ObjectiveDistance = -1;
-            PlayerDistance = -1;
-            PlayerVisited = false;
-            PlayerOccupied = false;
-            PlayerInfluence = -1f;
-            
-            SpawnPoints = new HashSet<SpawnPoint>();
-        }
-    }
-    
-    [Serializable]
-    public class CaveNodeConnectionData : IEdge<CaveNodeData>
+    public class CaveNodeConnectionData : IEdge<CaveNodeData>, ICaveNodeData
     {
         // Fundamental properties
         [ShowInInspector] public CaveNodeData Source { get; private set; }
@@ -54,6 +19,12 @@ namespace BML.Scripts.CaveV2.CaveGraph
         [ShowInInspector] public float SteepnessAngle { get; private set; }
         
         // Calculated properties
+        [ShowInInspector] public int MainPathDistance 
+            => Mathf.Min(Source.MainPathDistance, Target.MainPathDistance);
+        [ShowInInspector] public int ObjectiveDistance 
+            => Mathf.Min(Source.ObjectiveDistance, Target.ObjectiveDistance);
+        [ShowInInspector] public int PlayerDistance 
+            => Mathf.Min(Source.PlayerDistance, Target.PlayerDistance);
         [ShowInInspector] public bool PlayerVisited { get; set; }
         [ShowInInspector] public bool PlayerOccupied { get; set; }
         [ShowInInspector] public float PlayerInfluence { get; set; }
@@ -83,5 +54,4 @@ namespace BML.Scripts.CaveV2.CaveGraph
         }
         
     }
-    
 }

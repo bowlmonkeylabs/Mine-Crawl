@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using Sirenix.Utilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -14,6 +15,8 @@ namespace BML.Scripts.CaveV2.CaveGraph
         public CaveNodeData EndNode { get; set; }
         
         public List<CaveNodeConnectionData> MainPath { get; set; }
+
+        public IEnumerable<ICaveNodeData> AllNodes => this.Vertices.Concat<ICaveNodeData>(this.Edges);
 
         public CaveGraphV2() : base(true)
         {
@@ -61,8 +64,8 @@ namespace BML.Scripts.CaveV2.CaveGraph
         /// <summary>
         /// 
         /// </summary>
-        /// <warning>Potentially expensive method invocation; Need to consider a more efficient implemntation.</warning>
-        /// <param name="position"></param>
+        /// <warning>Potentially expensive method invocation; Need to consider a more efficient implementation.</warning>
+        /// <param name="localPosition"></param>
         /// <returns></returns>
         public CaveNodeData GetNearestVertex(Vector3 localPosition)
         {

@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using BML.Scripts.CaveV2.CaveGraph.NodeData;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace BML.Scripts.CaveV2.CaveGraph

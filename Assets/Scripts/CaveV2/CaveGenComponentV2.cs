@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
+using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using UnityEngine;
 using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.CaveV2.Util;
