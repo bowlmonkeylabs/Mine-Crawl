@@ -1,4 +1,5 @@
 ﻿using System;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.Scripts.Player;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace BML.Scripts
     {
         [SerializeField] private Rigidbody rb;
         [SerializeField] private float speed = 10f;
+        [SerializeField] private string deflectLayer = "EnemyProjectileDeflected";
+        [SerializeField] private TransformSceneReference mainCameraRef;
 
         private Vector3 moveDirection;
 
@@ -28,6 +31,8 @@ namespace BML.Scripts
 
         public void ChangeDirection(Vector3 dir)
         {
+            gameObject.layer = LayerMask.NameToLayer(deflectLayer);
+            rb.position = mainCameraRef.Value.position;
             moveDirection = dir.normalized;
         }
 

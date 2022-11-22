@@ -31,6 +31,7 @@ namespace BML.Scripts.UI
 
         private void OnEnable()
         {
+            UpdateImage();
             _timer.Subscribe(UpdateImage);
         }
 
@@ -55,7 +56,8 @@ namespace BML.Scripts.UI
                     break;
             }
             _arc.ArcProperties.Length = fillPercent * _maxFill;
-            _arc.ShapeProperties.FillColor = (_timer.RemainingTime <= 0 ? _colorFinished : _colorRunning);
+            bool isFull = (_timer.RemainingTime <= 0 || !_timer.IsStarted);
+            _arc.ShapeProperties.FillColor = (isFull ? _colorFinished : _colorRunning);
             _arc.ForceMeshUpdate();
         }
         

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3602042361714346562}
   - component: {fileID: 5781847919391900184}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Heart (mesh)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,12 +25,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8034896277217607973}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 541999807391229690}
-  m_RootOrder: 4
+  m_Father: {fileID: 151680289285355032}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3602042361714346562
 MeshFilter:
@@ -39,7 +39,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8034896277217607973}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 2422826764942014916, guid: ca8a73de38de1764cb2601b66c05f954, type: 3}
 --- !u!23 &5781847919391900184
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81,6 +81,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8874225340458934254
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 151680289285355032}
+  m_Layer: 0
+  m_Name: Heart (pos, scale) (mesh)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &151680289285355032
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8874225340458934254}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.70364875, y: 0.70364875, z: 0.70364875}
+  m_Children:
+  - {fileID: 3966969696655439501}
+  m_Father: {fileID: 541999807391229690}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8636337741508665240
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -88,6 +119,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 240790557943625607, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+      propertyPath: m_Center.y
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 1448547915568945795, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -96,6 +131,10 @@ PrefabInstance:
       propertyPath: TargetRenderer
       value: 
       objectReference: {fileID: 5781847919391900184}
+    - target: {fileID: 8097470614689505661, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8097470615772470865, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
       propertyPath: m_onTriggerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
