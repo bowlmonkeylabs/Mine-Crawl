@@ -18,6 +18,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using Pathfinding;
+using Sirenix.Utilities;
 using UnityEditor.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -43,14 +44,18 @@ namespace BML.Scripts.Pathfinding
         public float maxJumpDist = 5f;
         public LayerMask raycastLayerMask = -1;
         public float sphereCastRadius = 1f;
+        
+        //Max distance between raycast hit and nearest node retrieved. To prevent making links to nodes not even close
+        public float maxClosestNodeDist = 3f;
 
         //how far over to move spherecast away from navmesh edge to prevent detecting the same edge
         public float cheatOffset = .25f;
 
         //how high up to bump raycasts to check for walls (to prevent forming links through walls)
         public float wallCheckYOffset = 0.5f;
-
+        
         public bool ignoreSameGraph = false;
+        public bool onlySameGraph = false;
 
         [Header("EdgeNormal")] public bool invertFacingNormal = false;
         public bool dontAllignYAxis = true;
@@ -62,14 +67,46 @@ namespace BML.Scripts.Pathfinding
 
         public float agentRadius = 0.5f;
 
+        public bool enableDebug = false;
+        public bool showedFailedHits = false;
+        public float normalLength = .5f;
+        public float placePosRadius = .2f;
+        public float debugLineDuration = 10f;
+        public string debugGraphName;
+
         private Vector3 ReUsableV3;
         private Vector3 offSetPosY;
         
         [NonSerialized]
         private List<NodeLink2> nodeLinks = new List<NodeLink2>();
 
+        private List<Vector3> placePosList = new List<Vector3>();
+
         #endregion
 
+        private void OnDrawGizmosSelected()
+        {
+            if (!enableDebug) return;
+            if (edges.IsNullOrEmpty()) return;
+
+            foreach (var edge in edges)
+            {
+                Gizmos.color = Color.white;
+                Gizmos.DrawLine(edge.start, edge.end);
+                Gizmos.color = Color.yellow;
+                Vector3 normalPos = Vector3.Lerp(edge.start, edge.end, .5f);
+                Vector3 normal = Vector3.Cross(edge.end - edge.start, Vector3.up).normalized; //How its cal in this code
+                Gizmos.DrawLine(normalPos, normalPos + normal * normalLength);
+            }
+
+            if (placePosList.IsNullOrEmpty()) return;
+
+            foreach (var placePos in placePosList)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(placePos, placePosRadius);
+            }
+        }
 
         #region GridGen
 
@@ -85,6 +122,10 @@ namespace BML.Scripts.Pathfinding
             foreach (NavGraph graph in AstarData.active.graphs)
             {
                 Debug.Log($"Considering graph: {graph.name}");
+                
+                if (enableDebug && debugGraphName != "" && graph.name != debugGraphName)
+                    continue;
+
                 if (graph != null && !(graph is PointGraph))
                 {
                     Debug.Log($"Starting calculate Edges: {graph.name}");
@@ -147,7 +188,7 @@ namespace BML.Scripts.Pathfinding
 
             ClearLinks();
 
-
+            placePosList.Clear();
             foreach (Edge edge in edges)
             {
                 int tilesCountWidth = (int) Mathf.Clamp(edge.length / tileWidth, 0, 10000);
@@ -163,6 +204,7 @@ namespace BML.Scripts.Pathfinding
                                            + 0.5f / (float) tilesCountWidth //shift for half tile width
                                        ) + edge.facingNormal * Vector3.up * heightShift;
 
+                    placePosList.Add(placePos);
                     //spawn up/down links
                     CheckPlacePos(placePos, edge.facingNormal);
                     //spawn horizontal links
@@ -183,29 +225,58 @@ namespace BML.Scripts.Pathfinding
             Vector3 endPos = startPos - Vector3.up * maxJumpDownHeight * 1.1f;
 
             //Debug Wall Hit
-            //Debug.DrawLine ( startPosHorizontal, startPos, Physics.Linecast(startPosHorizontal, startPos, out _, raycastLayerMask.value, QueryTriggerInteraction.Ignore) ? Color.red : Color.green, 2 );
+            if (enableDebug)
+            {
+                bool hit = Physics.Linecast(startPosHorizontal, startPos, out _, raycastLayerMask.value,
+                    QueryTriggerInteraction.Ignore);
 
-            NNInfo nodeStartInfo = AstarPath.active.GetNearest(pos, NNConstraint.Default);
+                //Only show if success(miss in this case) or config to show anyway
+                if (showedFailedHits || !hit)
+                {
+                    Debug.DrawLine ( startPosHorizontal, startPos, hit ? Color.red : Color.green, debugLineDuration);
+                }
+            }
+
+            NNConstraint constraint = NNConstraint.Default;
+            NNInfo nodeStartInfo = AstarPath.active.GetNearest(pos, constraint);
             NavGraph startGraph = nodeStartInfo.node.Graph;
 
             RaycastHit raycastHit = new RaycastHit();
             if (!Physics.Linecast(startPosHorizontal, startPos, out _, raycastLayerMask.value, QueryTriggerInteraction.Ignore))
             {
                 //Debug Vertical Hit
-                //Debug.DrawLine ( startPos, endPos, Physics.Linecast(startPos, endPos, out raycastHit, raycastLayerMask.value, QueryTriggerInteraction.Ignore) ? Color.red : Color.green, 2 );
+                if (enableDebug)
+                {
+                    bool hit = Physics.Linecast(startPos, endPos, out raycastHit, raycastLayerMask.value,
+                        QueryTriggerInteraction.Ignore);
+
+                    //Only show if success(hit in this case) or config to show anyway
+                    if (showedFailedHits || hit)
+                    {
+                        Debug.DrawLine ( startPos, endPos, hit ? Color.green : Color.red, debugLineDuration);
+                    }
+                }
                 
                 if (Physics.Linecast(startPos, endPos, out raycastHit, raycastLayerMask.value, QueryTriggerInteraction.Ignore))
                 {
-                    NNInfo nodeInfo = AstarPath.active.GetNearest(raycastHit.point, NNConstraint.Default);
+                    if (enableDebug) Debug.DrawLine(raycastHit.point, raycastHit.point + Vector3.right, Color.cyan, debugLineDuration);
+                    NNInfo nodeInfo = AstarPath.active.GetNearest(raycastHit.point, constraint);
                     NavGraph targetGraph = nodeInfo.node.Graph;
                     Vector3 closestPos = nodeInfo.position;
 
-                    if (nodeInfo.node != null)
+                    if (nodeInfo.node != null && Vector3.Distance(raycastHit.point, closestPos) < maxClosestNodeDist)
                     {
                         if (ignoreSameGraph && targetGraph == startGraph)
                             return false;
 
-                        //Debug.DrawLine( pos, closestPos, Color.black, 15 );
+                        if (onlySameGraph && targetGraph != startGraph)
+                            return false;
+
+                        if (enableDebug)
+                        {
+                            Debug.DrawLine( pos, closestPos, Color.black, debugLineDuration);
+                        }
+                        
 
                         if (Vector3.Distance(pos, closestPos) > 1.1f)
                         {
@@ -251,8 +322,8 @@ namespace BML.Scripts.Pathfinding
             // Cheat forward a little bit so the sphereCast doesn't touch this ledge.
             Vector3 cheatStartPos = LerpByDistance(startPos, endPos, cheatOffset);
             //Debug.DrawRay(endPos, Vector3.up, Color.blue, 2);
-            //Debug.DrawLine ( cheatStartPos , endPos, Color.white, 2 );
-            //Debug.DrawLine(startPos, endPos, Color.white, 2);
+            //Debug.DrawLine ( cheatStartPos , endPos, Color.white, debugLineDuration);
+            //Debug.DrawLine(startPos, endPos, Color.white, debugLineDuration);
 
 
             RaycastHit raycastHit = new RaycastHit();
@@ -284,7 +355,7 @@ namespace BML.Scripts.Pathfinding
                         if (nodeInfo.node != null)
                         {
                             //Debug.Log("Success");
-                            //Debug.DrawLine( pos, navMeshHit.position, Color.black, 15 );
+                            //Debug.DrawLine( pos, navMeshHit.position, Color.black, debugLineDuration);
 
                             if (Vector3.Distance(pos, closestPos) > 1.1f)
                             {
@@ -331,14 +402,13 @@ namespace BML.Scripts.Pathfinding
         private void CalcEdges(NavGraph graph)
         {
             List<Vector3> edgepoints = GraphUtilities.GetContours(graph);
+            Debug.Log("Got contours");
 
-            Debug.Log("Before tris to edge");
             for (int i = 0; i < edgepoints.Count - 1; i += 2)
             {
                 //CALC FROM MESH OPEN EDGES vertices
                 TrisToEdge(edgepoints[i], edgepoints[i + 1]);
             }
-            Debug.Log("After tris to edge");
 
             foreach (Edge edge in edges)
             {
@@ -348,19 +418,18 @@ namespace BML.Scripts.Pathfinding
                     edge.end
                 );
                 
-                Debug.Log("After edge length");
-
                 //FACING NORMAL
                 if (!edge.facingNormalCalculated)
                 {
                     edge.facingNormal = Quaternion.LookRotation(Vector3.Cross(edge.end - edge.start, Vector3.up));
 
 
+                    //Seems like the below is never entereed because edge.startUp is never set...
                     if (edge.startUp.sqrMagnitude > 0)
                     {
                         var vect = Vector3.Lerp(edge.endUp, edge.startUp, 0.5f) - Vector3.Lerp(edge.end, edge.start, 0.5f);
                         edge.facingNormal = Quaternion.LookRotation(Vector3.Cross(edge.end - edge.start, vect));
-
+                        
                         //FIX FOR NORMALs POINTING DIRECT TO UP/DOWN
                         if (Mathf.Abs(Vector3.Dot(Vector3.up, (edge.facingNormal * Vector3.forward).normalized)) > triggerAngle)
                         {
@@ -371,8 +440,6 @@ namespace BML.Scripts.Pathfinding
                         }
                     }
                     
-                    Debug.Log("After normal");
-
                     if (dontAllignYAxis)
                     {
                         edge.facingNormal = Quaternion.LookRotation(
