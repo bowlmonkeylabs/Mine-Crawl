@@ -51,7 +51,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             PlayerVisited = false;
             PlayerOccupied = false;
             PlayerInfluence = -1f;
-            
+
+            BoundsColliders = new HashSet<Collider>();
             SpawnPoints = new HashSet<SpawnPoint>();
             Torches = new HashSet<Torch>();
         }
