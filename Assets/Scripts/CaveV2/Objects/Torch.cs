@@ -13,7 +13,8 @@ namespace BML.Scripts.CaveV2.Objects
         [TitleGroup("Burn out")]
         [SerializeField, SuffixLabel("seconds")] private float _timeToLive = 120f;
         [ShowInInspector, ReadOnly, NonSerialized] private float _elapsedTime;
-        [ShowInInspector, ReadOnly, NonSerialized] private bool _isBurntOut;
+        [ShowInInspector, ReadOnly] public float PercentRemaining => 1f - (_elapsedTime / _timeToLive);
+        [ShowInInspector, ReadOnly] public bool IsBurntOut { get; private set; }
 
         [TitleGroup("Level influence")] 
         [SerializeField] private DynamicGameEvent _onTorchPlaced;
@@ -24,12 +25,12 @@ namespace BML.Scripts.CaveV2.Objects
 
         private void FixedUpdate()
         {
-            if (_isBurntOut) return;
+            if (IsBurntOut) return;
             
             _elapsedTime += Time.deltaTime;
             if (_elapsedTime >= _timeToLive)
             {
-                _isBurntOut = true;
+                IsBurntOut = true;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
@@ -15,7 +16,6 @@ using GK;
 using QuikGraph.Algorithms;
 using Shapes;
 using Sirenix.OdinInspector;
-using Unity.Collections;
 using UnityEditor;
 using Random = UnityEngine.Random;
 
@@ -63,9 +63,30 @@ namespace BML.Scripts.CaveV2
         
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private DecorObjectSpawner _decorObjectSpawner;
+        
+        [TitleGroup("Player influence")]
+        [SerializeField] private float _playerInfluenceUpdatePeriod = 1f;
+
+        [SerializeField, SuffixLabel("units/sec")] private float _playerInfluenceAccumulationRate = 1f/30f;
+        [SerializeField, SuffixLabel("units/sec")] private float _playerInfluenceDecayRate = 1f/30f;
+        [SerializeField, SuffixLabel("units/sec by player distance"), Tooltip("Curve value represents accumulation multiplier as a function of player distance.")] 
+        private CurveVariable _playerInfluenceAccumulationFalloff;
 
         [TitleGroup("Torches")] 
         [SerializeField] private DynamicGameEvent _onTorchPlaced;
+        [SerializeField] private float _torchInfluenceUpdatePeriod = 1f;
+        [Button]
+        private void RecalculateTorchRequirementDebug()
+        {
+            foreach (var caveNodeData in _caveGraph.Vertices)
+            {
+                caveNodeData.CalculateTorchRequirement();
+            }
+        }
+        
+        [TitleGroup("Enemies")] 
+        [SerializeField] private DynamicGameEvent _onEnemyKilled;
+        [SerializeField, Range(-1f, 1f)] private float _enemyKilledAddInfluence = 0.5f;
 
         [TitleGroup("Debug")]
         [SerializeField] private bool _enableLogs = false;
@@ -87,6 +108,8 @@ namespace BML.Scripts.CaveV2
             MainPathDistance,
             ObjectiveDistance,
             PlayerDistance,
+            TorchInfluence,
+            PlayerInfluence,
         }
         
         [FoldoutGroup("Gizmo colors")] [SerializeField] public GizmoColorScheme GizmoColorScheme_Inner = GizmoColorScheme.PlayerVisited;
@@ -563,14 +586,20 @@ namespace BML.Scripts.CaveV2
         #endregion
         
         #region Player influence
+
+        private Coroutine _coroutinePlayerInfluence;
         
-        public void UpdatePlayerDistance(IEnumerable<CaveNodeData> playerOccupidedNodes)
+        public void UpdatePlayerDistance(IEnumerable<CaveNodeData> playerOccupiedNodes)
         {
             if (!IsGenerated) return;
             
             _caveGraph.FloodFillDistance(
-                playerOccupidedNodes, 
-                (node, dist) => node.PlayerDistance = dist);
+                playerOccupiedNodes,
+                (node, dist) =>
+                {
+                    node.PlayerDistanceDelta = (dist - node.PlayerDistance);
+                    node.PlayerDistance = dist;
+                });
             
             this.MaxPlayerDistance = _caveGraph.Vertices.Max(node => node.PlayerDistance);
             this.CurrentMaxPlayerObjectiveDistance = _caveGraph.Vertices
@@ -578,6 +607,41 @@ namespace BML.Scripts.CaveV2
                 .Max(node => node.ObjectiveDistance);
             
             this.OnAfterUpdatePlayerDistance?.Invoke();
+        }
+
+        public IEnumerator UpdatePlayerInfluenceCoroutine()
+        {
+            do
+            {
+                yield return new WaitForSeconds(_playerInfluenceUpdatePeriod);
+                UpdatePlayerInfluence();
+            } while (useGUILayout);
+        }
+        
+        public void UpdatePlayerInfluence()
+        {
+            if (!IsGenerated) return;
+            
+            foreach (var nodeData in _caveGraph.AllNodes)
+            {
+                float falloffMultiplier = _playerInfluenceAccumulationFalloff.Value.Evaluate(nodeData.PlayerDistance);
+                if (falloffMultiplier >= 0)
+                {
+                    var accumulation = (_playerInfluenceAccumulationRate * _playerInfluenceUpdatePeriod) 
+                                       * falloffMultiplier;
+                    nodeData.PlayerInfluence = Mathf.Min(1f, nodeData.PlayerInfluence + accumulation);
+                }
+                else
+                {
+                    var decay = (_playerInfluenceDecayRate * _playerInfluenceUpdatePeriod) 
+                                * (1 - nodeData.TorchInfluence)
+                                * falloffMultiplier;
+                    nodeData.PlayerInfluence = Mathf.Max(0f, nodeData.PlayerInfluence + decay);
+                }
+
+                // For now it is convenient to tack the UpdateTorchInfluence onto this as well, rather than having a separate coroutine.
+                UpdateTorchInfluence(nodeData);
+            }
         }
         
         #endregion
@@ -604,6 +668,48 @@ namespace BML.Scripts.CaveV2
             containingRoom.nodeData.Torches.Add(payload.Torch);
             
             Debug.Log($"CaveGen OnTorchPlaced: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
+        }
+
+        public void UpdateTorchInfluence(ICaveNodeData nodeData)
+        {
+            var activeTorches = nodeData.Torches
+                .Where(t => !t.IsBurntOut)
+                .ToList();
+            if (activeTorches.Count == 0)
+            {
+                nodeData.TorchInfluence = 0f;
+                return;
+            }
+            nodeData.TorchInfluence = 
+                activeTorches.Average(t => t.PercentRemaining)
+                * activeTorches.Count
+                / nodeData.TorchRequirement;
+        }
+        
+        #endregion
+        
+        #region Enemy
+        
+        public void OnEnemyKilled(object prevValue, object currValue)
+        {
+            var payload = currValue as EnemyKilledPayload;
+            if (payload == null) throw new ArgumentException("Invalid payload for OnEnemyKilled");
+            
+            OnEnemyKilled(payload);
+        }
+
+        public void OnEnemyKilled(EnemyKilledPayload payload)
+        {
+            var containingRoom = _caveGraph.FindContainingRoom(payload.Position);
+            if (containingRoom.nodeData == null)
+            {
+                Debug.LogError($"Enemy killed outside any room in the cave graph. {payload.Position}");
+                return;
+            }
+            
+            containingRoom.nodeData.PlayerInfluence = Mathf.Min(1f, containingRoom.nodeData.PlayerInfluence + _enemyKilledAddInfluence);
+            
+            Debug.Log($"CaveGen OnEnemyKilled: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
         }
         
         #endregion
@@ -732,6 +838,8 @@ namespace BML.Scripts.CaveV2
         {
             _caveGenParams.OnValidateEvent += OnValidate;
             _onTorchPlaced.Subscribe(OnTorchPlaced);
+            _onEnemyKilled.Subscribe(OnEnemyKilled);
+            _coroutinePlayerInfluence = StartCoroutine(UpdatePlayerInfluenceCoroutine());
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += PlayModeStateChanged;
 #endif
@@ -741,6 +849,9 @@ namespace BML.Scripts.CaveV2
         {
             _caveGenParams.OnValidateEvent -= OnValidate;
             _onTorchPlaced.Unsubscribe(OnTorchPlaced);
+            _onEnemyKilled.Unsubscribe(OnEnemyKilled);
+            StopCoroutine(_coroutinePlayerInfluence);
+            _coroutinePlayerInfluence = null;
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged -= PlayModeStateChanged;
 #endif

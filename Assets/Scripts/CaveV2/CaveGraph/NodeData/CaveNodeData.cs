@@ -19,8 +19,11 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public int MainPathDistance { get; set; }
         [ShowInInspector] public int ObjectiveDistance { get; set; }
         [ShowInInspector] public int PlayerDistance { get; set; }
+        [ShowInInspector] public int PlayerDistanceDelta { get; set; }
         [ShowInInspector] public bool PlayerVisited { get; set; }
         [ShowInInspector] public bool PlayerOccupied { get; set; }
+        [ShowInInspector] public int TorchRequirement { get; set; }
+        [ShowInInspector] public float TorchInfluence { get; set; }
         [ShowInInspector] public float PlayerInfluence { get; set; }
 
         // Scene object references
@@ -32,7 +35,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             {
                 _gameObject = value;
                 BoundsColliders.Clear();
-                BoundsColliders.AddRange(CaveNodeDataUtils.GetRoomBoundsColliders(this, CaveNodeDataUtils.RoomBoundsLayerMask));
+                BoundsColliders.AddRange(this.GetRoomBoundsColliders(CaveNodeDataUtils.RoomBoundsLayerMask));
+                TorchRequirement = this.CalculateTorchRequirement();
             }
         }
         private GameObject _gameObject;
@@ -48,9 +52,12 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             MainPathDistance = -1;
             ObjectiveDistance = -1;
             PlayerDistance = -1;
+            PlayerDistanceDelta = 0;
             PlayerVisited = false;
             PlayerOccupied = false;
-            PlayerInfluence = -1f;
+            TorchRequirement = CaveNodeDataUtils.TorchRequirementMinMax.x;
+            TorchInfluence = -1f;
+            PlayerInfluence = 0f;
 
             BoundsColliders = new HashSet<Collider>();
             SpawnPoints = new HashSet<SpawnPoint>();

@@ -57,6 +57,14 @@ namespace BML.Scripts.CaveV2.CaveGraph
                     fac = (float) caveNodeData.PlayerDistance / (float) CaveGenerator.MaxPlayerDistance;
                     color = CaveGenerator.DebugNodeColor_Gradient.Evaluate(fac);
                     break;
+                case CaveGenComponentV2.GizmoColorScheme.TorchInfluence:
+                    fac = caveNodeData.TorchInfluence;
+                    color = CaveGenerator.DebugNodeColor_Gradient.Evaluate(fac);
+                    break;
+                case CaveGenComponentV2.GizmoColorScheme.PlayerInfluence:
+                    fac = caveNodeData.PlayerInfluence;
+                    color = CaveGenerator.DebugNodeColor_Gradient.Evaluate(fac);
+                    break;
                 default:
                     color = CaveGenerator.DebugNodeColor_Default;
                     break;
