@@ -43,6 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b35a275cd6d47c3a72152c1639f65f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsSpawningPaused: 0
+  IsDespawningPaused: 0
   _caveGenerator: {fileID: 0}
   _enemyContainer: {fileID: 0}
   _player: {fileID: 0}
@@ -57,8 +59,10 @@ MonoBehaviour:
   _currentEnemyCount: {fileID: 11400000, guid: 6fdcc6ab717b88f4fa6f8ecf81b9db82, type: 2}
   _currentPercentToMaxSpawn: {fileID: 11400000, guid: 88289707eab0e224fa8a2607ca189c06, type: 2}
   _minMaxSpawnPlayerDistance: {x: 1, y: 3}
-  _weightSpawningInUnexplored: 0.6
-  _weightSpawningTowardsObjective: 0.4
+  _weightSpawningInUnexplored: 0.5
+  _weightSpawningTowardsObjective: 0.6
+  _weightSpawningAheadOfPlayer: 0.6
+  _weightSpawningByPlayerInfluence: 1
   _isExitChallengeActive:
     UseConstant: 0
     EnableInstanceOptions: 0

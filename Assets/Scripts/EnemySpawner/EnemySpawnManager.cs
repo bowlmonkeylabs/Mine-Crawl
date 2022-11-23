@@ -49,7 +49,9 @@ namespace BML.Scripts
         
         [SerializeField] [Range(-1f, 1f), LabelText("Spawn in Unexplored")] private float _weightSpawningInUnexplored = 0f;
         [SerializeField] [Range(-1f, 1f), LabelText("Spawn Towards Objective")] private float _weightSpawningTowardsObjective = 0f;
-        
+        [SerializeField] [Range(-1f, 1f), LabelText("Spawn Ahead of Player")] private float _weightSpawningAheadOfPlayer = 0f;
+        [SerializeField] [Range(-1f, 1f), LabelText("Spawn Outside of Player Influence")] private float _weightSpawningByPlayerInfluence = 0f;
+
         [UnityEngine.Tooltip("While exit challenge is active, the spawner will override the 'Min Max Player Spawn Distance' to 0, meaning enemies will only spawn in the same room as the player. (This works only because the exit challenge is constructed as a single 'room' in the level data.")]
         [SerializeField] private BoolReference _isExitChallengeActive;
         
@@ -231,18 +233,25 @@ namespace BML.Scripts
 
                 float weightModifierUnexplored = 0;
                 float weightModifierObjective = 0;
+                float weightModifierAhead = 0;
+                float weightModifierPlayerInfluence = 0;
                 if (!_isExitChallengeActive.Value)
                 {
                     weightModifierUnexplored = (caveNodeData.PlayerVisited ? -1f : 0f) 
-                                               * _weightSpawningInUnexplored;
+                                               * _weightSpawningInUnexplored;                                   // [-1, 0]
                     
                     int relativeObjectiveDirection = Math.Sign( _caveGenerator.CurrentMaxPlayerObjectiveDistance 
-                                                                - caveNodeData.ObjectiveDistance );
-                    relativeObjectiveDirection = Math.Max(-1, relativeObjectiveDirection - 1);
-                    weightModifierObjective = (relativeObjectiveDirection * _weightSpawningTowardsObjective);
+                                                                - caveNodeData.ObjectiveDistance );             // [-1, 1]
+                    relativeObjectiveDirection = Math.Max(-1, relativeObjectiveDirection - 1);                  // [-1, 0]
+                    weightModifierObjective = (relativeObjectiveDirection * _weightSpawningTowardsObjective);   // [-1, 0]
+
+                    float playerDistanceDelta = (Mathf.Sign(caveNodeData.PlayerDistanceDelta) + 1f) / -2f;
+                    weightModifierAhead = (playerDistanceDelta * _weightSpawningAheadOfPlayer);                 // [-1, 0]
+
+                    weightModifierPlayerInfluence = (0 - caveNodeData.PlayerInfluence) * _weightSpawningByPlayerInfluence;                         // [-1, 0]
                 }
                     
-                float modifiedWeight = Mathf.Max(0f, baseWeight + weightModifierUnexplored + weightModifierObjective);
+                float modifiedWeight = Mathf.Clamp01(baseWeight + weightModifierUnexplored + weightModifierObjective + weightModifierAhead + weightModifierPlayerInfluence);
 
                 caveNodeData.SpawnPoints.Where(spawnPoint =>
                     _activeSpawnPointsByTag.ContainsKey(spawnPoint.tag))
