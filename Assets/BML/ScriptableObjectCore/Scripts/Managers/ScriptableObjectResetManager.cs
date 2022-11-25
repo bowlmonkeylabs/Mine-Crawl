@@ -68,6 +68,10 @@ namespace BML.ScriptableObjectCore.Scripts.Managers
             {
                 variable.Reset();
             }
+            foreach (var variable in ResetContainer.GetTimerVariables())
+            {
+                variable.ResetTimer();
+            }
         }
     }
 }
