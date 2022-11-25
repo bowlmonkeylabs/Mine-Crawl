@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Events;
-using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using BML.ScriptableObjectCore.Scripts.Variables;
 
 namespace BML.Scripts.Store
 {
@@ -11,14 +11,11 @@ namespace BML.Scripts.Store
     [CreateAssetMenu(fileName = "StoreItem", menuName = "BML/Store/StoreItem", order = 0)]
     public class StoreItem : ScriptableObject
     {
-        [Tooltip("This name will be used for the UI button object (not the button label)")]
-        public string _storeButtonName;
+        [Tooltip("Is this item limited to one for the player?")]
+        public bool _limitedSupply;
         
-        [Tooltip("Use this to generated button from prefab variant instead of generic storeUiButton)")]
-        public GameObject _uiReplacePrefab;
-        
-        [Tooltip("Event the store button raises when this item is selected in UI")]
-        public DynamicGameEvent _onPurchaseEvent;
+        [ShowIf("_limitedSupply")]
+        public BoolVariable _playerHasItem;
         
         [PropertySpace(5f, 0f)]
         [BoxGroup("Cost")] [HorizontalGroup("Cost/H", 10f)]

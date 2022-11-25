@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Store;
@@ -9,31 +10,24 @@ using UnityEngine.Events;
 
 namespace BML.Scripts
 {
-    public class UpgradeManager : MonoBehaviour
+    public class StoreManager : MonoBehaviour
     {
         [SerializeField] private IntVariable _resourceCount;
         [SerializeField] private IntVariable _rareResourceCount;
         [SerializeField] private IntVariable _enemyResourceCount;
         [SerializeField] private BoolVariable _isGodModeEnabled;
         [SerializeField] private BoolVariable _inCombat;
-        [SerializeField] private StoreInventory _storeInventory;
+        [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private UnityEvent _onPurchaseItem;
-
 
         private void Awake()
         {
-            foreach (var storeItem in _storeInventory.StoreItems)
-            {
-                storeItem._onPurchaseEvent.Subscribe(AttemptPurchase);
-            }
+            _onPurchaseEvent.Subscribe(AttemptPurchase);
         }
 
         private void OnDestroy()
         {
-            foreach (var storeItem in _storeInventory.StoreItems)
-            {
-                storeItem._onPurchaseEvent.Unsubscribe(AttemptPurchase);
-            }
+            _onPurchaseEvent.Unsubscribe(AttemptPurchase);
         }
 
         private void AttemptPurchase(object prev, object storeItemObj)

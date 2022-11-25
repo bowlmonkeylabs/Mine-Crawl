@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.Store;
@@ -7,11 +7,13 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
+using BML.ScriptableObjectCore.Scripts.Events;
 
 namespace BML.Scripts.UI
 {
     public class UiStoreCanvasController : MonoBehaviour
     {
+        [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private GameObject _storeUiButtonPrefab;
         [SerializeField] private GameObject _storeResumeButtonPrefab;
         [SerializeField] private Transform _listContainerStoreButtons;
@@ -19,9 +21,13 @@ namespace BML.Scripts.UI
         [SerializeField] private string _resourceIconText;
         [SerializeField] private string _rareResourceIconText;
         [SerializeField] private string _enemyResourceIconText;
+        [SerializeField] private int _maxItemsShown = 0;
+        [SerializeField] private bool _randomizeStoreOnBuy;
+        [SerializeField] private bool _closeStoreOnBuy;
         [SerializeField] private StoreInventory _storeInventory;
 
         private List<Button> buttonList = new List<Button>();
+        private List<StoreItem> shownStoreItems = new List<StoreItem>();
 
         private void Awake()
         {
@@ -32,21 +38,32 @@ namespace BML.Scripts.UI
         public void GenerateStoreItems()
         {
             DestroyShopItems();
-            
-            foreach (var storeItem in _storeInventory.StoreItems)
-            {
-                var prefab = storeItem._uiReplacePrefab != null ? storeItem._uiReplacePrefab : _storeUiButtonPrefab;
-                var newStoreItem = GameObjectUtils.SafeInstantiate(true, prefab, _listContainerStoreButtons);
-                newStoreItem.name = $"Button_{storeItem._storeButtonName}";
-                
-                var purchaseEvent = newStoreItem.GetComponent<StorePurchaseEvent>();
-                purchaseEvent.Init(storeItem._onPurchaseEvent, storeItem);
 
-                var storeItemText = newStoreItem.GetComponentInChildren<TMPro.TMP_Text>();
+            _onPurchaseEvent.Subscribe(OnBuy);
+
+            shownStoreItems = _storeInventory.StoreItems.Where(si => !si._limitedSupply || !si._playerHasItem.Value).ToList();
+
+            if(_randomizeStoreOnBuy) {
+                shownStoreItems = shownStoreItems.Shuffle().ToList();
+            }
+
+            if(_maxItemsShown > 0) {
+                shownStoreItems = shownStoreItems.Take(_maxItemsShown).ToList();
+            }
+
+            foreach (var storeItem in shownStoreItems)
+            {
+                var newStoreItemButton = GameObjectUtils.SafeInstantiate(true, _storeUiButtonPrefab, _listContainerStoreButtons);
+                newStoreItemButton.name = $"Button_{storeItem.name}";
+                
+                var uiStoreButtonController = newStoreItemButton.GetComponent<UiStoreButtonController>();
+                uiStoreButtonController.Init(storeItem);
+
+                var storeItemText = newStoreItemButton.GetComponentInChildren<TMPro.TMP_Text>();
 
                 storeItemText.text = GenerateStoreText(storeItem);
                 
-                var button = newStoreItem.GetComponent<Button>();
+                var button = newStoreItemButton.GetComponent<Button>();
                 buttonList.Add(button);
             }
             
@@ -64,6 +81,8 @@ namespace BML.Scripts.UI
         [Button("Destroy Store Items")]
         public void DestroyShopItems()
         {
+            _onPurchaseEvent.Unsubscribe(OnBuy);
+
             buttonList.Clear();
             var children = Enumerable.Range(0, _listContainerStoreButtons.childCount)
                 .Select(i => _listContainerStoreButtons.GetChild(i).gameObject)
@@ -115,6 +134,16 @@ namespace BML.Scripts.UI
                 nav.selectOnUp = prevButton;
                 nav.selectOnDown = nextButton;
                 buttonList[i].navigation = nav;
+            }
+        }
+
+        protected void OnBuy(object prevStoreItem, object storeItem) {
+            if(_randomizeStoreOnBuy) {
+                GenerateStoreItems();
+            }
+
+            if(_closeStoreOnBuy) {
+                _storeUiMenuPageController.ClosePage();
             }
         }
     }

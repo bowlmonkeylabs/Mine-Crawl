@@ -14,7 +14,7 @@ namespace BML.Scripts
         [SerializeField] private GameEvent _onIncreaseTimeScale;
         [SerializeField] private GameEvent _onDecreaseTimeScale;
         [SerializeField] private GameEvent _onSkipFrame;
-        [SerializeField] private BoolVariable _isPaused;
+        [SerializeField] private VariableContainer _containerUiMenuStates_Frozen;
 
         private bool isFrozen;
         private bool skipFrame;
@@ -34,7 +34,9 @@ namespace BML.Scripts
             _onIncreaseTimeScale.Subscribe(IncreaseTimeScale);
             _onDecreaseTimeScale.Subscribe(DecreaseTimeScale);
             _onResetTimeScale.Subscribe(ResetTimeScale);
-            _isPaused.Subscribe(TogglePauseFreezeGame);
+            _containerUiMenuStates_Frozen
+                .GetBoolVariables()
+                .ForEach(b => b.Subscribe(SetFreezeGame));
         }
         
         private void OnDisable()
@@ -46,7 +48,9 @@ namespace BML.Scripts
             _onIncreaseTimeScale.Unsubscribe(IncreaseTimeScale);
             _onDecreaseTimeScale.Unsubscribe(DecreaseTimeScale);
             _onResetTimeScale.Unsubscribe(ResetTimeScale);
-            _isPaused.Unsubscribe(TogglePauseFreezeGame);
+            _containerUiMenuStates_Frozen
+                .GetBoolVariables()
+                .ForEach(b => b.Unsubscribe(SetFreezeGame));
         }
 
         private void Update()
@@ -126,7 +130,7 @@ namespace BML.Scripts
             Debug.Log("UnFroze Game");
         }
 
-        private void TogglePauseFreezeGame(bool prev, bool val) {
+        private void SetFreezeGame(bool prev, bool val) {
             if(val) FreezeGame();
             else UnFreezeGame();
         }

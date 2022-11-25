@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
@@ -67,7 +67,13 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Combat State")] private TimerVariable _combatTimer;
 
         [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
+        [SerializeField, FoldoutGroup("Store")] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField, FoldoutGroup("Store")] private GameEvent _onStoreFailOpen;
+
+        [SerializeField, FoldoutGroup("Upgrade Store")] private BoolReference _isUpgradeStoreOpen;
+        [SerializeField, FoldoutGroup("Upgrade Store")] private IntReference _rareResourceCount;
+        [SerializeField, FoldoutGroup("Upgrade Store")] private IntReference _minRareResourceCount;
+        [SerializeField, FoldoutGroup("Upgrade Store")] private bool debug_disable_auto_open = false;
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
 
@@ -84,6 +90,7 @@ namespace BML.Scripts.Player
             _health.Subscribe(ClampHealth);
             _combatTimer.SubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
+            if(!debug_disable_auto_open) _rareResourceCount.Subscribe(OnToggleUpgradeStore);
             
             SetGodMode();
         }
@@ -94,6 +101,7 @@ namespace BML.Scripts.Player
             _health.Unsubscribe(ClampHealth);
             _combatTimer.UnsubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
+            _rareResourceCount.Unsubscribe(OnToggleUpgradeStore);
         }
 
         private void Update()
@@ -341,11 +349,11 @@ namespace BML.Scripts.Player
             // Check torch count
             if (_inventoryTorchCount.Value <= 0)
             {
-                _torchStoreItem._onPurchaseEvent.Raise(_torchStoreItem);
+                _onPurchaseEvent.Raise(_torchStoreItem);
                 if (_inventoryTorchCount.Value <= 0)
                 {
-                return;
-            }
+                    return;
+                }
             }
             _inventoryTorchCount.Value -= 1;
 
@@ -377,11 +385,11 @@ namespace BML.Scripts.Player
             // Check torch count
             if (_inventoryRopeCount.Value <= 0)
             {
-                _ropeStoreItem._onPurchaseEvent.Raise(_ropeStoreItem);
+                _onPurchaseEvent.Raise(_ropeStoreItem);
                 if (_inventoryRopeCount.Value <= 0)
                 {
-                return;
-            }
+                    return;
+                }
             }
             _inventoryRopeCount.Value -= 1;
             
@@ -416,6 +424,15 @@ namespace BML.Scripts.Player
             }
 
             _isStoreOpen.Value = !_isStoreOpen.Value && !_inCombat.Value;
+		}
+
+        public void OnToggleUpgradeStore()
+		{
+            if(_rareResourceCount.Value < _minRareResourceCount.Value) {
+                return;
+            }
+            
+            _isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}
         
         #endregion
