@@ -12,7 +12,7 @@ namespace BML.Scripts.UI
 
         [Required, SerializeField] private TimerReference _timer;
         [Required, SerializeField] private Image _image;
-        [SerializeField, Range(0f, 1f)] private float _maxFill;
+        [SerializeField, Range(0f, 1f)] private float _maxFill = 1f;
 
         public enum DisplayMode
         {
