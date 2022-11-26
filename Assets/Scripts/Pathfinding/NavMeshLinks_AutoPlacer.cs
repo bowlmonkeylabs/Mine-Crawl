@@ -36,6 +36,13 @@ namespace BML.Scripts.Pathfinding
 
         public Transform linkPrefab;
         public Transform oneWayLinkPrefab;
+        
+        [Tooltip("Name of graph to be used to analyzing edges and deciding where to place node links")]
+        public string referenceGraphName;
+        
+        [Tooltip("List of graph names that will have copy of each node link created on them. Basically, list the" +
+                 "names of all graphs that will use the node links.")]
+        public List<string> graphsToLink = new List<string>();
         public float tileWidth = 5f;
 
         [Header("OffMeshLinks")] public float maxJumpDownHeight = 5f;
@@ -72,7 +79,6 @@ namespace BML.Scripts.Pathfinding
         public float normalLength = .5f;
         public float placePosRadius = .2f;
         public float debugLineDuration = 10f;
-        public string debugGraphName;
 
         private Vector3 ReUsableV3;
         private Vector3 offSetPosY;
@@ -123,7 +129,7 @@ namespace BML.Scripts.Pathfinding
             {
                 Debug.Log($"Considering graph: {graph.name}");
                 
-                if (enableDebug && debugGraphName != "" && graph.name != debugGraphName)
+                if (graph.name != referenceGraphName)
                     continue;
 
                 if (graph != null && !(graph is PointGraph))
@@ -152,10 +158,13 @@ namespace BML.Scripts.Pathfinding
             if (nodeLinks == null)
                 return;
             
+            // Commented this out because it was causing infinite loading times...doesn't seem like its needed
+            /*
             foreach (NodeLink2 nodeLink in nodeLinks)
             {
                 nodeLink.OnPostScan();
             }
+            */
         }
 
         public override void OnGraphsPostUpdate()
@@ -292,18 +301,24 @@ namespace BML.Scripts.Pathfinding
                                 {
                                     typeOfLinkToSpawn = oneWayLinkPrefab;
                                 }
+                                
+                                //Spawn a copy of the link for each graph listed
+                                foreach (var graphName in graphsToLink)
+                                {
+                                    GraphMask mask = GraphMask.FromGraphName(graphName);
+                                    Transform spawnedTransf = Instantiate(typeOfLinkToSpawn, calcV3, normal);
 
-                                Transform spawnedTransf = Instantiate(typeOfLinkToSpawn, calcV3, normal);
+                                    NodeLink2 nodeLink = spawnedTransf.GetComponent<NodeLink2>();
+                                    GameObject endPoint = new GameObject("end");
+                                    endPoint.transform.position = closestPos;
+                                    endPoint.transform.SetParent(spawnedTransf, true);
+                                    nodeLink.end = endPoint.transform;
+                                    nodeLink.graphMask = mask;
 
-                                NodeLink2 nodeLink = spawnedTransf.GetComponent<NodeLink2>();
-                                GameObject endPoint = new GameObject("end");
-                                endPoint.transform.position = closestPos;
-                                endPoint.transform.SetParent(spawnedTransf, true);
-                                nodeLink.end = endPoint.transform;
+                                    spawnedTransf.SetParent(transform);
 
-                                spawnedTransf.SetParent(transform);
-
-                                nodeLinks.Add(nodeLink);
+                                    nodeLinks.Add(nodeLink);
+                                }
                             }
                         }
                     }
