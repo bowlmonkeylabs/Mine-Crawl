@@ -1698,12 +1698,20 @@ MonoBehaviour:
   _caveGraphMudBunRenderer: {fileID: 1231575172}
   _levelObjectSpawner: {fileID: 1496774518}
   _decorObjectSpawner: {fileID: 820661968}
+  _playerInfluenceUpdatePeriod: 1
+  _playerInfluenceAccumulationRate: 0.016666668
+  _playerInfluenceDecayRate: 0.016666668
+  _playerInfluenceAccumulationFalloff: {fileID: 11400000, guid: 6018b711cc5296c4285521cb7b6d9a47, type: 2}
+  _onTorchPlaced: {fileID: 11400000, guid: 5f3acfc7d5f8c7e4bbd007a4fb248052, type: 2}
+  _torchInfluenceUpdatePeriod: 1
+  _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
+  _enemyKilledAddInfluence: 0.5
   _enableLogs: 0
   _showTraversabilityCheck: 1
   _generateDebugObjects: 1
   _debugObjectsContainer: {fileID: 1191531237}
-  GizmoColorScheme_Inner: 0
-  GizmoColorScheme_Outer: 1
+  GizmoColorScheme_Inner: 6
+  GizmoColorScheme_Outer: 5
   DebugNodeColor_Default: {r: 1, g: 1, b: 1, a: 0.29803923}
   DebugNodeColor_Occupied: {r: 1, g: 0.99997807, b: 0, a: 0.29803923}
   DebugNodeColor_Visited: {r: 0, g: 0, b: 0, a: 0.29803923}
@@ -6238,10 +6246,6 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 3835178114251414924}
-    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _enableLogs
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
       propertyPath: _caveGenerator
       value: 
