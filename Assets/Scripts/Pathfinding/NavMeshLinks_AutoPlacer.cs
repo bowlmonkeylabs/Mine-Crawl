@@ -118,6 +118,7 @@ namespace BML.Scripts.Pathfinding
 
         public void Generate()
         {
+            Debug.Log("Generate");
             if (linkPrefab == null) return;
             //agentRadius = NavMesh.GetSettingsByIndex(0).agentRadius;
 
@@ -169,6 +170,8 @@ namespace BML.Scripts.Pathfinding
 
         public override void OnGraphsPostUpdate()
         {
+            // Commented this out because it was causing lag everytime break ore and update graph
+            /*
             if (nodeLinks == null)
                 return;
             
@@ -176,6 +179,7 @@ namespace BML.Scripts.Pathfinding
             {
                 nodeLink.OnGraphsPostUpdate();
             }
+            */
         }
 
         public void ClearLinks()
