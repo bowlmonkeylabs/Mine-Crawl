@@ -45,7 +45,7 @@ Seed: {_seedDebugReference.Value}
 Pickaxe Swing Speed: {_statPickaxeSwingSpeed.Value}
 Player In Combat: {_playerInCombat.Value}
 Combat Timer: {_playerCombatTimer.RemainingTime}
-Intensity Score: {_playerIntensityScore.Value}
+Intensity Score: {_playerIntensityScore.Value.ToString("0.00")}
 ";
         }
 

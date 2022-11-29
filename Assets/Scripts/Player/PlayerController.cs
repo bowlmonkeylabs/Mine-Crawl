@@ -72,7 +72,6 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Intensity Score")] private float _intensityScoreDamageMultiplier = 1f;
         [SerializeField, FoldoutGroup("Intensity Score")] private Vector2 _intensityScoreKillDistanceMinMax = new Vector2(20, 5);
         [SerializeField, FoldoutGroup("Intensity Score")] private float _intensityScoreKillMultiplier = 1f;
-        
 
         [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
         [SerializeField, FoldoutGroup("Store")] private GameEvent _onStoreFailOpen;
@@ -179,62 +178,6 @@ namespace BML.Scripts.Player
             }
         }
         
-        #endregion
-
-        #region Intensity score
-
-        private Coroutine _coroutineIntensityScore;
-
-        private void UpdateIntensityScore()
-        {
-            bool doDecay = !_anyEnemiesAlerted.Value;
-            if (!doDecay) return;
-
-            float decay = (_intensityScoreDecayRate * _intensityScoreUpdatePeriod);
-            
-            float newIntensityScore = (_intensityScore.Value - decay);
-            newIntensityScore = Mathf.Max(0, newIntensityScore);
-            _intensityScore.Value = newIntensityScore;
-            
-            Debug.Log($"UpdateIntensityScore (Intensity {_intensityScore.Value})");
-        }
-        
-        private IEnumerator UpdateIntensityScoreCoroutine()
-        {
-            while (true)
-            {
-                UpdateIntensityScore();
-                yield return new WaitForSeconds(_intensityScoreUpdatePeriod);
-            }
-        }
-        
-        private void OnEnemyKilledDynamic(object prev, object curr)
-        {
-            var payload = curr as EnemyKilledPayload;
-            OnEnemyKilled(payload);
-        }
-        private void OnEnemyKilled(EnemyKilledPayload curr)
-        {
-            var posDiff = this.transform.position - curr.Position;
-            float dist = posDiff.magnitude;
-            float factor = Mathf.InverseLerp(_intensityScoreKillDistanceMinMax.x, _intensityScoreKillDistanceMinMax.y, dist);
-            factor = Mathf.Clamp01(factor);
-            
-            _intensityScore.Value += (factor * _intensityScoreKillMultiplier);
-            Debug.Log($"OnEnemyKilled (Intensity {_intensityScore.Value})");
-        }
-        
-        private void OnPlayerHealthChanged(int prev, int curr)
-        {
-            int delta = curr - prev;
-            float deltaPct = (float) delta / _healthController.StartingHealth;
-            if (delta < 0)
-            {
-                _intensityScore.Value += (deltaPct * _intensityScoreDamageMultiplier);
-                Debug.Log($"OnPlayerHealthChanged (Intensity {_intensityScore.Value})");
-            }
-        }
-
         #endregion
 
         #region Pickaxe
@@ -445,6 +388,64 @@ namespace BML.Scripts.Player
             this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer);
         }
         
+        #endregion
+        
+        
+
+        #region Intensity score
+
+        private Coroutine _coroutineIntensityScore;
+
+        private void UpdateIntensityScore()
+        {
+            bool doDecay = !_inCombat.Value;
+            if (!doDecay) return;
+
+            float decay = (_intensityScoreDecayRate * _intensityScoreUpdatePeriod);
+            
+            float newIntensityScore = (_intensityScore.Value - decay);
+            newIntensityScore = Mathf.Max(0, newIntensityScore);
+            _intensityScore.Value = newIntensityScore;
+            
+            Debug.Log($"UpdateIntensityScore (Intensity {_intensityScore.Value})");
+        }
+        
+        private IEnumerator UpdateIntensityScoreCoroutine()
+        {
+            while (true)
+            {
+                UpdateIntensityScore();
+                yield return new WaitForSeconds(_intensityScoreUpdatePeriod);
+            }
+        }
+        
+        private void OnEnemyKilledDynamic(object prev, object curr)
+        {
+            var payload = curr as EnemyKilledPayload;
+            OnEnemyKilled(payload);
+        }
+        private void OnEnemyKilled(EnemyKilledPayload curr)
+        {
+            var posDiff = this.transform.position - curr.Position;
+            float dist = posDiff.magnitude;
+            float factor = Mathf.InverseLerp(_intensityScoreKillDistanceMinMax.x, _intensityScoreKillDistanceMinMax.y, dist);
+            factor = Mathf.Clamp01(factor);
+            
+            _intensityScore.Value += (factor * _intensityScoreKillMultiplier);
+            Debug.Log($"OnEnemyKilled (Intensity {_intensityScore.Value})");
+        }
+        
+        private void OnPlayerHealthChanged(int prev, int curr)
+        {
+            int delta = curr - prev;
+            float deltaPct = Mathf.Abs((float) delta / _healthController.StartingHealth);
+            if (delta < 0)
+            {
+                _intensityScore.Value += (deltaPct * _intensityScoreDamageMultiplier);
+                Debug.Log($"OnPlayerHealthChanged (Intensity {_intensityScore.Value})");
+            }
+        }
+
         #endregion
 
         #region Combat State
