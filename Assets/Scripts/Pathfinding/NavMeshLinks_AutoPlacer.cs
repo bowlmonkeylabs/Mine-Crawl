@@ -84,7 +84,7 @@ namespace BML.Scripts.Pathfinding
         private Vector3 offSetPosY;
         
         [NonSerialized]
-        private List<NodeLink2> nodeLinks = new List<NodeLink2>();
+        private List<NodeLink> nodeLinks = new List<NodeLink>();
 
         private List<Vector3> placePosList = new List<Vector3>();
 
@@ -184,7 +184,7 @@ namespace BML.Scripts.Pathfinding
 
         public void ClearLinks()
         {
-            List<NodeLink2> navMeshLinkList = GetComponentsInChildren<NodeLink2>().ToList();
+            List<NodeLink> navMeshLinkList = GetComponentsInChildren<NodeLink>().ToList();
             while (navMeshLinkList.Count > 0)
             {
                 GameObject obj = navMeshLinkList[0].gameObject;
@@ -312,7 +312,7 @@ namespace BML.Scripts.Pathfinding
                                     GraphMask mask = GraphMask.FromGraphName(graphName);
                                     Transform spawnedTransf = Instantiate(typeOfLinkToSpawn, calcV3, normal);
 
-                                    NodeLink2 nodeLink = spawnedTransf.GetComponent<NodeLink2>();
+                                    NodeLink nodeLink = spawnedTransf.GetComponent<NodeLink>();
                                     GameObject endPoint = new GameObject("end");
                                     endPoint.transform.position = closestPos;
                                     endPoint.transform.SetParent(spawnedTransf, true);
@@ -385,7 +385,7 @@ namespace BML.Scripts.Pathfinding
                                     normal
                                 ) as Transform;
 
-                                NodeLink2 nodeLink = spawnedTransf.GetComponent<NodeLink2>();
+                                NodeLink nodeLink = spawnedTransf.GetComponent<NodeLink>();
                                 GameObject endPoint = new GameObject("end");
                                 endPoint.transform.position = closestPos;
                                 endPoint.transform.SetParent(spawnedTransf, true);
