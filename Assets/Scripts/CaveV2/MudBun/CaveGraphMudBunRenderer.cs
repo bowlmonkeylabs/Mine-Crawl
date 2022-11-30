@@ -119,7 +119,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 var edgeMidPosition = caveNodeConnectionData.Source.LocalPosition + edgeDiff / 2;
                 var edgeRotation = Quaternion.LookRotation(edgeDiff);
                 var edgeLength = edgeDiff.magnitude;
-                var localScale = new Vector3(1f, 1f, edgeLength);
+                var localScale = new Vector3(caveNodeConnectionData.Radius, caveNodeConnectionData.Radius, edgeLength);
                 // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
 
                 // Spawn tunnel

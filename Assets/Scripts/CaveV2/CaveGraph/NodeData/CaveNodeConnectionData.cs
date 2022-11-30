@@ -15,7 +15,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         // Fundamental properties
         [ShowInInspector] public CaveNodeData Source { get; private set; }
         [ShowInInspector] public CaveNodeData Target { get; private set; }
-        [ShowInInspector] public float Radius { get; private set; }
+        [ShowInInspector] public float Radius { get; set; }
         [ShowInInspector] public float Length { get; private set; }
         [ShowInInspector] public float SteepnessAngle { get; private set; }
         

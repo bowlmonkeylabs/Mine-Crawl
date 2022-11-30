@@ -311,7 +311,9 @@ namespace BML.Scripts.CaveV2
                 {
                     continue;
                 }
+
                 var edgeRadius = Math.Max(vertexPair.v1.Size, vertexPair.v2.Size);
+                
                 var edge = new CaveNodeConnectionData(vertexPair.v1, vertexPair.v2, edgeRadius);
                 caveGraph.AddEdge(edge);
             }
@@ -327,9 +329,21 @@ namespace BML.Scripts.CaveV2
             var maxLength = caveGenParams.PoissonSampleRadius * caveGenParams.MaxEdgeLengthFactor;
             caveGraph.RemoveEdgeIf(edge => edge.Length >= maxLength);
             
-            // Remove steep edges
-            var maxAngle = caveGenParams.MaxEdgeSteepnessAngle;
-            caveGraph.RemoveEdgeIf(edge => edge.SteepnessAngle >= maxAngle);
+            // Remove edges outside allowed steepness angles
+            // Set radius based on steepness
+            caveGraph.RemoveEdgeIf(edge =>
+            {
+                foreach (var range in caveGenParams.SteepnessRanges)
+                {
+                    if (edge.SteepnessAngle >= range.Angle.x && edge.SteepnessAngle <= range.Angle.y)
+                    {
+                        edge.Radius = Random.Range(range.EdgeRadius.x, range.EdgeRadius.y);
+                        return false;
+                    }
+                        
+                }
+                return true;
+            });
             
             // Calculate based on adjacency size
             if (caveGenParams.CalculateRoomSizeBasedOnRawAdjacency)
