@@ -1,5 +1,6 @@
 ﻿using System;
 using BML.Scripts.CaveV2.CaveGraph;
+using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEditor;

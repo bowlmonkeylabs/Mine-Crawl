@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
+using BML.Scripts.CaveV2.CaveGraph.NodeData;
+using BML.Scripts.Utils;
 using UnityEngine;
 
 namespace BML.Scripts.CaveV2
@@ -45,7 +47,7 @@ namespace BML.Scripts.CaveV2
             {
                 // Debug.Log($"OnTriggerEnter ROOM BOUNDS");
             }
-            bool isNodeBoundsLayer = _nodeBoundsLayerMask == (_nodeBoundsLayerMask | (1 << other.gameObject.layer));
+            bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(_nodeBoundsLayerMask);
             if (isNodeBoundsLayer)
             {
                 // Debug.Log($"PlayerInfluenceUpdater: OnTriggerEnter");
@@ -118,7 +120,7 @@ namespace BML.Scripts.CaveV2
             {
                 // Debug.Log($"OnTriggerExit ROOM BOUNDS");
             }
-            bool isNodeBoundsLayer = _nodeBoundsLayerMask == (_nodeBoundsLayerMask | (1 << other.gameObject.layer));
+            bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(_nodeBoundsLayerMask);
             if (isNodeBoundsLayer)
             {
                 // Debug.Log($"PlayerInfluenceUpdater: OnTriggerExit");

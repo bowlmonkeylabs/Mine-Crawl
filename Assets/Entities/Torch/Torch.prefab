@@ -1360,8 +1360,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.7, y: 0.18, z: 1.7}
-  m_Center: {x: 0, y: -0.42, z: 0}
+  m_Size: {x: 1.7, y: 0.12, z: 1.7}
+  m_Center: {x: 0, y: -0.45, z: 0}
 --- !u!1 &6152548762354538062
 GameObject:
   m_ObjectHideFlags: 0
@@ -1532,6 +1532,7 @@ GameObject:
   - component: {fileID: 8692043269319617904}
   - component: {fileID: 1549063831}
   - component: {fileID: 872733993255774936}
+  - component: {fileID: 7864437473279338713}
   m_Layer: 11
   m_Name: Torch
   m_TagString: Untagged
@@ -1592,7 +1593,33 @@ MonoBehaviour:
     m_Bits: 8200
   _onGrounded:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7864437473279338713}
+        m_TargetAssemblyTypeName: BML.Scripts.CaveV2.Objects.Torch, BML.CaveGenV2
+        m_MethodName: OnTorchPlaced
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7864437473279338713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8692043269319617905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a56f1ff214e14a9dbaca0b784415df35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timeToLive: 120
+  _onTorchPlaced: {fileID: 11400000, guid: 5f3acfc7d5f8c7e4bbd007a4fb248052, type: 2}
 --- !u!1 &8692043269761479822
 GameObject:
   m_ObjectHideFlags: 0

@@ -4024,6 +4024,7 @@ GameObject:
   - component: {fileID: 92293353881086785}
   - component: {fileID: 6270080935600750121}
   - component: {fileID: 8871026455219955088}
+  - component: {fileID: 460469230022651134}
   - component: {fileID: 1802998898250526308}
   m_Layer: 19
   m_Name: BatEnemy
@@ -4388,6 +4389,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 460469230022651134}
+        m_TargetAssemblyTypeName: BML.Scripts.CaveV2.EnemyInfluenceUpdater, BML.CaveGenV2
+        m_MethodName: OnDeath
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _onRevive:
     m_PersistentCalls:
       m_Calls: []
@@ -4466,6 +4479,19 @@ MonoBehaviour:
   _onDespawn:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &460469230022651134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2934977605014848611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e54c4b9d6fcc45909c7683448a68f11c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
 --- !u!114 &1802998898250526308
 MonoBehaviour:
   m_ObjectHideFlags: 0

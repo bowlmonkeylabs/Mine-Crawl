@@ -3301,6 +3301,7 @@ GameObject:
   - component: {fileID: 8938272265875241819}
   - component: {fileID: 3048715361028435507}
   - component: {fileID: 4763329971739013840}
+  - component: {fileID: 5011644399418096861}
   - component: {fileID: 3108614823935819041}
   - component: {fileID: 7107060283421443552}
   m_Layer: 10
@@ -3753,6 +3754,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 5011644399418096861}
+        m_TargetAssemblyTypeName: BML.Scripts.CaveV2.EnemyInfluenceUpdater, BML.CaveGenV2
+        m_MethodName: OnDeath
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _onRevive:
     m_PersistentCalls:
       m_Calls: []
@@ -3844,6 +3857,19 @@ MonoBehaviour:
   _onDespawn:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5011644399418096861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6194658959717897337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e54c4b9d6fcc45909c7683448a68f11c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
 --- !u!114 &3108614823935819041
 MonoBehaviour:
   m_ObjectHideFlags: 0

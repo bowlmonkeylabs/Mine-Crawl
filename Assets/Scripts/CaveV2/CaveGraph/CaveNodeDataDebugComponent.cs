@@ -1,4 +1,5 @@
 ﻿using System;
+using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using Shapes;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -54,6 +55,14 @@ namespace BML.Scripts.CaveV2.CaveGraph
                     break;
                 case CaveGenComponentV2.GizmoColorScheme.PlayerDistance:
                     fac = (float) caveNodeData.PlayerDistance / (float) CaveGenerator.MaxPlayerDistance;
+                    color = CaveGenerator.DebugNodeColor_Gradient.Evaluate(fac);
+                    break;
+                case CaveGenComponentV2.GizmoColorScheme.TorchInfluence:
+                    fac = caveNodeData.TorchInfluence;
+                    color = CaveGenerator.DebugNodeColor_Gradient.Evaluate(fac);
+                    break;
+                case CaveGenComponentV2.GizmoColorScheme.PlayerInfluence:
+                    fac = caveNodeData.PlayerInfluence;
                     color = CaveGenerator.DebugNodeColor_Gradient.Evaluate(fac);
                     break;
                 default:
