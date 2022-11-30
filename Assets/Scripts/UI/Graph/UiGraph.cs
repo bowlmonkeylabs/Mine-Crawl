@@ -29,6 +29,11 @@ namespace BML.Scripts.UI.Graph
 
         #region Unity lifecycle
 
+        private void OnEnable()
+        {
+            UpdateGraph();
+        }
+
         #endregion
 
         #region Graph
@@ -41,8 +46,12 @@ namespace BML.Scripts.UI.Graph
             if (point.y < _graphMin.y) _graphMin.y = point.y;
             if (point.x > _graphMax.x) _graphMax.x = point.x;
             if (point.y > _graphMax.y) _graphMax.y = point.y;
-            
-            UpdateGraph();
+
+            if (this.isActiveAndEnabled)
+            {
+                Debug.Log("AddPoint UpdateGraph");
+                UpdateGraph();
+            }
         }
         
         private static Rect RectTransformToScreenSpace(RectTransform transform)
