@@ -12,8 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62a8dd97943f407baf43d5381f5becd9, type: 3}
   m_Name: StoreItem_DeflectProjectiles
   m_EditorClassIdentifier: 
-  _limitedSupply: 1
-  _playerHasItem: {fileID: 11400000, guid: f00d0caa0c04b95448db19d7dde9c078, type: 2}
+  _itemLabel: Deflect
+  _hasMaxAmount: 1
+  _maxAmount:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 1
+    Variable: {fileID: 0}
+  _playerInventoryAmount:
+    ReferenceTypeSelector: 3
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 11400000, guid: f00d0caa0c04b95448db19d7dde9c078, type: 2}
   _resourceCost: 0
   _rareResourceCost: 2
   _enemyResourceCost: 0

@@ -4,6 +4,8 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.ScriptableObjectCore.Scripts.Variables.ValueReferences;
 
 namespace BML.Scripts.Store
 {
@@ -11,11 +13,19 @@ namespace BML.Scripts.Store
     [CreateAssetMenu(fileName = "StoreItem", menuName = "BML/Store/StoreItem", order = 0)]
     public class StoreItem : ScriptableObject
     {
-        [Tooltip("Is this item limited to one for the player?")]
-        public bool _limitedSupply;
+        [Tooltip("Label to show to represent item on store button")]
+        public string _itemLabel;
+
+        [HorizontalGroup("MaxAmount", 10f)]
+        [Tooltip("Is the player limited to a certain amount of this item?")]
+        public bool _hasMaxAmount;
         
-        [ShowIf("_limitedSupply")]
-        public BoolVariable _playerHasItem;
+        [HorizontalGroup("MaxAmount", 10f)]
+        [ShowIf("_hasMaxAmount")]
+        public IntReference _maxAmount;
+
+        [Tooltip("The amount of this item the player already has (can be bool)")]
+        public SafeIntValueReference _playerInventoryAmount;
         
         [PropertySpace(5f, 0f)]
         [BoxGroup("Cost")] [HorizontalGroup("Cost/H", 10f)]

@@ -18,12 +18,9 @@ namespace BML.Scripts.UI
         [SerializeField] private GameObject _storeResumeButtonPrefab;
         [SerializeField] private Transform _listContainerStoreButtons;
         [SerializeField] private UiMenuPageController _storeUiMenuPageController;
-        [SerializeField] private string _resourceIconText;
-        [SerializeField] private string _rareResourceIconText;
-        [SerializeField] private string _enemyResourceIconText;
         [SerializeField] private int _maxItemsShown = 0;
         [SerializeField] private bool _randomizeStoreOnBuy;
-        [SerializeField] private bool _closeStoreOnBuy;
+        [SerializeField] private bool _filterOutMaxedItems;
         [SerializeField] private StoreInventory _storeInventory;
 
         private List<Button> buttonList = new List<Button>();
@@ -34,14 +31,24 @@ namespace BML.Scripts.UI
             GenerateStoreItems();
         }
 
+        void OnEnable() {
+            _onPurchaseEvent.Subscribe(OnBuy);
+        }
+
+        void OnDisable() {
+            _onPurchaseEvent.Unsubscribe(OnBuy);
+        }
+
         [Button("Generate Store Items")]
         public void GenerateStoreItems()
         {
             DestroyShopItems();
 
-            _onPurchaseEvent.Subscribe(OnBuy);
+            shownStoreItems = _storeInventory.StoreItems;
 
-            shownStoreItems = _storeInventory.StoreItems.Where(si => !si._limitedSupply || !si._playerHasItem.Value).ToList();
+            if(_filterOutMaxedItems) {
+                shownStoreItems = shownStoreItems.Where(si => !si._hasMaxAmount || (si._playerInventoryAmount.Value < si._maxAmount.Value)).ToList();
+            }
 
             if(_randomizeStoreOnBuy) {
                 shownStoreItems = shownStoreItems.Shuffle().ToList();
@@ -58,10 +65,6 @@ namespace BML.Scripts.UI
                 
                 var uiStoreButtonController = newStoreItemButton.GetComponent<UiStoreButtonController>();
                 uiStoreButtonController.Init(storeItem);
-
-                var storeItemText = newStoreItemButton.GetComponentInChildren<TMPro.TMP_Text>();
-
-                storeItemText.text = GenerateStoreText(storeItem);
                 
                 var button = newStoreItemButton.GetComponent<Button>();
                 buttonList.Add(button);
@@ -81,8 +84,6 @@ namespace BML.Scripts.UI
         [Button("Destroy Store Items")]
         public void DestroyShopItems()
         {
-            _onPurchaseEvent.Unsubscribe(OnBuy);
-
             buttonList.Clear();
             var children = Enumerable.Range(0, _listContainerStoreButtons.childCount)
                 .Select(i => _listContainerStoreButtons.GetChild(i).gameObject)
@@ -91,36 +92,6 @@ namespace BML.Scripts.UI
             {
                 GameObject.DestroyImmediate(childObject);
             }
-        }
-
-        private String GenerateStoreText(StoreItem storeItem)
-        {
-            string costText = "";
-            
-            if (storeItem._resourceCost > 0)
-                costText += $" + {storeItem._resourceCost}{_resourceIconText}";
-                
-            if (storeItem._rareResourceCost > 0)
-                costText += $" + {storeItem._rareResourceCost}{_rareResourceIconText}";
-                
-            if (storeItem._enemyResourceCost > 0)
-                costText += $" + {storeItem._enemyResourceCost}{_enemyResourceIconText}";
-
-            //Remove leading +
-            if (costText != "") costText = costText.Substring(3);
-
-            string resultText = "";
-            
-            foreach (var purchaseItem in storeItem.PurchaseItems)
-            {
-                if (!purchaseItem._storeText.IsNullOrWhitespace())  //Dont add if left blank (Ex. for max health also inc health but dont show)
-                    resultText += $" + {purchaseItem._storeText}";
-            }
-
-            //Remove leading +
-            if (resultText != "") resultText = resultText.Substring(3);
-
-            return $"{costText} -> {resultText}";
         }
 
         private void SetNavigationOrder()
@@ -140,10 +111,6 @@ namespace BML.Scripts.UI
         protected void OnBuy(object prevStoreItem, object storeItem) {
             if(_randomizeStoreOnBuy) {
                 GenerateStoreItems();
-            }
-
-            if(_closeStoreOnBuy) {
-                _storeUiMenuPageController.ClosePage();
             }
         }
     }

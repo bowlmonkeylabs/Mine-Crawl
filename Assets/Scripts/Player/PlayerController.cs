@@ -71,9 +71,6 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Store")] private GameEvent _onStoreFailOpen;
 
         [SerializeField, FoldoutGroup("Upgrade Store")] private BoolReference _isUpgradeStoreOpen;
-        [SerializeField, FoldoutGroup("Upgrade Store")] private IntReference _rareResourceCount;
-        [SerializeField, FoldoutGroup("Upgrade Store")] private IntReference _minRareResourceCount;
-        [SerializeField, FoldoutGroup("Upgrade Store")] private bool debug_disable_auto_open = false;
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
 
@@ -90,7 +87,6 @@ namespace BML.Scripts.Player
             _health.Subscribe(ClampHealth);
             _combatTimer.SubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
-            if(!debug_disable_auto_open) _rareResourceCount.Subscribe(OnToggleUpgradeStore);
             
             SetGodMode();
         }
@@ -101,7 +97,6 @@ namespace BML.Scripts.Player
             _health.Unsubscribe(ClampHealth);
             _combatTimer.UnsubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
-            _rareResourceCount.Unsubscribe(OnToggleUpgradeStore);
         }
 
         private void Update()
@@ -428,10 +423,6 @@ namespace BML.Scripts.Player
 
         public void OnToggleUpgradeStore()
 		{
-            if(_rareResourceCount.Value < _minRareResourceCount.Value) {
-                return;
-            }
-            
             _isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}
         

@@ -12,24 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62a8dd97943f407baf43d5381f5becd9, type: 3}
   m_Name: StoreItem_Exchange_Health
   m_EditorClassIdentifier: 
-  _limitedSupply: 0
-  _playerHasItem: {fileID: 0}
+  _itemLabel: H
+  _hasMaxAmount: 1
+  _maxAmount:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
+  _playerInventoryAmount:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
   _resourceCost: 0
   _rareResourceCost: 0
   _enemyResourceCost: 10
   PurchaseItems:
-  - _storeText: Health
+  - _storeText: 1 H
     OnPurchase:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
-          m_Mode: 1
+        - m_Target: {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
+          m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
+            ScriptableObjectSystem
+          m_MethodName: Increment
+          m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
-            m_IntArgument: 0
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
