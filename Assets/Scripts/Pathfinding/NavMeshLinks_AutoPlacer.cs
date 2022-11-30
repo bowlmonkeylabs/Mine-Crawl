@@ -18,6 +18,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using Pathfinding;
+using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor.SceneManagement;
 #if UNITY_EDITOR
@@ -30,65 +31,93 @@ namespace BML.Scripts.Pathfinding
 
     public class NavMeshLinks_AutoPlacer : GraphModifier
     {
-        #region Variables
+        #region Inspector
         
-        public bool generateOnPostScan = true;
+        [SerializeField] private bool generateOnPostScan = true;
 
-        public Transform linkPrefab;
-        public Transform oneWayLinkPrefab;
+        [Header("References")] 
+        [Tooltip("If enabled, will use NodeLink2 instead of NodeLink. Make sure point graph exists if using Link2")]
+        [SerializeField] private bool useNodeLink2;
+        [SerializeField] private Transform linkPrefab;
+        [SerializeField] private Transform oneWayLinkPrefab;
+        [SerializeField] private Transform link2Prefab;
+        [SerializeField] private Transform oneWayLink2Prefab;
         
         [Tooltip("Name of graph to be used to analyzing edges and deciding where to place node links")]
-        public string referenceGraphName;
+        [SerializeField] private string referenceGraphName;
         
         [Tooltip("List of graph names that will have copy of each node link created on them. Basically, list the" +
                  "names of all graphs that will use the node links.")]
-        public List<string> graphsToLink = new List<string>();
-        public float tileWidth = 5f;
-
-        [Header("OffMeshLinks")] public float maxJumpDownHeight = 5f;
-        public float maxJumpUpHeight = 3f;
-
-        public float maxJumpDist = 5f;
-        public LayerMask raycastLayerMask = -1;
-        public float sphereCastRadius = 1f;
+        [SerializeField] private List<string> graphsToLink = new List<string>();
         
-        //Max distance between raycast hit and nearest node retrieved. To prevent making links to nodes not even close
-        public float maxClosestNodeDist = 3f;
-
-        //how far over to move spherecast away from navmesh edge to prevent detecting the same edge
-        public float cheatOffset = .25f;
-
-        //how high up to bump raycasts to check for walls (to prevent forming links through walls)
-        public float wallCheckYOffset = 0.5f;
+        [Header("Generation")]
+        [Tooltip("Each edge is divided by this distance to place tiles. Should be no more than edge length")]
+        [SerializeField] private float tileWidth = .5f;
         
-        public bool ignoreSameGraph = false;
-        public bool onlySameGraph = false;
+        [Tooltip("Spawn every X links for performance. Ex. value of 2 means only every 3rd link will be generated")]
+        [SerializeField] private int linkSkip = 1;
+        
+        [Tooltip("Layermask for raycast used to detect terrain below ledges or across gaps")]
+        [SerializeField] private LayerMask raycastLayerMask = -1;
+        
+        [SerializeField] private float sphereCastRadius = 1f;
+        
+        [SerializeField] private float agentRadius = 0.5f;
+        
+        [Tooltip("Don't try to create links between nodes of same graph")]
+        [SerializeField] private bool ignoreSameGraph = false;
+        
+        [Tooltip("Only try to create links between nodes of same graph")]
+        [SerializeField] private bool onlySameGraph = false;
+        
+        [Tooltip("Max distance between raycast hit and nearest node retrieved. To prevent making links to nodes not even close")]
+        [SerializeField] private float maxClosestNodeDist = 3f;
 
-        [Header("EdgeNormal")] public bool invertFacingNormal = false;
-        public bool dontAllignYAxis = true;
+        [Tooltip("how far over to move spherecast away from navmesh edge to prevent detecting the same edge")]
+        [SerializeField] private float cheatOffset = .25f;
 
+        [Tooltip("how high up to bump raycasts to check for walls (to prevent forming links through walls)")]
+        [SerializeField] private float wallCheckYOffset = 0.5f;
+
+        [Header("Vertical Links")]
+        [SerializeField] private bool enableVerticalLinks = true;
+        [SerializeField] private float maxJumpDownHeight = 5f;
+        [SerializeField] private float maxJumpUpHeight = 3f;
+
+        [Header("Horizontal Links")]
+        [SerializeField] private bool enableHorizontalLinks = true;
+        [SerializeField] private float maxJumpDist = 5f;
+
+        [Header("EdgeNormal")]
+        [SerializeField] private bool invertFacingNormal = false;
+        [SerializeField] private bool dontAllignYAxis = true;
+
+        [Header("Debug")]
+        [SerializeField] private bool enableDebug = false;
+        [SerializeField] private bool showedFailedHits = false;
+        [SerializeField] private float normalLength = .5f;
+        [SerializeField] private float placePosRadius = .2f;
+        [SerializeField] private float debugLineDuration = 10f;
+
+
+        private int linkCount = 0;
 
         //private List< Vector3 > spawnedLinksPositionsList = new List< Vector3 >();
         private Mesh currMesh;
         private List<Edge> edges = new List<Edge>();
 
-        public float agentRadius = 0.5f;
-
-        public bool enableDebug = false;
-        public bool showedFailedHits = false;
-        public float normalLength = .5f;
-        public float placePosRadius = .2f;
-        public float debugLineDuration = 10f;
-
         private Vector3 ReUsableV3;
         private Vector3 offSetPosY;
-        
+
         [NonSerialized]
         private List<NodeLink> nodeLinks = new List<NodeLink>();
+        private List<NodeLink2> nodeLink2s = new List<NodeLink2>();
 
         private List<Vector3> placePosList = new List<Vector3>();
 
         #endregion
+
+        #region Unity Lifecycle
 
         private void OnDrawGizmosSelected()
         {
@@ -114,34 +143,36 @@ namespace BML.Scripts.Pathfinding
             }
         }
 
+        #endregion
+
         #region GridGen
 
         public void Generate()
         {
-            Debug.Log("Generate");
+            if (enableDebug) Debug.Log("Generate");
             if (linkPrefab == null) return;
             //agentRadius = NavMesh.GetSettingsByIndex(0).agentRadius;
 
             edges.Clear();
             //spawnedLinksPositionsList.Clear();
 
-            Debug.Log("Proceeding with generate");
+            if (enableDebug) Debug.Log("Proceeding with generate");
             foreach (NavGraph graph in AstarData.active.graphs)
             {
-                Debug.Log($"Considering graph: {graph.name}");
+                if (enableDebug) Debug.Log($"Considering graph: {graph.name}");
                 
                 if (graph.name != referenceGraphName)
                     continue;
 
                 if (graph != null && !(graph is PointGraph))
                 {
-                    Debug.Log($"Starting calculate Edges: {graph.name}");
+                    if (enableDebug) Debug.Log($"Starting calculate Edges: {graph.name}");
                     CalcEdges(graph);
-                    Debug.Log($"Calculated Edges: {graph.name}");
+                    if (enableDebug) Debug.Log($"Calculated Edges: {graph.name}");
                 }
             }
 
-            Debug.Log($"Starting place tiles");
+            if (enableDebug) Debug.Log($"Starting place tiles");
             PlaceTiles();
 
 
@@ -156,7 +187,10 @@ namespace BML.Scripts.Pathfinding
             if (generateOnPostScan)
                 Generate();
 
-            if (nodeLinks == null)
+            if (!useNodeLink2 && nodeLinks == null)
+                return;
+            
+            if (useNodeLink2 && nodeLink2s == null)
                 return;
             
             // Commented this out because it was causing infinite loading times...doesn't seem like its needed
@@ -192,7 +226,17 @@ namespace BML.Scripts.Pathfinding
                 navMeshLinkList.RemoveAt(0);
             }
             
+            List<NodeLink2> navMeshLink2List = GetComponentsInChildren<NodeLink2>().ToList();
+            while (navMeshLink2List.Count > 0)
+            {
+                GameObject obj = navMeshLink2List[0].gameObject;
+                if (obj != null) DestroyImmediate(obj);
+                navMeshLink2List.RemoveAt(0);
+            }
+
+            linkCount = 0;
             nodeLinks.Clear();
+            nodeLink2s.Clear();
         }
 
         private void PlaceTiles()
@@ -218,10 +262,12 @@ namespace BML.Scripts.Pathfinding
                                        ) + edge.facingNormal * Vector3.up * heightShift;
 
                     placePosList.Add(placePos);
-                    //spawn up/down links
-                    CheckPlacePos(placePos, edge.facingNormal);
-                    //spawn horizontal links
-                    CheckPlacePosHorizontal(placePos, edge.facingNormal);
+                    
+                    if (enableVerticalLinks)
+                        CheckPlacePos(placePos, edge.facingNormal);
+                    
+                    if (enableHorizontalLinks)
+                        CheckPlacePosHorizontal(placePos, edge.facingNormal);
                 }
             }
         }
@@ -297,32 +343,54 @@ namespace BML.Scripts.Pathfinding
                             Vector3 calcV3 = (pos - normal * Vector3.forward * 0.02f);
                             if ((calcV3.y - closestPos.y) > 1f)
                             {
-
+                                
+                                //Skip every X link for performance
+                                if (linkSkip != 0 && linkCount % (linkSkip + 1) != 0)
+                                {
+                                    linkCount++;
+                                    return false;
+                                }
+                                
                                 //SPAWN NAVMESH LINK
-                                Transform typeOfLinkToSpawn = linkPrefab;
+                                Transform typeOfLinkToSpawn = useNodeLink2 ? link2Prefab : linkPrefab;
 
                                 if (calcV3.y - closestPos.y > maxJumpUpHeight)
                                 {
-                                    typeOfLinkToSpawn = oneWayLinkPrefab;
+                                    typeOfLinkToSpawn = useNodeLink2 ? oneWayLink2Prefab : oneWayLinkPrefab;
                                 }
                                 
                                 //Spawn a copy of the link for each graph listed
                                 foreach (var graphName in graphsToLink)
                                 {
                                     GraphMask mask = GraphMask.FromGraphName(graphName);
-                                    Transform spawnedTransf = Instantiate(typeOfLinkToSpawn, calcV3, normal);
-
-                                    NodeLink nodeLink = spawnedTransf.GetComponent<NodeLink>();
+                                    Transform spawnedTransf;
+                                    
+                                    spawnedTransf = Instantiate(typeOfLinkToSpawn, calcV3, normal);
+                                    
                                     GameObject endPoint = new GameObject("end");
                                     endPoint.transform.position = closestPos;
                                     endPoint.transform.SetParent(spawnedTransf, true);
-                                    nodeLink.end = endPoint.transform;
-                                    nodeLink.graphMask = mask;
+
+                                    if (useNodeLink2)
+                                    {
+                                        NodeLink2 nodeLink = spawnedTransf.GetComponent<NodeLink2>();
+                                        nodeLink.end = endPoint.transform;
+                                        nodeLink.graphMask = mask;
+                                        nodeLink2s.Add(nodeLink);
+                                    }
+                                    else
+                                    {
+                                        NodeLink nodeLink = spawnedTransf.GetComponent<NodeLink>();
+                                        nodeLink.end = endPoint.transform;
+                                        nodeLink.graphMask = mask;
+                                        nodeLinks.Add(nodeLink);
+                                    }
+                                    
 
                                     spawnedTransf.SetParent(transform);
-
-                                    nodeLinks.Add(nodeLink);
                                 }
+
+                                linkCount++;
                             }
                         }
                     }
@@ -346,6 +414,10 @@ namespace BML.Scripts.Pathfinding
 
 
             RaycastHit raycastHit = new RaycastHit();
+            
+            NNConstraint constraint = NNConstraint.Default;
+            NNInfo nodeStartInfo = AstarPath.active.GetNearest(pos, constraint);
+            NavGraph startGraph = nodeStartInfo.node.Graph;
 
             //calculate direction for Spherecast
             ReUsableV3 = endPos - startPos;
@@ -369,15 +441,29 @@ namespace BML.Scripts.Pathfinding
                         Vector3 cheatRaycastHit = LerpByDistance(raycastHit.point, endPos, .2f);
 
                         NNInfo nodeInfo = AstarPath.active.GetNearest(cheatRaycastHit, NNConstraint.Default);
+                        NavGraph targetGraph = nodeInfo.node.Graph;
                         Vector3 closestPos = nodeInfo.position;
 
-                        if (nodeInfo.node != null)
+                        if (nodeInfo.node != null && Vector3.Distance(raycastHit.point, closestPos) < maxClosestNodeDist)
                         {
                             //Debug.Log("Success");
                             //Debug.DrawLine( pos, navMeshHit.position, Color.black, debugLineDuration);
+                            
+                            if (ignoreSameGraph && targetGraph == startGraph)
+                                return false;
+
+                            if (onlySameGraph && targetGraph != startGraph)
+                                return false;
 
                             if (Vector3.Distance(pos, closestPos) > 1.1f)
                             {
+                                //Skip every X link for performance
+                                if (linkSkip != 0 && linkCount % (linkSkip + 1) != 0)
+                                {
+                                    linkCount++;
+                                    return false;
+                                }
+                                
                                 //SPAWN NAVMESH LINKS
                                 Transform spawnedTransf = Instantiate(
                                     oneWayLinkPrefab.transform,
@@ -385,14 +471,33 @@ namespace BML.Scripts.Pathfinding
                                     normal
                                 ) as Transform;
 
-                                NodeLink nodeLink = spawnedTransf.GetComponent<NodeLink>();
-                                GameObject endPoint = new GameObject("end");
-                                endPoint.transform.position = closestPos;
-                                endPoint.transform.SetParent(spawnedTransf, true);
-                                nodeLink.end = endPoint.transform;
+                                //Spawn a copy of the link for each graph listed
+                                foreach (var graphName in graphsToLink)
+                                {
+                                    GraphMask mask = GraphMask.FromGraphName(graphName);
+                                    GameObject endPoint = new GameObject("end");
+                                    endPoint.transform.position = closestPos;
+                                    endPoint.transform.SetParent(spawnedTransf, true);
+                                    
+                                    if (useNodeLink2)
+                                    {
+                                        NodeLink2 nodeLink = spawnedTransf.GetComponent<NodeLink2>();
+                                        nodeLink.end = endPoint.transform;
+                                        nodeLink.graphMask = mask;
+                                        nodeLink2s.Add(nodeLink);
+                                    }
+                                    else
+                                    {
+                                        NodeLink nodeLink = spawnedTransf.GetComponent<NodeLink>();
+                                        nodeLink.end = endPoint.transform;
+                                        nodeLink.graphMask = mask;
+                                        nodeLinks.Add(nodeLink);
+                                    }
 
-                                spawnedTransf.SetParent(transform);
-                                nodeLinks.Add(nodeLink);
+                                    spawnedTransf.SetParent(transform);
+                                }
+                                
+                                linkCount++;
                             }
                         }
                     }
@@ -421,7 +526,7 @@ namespace BML.Scripts.Pathfinding
         private void CalcEdges(NavGraph graph)
         {
             List<Vector3> edgepoints = GraphUtilities.GetContours(graph);
-            Debug.Log("Got contours");
+            if(enableDebug) Debug.Log("Got contours");
 
             for (int i = 0; i < edgepoints.Count - 1; i += 2)
             {
