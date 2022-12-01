@@ -28,6 +28,7 @@ namespace BML.Scripts.UI
             _itemToPurchase = itemToPurchase;
             _storeItemIcon.Init(_itemToPurchase);
             SetButtonText();
+            SetInteractable();
         }
 
         public void Raise()
@@ -36,6 +37,10 @@ namespace BML.Scripts.UI
         }
 
         void Update() {
+            SetInteractable();
+        }
+
+        private void SetInteractable() {
             _button.interactable = _itemToPurchase._resourceCost <= _resourceCount.Value &&
                 _itemToPurchase._rareResourceCost <= _rareResourceCount.Value &&
                 _itemToPurchase._enemyResourceCost <= _enemyResourceCount.Value &&
