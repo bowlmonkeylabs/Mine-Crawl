@@ -13,14 +13,17 @@ namespace BML.Scripts.Tasks
     {
         [SerializeField] private float _checkDelay = .05f;
         
-        [SerializeField] [BehaviorDesigner.Runtime.Tasks.Tooltip("Mask of everything raycast can interact with (including obstacles and target)")] 
-        private LayerMask _hitLayerMask;
+        [BehaviorDesigner.Runtime.Tasks.Tooltip("Mask of everything raycast can interact with (including obstacles and target)")] 
+        [SerializeField]private LayerMask _hitLayerMask;
         
-        [SerializeField] [BehaviorDesigner.Runtime.Tasks.Tooltip("Mask of layers that are considered obstacles")] 
-        private LayerMask _obstacleLayerMask;
+        [BehaviorDesigner.Runtime.Tasks.Tooltip("Mask of layers that are considered obstacles")] 
+        [SerializeField]  private LayerMask _obstacleLayerMask;
         
-        [SerializeField] private Transform _origin;
+        [SerializeField] private SharedTransform _origin;
         [SerializeField] private TransformSceneReference _target;
+        
+        [BehaviorDesigner.Runtime.Tasks.Tooltip("Optionally store result. True if hit player, false if hit obstacle")] 
+        [SerializeField] private SharedBool _storeValue;
 
         private float lastCheckTime = Mathf.NegativeInfinity;
         
@@ -30,15 +33,20 @@ namespace BML.Scripts.Tasks
                 return TaskStatus.Failure;
 
             RaycastHit hit;
-            Vector3 dir = (_target.Value.position - _origin.position).normalized;
-            if (Physics.Raycast(_origin.position, dir, out hit, Mathf.Infinity, _hitLayerMask, QueryTriggerInteraction.Ignore))
+            Vector3 dir = (_target.Value.position - _origin.Value.position).normalized;
+            if (Physics.Raycast(_origin.Value.position, dir, out hit, Mathf.Infinity, _hitLayerMask, QueryTriggerInteraction.Ignore))
             {
                 if (hit.collider.gameObject.IsInLayerMask(_obstacleLayerMask))
+                {
+                    if (_storeValue != null) _storeValue.Value = false;
                     return TaskStatus.Failure;
-
+                }
+                    
+                if (_storeValue != null) _storeValue.Value = true;
                 return TaskStatus.Success;
             }
 
+            if (_storeValue != null) _storeValue.Value = false;
             return TaskStatus.Failure;
         }
     }
