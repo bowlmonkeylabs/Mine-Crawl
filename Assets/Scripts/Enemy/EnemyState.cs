@@ -23,12 +23,14 @@ namespace BML.Scripts.Enemy
         
         private float lastUpdateTime = Mathf.NegativeInfinity;
 
+        #region Enums
+
         [Serializable]
         enum Difficulty
         {
             Easy,
             Medium,
-            Difficult
+            Difficulty
         }
 
         [Serializable]
@@ -37,6 +39,54 @@ namespace BML.Scripts.Enemy
             Idle,        //Not yet alerted
             Seeking,     //Alerted no LoS
             Engaged      //Alerted and LoS
+        }
+
+        #endregion
+
+        #region UnityLifecyle
+
+        private void OnDrawGizmosSelected()
+        {
+            switch (_aggro)
+            {
+                case (AggroState.Idle):
+                    Gizmos.color = Color.green;
+                    break;
+                case (AggroState.Seeking):
+                    Gizmos.color = Color.yellow;
+                    break;
+                case (AggroState.Engaged):
+                    Gizmos.color = Color.red;
+                    break;
+                default: 
+                    Gizmos.color = Color.magenta;
+                    break;
+            }
+
+            Gizmos.DrawSphere(transform.position + Vector3.up * 1.5f, .2f);
+        }
+
+        private void Update()
+        {
+            UpdateAggroState();
+        }
+
+        #endregion
+
+        private void UpdateAggroState()
+        {
+            if (!isAlerted)
+            {
+                _aggro = AggroState.Idle;
+                return;
+            }
+
+
+            if (!isPlayerInLoS)
+                _aggro = AggroState.Seeking;
+            else
+                _aggro = AggroState.Engaged;
+
         }
     }
 }
