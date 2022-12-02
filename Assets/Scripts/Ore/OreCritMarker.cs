@@ -1,3 +1,4 @@
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,15 +15,16 @@ namespace BML.Scripts
     [SerializeField] private GameObject _critMarker;
     [SerializeField] [MinMaxSlider(0, 90)] private Vector2 _critMarkerMinMaxAngle = new Vector2(15f, 30f);
     [SerializeField] private float _critMarkerSurfaceOffset = .05f;
+    [SerializeField] private TransformSceneReference _playerCamRef;
 
     private Vector3 lastHitPos;
-    private Vector3 centerToHit;
+    private Vector3 centerToPlayer;
 
     public void MoveCritMarker(HitInfo hitInfo) {
-        this.MoveCritMarker(hitInfo.HitPositon);
+        this.MoveCritMarker();
     }
 
-    public void MoveCritMarker(Vector3 hitPosition)
+    public void MoveCritMarker()
     {
         if (_health.IsDead)
         {
@@ -32,7 +34,7 @@ namespace BML.Scripts
         
         if (!_critMarker.activeSelf) _critMarker.SetActive(true);
 
-        centerToHit = hitPosition - _oreCollider.bounds.center;
+        centerToPlayer = _playerCamRef.Value.position - _oreCollider.bounds.center;
 
         float randXRot = MathUtils.GetRandomInRangeReflected(_critMarkerMinMaxAngle.x, _critMarkerMinMaxAngle.y);
         float randYRot = MathUtils.GetRandomInRangeReflected(_critMarkerMinMaxAngle.x, _critMarkerMinMaxAngle.y);
@@ -40,9 +42,9 @@ namespace BML.Scripts
         Quaternion randomRotation = Quaternion.Euler(randXRot, randYRot, 0f);
 
         Vector3 newCritPoint = _oreCollider.bounds.center;
-        newCritPoint += randomRotation * centerToHit;
+        newCritPoint += randomRotation * centerToPlayer;
         newCritPoint = _oreCollider.ClosestPoint(newCritPoint);
-        newCritPoint += centerToHit.normalized * _critMarkerSurfaceOffset;
+        newCritPoint += centerToPlayer.normalized * _critMarkerSurfaceOffset;
         _critMarker.transform.position = newCritPoint;
     }
     
@@ -59,13 +61,13 @@ namespace BML.Scripts
         Draw.Line(_oreCollider.bounds.center, lastHitPos, new Color(1f, 1f, 0f, a));
 
         //Draw cones to represent the min and max angle ranges for random rotation
-        float length = centerToHit.magnitude;
+        float length = centerToPlayer.magnitude;
         float minRadius = length * Mathf.Tan(_critMarkerMinMaxAngle.x * Mathf.Deg2Rad);
         float maxRadius = length * Mathf.Tan(_critMarkerMinMaxAngle.y * Mathf.Deg2Rad);
-        Draw.Cone(lastHitPos, -centerToHit.normalized, minRadius, 
-            centerToHit.magnitude, false, new Color(1f, 0f, 0f, a));
-        Draw.Cone(lastHitPos + centerToHit * .05f, -centerToHit.normalized, maxRadius, 
-            centerToHit.magnitude, false, new Color(0f, 1f, 0f, a));
+        Draw.Cone(lastHitPos, -centerToPlayer.normalized, minRadius, 
+            centerToPlayer.magnitude, false, new Color(1f, 0f, 0f, a));
+        Draw.Cone(lastHitPos + centerToPlayer * .05f, -centerToPlayer.normalized, maxRadius, 
+            centerToPlayer.magnitude, false, new Color(0f, 1f, 0f, a));
         
     }
 }
