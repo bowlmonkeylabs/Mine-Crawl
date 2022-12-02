@@ -28,6 +28,7 @@ namespace BML.Scripts.UI
 
         private void Awake()
         {
+#warning Remove this once we're done working on the stores/inventory
             GenerateStoreItems();
         }
 
@@ -58,6 +59,8 @@ namespace BML.Scripts.UI
                 shownStoreItems = shownStoreItems.Take(_maxItemsShown).ToList();
             }
 
+            var storeUiMenuPageControllerGameObject = _storeUiMenuPageController.gameObject;
+            
             foreach (var storeItem in shownStoreItems)
             {
                 var newStoreItemButton = GameObjectUtils.SafeInstantiate(true, _storeUiButtonPrefab, _listContainerStoreButtons);
@@ -68,6 +71,11 @@ namespace BML.Scripts.UI
                 
                 var button = newStoreItemButton.GetComponent<Button>();
                 buttonList.Add(button);
+
+                var uiEventHandler = newStoreItemButton.GetComponent<UiEventHandler>();
+                
+                uiEventHandler.PropagateSubmit = storeUiMenuPageControllerGameObject;
+                uiEventHandler.PropagateCancel = storeUiMenuPageControllerGameObject;
             }
             
             var newResumeButton  = GameObjectUtils.SafeInstantiate(true, _storeResumeButtonPrefab, _listContainerStoreButtons);
@@ -75,7 +83,9 @@ namespace BML.Scripts.UI
             buttonList.Add(buttonResume);
             
             buttonResume.onClick.AddListener(_storeUiMenuPageController.ClosePage);
-            buttonResume.GetComponent<UiEventHandler>().OnCancelAddListener(_storeUiMenuPageController.ClosePage);
+            var resumeUiEventHandler = buttonResume.GetComponent<UiEventHandler>();
+            resumeUiEventHandler.PropagateSubmit = storeUiMenuPageControllerGameObject;
+            resumeUiEventHandler.PropagateCancel = storeUiMenuPageControllerGameObject;
 
             _storeUiMenuPageController.DefaultSelected = buttonList[0];
             SetNavigationOrder();

@@ -4,6 +4,7 @@ using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -19,24 +20,27 @@ namespace BML.Scripts.UI
             return $"{groupTitle} {propagate} {evt}";
         }
         
-        private string onSubmitGroupTitle => GetGroupHeaderString("On Submit", _propagateSubmit, _onSubmit);
+        private string onSubmitGroupTitle => GetGroupHeaderString("On Submit", PropagateSubmit, _onSubmit);
+        [FormerlySerializedAs("_propagateSubmit")]
         [FoldoutGroup("$onSubmitGroupTitle", expanded: false), LabelText("Propagate Handler")]
-        [SerializeField] private GameObject _propagateSubmit;
+        [SerializeField] public GameObject PropagateSubmit;
         [FoldoutGroup("$onSubmitGroupTitle"), HideLabel]
         [SerializeField] private UnityEvent _onSubmit;
         private ISubmitHandler submitHandler;
         
-        private string onCancelGroupTitle => GetGroupHeaderString("On Cancel", _propagateCancel, _onCancel);
+        private string onCancelGroupTitle => GetGroupHeaderString("On Cancel", PropagateCancel, _onCancel);
+        [FormerlySerializedAs("_propagateCancel")]
         [FoldoutGroup("$onCancelGroupTitle", expanded: false), LabelText("Propagate Handler")]
-        [SerializeField] private GameObject _propagateCancel;
+        [SerializeField] public GameObject PropagateCancel;
         [FoldoutGroup("$onCancelGroupTitle"), HideLabel]
         [SerializeField] private UnityEvent _onCancel;
         private ICancelHandler cancelHandler;
         public void OnCancelAddListener(UnityAction action) => _onCancel.AddListener(action);
         
-        private string onPointerEnterGroupTitle => GetGroupHeaderString("On Pointer Enter", _propagatePointerEnter, _onPointerEnter);
+        private string onPointerEnterGroupTitle => GetGroupHeaderString("On Pointer Enter", PropagatePointerEnter, _onPointerEnter);
+        [FormerlySerializedAs("_propagatePointerEnter")]
         [FoldoutGroup("$onPointerEnterGroupTitle", expanded: false), LabelText("Propagate Handler")]
-        [SerializeField] private GameObject _propagatePointerEnter;
+        [SerializeField] public GameObject PropagatePointerEnter;
         [FoldoutGroup("$onPointerEnterGroupTitle"), HideLabel]
         [SerializeField] private UnityEvent _onPointerEnter;
         private IPointerEnterHandler pointerEnterHandler;
@@ -45,19 +49,19 @@ namespace BML.Scripts.UI
         #region Unity lifecycle
         private void Awake()
         {
-            if (_propagateSubmit != null)
+            if (PropagateSubmit != null)
             {
-                submitHandler = _propagateSubmit?.GetComponent<ISubmitHandler>();
+                submitHandler = PropagateSubmit?.GetComponent<ISubmitHandler>();
             }
 
-            if (_propagateCancel != null)
+            if (PropagateCancel != null)
             {
-                cancelHandler = _propagateCancel?.GetComponent<ICancelHandler>();
+                cancelHandler = PropagateCancel?.GetComponent<ICancelHandler>();
             }
 
-            if (_propagatePointerEnter != null)
+            if (PropagatePointerEnter != null)
             {
-                pointerEnterHandler = _propagatePointerEnter?.GetComponent<IPointerEnterHandler>();
+                pointerEnterHandler = PropagatePointerEnter?.GetComponent<IPointerEnterHandler>();
             }
         }
         #endregion

@@ -4,6 +4,7 @@ using BML.Scripts.Store;
 using UnityEngine;
 using BML.Scripts.Utils;
 using BML.ScriptableObjectCore.Scripts.Events;
+using Sirenix.OdinInspector;
 
 namespace BML.Scripts.UI
 {
@@ -17,8 +18,9 @@ namespace BML.Scripts.UI
         private List<StoreItem> _itemsPlayerHas;
 
         void OnEnable() {
-            _itemsPlayerHas = _upgradeStoreInventory.StoreItems.Where(si => si._playerInventoryAmount.Value > 0).ToList();
             _onBuyEvent.Subscribe(OnBuy);
+            
+#warning Remove this once we're done working on the stores/inventory
             GenerateStoreIcons();
         }
 
@@ -26,8 +28,11 @@ namespace BML.Scripts.UI
             _onBuyEvent.Unsubscribe(OnBuy);
         }
 
+        [Button]
         private void GenerateStoreIcons() {
             DestroyStoreIcons();
+            
+            _itemsPlayerHas = _upgradeStoreInventory.StoreItems.Where(si => si._playerInventoryAmount.Value > 0).ToList();
 
             foreach (var storeItem in _itemsPlayerHas)
             {
@@ -35,10 +40,12 @@ namespace BML.Scripts.UI
                 newStoreItemButton.name = $"Icon_{storeItem.name}";
                 
                 var uiStoreItemIconController = newStoreItemButton.GetComponent<UiStoreItemIconController>();
-                uiStoreItemIconController.Init(storeItem);
+                var storeUiMenuPageControllerGameObject = uiStoreItemIconController.gameObject;
+                uiStoreItemIconController.Init(storeItem, storeUiMenuPageControllerGameObject, storeUiMenuPageControllerGameObject);
             }
         }
 
+        [Button]
         private void DestroyStoreIcons()
         {
             var children = Enumerable.Range(0, _iconsContainer.childCount)
@@ -51,7 +58,6 @@ namespace BML.Scripts.UI
         }
 
         protected void OnBuy(object prevStoreItem, object storeItem) {
-            _itemsPlayerHas = _upgradeStoreInventory.StoreItems.Where(si => si._playerInventoryAmount.Value > 0).ToList();
             GenerateStoreIcons();
         }
     }
