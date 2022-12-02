@@ -277,8 +277,6 @@ namespace BML.Scripts.Pathfinding
 
         bool CheckPlacePos(Vector3 pos, Quaternion normal)
         {
-            bool result = false;
-
             Vector3 startPosHorizontal = pos + Vector3.up * wallCheckYOffset - normal * Vector3.forward * agentRadius;
             Vector3 startPos = pos + normal * Vector3.forward * agentRadius * 2 + Vector3.up * wallCheckYOffset;
             Vector3 endPos = startPos - Vector3.up * maxJumpDownHeight * 1.1f;
@@ -298,6 +296,10 @@ namespace BML.Scripts.Pathfinding
 
             NNConstraint constraint = NNConstraint.Default;
             NNInfo nodeStartInfo = AstarPath.active.GetNearest(pos, constraint);
+            
+            if (nodeStartInfo.node == null)
+                return false;
+            
             NavGraph startGraph = nodeStartInfo.node.Graph;
 
             RaycastHit raycastHit = new RaycastHit();
@@ -320,6 +322,10 @@ namespace BML.Scripts.Pathfinding
                 {
                     if (enableDebug) Debug.DrawLine(raycastHit.point, raycastHit.point + Vector3.right, Color.cyan, debugLineDuration);
                     NNInfo nodeInfo = AstarPath.active.GetNearest(raycastHit.point, constraint);
+                    
+                    if (nodeInfo.node == null)
+                        return false;
+                    
                     NavGraph targetGraph = nodeInfo.node.Graph;
                     Vector3 closestPos = nodeInfo.position;
 
@@ -397,13 +403,11 @@ namespace BML.Scripts.Pathfinding
                 }
             }
 
-            return result;
+            return false;
         }
 
         bool CheckPlacePosHorizontal(Vector3 pos, Quaternion normal)
         {
-            bool result = false;
-
             Vector3 startPos = pos + normal * Vector3.forward * agentRadius * 2;
             Vector3 endPos = startPos - normal * Vector3.back * maxJumpDist * 1.1f;
             // Cheat forward a little bit so the sphereCast doesn't touch this ledge.
@@ -417,6 +421,10 @@ namespace BML.Scripts.Pathfinding
             
             NNConstraint constraint = NNConstraint.Default;
             NNInfo nodeStartInfo = AstarPath.active.GetNearest(pos, constraint);
+
+            if (nodeStartInfo.node == null)
+                return false;
+            
             NavGraph startGraph = nodeStartInfo.node.Graph;
 
             //calculate direction for Spherecast
@@ -441,10 +449,14 @@ namespace BML.Scripts.Pathfinding
                         Vector3 cheatRaycastHit = LerpByDistance(raycastHit.point, endPos, .2f);
 
                         NNInfo nodeInfo = AstarPath.active.GetNearest(cheatRaycastHit, NNConstraint.Default);
+                        
+                        if (nodeInfo.node == null)
+                            return false;
+                        
                         NavGraph targetGraph = nodeInfo.node.Graph;
                         Vector3 closestPos = nodeInfo.position;
 
-                        if (nodeInfo.node != null && Vector3.Distance(raycastHit.point, closestPos) < maxClosestNodeDist)
+                        if (Vector3.Distance(raycastHit.point, closestPos) < maxClosestNodeDist)
                         {
                             //Debug.Log("Success");
                             //Debug.DrawLine( pos, navMeshHit.position, Color.black, debugLineDuration);
@@ -504,7 +516,7 @@ namespace BML.Scripts.Pathfinding
                 }
             }
 
-            return result;
+            return false;
         }
 
 
