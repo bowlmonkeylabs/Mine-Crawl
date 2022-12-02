@@ -1,5 +1,6 @@
 ﻿using System;
 using BML.Scripts.CaveV2.CaveGraph;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace BML.Scripts.Enemy
@@ -13,7 +14,13 @@ namespace BML.Scripts.Enemy
         [SerializeField] private AggroState _aggro;
         [SerializeField] private int _nodeDistanceFromPlayer;
         [SerializeField] private float _updateFrequency = .25f;
+        
+        [ShowInInspector, ReadOnly] private bool isAlerted;
+        [ShowInInspector, ReadOnly] private bool isPlayerInLoS;
 
+        public bool IsAlerted { get => isAlerted; set => isAlerted = value; }
+        public bool IsPlayerInLoS { get => isPlayerInLoS; set => isPlayerInLoS = value; }
+        
         private float lastUpdateTime = Mathf.NegativeInfinity;
 
         [Serializable]
