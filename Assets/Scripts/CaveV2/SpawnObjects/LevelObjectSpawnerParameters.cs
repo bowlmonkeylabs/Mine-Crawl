@@ -28,7 +28,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             public string Tag;
             public GameObject Prefab;
             [FoldoutGroup("Parameters")] public Vector3 RaycastDirection = Vector3.down;
-            [FoldoutGroup("Parameters")] public float RaycastOffset = 0f;
+            [FoldoutGroup("Parameters")] public float SpawnPosOffset = 0f;
+            [FoldoutGroup("Parameters")] public bool RequireStableSurface;
             [FoldoutGroup("Parameters")] public bool InstanceAsPrefab;
             [FoldoutGroup("Parameters")] public bool ChooseWithoutReplacement;
             [FoldoutGroup("Parameters")] [Range(0f, 1f)] public float SpawnProbability;
