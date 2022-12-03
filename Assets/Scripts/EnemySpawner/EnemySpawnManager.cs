@@ -377,11 +377,14 @@ namespace BML.Scripts
                 GameObjectUtils.SafeInstantiate(true, enemy.Prefab, _enemyContainer);
 
             // Raycast from spawn position to place new game object along the level surface
-            newGameObject.transform.position = SpawnObjectsUtil.GetPointTowards(
+            Vector3 spawnPos;
+            SpawnObjectsUtil.GetPointTowards(
                 (spawnPoint - enemy.RaycastDirection * enemy.RaycastOffset),
                 enemy.RaycastDirection,
+                out spawnPos,
                 _enemySpawnerParams.TerrainLayerMask,
                 _enemySpawnerParams.MaxRaycastLength);
+            newGameObject.transform.position = spawnPos;
             
             // Set parameters on enemy despawnable instance
             var enemySpawnable = newGameObject.GetComponent<EnemySpawnable>();

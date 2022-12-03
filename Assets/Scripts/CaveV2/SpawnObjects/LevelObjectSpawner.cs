@@ -201,13 +201,30 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     if (_caveGenerator.EnableLogs) Debug.Log($"Try spawn {spawnAtTagParameters.Prefab?.name}: (Spawn point {spawnPoint.SpawnChance}) (Main path {mainPathProbability}) (Spawn chance {spawnChance}) (Random {rand}) (Do Spawn {doSpawn})");
                     if (doSpawn)
                     {
+                        Vector3 spawnPos;
+
+                        var hitStableSurface = SpawnObjectsUtil.GetPointTowards(
+                            spawnPoint.transform.position, 
+                            spawnAtTagParameters.RaycastDirection, 
+                            out spawnPos,
+                            _levelObjectSpawnerParams.TerrainLayerMask,
+                            _levelObjectSpawnerParams.MaxRaycastLength);
+                        
+                        var spawnOffset = -spawnAtTagParameters.RaycastDirection * 
+                                          spawnAtTagParameters.SpawnPosOffset;
+                        
+                        // Cancel spawn if did not find surface to spawn
+                        if (spawnAtTagParameters.RequireStableSurface && !hitStableSurface)
+                        {
+                            if (_caveGenerator.EnableLogs)
+                                Debug.Log($"Failed to spawn {spawnAtTagParameters.Prefab?.name}. No stable " +
+                                          $"surface found!");
+                            continue;
+                        }
+
                         var newGameObject =
                             GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
-                        var spawnOffset = spawnPoint.transform.position -
-                                          spawnAtTagParameters.RaycastDirection * spawnAtTagParameters.RaycastOffset;
-                        newGameObject.transform.position = SpawnObjectsUtil.GetPointTowards(spawnOffset,
-                            spawnAtTagParameters.RaycastDirection, _levelObjectSpawnerParams.TerrainLayerMask,
-                            _levelObjectSpawnerParams.MaxRaycastLength);
+                        newGameObject.transform.position = spawnPos + spawnOffset;
                             
                         CatalogSpawnPoints(newGameObject.transform, spawnPoint.ParentNode);
 
