@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
+using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -11,15 +13,9 @@ namespace BML.Scripts.Enemy
 {
     public class EnemyState : MonoBehaviour
     {
-        // [SerializeField] private Enemy Type
-        [SerializeField] private BehaviorDesigner.Runtime.BehaviorTree _behaviorTree;
-        [SerializeField] private LayerMask _nodeBoundsLayerMask;
-        [SerializeField] private Difficulty _difficulty;
-        [SerializeField] private CaveNodeDataDebugComponent _currentNode;
         [SerializeField] private AggroState _aggro;
-        [SerializeField] private int _nodeDistanceFromPlayer;
-        [SerializeField] private float _updateFrequency = .25f;
-        
+        [SerializeField] private DynamicGameEvent _onEnemyKilled;
+
         [ShowInInspector, ReadOnly] private bool isAlerted;
         [ShowInInspector, ReadOnly] private bool isPlayerInLoS;
 
@@ -32,14 +28,6 @@ namespace BML.Scripts.Enemy
         private Dictionary<Collider, CaveNodeConnectionData> _currentNodeConnections;
 
         #region Enums
-
-        [Serializable]
-        enum Difficulty
-        {
-            Easy,
-            Medium,
-            Difficulty
-        }
 
         [Serializable]
         enum AggroState
@@ -66,7 +54,7 @@ namespace BML.Scripts.Enemy
 
         private void OnTriggerEnter(Collider other)
         {
-            bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(_nodeBoundsLayerMask);
+            bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(CaveNodeDataUtils.RoomBoundsLayerMask);
             if (isNodeBoundsLayer)
             {
                 bool isAlreadyEntered =
@@ -110,7 +98,7 @@ namespace BML.Scripts.Enemy
 
         private void OnTriggerExit(Collider other)
         {
-            bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(_nodeBoundsLayerMask);
+            bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(CaveNodeDataUtils.RoomBoundsLayerMask);
             if (isNodeBoundsLayer)
             {
                 if (_currentNodes.ContainsKey(other))
@@ -161,6 +149,8 @@ namespace BML.Scripts.Enemy
 
         #endregion
 
+        #region State
+
         private void UpdateAggroState()
         {
             if (!isAlerted)
@@ -176,5 +166,21 @@ namespace BML.Scripts.Enemy
                 _aggro = AggroState.Engaged;
 
         }
+
+        #endregion
+        
+        
+        #region Public interface
+
+        public void OnDeath()
+        {
+            var payload = new EnemyKilledPayload
+            {
+                Position = this.transform.position
+            };
+            _onEnemyKilled.Raise(payload);
+        }
+
+        #endregion
     }
 }
