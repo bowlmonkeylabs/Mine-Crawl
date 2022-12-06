@@ -66,7 +66,7 @@ namespace BML.Scripts
             //NOTE: This will damage player and enemies on a per-collider basis.
             //      Does not check if multiple colliders belong to same entity.
 
-            Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius.Value, _explosionMask);
+            Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius.Value, _explosionMask, QueryTriggerInteraction.Ignore);
 
             foreach (var col in colliders)
             {
