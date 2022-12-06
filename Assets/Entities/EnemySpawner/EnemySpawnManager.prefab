@@ -49,15 +49,19 @@ MonoBehaviour:
   _enemyContainer: {fileID: 0}
   _player: {fileID: 0}
   _enemyDeleteRadius: {fileID: 0}
-  _spawnOffsetRadius: 1
-  _levelStartTime: {fileID: 11400000, guid: c23f9b241da59364fa29c90c92285e88, type: 2}
-  _minutesToMaxSpawn: {fileID: 11400000, guid: 47e12604ff60c1e43b8a0f8122df4ff2, type: 2}
-  _spawnDelayCurve: {fileID: 11400000, guid: b71d8e9475f3efa44bd872dc693ee8b9, type: 2}
-  _spawnCapCurve: {fileID: 11400000, guid: 6287d4838ad197348a1e5b34fad45401, type: 2}
+  _terrainLayerMask:
+    serializedVersion: 2
+    m_Bits: 8200
+  _spawnOffsetRadius: 0.5
   _currentSpawnDelay: {fileID: 11400000, guid: 352b10b7d534eae4d821308690c1fbfb, type: 2}
   _currentSpawnCap: {fileID: 11400000, guid: f57160f80ef0ba046ac7c6bf4b3f0228, type: 2}
   _currentEnemyCount: {fileID: 11400000, guid: 6fdcc6ab717b88f4fa6f8ecf81b9db82, type: 2}
-  _currentPercentToMaxSpawn: {fileID: 11400000, guid: 88289707eab0e224fa8a2607ca189c06, type: 2}
+  _currentDifficulty: {fileID: 11400000, guid: 1c2caa5f2dbacd347ac45e327d3a1fa6, type: 2}
+  _playerInfluenceState: {fileID: 11400000, guid: 04bcdf30c05b96b4c9453f14061e3591, type: 2}
+  _enemySpawnerParamList:
+  - {fileID: 11400000, guid: b77fad53ac29c2a4d8f695ee6eccc2b4, type: 2}
+  - {fileID: 11400000, guid: c00a9dff10eed6e4e8f2dead8903ba9d, type: 2}
+  - {fileID: 11400000, guid: 07b8683ea15bc7949be0c095ac7d4de3, type: 2}
   _minMaxSpawnPlayerDistance: {x: 1, y: 3}
   _weightSpawningInUnexplored: 0.5
   _weightSpawningTowardsObjective: 0.6
@@ -74,5 +78,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   _despawnDelay: 3
-  _enemySpawnerParams: {fileID: 11400000, guid: ceabea79e797e2b4898d9dc95f70dffb, type: 2}
   _enableLogs: 0

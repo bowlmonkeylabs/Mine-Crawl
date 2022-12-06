@@ -32,15 +32,15 @@ namespace BML.Scripts
         [Required, SerializeField] private SphereCollider _enemyDeleteRadius;
 
         [TitleGroup("Spawning Parameters")]
+        [SerializeField] private LayerMask _terrainLayerMask;
+        [Range(0f,100f)] private float _maxRaycastLength = 10f;
         [SerializeField] private float _spawnOffsetRadius = 5f;
-        [SerializeField] private FloatVariable _levelStartTime;
-        [SerializeField] private FloatVariable _minutesToMaxSpawn;
-        [SerializeField] private CurveVariable _spawnDelayCurve;
-        [SerializeField] private CurveVariable _spawnCapCurve;
         [SerializeField] private FloatVariable _currentSpawnDelay;
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
-        [SerializeField] private FloatVariable _currentPercentToMaxSpawn;
+        [SerializeField] private IntVariable _currentDifficulty;
+        [SerializeField] private InfluenceStateData _playerInfluenceState;
+        [Required, SerializeField] [InlineEditor()] private List<EnemySpawnerParams> _enemySpawnerParamList = new List<EnemySpawnerParams>();
 
         [UnityEngine.Tooltip(
             "Controls range within spawn points will be considered for active spawning. 'Player Distance' is defined by the CaveNodeData, in terms of graph distance from the player's current location.")]
@@ -59,17 +59,17 @@ namespace BML.Scripts
         [Required, SerializeField] private LayerMask _enemyLayerMask;
         [Required, SerializeField] private float _despawnDelay = 1f;
 
-        [TitleGroup("Enemy Types")]
-        [Required, SerializeField] [InlineEditor()] private EnemySpawnerParams _enemySpawnerParams;
-        
         [TitleGroup("Debug")]
         [SerializeField] private bool _enableLogs = false;
         
         #endregion
 
+        public List<EnemySpawnerParams> EnemySpawnerParamsList => _enemySpawnerParamList;
+
         [ReadOnly, ShowInInspector] private Dictionary<string, List<SpawnPoint>> _allSpawnPointsByTag;
         [ReadOnly, ShowInInspector] private Dictionary<string, List<SpawnPoint>> _activeSpawnPointsByTag;
 
+        private EnemySpawnerParams currentParams;
         private float lastSpawnTime = Mathf.NegativeInfinity;
         private float lastDespawnTime = Mathf.NegativeInfinity;
         private int totalEnemySpawnCount;
@@ -84,7 +84,6 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
-            _currentPercentToMaxSpawn.Value = 0;
             _caveGenerator.OnAfterGenerate += InitSpawnPoints;
             _caveGenerator.OnAfterUpdatePlayerDistance += CacheActiveSpawnPoints;
         }
@@ -97,12 +96,7 @@ namespace BML.Scripts
 
         private void Update()
         {
-            if (!IsSpawningPaused)
-            {
-                _currentPercentToMaxSpawn.Value += (Time.deltaTime) / (_minutesToMaxSpawn.Value * 60f);
-                _currentSpawnDelay.Value = _spawnDelayCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
-            }
-
+            UpdateDifficultyParams();
             if (!IsDespawningPaused) HandleDespawning();
             if (!IsSpawningPaused) HandleSpawning();
         }
@@ -161,25 +155,29 @@ namespace BML.Scripts
         [Button("Debug Init Spawn Costs")]
         private void InitSpawnCosts()
         {
-            Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount);
-            int minCost = _enemySpawnerParams.SpawnAtTags.Min(e => e.Cost);
-            int maxCost = _enemySpawnerParams.SpawnAtTags.Max(e => e.Cost);
-
-            var intermediate = _enemySpawnerParams.SpawnAtTags.Select(e => ((float) maxCost / e.Cost) * minCost).ToList();
-            var total = intermediate.Sum();
-
-            for (int i = 0; i < intermediate.Count; i++)
+            foreach (var enemyParams in _enemySpawnerParamList)
             {
-                _enemySpawnerParams.SpawnAtTags[i].NormalizedSpawnWeight = intermediate[i] / (float) total;
-                Debug.Log($"{_enemySpawnerParams.SpawnAtTags[i].Prefab.name} | " +
-                          $"Cost: {_enemySpawnerParams.SpawnAtTags[i].Cost}" +
-                          $"| Norm: {_enemySpawnerParams.SpawnAtTags[i].NormalizedSpawnWeight}");
+                Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount);
+                int minCost = enemyParams.SpawnAtTags.Min(e => e.Cost);
+                int maxCost = enemyParams.SpawnAtTags.Max(e => e.Cost);
+
+                var intermediate = enemyParams.SpawnAtTags.Select(e => ((float) maxCost / e.Cost) * minCost).ToList();
+                var total = intermediate.Sum();
+
+                for (int i = 0; i < intermediate.Count; i++)
+                {
+                    enemyParams.SpawnAtTags[i].NormalizedSpawnWeight = intermediate[i] / (float) total;
+                    Debug.Log($"{enemyParams.SpawnAtTags[i].Prefab.name} | " +
+                              $"Cost: {enemyParams.SpawnAtTags[i].Cost}" +
+                              $"| Norm: {enemyParams.SpawnAtTags[i].NormalizedSpawnWeight}");
+                }
             }
         }
 
         private void InitSpawnPoints()
         {
-            var tagsToSpawn = _enemySpawnerParams.SpawnAtTags
+            var tagsToSpawn = _enemySpawnerParamList
+                .SelectMany(enemySpawnerParams => enemySpawnerParams.SpawnAtTags)
                 .Select(spawnAtTag => spawnAtTag.Tag)
                 .Distinct()
                 .ToList();
@@ -187,7 +185,7 @@ namespace BML.Scripts
             var tags = String.Join(", ", tagsToSpawn);
             // Debug.Log($"InitSpawnPoints {tags}");
 
-            _allSpawnPointsByTag = _caveGenerator.CaveGraph.Vertices
+            _allSpawnPointsByTag = _caveGenerator.CaveGraph.AllNodes
                 .SelectMany(caveNodeData => caveNodeData.SpawnPoints)
                 .GroupBy(sp => sp.gameObject.tag)
                 .Where(group => tagsToSpawn.Contains(group.Key))
@@ -227,7 +225,7 @@ namespace BML.Scripts
 
         private void CalculateSpawnPointWeight()
         {
-            foreach (var caveNodeData in _caveGenerator.CaveGraph.Vertices)
+            foreach (var caveNodeData in _caveGenerator.CaveGraph.AllNodes)
             {
                 float baseWeight = 1f;
 
@@ -265,6 +263,47 @@ namespace BML.Scripts
         #endregion
         
         #region Spawning
+
+        private void UpdateDifficultyParams()
+        {
+            bool isPlayerInNode = _playerInfluenceState._currentNodes.Count > 0;
+            bool isPlayerInNodeConnection = _playerInfluenceState._currentNodeConnections.Count > 0;
+            
+            // Dont update parameters if player is not within node or edge
+            if (!isPlayerInNode && !isPlayerInNodeConnection)
+                return;
+            
+            if (_enemySpawnerParamList.Count != _caveGenerator.DifficultySegmentCount)
+            {
+                Debug.LogError("Enemy spawn param list should have number of elements equal to the number" +
+                               " of difficulty segments set on cave generator!");
+                return;
+            }
+            
+            // Aggregate the difficulty of nodes and edges player is currently occupying
+            List<int> aggregateDifficulties = new List<int>();
+
+            if (isPlayerInNode)
+                aggregateDifficulties = aggregateDifficulties
+                    .Union(_playerInfluenceState._currentNodes
+                        .Select(n => n.Value.Difficulty)
+                        ).ToList();
+            
+            if (isPlayerInNodeConnection)
+                aggregateDifficulties = aggregateDifficulties
+                    .Union(_playerInfluenceState._currentNodeConnections
+                        .Select(n => n.Value.Difficulty)
+                    ).ToList();
+
+            float aggregateDifficultyFactor = (float) aggregateDifficulties.Average();
+
+            _currentDifficulty.Value = Mathf.CeilToInt(aggregateDifficultyFactor);
+
+            //Use calculated difficulty to decide which parameters to use
+            currentParams = _enemySpawnerParamList[_currentDifficulty.Value];
+            _currentSpawnDelay.Value = currentParams.SpawnDelay;
+            _currentSpawnCap.Value = currentParams.SpawnCap;
+        }
 
         public void DespawnAll()
         {
@@ -321,11 +360,12 @@ namespace BML.Scripts
             _currentEnemyCount.Value = _enemyContainer.Cast<Transform>()
                 .Select(child => child.GetComponent<EnemySpawnable>())
                 .Count(d => d != null && d.DoCountForSpawnCap && d.gameObject.activeSelf);
-            _currentSpawnCap.Value = _spawnCapCurve.Value.Evaluate(_currentPercentToMaxSpawn.Value);
             if (_currentEnemyCount.Value >= _currentSpawnCap.Value)
                 return;
             
-            var weightPairs =  _enemySpawnerParams.SpawnAtTags.Select(e => 
+            //TODO: Here use the right spawn params based on difficulty of room enemy is being spawned in
+            
+            var weightPairs =  currentParams.SpawnAtTags.Select(e => 
                 new RandomUtils.WeightPair<EnemySpawnParams>(e, e.NormalizedSpawnWeight)).ToList();
 
             Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount);
@@ -338,7 +378,7 @@ namespace BML.Scripts
             // If no spawn points in range for this tag, return
             if (potentialSpawnPointsForTag.Count == 0)
             {
-                Debug.LogWarning($"HandleSpawning No valid spawn points available.");
+                Debug.LogWarning($"HandleSpawning No valid spawn points available for enemy: {randomEnemy.Tag}");
                 return;
             }
             
@@ -382,8 +422,8 @@ namespace BML.Scripts
                 (spawnPoint - enemy.RaycastDirection * enemy.RaycastOffset),
                 enemy.RaycastDirection,
                 out spawnPos,
-                _enemySpawnerParams.TerrainLayerMask,
-                _enemySpawnerParams.MaxRaycastLength);
+                _terrainLayerMask,
+                _maxRaycastLength);
             newGameObject.transform.position = spawnPos;
             
             // Set parameters on enemy despawnable instance
@@ -400,9 +440,10 @@ namespace BML.Scripts
             return newGameObject;
         }
 
-        public GameObject SpawnEnemyByName(Vector3 position, string enemyName, bool doCountForSpawnCap, float randomOffsetRadius)
+        public GameObject SpawnEnemyByName(EnemySpawnerParams enemySpawnParams, Vector3 position, string enemyName,
+            bool doCountForSpawnCap, float randomOffsetRadius)
         {
-            var enemy = _enemySpawnerParams.SpawnAtTags
+            var enemy = enemySpawnParams.SpawnAtTags
                 .FirstOrDefault(e => e.Prefab.name.StartsWith(enemyName, StringComparison.OrdinalIgnoreCase));
             if (enemy == null)
             {

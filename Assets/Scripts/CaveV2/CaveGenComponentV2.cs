@@ -87,6 +87,10 @@ namespace BML.Scripts.CaveV2
         [TitleGroup("Enemies")] 
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
         [SerializeField, Range(-1f, 1f)] private float _enemyKilledAddInfluence = 0.5f;
+        [Tooltip("The number of different difficulty segments the cave will be divided into. Ex. 3 means each 1/3rd changes difficulty.")]
+        [SerializeField] private int _difficultySegmentCount = 3;
+        
+        public int DifficultySegmentCount => _difficultySegmentCount;
 
         [TitleGroup("Debug")]
         [SerializeField] private bool _enableLogs = false;
@@ -577,6 +581,14 @@ namespace BML.Scripts.CaveV2
                     caveGraph.FloodFillDistance(objectiveVertices, (node, dist) => node.ObjectiveDistance = dist);
 
                     this.MaxObjectiveDistance = caveGraph.Vertices.Max(e => e.ObjectiveDistance);
+                    
+                    // Assign each node difficulty from [0, _difficultySegmentCount -1]
+                    caveGraph.FloodFillDistance(objectiveVertices, (node, dist) =>
+                    {
+                        int maxDifficulty = _difficultySegmentCount - 1;
+                        float objectiveClosenessFactor = 1 - (float) dist / this.MaxObjectiveDistance;
+                        node.Difficulty = Mathf.Min(maxDifficulty, Mathf.FloorToInt(objectiveClosenessFactor * _difficultySegmentCount));
+                    });
                 }
 
                 // Calculate distance from main path

@@ -106,24 +106,32 @@ namespace BML.Scripts.CaveV2.MudBun
             // Spawn "tunnel" on each edge to ensure nodes are connected
             foreach (var caveNodeConnectionData in _caveGraph.Edges)
             {
+                var source = caveNodeConnectionData.Source;
+                var target = caveNodeConnectionData.Target;
+                
                 // Calculate tunnel position
-                var sourceTargetDiff = (caveNodeConnectionData.Target.LocalPosition -
-                                        caveNodeConnectionData.Source.LocalPosition);
+                var sourceTargetDiff = (target.LocalPosition - source.LocalPosition);
                 var sourceTargetDiffProjectedToGroundNormalized = Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
-                var sourceEdgePosition = caveNodeConnectionData.Source.LocalPosition +
-                                         (caveNodeConnectionData.Source.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * sourceTargetDiffProjectedToGroundNormalized);
-                var targetEdgePosition = caveNodeConnectionData.Target.LocalPosition +
-                                         (caveNodeConnectionData.Target.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * -1 * sourceTargetDiffProjectedToGroundNormalized);
+                var sourceEdgePosition = source.LocalPosition +
+                                         (source.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * sourceTargetDiffProjectedToGroundNormalized);
+                var targetEdgePosition = target.LocalPosition +
+                                         (target.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * -1 * sourceTargetDiffProjectedToGroundNormalized);
                 
                 var edgeDiff = (targetEdgePosition - sourceEdgePosition);
-                var edgeMidPosition = caveNodeConnectionData.Source.LocalPosition + edgeDiff / 2;
+                var edgeMidPosition = source.LocalPosition + edgeDiff / 2;
                 var edgeRotation = Quaternion.LookRotation(edgeDiff);
                 var edgeLength = edgeDiff.magnitude;
                 var localScale = new Vector3(caveNodeConnectionData.Radius, caveNodeConnectionData.Radius, edgeLength);
                 // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
 
                 // Spawn tunnel
-                GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
+                GameObject newGameObject;
+                
+                if (source.Difficulty != target.Difficulty)
+                    newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelWithBarrierPrefab, mudRenderer.transform);
+                else
+                    newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
+                
                 newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 newGameObject.transform.localScale = localScale;
                 caveNodeConnectionData.GameObject = newGameObject;

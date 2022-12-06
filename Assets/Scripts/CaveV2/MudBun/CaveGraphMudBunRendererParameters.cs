@@ -20,6 +20,7 @@ namespace BML.Scripts.CaveV2.MudBun
         [SerializeField] public GameObject StartRoomPrefab;
         [SerializeField] public GameObject EndRoomPrefab;
         [SerializeField] public GameObject TunnelPrefab;
+        [SerializeField] public GameObject TunnelWithBarrierPrefab;
 
         [Serializable]
         private class RoomOption
