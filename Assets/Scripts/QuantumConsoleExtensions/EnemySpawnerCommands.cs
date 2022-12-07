@@ -62,7 +62,7 @@ namespace BML.Scripts.QuantumConsoleExtensions
             for (int i = 0; i < count; i++)
             {
                 var enemySpawnerParams = enemySpawner.EnemySpawnerParamsList
-                    .First(p => p.SpawnAtTags.Any(t => t.Prefab.name.StartsWith(enemyName)));
+                    .FirstOrDefault(p => p.SpawnAtTags.Any(t => t.Prefab.name.StartsWith(enemyName, StringComparison.OrdinalIgnoreCase)));
                 var newEnemy = enemySpawner.SpawnEnemyByName(enemySpawnerParams, playerTransform.position,
                     enemyName, false, 3);
 
