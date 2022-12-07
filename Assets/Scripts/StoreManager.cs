@@ -60,10 +60,7 @@ namespace BML.Scripts
 
         private void DoPurchase(StoreItem storeItem)
         {
-            foreach (var purchaseItem in storeItem.PurchaseItems)
-            {
-                purchaseItem.OnPurchase.Invoke();
-            }
+            storeItem._onPurchased.Invoke();
             _onPurchaseItem.Invoke();
         }
     }

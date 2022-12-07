@@ -19,7 +19,7 @@ namespace BML.Scripts.UI
         public void SetSelectedStoreItem(StoreItem storeItem) {
             _itemTitleText.text = storeItem._itemLabel;
             _itemImage.sprite = storeItem._itemIcon;
-            _itemEffectText.text = String.Join(" + ", storeItem.PurchaseItems.Select(pi => pi._storeText).AsEnumerable());
+            _itemEffectText.text = storeItem._itemEffectDescription;
             _itemBodyText.text = storeItem._itemStoreDescription;
         }
     }

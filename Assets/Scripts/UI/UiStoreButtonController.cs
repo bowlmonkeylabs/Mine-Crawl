@@ -12,6 +12,7 @@ namespace BML.Scripts.UI
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private Button _button;
         [SerializeField] private TMPro.TMP_Text _costText;
+        [SerializeField] private TMPro.TMP_Text _buyAmountText;
         [SerializeField] private UiStoreItemIconController _storeItemIcon;
         [SerializeField] private UiStoreItemDetailController _uiStoreItemDetailController;
         
@@ -71,6 +72,8 @@ namespace BML.Scripts.UI
             if (costText != "") costText = costText.Substring(3);
 
             _costText.text = costText;
+
+            _buyAmountText.text = ""+_itemToPurchase._buyAmount;
         }
     }
 }
