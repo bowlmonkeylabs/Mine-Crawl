@@ -8,27 +8,26 @@ using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BehaviorDesigner.Runtime.Tasks.Unity.UnityTransform;
 
 namespace BML.Scripts.UI
 {
     public class UiStoreCanvasController : MonoBehaviour
     {
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
-        [SerializeField] private GameObject _storeUiButtonPrefab;
-        [SerializeField] private GameObject _storeResumeButtonPrefab;
         [SerializeField] private Transform _listContainerStoreButtons;
-        [SerializeField] private UiMenuPageController _storeUiMenuPageController;
         [SerializeField] private int _maxItemsShown = 0;
         [SerializeField] private bool _randomizeStoreOnBuy;
         [SerializeField] private bool _filterOutMaxedItems;
+        [SerializeField] private Button _buttonNavLeft;
+        [SerializeField] private Button _buttonNavRight;
         [SerializeField] private StoreInventory _storeInventory;
 
         private List<Button> buttonList = new List<Button>();
-        private List<StoreItem> shownStoreItems = new List<StoreItem>();
 
         private void Awake()
         {
-#warning Remove this once we're done working on the stores/inventory
+            #warning Remove this once we're done working on the stores/inventory
             GenerateStoreItems();
         }
 
@@ -45,7 +44,7 @@ namespace BML.Scripts.UI
         {
             DestroyShopItems();
 
-            shownStoreItems = _storeInventory.StoreItems;
+            List<StoreItem> shownStoreItems = _storeInventory.StoreItems;
 
             if(_filterOutMaxedItems) {
                 shownStoreItems = shownStoreItems.Where(si => !si._hasMaxAmount || (si._playerInventoryAmount.Value < si._maxAmount.Value)).ToList();
@@ -59,35 +58,21 @@ namespace BML.Scripts.UI
                 shownStoreItems = shownStoreItems.Take(_maxItemsShown).ToList();
             }
 
-            var storeUiMenuPageControllerGameObject = _storeUiMenuPageController.gameObject;
-            
-            foreach (var storeItem in shownStoreItems)
-            {
-                var newStoreItemButton = GameObjectUtils.SafeInstantiate(true, _storeUiButtonPrefab, _listContainerStoreButtons);
-                newStoreItemButton.name = $"Button_{storeItem.name}";
-                
-                var uiStoreButtonController = newStoreItemButton.GetComponent<UiStoreButtonController>();
-                uiStoreButtonController.Init(storeItem);
-                
-                var button = newStoreItemButton.GetComponent<Button>();
-                buttonList.Add(button);
-
-                var uiEventHandler = newStoreItemButton.GetComponent<UiEventHandler>();
-                
-                uiEventHandler.PropagateSubmit = storeUiMenuPageControllerGameObject;
-                uiEventHandler.PropagateCancel = storeUiMenuPageControllerGameObject;
+            if(shownStoreItems.Count > _listContainerStoreButtons.childCount - 1) {
+                Debug.LogError("Store does not have enough buttons to display options");
+                return;
             }
-            
-            var newResumeButton  = GameObjectUtils.SafeInstantiate(true, _storeResumeButtonPrefab, _listContainerStoreButtons);
-            var buttonResume = newResumeButton.GetComponent<Button>();
-            buttonList.Add(buttonResume);
-            
-            buttonResume.onClick.AddListener(_storeUiMenuPageController.ClosePage);
-            var resumeUiEventHandler = buttonResume.GetComponent<UiEventHandler>();
-            resumeUiEventHandler.PropagateSubmit = storeUiMenuPageControllerGameObject;
-            resumeUiEventHandler.PropagateCancel = storeUiMenuPageControllerGameObject;
 
-            _storeUiMenuPageController.DefaultSelected = buttonList[0];
+            for(int i = 0; i < shownStoreItems.Count; i++) {
+                GameObject buttonGameObject = _listContainerStoreButtons.GetChild(i).gameObject;
+                buttonGameObject.GetComponent<UiStoreButtonController>().Init(shownStoreItems[i]);
+                buttonGameObject.SetActive(true);
+                buttonList.Add(buttonGameObject.GetComponent<Button>());
+            }
+
+            //Resume button will always be last in list
+            buttonList.Add(_listContainerStoreButtons.GetChild(_listContainerStoreButtons.childCount - 1).GetComponent<Button>());
+
             SetNavigationOrder();
         }
 
@@ -95,25 +80,23 @@ namespace BML.Scripts.UI
         public void DestroyShopItems()
         {
             buttonList.Clear();
-            var children = Enumerable.Range(0, _listContainerStoreButtons.childCount)
-                .Select(i => _listContainerStoreButtons.GetChild(i).gameObject)
-                .ToList();
-            foreach (var childObject in children)
-            {
-                GameObject.DestroyImmediate(childObject);
+            
+            for(int i = 0; i < _listContainerStoreButtons.childCount - 1; i++) {
+                _listContainerStoreButtons.GetChild(i).gameObject.SetActive(false);
             }
         }
 
         private void SetNavigationOrder()
         {
-            for (int i = 0; i < buttonList.Count; i++)
-            {
+            for(int i = 0; i < buttonList.Count; i++) {
                 Button prevButton = i > 0 ? buttonList[i - 1] : buttonList[buttonList.Count - 1];
                 Button nextButton = i < buttonList.Count - 1 ? buttonList[i + 1] : buttonList[0];
                 Navigation nav = new Navigation();
                 nav.mode = Navigation.Mode.Explicit;
                 nav.selectOnUp = prevButton;
                 nav.selectOnDown = nextButton;
+                if(_buttonNavLeft != null) nav.selectOnLeft = _buttonNavLeft;
+                if(_buttonNavRight != null) nav.selectOnRight = _buttonNavRight;
                 buttonList[i].navigation = nav;
             }
         }

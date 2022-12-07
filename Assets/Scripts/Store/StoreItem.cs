@@ -13,8 +13,11 @@ namespace BML.Scripts.Store
     [CreateAssetMenu(fileName = "StoreItem", menuName = "BML/Store/StoreItem", order = 0)]
     public class StoreItem : ScriptableObject
     {
-        [Tooltip("Label to show to represent item on store button")]
+        [Tooltip("Text representation of item")]
         public string _itemLabel;
+
+        [Tooltip("Icon representation of item")]
+        public Sprite _itemIcon;
 
         [HorizontalGroup("MaxAmount", 10f)]
         [Tooltip("Is the player limited to a certain amount of this item?")]
@@ -39,6 +42,9 @@ namespace BML.Scripts.Store
         [BoxGroup("Cost")] [HorizontalGroup("Cost/H", 10f)]
         [LabelText("ER")] [LabelWidth(25f)]
         public int _enemyResourceCost;
+
+        [Tooltip("Lore description of item"), TextArea]
+        public string _itemStoreDescription;
         
         [Tooltip("List of items to Increment on Purchase")]
         [PropertySpace(5f, 0f)]

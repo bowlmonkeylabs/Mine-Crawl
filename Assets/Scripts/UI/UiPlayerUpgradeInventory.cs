@@ -11,7 +11,6 @@ namespace BML.Scripts.UI
     public class UiPlayerUpgradeInventory : MonoBehaviour
     {
         [SerializeField] StoreInventory _upgradeStoreInventory;
-        [SerializeField] private GameObject _storeItemIconPrefab;
         [SerializeField] private Transform _iconsContainer;
         [SerializeField] private DynamicGameEvent _onBuyEvent;
 
@@ -20,7 +19,7 @@ namespace BML.Scripts.UI
         void OnEnable() {
             _onBuyEvent.Subscribe(OnBuy);
             
-#warning Remove this once we're done working on the stores/inventory
+            #warning Remove this once we're done working on the stores/inventory
             GenerateStoreIcons();
         }
 
@@ -34,26 +33,23 @@ namespace BML.Scripts.UI
             
             _itemsPlayerHas = _upgradeStoreInventory.StoreItems.Where(si => si._playerInventoryAmount.Value > 0).ToList();
 
-            foreach (var storeItem in _itemsPlayerHas)
-            {
-                var newStoreItemButton = GameObjectUtils.SafeInstantiate(true, _storeItemIconPrefab, _iconsContainer);
-                newStoreItemButton.name = $"Icon_{storeItem.name}";
-                
-                var uiStoreItemIconController = newStoreItemButton.GetComponent<UiStoreItemIconController>();
-                var storeUiMenuPageControllerGameObject = uiStoreItemIconController.gameObject;
-                uiStoreItemIconController.Init(storeItem, storeUiMenuPageControllerGameObject, storeUiMenuPageControllerGameObject);
+            if(_itemsPlayerHas.Count > _iconsContainer.childCount) {
+                Debug.LogError("Upgrade inventory does not have enough slots to display all items");
+                return;
+            }
+
+            for(int i = 0; i < _itemsPlayerHas.Count; i++) {
+                GameObject iconGameObject = _iconsContainer.GetChild(i).gameObject;
+                iconGameObject.GetComponent<UiStoreItemIconController>().Init(_itemsPlayerHas[i]);
+                iconGameObject.SetActive(true);
             }
         }
 
         [Button]
         private void DestroyStoreIcons()
         {
-            var children = Enumerable.Range(0, _iconsContainer.childCount)
-                .Select(i => _iconsContainer.GetChild(i).gameObject)
-                .ToList();
-            foreach (var childObject in children)
-            {
-                GameObject.DestroyImmediate(childObject);
+            foreach(Transform iconTransform in _iconsContainer) {
+                iconTransform.gameObject.SetActive(false);
             }
         }
 

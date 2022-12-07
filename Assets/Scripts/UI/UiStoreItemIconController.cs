@@ -3,40 +3,26 @@ using Sirenix.Utilities;
 using BML.Scripts.Store;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BML.Scripts.UI
 {
     public class UiStoreItemIconController : MonoBehaviour
     {
         [SerializeField] private StoreItem _storeItem;
-        [SerializeField] private TMPro.TMP_Text _iconText;
-        [SerializeField] private TMPro.TMP_Text _tooltipText;
-        [SerializeField, Required] private UiEventHandler _uiEventHandler;
+        [SerializeField] private Image _iconImage;
+        [SerializeField] private UiStoreItemDetailController _uiStoreItemDetailController;
 
-        public void Init(StoreItem storeItem, GameObject propagateSubmit = null, GameObject propagateCancel = null) 
+        public void Init(StoreItem storeItem) 
         {
             _storeItem = storeItem;
-            SetIconText();
-            _uiEventHandler.PropagateSubmit = propagateSubmit;
-            _uiEventHandler.PropagateCancel = propagateCancel;
+            _iconImage.sprite = _storeItem._itemIcon;
         }
 
-        private void SetIconText()
-        {
-            string resultText = "";
-            
-            foreach (var purchaseItem in _storeItem.PurchaseItems)
-            {
-                if (!purchaseItem._storeText.IsNullOrWhitespace())  //Dont add if left blank (Ex. for max health also inc health but dont show)
-                    resultText += $" + {purchaseItem._storeText}";
+        public void SetStoreItemToSelected() {
+            if(_uiStoreItemDetailController != null && _storeItem != null) {
+                _uiStoreItemDetailController.SetSelectedStoreItem(_storeItem);
             }
-
-            //Remove leading +
-            if (resultText != "") resultText = resultText.Substring(3);
-
-            _tooltipText.text = resultText;
-
-            _iconText.text = _storeItem._itemLabel;
         }
     }
 }

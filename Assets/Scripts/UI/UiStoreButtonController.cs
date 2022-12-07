@@ -13,6 +13,7 @@ namespace BML.Scripts.UI
         [SerializeField] private Button _button;
         [SerializeField] private TMPro.TMP_Text _costText;
         [SerializeField] private UiStoreItemIconController _storeItemIcon;
+        [SerializeField] private UiStoreItemDetailController _uiStoreItemDetailController;
         
         [SerializeField] private string _resourceIconText;
         [SerializeField] private string _rareResourceIconText;
@@ -38,6 +39,12 @@ namespace BML.Scripts.UI
 
         void Update() {
             SetInteractable();
+        }
+
+        public void SetStoreItemToSelected() {
+            if(_uiStoreItemDetailController != null && _itemToPurchase != null) {
+                _uiStoreItemDetailController.SetSelectedStoreItem(_itemToPurchase);
+            }
         }
 
         private void SetInteractable() {
