@@ -383,6 +383,8 @@ namespace BML.Scripts.CaveV2
                     // Offshoots from main path
                     if (caveGenParams.UseOffshootsFromMainPath)
                     {
+                        int indexOfLastEdgeOfFirstOffshoot = 0;
+
                         for (int n = 0; n < caveGenParams.NumOffshoots; n++)
                         {
                             var remainingVertices = shortestPathFromStartToEndList
@@ -457,8 +459,13 @@ namespace BML.Scripts.CaveV2
                             if (offshootSuccess)
                             {
                                 keepEdges.AddRange(offshootPath);
+                                if(indexOfLastEdgeOfFirstOffshoot == 0) {
+                                    indexOfLastEdgeOfFirstOffshoot = keepEdges.Count - 1;
+                                }
                             }
                         }
+
+                        caveGraph.MerchantNode = keepEdges[indexOfLastEdgeOfFirstOffshoot].Source;
                     }
                     
                     // Keep all main path edges
