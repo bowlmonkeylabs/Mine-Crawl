@@ -18,6 +18,8 @@ namespace BML.Scripts.UI.Graph
 
         private void OnEnable()
         {
+            _graph.AddPoint(new Vector2(0f, 0f));
+            _graph.AddPoint(new Vector2(0.1f, 0.01f));
             _value.Subscribe(OnValueChanged);
         }
         

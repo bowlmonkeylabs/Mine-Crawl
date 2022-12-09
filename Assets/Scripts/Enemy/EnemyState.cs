@@ -13,13 +13,27 @@ namespace BML.Scripts.Enemy
 {
     public class EnemyState : MonoBehaviour
     {
+        #region Inspector
+        
         [SerializeField] private AggroState _aggro;
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
+        [SerializeField] private DynamicGameEvent _onEnemyAdded;
+        [SerializeField] private DynamicGameEvent _onEnemyRemoved;
 
         [ShowInInspector, ReadOnly] private bool isAlerted;
         [ShowInInspector, ReadOnly] private bool isPlayerInLoS;
 
-        public bool IsAlerted { get => isAlerted; set => isAlerted = value; }
+        #endregion
+
+        public AggroState Aggro => _aggro;
+        public bool IsAlerted
+        {
+            get => isAlerted; 
+            set {
+                isAlerted = value;
+                OnAggroStateChanged?.Invoke();
+            }
+        }
         public bool IsPlayerInLoS { get => isPlayerInLoS; set => isPlayerInLoS = value; }
         
         private float lastUpdateTime = Mathf.NegativeInfinity;
@@ -30,7 +44,7 @@ namespace BML.Scripts.Enemy
         #region Enums
 
         [Serializable]
-        enum AggroState
+        public enum AggroState
         {
             Idle,        //Not yet alerted
             Seeking,     //Alerted no LoS
@@ -39,12 +53,24 @@ namespace BML.Scripts.Enemy
 
         #endregion
 
-        #region UnityLifecyle
+        #region Unity lifecyle
 
         private void Awake()
         {
             _currentNodes = new Dictionary<Collider, CaveNodeData>();
             _currentNodeConnections = new Dictionary<Collider, CaveNodeConnectionData>();
+        }
+
+        private void OnEnable()
+        {
+            var payload = new EnemyStateManager.EnemyStatePayload(this);
+            _onEnemyAdded.Raise(payload);
+        }
+        
+        private void OnDisable()
+        {
+            var payload = new EnemyStateManager.EnemyStatePayload(this);
+            _onEnemyRemoved.Raise(payload);
         }
 
         private void Update()
@@ -156,19 +182,26 @@ namespace BML.Scripts.Enemy
             if (!isAlerted)
             {
                 _aggro = AggroState.Idle;
+                OnAggroStateChanged?.Invoke();
                 return;
             }
-
 
             if (!isPlayerInLoS)
                 _aggro = AggroState.Seeking;
             else
                 _aggro = AggroState.Engaged;
-
+            
+            OnAggroStateChanged?.Invoke();
         }
 
         #endregion
-        
+
+        #region Events
+
+        public delegate void OnAggroStateChangedCallback();
+        public event OnAggroStateChangedCallback OnAggroStateChanged;
+
+        #endregion
         
         #region Public interface
 

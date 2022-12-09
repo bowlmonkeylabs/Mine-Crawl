@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Pathfinding;
 using Sirenix.OdinInspector;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.Player
 {
@@ -66,7 +67,7 @@ namespace BML.Scripts.Player
         
         [SerializeField, FoldoutGroup("Intensity Score")] private FloatVariable _intensityScore;
         [SerializeField, FoldoutGroup("Intensity Score")] private DynamicGameEvent _onEnemyKilled;
-        [SerializeField, FoldoutGroup("Intensity Score")] private BoolReference _anyEnemiesAlerted;
+        [FormerlySerializedAs("_anyEnemiesAlerted")] [SerializeField, FoldoutGroup("Intensity Score")] private BoolReference _anyEnemiesEngaged;
         [SerializeField, FoldoutGroup("Intensity Score")] private float _intensityScoreUpdatePeriod = 1f;
         [SerializeField, FoldoutGroup("Intensity Score")] private float _intensityScoreDecayRate = 1f / 30f;
         [SerializeField, FoldoutGroup("Intensity Score")] private float _intensityScoreDamageMultiplier = 1f;
@@ -398,7 +399,7 @@ namespace BML.Scripts.Player
 
         private void UpdateIntensityScore()
         {
-            bool doDecay = !_inCombat.Value;
+            bool doDecay = !_anyEnemiesEngaged.Value;
             if (!doDecay) return;
 
             float decay = (_intensityScoreDecayRate * _intensityScoreUpdatePeriod);
