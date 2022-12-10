@@ -712,7 +712,6 @@ GameObject:
   - component: {fileID: 3796519028420547222}
   - component: {fileID: 1320388719071598586}
   - component: {fileID: 4764196855674680737}
-  - component: {fileID: 97425738284528302}
   - component: {fileID: 1166776620824951453}
   - component: {fileID: 6842542473720442065}
   - component: {fileID: 6391880746091185122}
@@ -722,7 +721,6 @@ GameObject:
   - component: {fileID: 4056787251884944510}
   - component: {fileID: 7282737240524657916}
   - component: {fileID: 6805297745479327313}
-  - component: {fileID: 968154195440954410}
   - component: {fileID: 5944150085169356320}
   m_Layer: 10
   m_Name: SnakeEnemy_old
@@ -1040,22 +1038,6 @@ MonoBehaviour:
       Version: 1.7.3
   gizmoViewMode: 2
   showBehaviorDesignerGizmo: 1
---- !u!114 &97425738284528302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2358267823773419239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f33a44ad9d6f0d845b8ce9618da67889, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _behaviorTree: {fileID: 4764196855674680737}
-  _onAlerted:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1166776620824951453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1206,7 +1188,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 968154195440954410}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: BML.Scripts.CaveV2.EnemyInfluenceUpdater, BML.CaveGenV2
         m_MethodName: OnDeath
         m_Mode: 1
@@ -1296,19 +1278,6 @@ MonoBehaviour:
   _onDespawn:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &968154195440954410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2358267823773419239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e54c4b9d6fcc45909c7683448a68f11c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
 --- !u!114 &5944150085169356320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1939,7 +1908,7 @@ MonoBehaviour:
   OnSuccess:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 97425738284528302}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: BML.Scripts.Alertable, BML.Scripts
         m_MethodName: SetAlerted
         m_Mode: 1
