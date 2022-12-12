@@ -18,20 +18,23 @@ namespace BML.Scripts.Level
         [SerializeField] private float _maxDistance = 5f;
         private float _maxSqrDistance;
         [SerializeField] private AnimationCurve _thrustBySquareDistance = AnimationCurve.Constant(0, 1, 1f);
-        
+
+        [SerializeField] private PIDParameters _thrustParameters;
+
         [SerializeField] private bool _useXValuesForAllAxes = false;
 
-        [SerializeField] [Range(-10, 10)] private float _xAxisP = 1f, _xAxisI = 0.05f, _xAxisD = 0.2f;
-
-        [HideIf("$_useXValuesForAllAxes")]
-        [SerializeField] [Range(-10, 10)] private float _yAxisP, _yAxisI, _yAxisD;
-
-        [HideIf("$_useXValuesForAllAxes")]
-        [SerializeField] [Range(-10, 10)] private float _zAxisP, _zAxisI, _zAxisD;
+        [SerializeField] private PIDParameters _xAxisParameters;
         
-        private PID _xAxisPIDController;
-        private PID _yAxisPIDController;
-        private PID _zAxisPIDController;
+        [HideIf("$_useXValuesForAllAxes")]
+        [SerializeField] private PIDParameters _yAxisParameters;
+        
+        [HideIf("$_useXValuesForAllAxes")]
+        [SerializeField] private PIDParameters _zAxisParameters;
+        
+        [ShowInInspector] private PID2 _thrustPIDController;
+        [ShowInInspector] private PID2 _xAxisPIDController;
+        [ShowInInspector] private PID2 _yAxisPIDController;
+        [ShowInInspector] private PID2 _zAxisPIDController;
 
         private Rigidbody _rb;
 
@@ -43,48 +46,37 @@ namespace BML.Scripts.Level
         {
             _maxSqrDistance = _maxDistance * _maxDistance;
             
-            //_pidController = gameObject.GetComponents<PID>()[0];
             _rb = GetComponent<Rigidbody>();
-            _xAxisPIDController = new PID(_xAxisP, _xAxisI, _xAxisD);
+            _thrustPIDController = new PID2(_thrustParameters);
+            _xAxisPIDController = new PID2(_xAxisParameters);
             if (_useXValuesForAllAxes)
             {
-                _yAxisPIDController = new PID(_xAxisP, _xAxisI, _xAxisD);
-                _zAxisPIDController = new PID(_xAxisP, _xAxisI, _xAxisD);
+                _yAxisPIDController = new PID2(_xAxisParameters);
+                _zAxisPIDController = new PID2(_xAxisParameters);
             }
             else
             {
-                _yAxisPIDController = new PID(_yAxisP, _yAxisI, _yAxisD);
-                _zAxisPIDController = new PID(_zAxisP, _zAxisI, _zAxisD);
+                _yAxisPIDController = new PID2(_yAxisParameters);
+                _zAxisPIDController = new PID2(_zAxisParameters);
             }
         }
         
         private void Update()
         {
             if (_target.SafeIsUnityNull()) return;
-            
-            _xAxisPIDController.Kp = _xAxisP;
-            _xAxisPIDController.Ki = _xAxisI;
-            _xAxisPIDController.Kd = _xAxisD;
+
+            _thrustPIDController.Parameters = _thrustParameters;
+            _xAxisPIDController.Parameters = _xAxisParameters;
 
             if (_useXValuesForAllAxes)
             {
-                _yAxisPIDController.Kp = _xAxisP;
-                _yAxisPIDController.Ki = _xAxisI;
-                _yAxisPIDController.Kd = _xAxisD;
-
-                _zAxisPIDController.Kp = _xAxisP;
-                _zAxisPIDController.Ki = _xAxisI;
-                _zAxisPIDController.Kd = _xAxisD;
+                _yAxisPIDController.Parameters = _xAxisParameters;
+                _zAxisPIDController.Parameters = _xAxisParameters;
             }
             else
             {
-                _yAxisPIDController.Kp = _yAxisP;
-                _yAxisPIDController.Ki = _yAxisI;
-                _yAxisPIDController.Kd = _yAxisD;
-
-                _zAxisPIDController.Kp = _zAxisP;
-                _zAxisPIDController.Ki = _zAxisI;
-                _zAxisPIDController.Kd = _zAxisD;
+                _yAxisPIDController.Parameters = _yAxisParameters;
+                _zAxisPIDController.Parameters = _zAxisParameters;
             }
         }
         
@@ -103,28 +95,39 @@ namespace BML.Scripts.Level
             Quaternion targetRotation = Quaternion.LookRotation(rotationDirection);
 
             //Figure out the error for each axis
+            var thrustAlignment = 
+                Vector3.Project(_rb.velocity, targetDirection).magnitude / _rb.velocity.magnitude;
+            var velocityZero = Mathf.Clamp01(1 - (_rb.velocity.magnitude / 5f));
+            
+            float thrustCorrection = _thrustPIDController.GetOutput(
+                0, 
+                targetDirection.magnitude * (thrustAlignment + velocityZero), 
+                Time.fixedDeltaTime
+            );
+            
             float xTorqueCorrection = _xAxisPIDController.GetOutput(
-                transform.rotation.eulerAngles.x, 
+                rotation.eulerAngles.x, 
                 targetRotation.eulerAngles.x, 
                 Time.fixedDeltaTime);
 
             float yTorqueCorrection = _yAxisPIDController.GetOutput(
-                transform.rotation.eulerAngles.y, 
+                rotation.eulerAngles.y, 
                 targetRotation.eulerAngles.y, 
                 Time.fixedDeltaTime);
 
             float zTorqueCorrection = _zAxisPIDController.GetOutput(
-                transform.rotation.eulerAngles.z, 
+                rotation.eulerAngles.z, 
                 targetRotation.eulerAngles.z, 
                 Time.fixedDeltaTime);
             
             var torque = (xTorqueCorrection * Vector3.right) + (yTorqueCorrection * Vector3.up) +
                          (zTorqueCorrection * Vector3.forward);
-            var sqrDistance = (targetPosition - _rb.position).sqrMagnitude;
-            var sqrDistanceFactor = Mathf.Clamp01(sqrDistance / _maxSqrDistance);
-            var thrust = _thrustBySquareDistance.Evaluate(sqrDistanceFactor) * _maxThrust;
             _rb.AddRelativeTorque(torque);
-            _rb.AddRelativeForce((Vector3.forward) * thrust * Time.fixedDeltaTime);
+            // var sqrDistance = (targetPosition - _rb.position).sqrMagnitude;
+            // var sqrDistanceFactor = Mathf.Clamp01(sqrDistance / _maxSqrDistance);
+            // var thrust = _thrustBySquareDistance.Evaluate(sqrDistanceFactor) * _maxThrust;
+            // _rb.AddRelativeForce((Vector3.forward) * thrust * Time.fixedDeltaTime);
+            _rb.AddRelativeForce((Vector3.forward) * thrustCorrection);
         }
 
         private void OnDrawGizmos()

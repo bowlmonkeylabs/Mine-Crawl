@@ -1461,7 +1461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 11400000, guid: 4f3c154bd5d34bd4e8e4d93472fefad9, type: 2}
-  _maxAngularVelocity: 30
+  _maxAngularVelocity: 15
   _maxThrust: 1000
   _maxDistance: 8
   _thrustBySquareDistance:
@@ -1507,12 +1507,27 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _useXValuesForAllAxes: 1
-  _xAxisP: 1
-  _xAxisI: 0.5
-  _xAxisD: 0.01
-  _yAxisP: 0
-  _yAxisI: 0
-  _yAxisD: 0
-  _zAxisP: 0
-  _zAxisI: 0
-  _zAxisD: 0
+  _xAxisParameters:
+    Kp: 1
+    Ki: 0
+    Kd: 0.22
+    IntegralSaturation: 3
+    OutputMinMax: {x: -0.2, y: 0.2}
+    DerivativeMethod: 0
+    DifferenceFunction: 1
+  _yAxisParameters:
+    Kp: 0
+    Ki: 0
+    Kd: 0
+    IntegralSaturation: 0
+    OutputMinMax: {x: 0, y: 0}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
+  _zAxisParameters:
+    Kp: 0
+    Ki: 0
+    Kd: 0
+    IntegralSaturation: 0
+    OutputMinMax: {x: 0, y: 0}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
