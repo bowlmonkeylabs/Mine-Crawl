@@ -16,11 +16,20 @@ namespace BML.Scripts.UI
         [SerializeField] private TMPro.TMP_Text _itemEffectText;
         [SerializeField] private TMPro.TMP_Text _itemBodyText;
 
+        void OnEnable() {
+            this.SetDetails("", null, "", "");
+        }
+
         public void SetSelectedStoreItem(StoreItem storeItem) {
-            _itemTitleText.text = storeItem._itemLabel;
-            _itemImage.sprite = storeItem._itemIcon;
-            _itemEffectText.text = storeItem._itemEffectDescription;
-            _itemBodyText.text = storeItem._itemStoreDescription;
+            this.SetDetails(storeItem._itemLabel, storeItem._itemIcon, storeItem._itemEffectDescription, storeItem._itemStoreDescription);
+        }
+
+        private void SetDetails(string itemLabel, Sprite itemIcon, string itemEffectDescription, string itemStoreDescription) {
+            _itemTitleText.text = itemLabel;
+            _itemImage.enabled = itemIcon != null;
+            _itemImage.sprite = itemIcon;
+            _itemEffectText.text = itemEffectDescription;
+            _itemBodyText.text = itemStoreDescription;
         }
     }
 }
