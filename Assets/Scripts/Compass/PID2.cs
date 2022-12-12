@@ -88,6 +88,7 @@ namespace BML.Scripts.Compass
         public float GetOutput(float currentValue, float targetValue, float deltaTime)
         {
             var currentError = _differenceFunction(currentValue, targetValue);
+            currentError = (Double.IsNaN(currentError) ? 0 : currentError);
             _p = currentError;
             _i = Mathf.Clamp(
                 _i + (_p * deltaTime),
