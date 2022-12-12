@@ -383,8 +383,6 @@ namespace BML.Scripts.CaveV2
                     // Offshoots from main path
                     if (caveGenParams.UseOffshootsFromMainPath)
                     {
-                        int indexOfLastEdgeOfFirstOffshoot = 0;
-
                         for (int n = 0; n < caveGenParams.NumOffshoots; n++)
                         {
                             var remainingVertices = shortestPathFromStartToEndList
@@ -459,13 +457,8 @@ namespace BML.Scripts.CaveV2
                             if (offshootSuccess)
                             {
                                 keepEdges.AddRange(offshootPath);
-                                if(indexOfLastEdgeOfFirstOffshoot == 0) {
-                                    indexOfLastEdgeOfFirstOffshoot = keepEdges.Count - 1;
-                                }
                             }
                         }
-
-                        caveGraph.MerchantNode = keepEdges[indexOfLastEdgeOfFirstOffshoot].Source;
                     }
                     
                     // Keep all main path edges
@@ -596,6 +589,17 @@ namespace BML.Scripts.CaveV2
                     this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
                 }
             }
+
+            // Choose where the merchant is placed
+            var merchantCandidateVertices = caveGraph.Vertices
+                .AsEnumerable()
+                .OrderBy(v => {
+                    float mainPathDistanceFactor = (float) v.MainPathDistance / MaxMainPathDistance;
+                    float objectiveDistanceFactor = Mathf.Abs(((float) v.ObjectiveDistance / MaxObjectiveDistance) - 0.5f) * -3 + 1;
+                    float sortFactor = (mainPathDistanceFactor * 0.5f) + (objectiveDistanceFactor * 0.5f);
+                    return -sortFactor;
+                });
+            caveGraph.MerchantNode = merchantCandidateVertices.First();
 
             if (_enableLogs) Debug.Log($"Cave graph generated");
             
