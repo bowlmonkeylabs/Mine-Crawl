@@ -12,12 +12,9 @@ namespace BML.Scripts.Level
         #region Inspector
 
         [SerializeField] private TransformSceneReference _target;
+        [SerializeField] private bool _doAlignToTargetOnEnable;
+        
         [SerializeField] private float _maxAngularVelocity = 20;
-
-        [SerializeField] private float _maxThrust = 500f;
-        [SerializeField] private float _maxDistance = 5f;
-        private float _maxSqrDistance;
-        [SerializeField] private AnimationCurve _thrustBySquareDistance = AnimationCurve.Constant(0, 1, 1f);
 
         [SerializeField] private PIDParameters _thrustParameters;
 
@@ -41,11 +38,22 @@ namespace BML.Scripts.Level
         #endregion
 
         #region Unity lifecycle
-        
+
+        private void OnEnable()
+        {
+            if (_doAlignToTargetOnEnable)
+            {
+                var targetPosition = _target.Value.transform.position;
+                var targetDirection = targetPosition - transform.position;
+                Vector3 rotationDirection = Vector3.RotateTowards(transform.forward, targetDirection, 360, 0.00f);
+                Quaternion targetRotation = Quaternion.LookRotation(rotationDirection);
+
+                transform.rotation = targetRotation;
+            }
+        }
+
         void Start()
         {
-            _maxSqrDistance = _maxDistance * _maxDistance;
-            
             _rb = GetComponent<Rigidbody>();
             _thrustPIDController = new PID2(_thrustParameters);
             _xAxisPIDController = new PID2(_xAxisParameters);
