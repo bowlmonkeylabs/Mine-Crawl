@@ -26,6 +26,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private float _interactCastRadius = .25f;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _interactMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
+        [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _enemyMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoxCollider _sweepCollider;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSweepCooldown;
@@ -37,6 +38,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _missSwingFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitTerrainFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitEnemyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepReadyFeedback;
         
@@ -212,6 +214,10 @@ namespace BML.Scripts.Player
             {
                 _hitTerrainFeedback.transform.position = hit.point;
                 _hitTerrainFeedback.PlayFeedbacks();
+            }
+            else if (hit.collider.gameObject.IsInLayerMask(_enemyMask))
+            {
+                _hitEnemyFeedback.PlayFeedbacks();
             }
             else
             {
