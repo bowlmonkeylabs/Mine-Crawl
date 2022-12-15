@@ -8,11 +8,9 @@ namespace BML.Scripts
     [CreateAssetMenu(fileName = "EnemySpawnerParams", menuName = "BML/EnemySpawnerParams", order = 0)]
     public class EnemySpawnerParams : ScriptableObject
     {
+        public float SpawnDelay = 5f;
+        public float SpawnCap = 5f;
         public List<EnemySpawnParams> SpawnAtTags;
-        public LayerMask TerrainLayerMask;
-        
-        [Range(0f,100f)]
-        public float MaxRaycastLength = 10f;
     }
     
     [Serializable]

@@ -18,6 +18,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         // Calculated properties
         [ShowInInspector] public int MainPathDistance { get; set; }
         [ShowInInspector] public int ObjectiveDistance { get; set; }
+        [ShowInInspector] public int Difficulty { get; set; }
         [ShowInInspector] public int PlayerDistance { get; set; }
         [ShowInInspector] public int PlayerDistanceDelta { get; set; }
         [ShowInInspector] public bool PlayerVisited { get; set; }

@@ -12,7 +12,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
     {
         #region Inspector
         
-        [ShowInInspector, ReadOnly] public CaveNodeData ParentNode { get; set; }
+        [ShowInInspector, ReadOnly] public ICaveNodeData ParentNode { get; set; }
         
         [SerializeField] [Range(0f, 1f)] private float _startingSpawnChance = 1f;
         [ShowInInspector, ReadOnly] public float SpawnChance { get; set; } = 1f;

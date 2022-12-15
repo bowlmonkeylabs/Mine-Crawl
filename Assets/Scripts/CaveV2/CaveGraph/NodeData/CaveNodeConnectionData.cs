@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BML.Scripts.CaveV2.Objects;
+using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Utils;
 using QuikGraph;
 using Sirenix.OdinInspector;
@@ -18,12 +19,15 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public float Radius { get; set; }
         [ShowInInspector] public float Length { get; private set; }
         [ShowInInspector] public float SteepnessAngle { get; private set; }
+        [ShowInInspector] public bool IsBlocked { get; set; }
         
         // Calculated properties
         [ShowInInspector] public int MainPathDistance 
             => Mathf.Min(Source.MainPathDistance, Target.MainPathDistance);
         [ShowInInspector] public int ObjectiveDistance 
             => Mathf.Min(Source.ObjectiveDistance, Target.ObjectiveDistance);
+        [ShowInInspector] public int Difficulty
+            => Mathf.Max(Source.Difficulty , Target.Difficulty);
         [ShowInInspector] public int PlayerDistance 
             => Mathf.Min(Source.PlayerDistance, Target.PlayerDistance);
         [ShowInInspector] public int PlayerDistanceDelta
@@ -48,7 +52,9 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         }
         private GameObject _gameObject;
         [ShowInInspector] public HashSet<Collider> BoundsColliders { get; set; }
+        [ShowInInspector] public HashSet<SpawnPoint> SpawnPoints { get; set; }
         [ShowInInspector] public HashSet<Torch> Torches { get; set; }
+        [ShowInInspector] public GameObject Barrier { get; set; }
 
         public CaveNodeConnectionData(CaveNodeData source, CaveNodeData target, float radius)
         {
@@ -73,6 +79,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             PlayerInfluence = 0f;
 
             BoundsColliders = new HashSet<Collider>();
+            SpawnPoints = new HashSet<SpawnPoint>();
             Torches = new HashSet<Torch>();
         }
         

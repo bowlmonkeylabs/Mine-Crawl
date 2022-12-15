@@ -157,9 +157,25 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     childSpawnPoint.ParentNode = caveNodeData;
                 }
             }
+
+            foreach (var caveNodeConnectionData in caveGenerator.CaveGraph.Edges)
+            {
+                if (caveNodeConnectionData.GameObject.SafeIsUnityNull()) continue;
+                caveNodeConnectionData.SpawnPoints.Clear();
+
+                var childSpawnPoints = caveNodeConnectionData.GameObject
+                    .GetComponentsInChildren<SpawnPoint>()
+                    .ToList();
+                
+                caveNodeConnectionData.SpawnPoints.AddRange(childSpawnPoints);
+                foreach (var childSpawnPoint in childSpawnPoints)
+                {
+                    childSpawnPoint.ParentNode = caveNodeConnectionData;
+                }
+            }
         }
 
-        private void CatalogSpawnPoints(Transform parent, CaveNodeData caveNodeData)
+        private void CatalogSpawnPoints(Transform parent, ICaveNodeData iCaveNodeData)
         {
             if (parent.SafeIsUnityNull()) return;
 
@@ -167,10 +183,10 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 .GetComponentsInChildren<SpawnPoint>()
                 .ToList();
                 
-            caveNodeData.SpawnPoints.AddRange(childSpawnPoints);
+            iCaveNodeData.SpawnPoints.AddRange(childSpawnPoints);
             foreach (var childSpawnPoint in childSpawnPoints)
             {
-                childSpawnPoint.ParentNode = caveNodeData;
+                childSpawnPoint.ParentNode = iCaveNodeData;
             }
         }
 
@@ -224,7 +240,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
                         var newGameObject =
                             GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
-                        newGameObject.transform.position = spawnPos + spawnOffset;
+                        newGameObject.transform.SetPositionAndRotation(spawnPos + spawnOffset, spawnPoint.transform.rotation);
                             
                         CatalogSpawnPoints(newGameObject.transform, spawnPoint.ParentNode);
 

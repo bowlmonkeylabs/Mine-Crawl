@@ -13,6 +13,7 @@ namespace BML.Scripts.UI
         [SerializeField] private FloatVariable _currentSpawnDelay;
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
+        [SerializeField] private IntVariable _currentDifficulty;
         [SerializeField] private IntReference _seedDebugReference;
         [SerializeField] private EvaluateCurveVariable _statPickaxeSwingSpeed;
         [SerializeField] private BoolVariable _playerInCombat;
@@ -37,9 +38,11 @@ namespace BML.Scripts.UI
             _text.text = $@"Player Coordinates: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
 Timescale: {Time.timeScale.ToString("0.00")}
 Level Time: {this.FormatTime(_levelTimeElapsed.Value)}
-Enemy Spawn Params: Delay: {_currentSpawnDelay.Value.ToString("0.00")}
+Enemy Spawn Params:
+Delay: {_currentSpawnDelay.Value.ToString("0.00")}
 Cap: {_currentSpawnCap.Value.ToString("0.00")}
 Count: {_currentEnemyCount.Value}
+Difficulty: {_currentDifficulty.Value}
 Seed: {_seedDebugReference.Value}
 Pickaxe Swing Speed: {_statPickaxeSwingSpeed.Value}
 Player In Combat: {_playerInCombat.Value}

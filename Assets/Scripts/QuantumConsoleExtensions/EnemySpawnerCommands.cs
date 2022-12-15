@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
@@ -60,7 +61,10 @@ namespace BML.Scripts.QuantumConsoleExtensions
 
             for (int i = 0; i < count; i++)
             {
-                var newEnemy = enemySpawner.SpawnEnemyByName(playerTransform.position, enemyName, false, 3);
+                var enemySpawnerParams = enemySpawner.EnemySpawnerParamsList
+                    .FirstOrDefault(p => p.SpawnAtTags.Any(t => t.Prefab.name.StartsWith(enemyName, StringComparison.OrdinalIgnoreCase)));
+                var newEnemy = enemySpawner.SpawnEnemyByName(enemySpawnerParams, playerTransform.position,
+                    enemyName, false, 3);
 
                 if (health >= 0)
                 {
@@ -85,7 +89,7 @@ namespace BML.Scripts.QuantumConsoleExtensions
             {
                 throw new Exception($"Enemy spawner scene instance is not assigned.");
             }
-
+            
             var enemySpawner = asyncHandle.Result.Value.GetComponent<EnemySpawnManager>();
             if (enemySpawner == null)
             {
