@@ -65,6 +65,8 @@ namespace BML.Scripts.Player
 		[SerializeField, FoldoutGroup("RopeMovement")] private BoolReference _isRopeMovementEnabled;
 		[SerializeField, FoldoutGroup("RopeMovement")] private float _ropeMovementSpeed = 15;
 		[SerializeField, FoldoutGroup("RopeMovement")] private float _ropeGravitySpeed = 1;
+        [SerializeField, FoldoutGroup("RopeMovement"), Sirenix.OdinInspector.ReadOnly] private bool reachedRopeBottom = false;
+        [SerializeField, FoldoutGroup("RopeMovement"), Sirenix.OdinInspector.ReadOnly] private bool reachedRopeTop = false;
         
 		[SerializeField, FoldoutGroup("No Clip Mode")] private BoolVariable isNoClipEnabled;
 		[SerializeField, FoldoutGroup("No Clip Mode")] private float noClipUpDownVelocity = 15f;
@@ -103,10 +105,6 @@ namespace BML.Scripts.Player
 		// no clip mode
 		private float originalGravity;
 		private LayerMask orignalCollisionMask;
-
-        //rope movement
-        private bool reachedRopeBottom = false;
-        private bool reachedRopeTop = false;
 
 		private PlayerInput _playerInput;
 		private KinematicCharacterMotor _motor;
