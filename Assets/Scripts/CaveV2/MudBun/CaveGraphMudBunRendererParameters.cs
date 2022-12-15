@@ -19,6 +19,7 @@ namespace BML.Scripts.CaveV2.MudBun
         
         [SerializeField] public GameObject StartRoomPrefab;
         [SerializeField] public GameObject EndRoomPrefab;
+        [SerializeField] public GameObject MerchantRoomPrefab;
         [SerializeField] public GameObject TunnelPrefab;
         [SerializeField] public GameObject TunnelWithBarrierPrefab;
 
@@ -66,6 +67,7 @@ namespace BML.Scripts.CaveV2.MudBun
 
             allPrefabs.Add(this.StartRoomPrefab);
             allPrefabs.Add(this.EndRoomPrefab);
+            allPrefabs.Add(this.MerchantRoomPrefab);
             allPrefabs.Add(this.TunnelPrefab);
             allPrefabs.AddRange(this._roomOptions.Select(r => r.value.roomPrefab));
 

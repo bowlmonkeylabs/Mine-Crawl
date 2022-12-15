@@ -128,19 +128,6 @@ namespace BML.Scripts.Player
 			crouchAction.performed -= SetCrouchHeld;
 			crouchAction.canceled -= SetCrouchHeld;
 		}
-
-		private void OnDestroy()
-		{
-			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
-			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
-			_isDebugConsoleOpen.Unsubscribe(ApplyInputState);
-			_isDebugConsoleOpen.Unsubscribe(OnIsDebugConsoleOpenUpdated);
-			
-			jumpAction.performed -= SetJumpHeld;
-			jumpAction.canceled -= SetJumpHeld;
-			crouchAction.performed -= SetCrouchHeld;
-			crouchAction.canceled -= SetCrouchHeld;
-		}
 		
 		private void OnApplicationFocus(bool hasFocus)
 		{

@@ -620,6 +620,17 @@ namespace BML.Scripts.CaveV2
                 }
             }
 
+            // Choose where the merchant is placed
+            var merchantCandidateVertices = caveGraph.Vertices
+                .AsEnumerable()
+                .OrderBy(v => {
+                    float mainPathDistanceFactor = (float) v.MainPathDistance / MaxMainPathDistance;
+                    float objectiveDistanceFactor = Mathf.Abs(((float) v.ObjectiveDistance / MaxObjectiveDistance) - 0.5f) * -3 + 1;
+                    float sortFactor = (mainPathDistanceFactor * 0.5f) + (objectiveDistanceFactor * 0.5f);
+                    return -sortFactor;
+                });
+            caveGraph.MerchantNode = merchantCandidateVertices.First();
+
             if (_enableLogs) Debug.Log($"Cave graph generated");
             
             return caveGraph;

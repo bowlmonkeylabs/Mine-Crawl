@@ -14,6 +14,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
     {
         public CaveNodeData StartNode { get; set; }
         public CaveNodeData EndNode { get; set; }
+        public CaveNodeData MerchantNode { get; set; }
         
         public List<CaveNodeConnectionData> MainPath { get; set; }
 

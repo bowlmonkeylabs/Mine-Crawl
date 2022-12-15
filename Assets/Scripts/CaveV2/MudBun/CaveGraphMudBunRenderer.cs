@@ -82,6 +82,12 @@ namespace BML.Scripts.CaveV2.MudBun
                     roomPrefab = _caveGraphRenderParams.EndRoomPrefab;
                     roomScale = Vector3.one;
                 }
+                else if(caveNodeData == _caveGraph.MerchantNode &&
+                        !_caveGraphRenderParams.MerchantRoomPrefab.SafeIsUnityNull())
+                {
+                    roomPrefab = _caveGraphRenderParams.MerchantRoomPrefab;
+                    roomScale = Vector3.one;
+                }
                 else
                 {
                     // TODO systematically choose which rooms to spawn

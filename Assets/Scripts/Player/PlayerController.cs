@@ -10,7 +10,7 @@ using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Pathfinding;
+using BML.Scripts.Store;
 using Sirenix.OdinInspector;
 using UnityEngine.Serialization;
 
@@ -49,6 +49,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Torch")] private float _torchThrowForce;
         [SerializeField, FoldoutGroup("Torch")] private Transform _torchInstanceContainer;
         [SerializeField, FoldoutGroup("Torch")] private IntReference _inventoryTorchCount;
+        [SerializeField, FoldoutGroup("Torch")] private StoreItem _torchStoreItem;
         
         [SerializeField, FoldoutGroup("Bomb")] private GameObject _bombPrefab;
         [SerializeField, FoldoutGroup("Bomb")] private float _bombThrowForce;
@@ -59,6 +60,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Rope")] private float _ropeThrowForce;
         [SerializeField, FoldoutGroup("Rope")] private Transform _ropeInstanceContainer;
         [SerializeField, FoldoutGroup("Rope")] private IntReference _inventoryRopeCount;
+        [SerializeField, FoldoutGroup("Rope")] private StoreItem _ropeStoreItem;
         
         [SerializeField, FoldoutGroup("Health")] private Health _healthController;
         [SerializeField, FoldoutGroup("Health")] private IntReference _health;
@@ -77,7 +79,10 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Intensity Score")] private float _intensityScoreKillMultiplier = 1f;
 
         [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
+        [SerializeField, FoldoutGroup("Store")] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField, FoldoutGroup("Store")] private GameEvent _onStoreFailOpen;
+
+        [SerializeField, FoldoutGroup("Upgrade Store")] private BoolReference _isUpgradeStoreOpen;
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
 
@@ -365,7 +370,11 @@ namespace BML.Scripts.Player
             // Check torch count
             if (_inventoryTorchCount.Value <= 0)
             {
-                return;
+                _onPurchaseEvent.Raise(_torchStoreItem);
+                if (_inventoryTorchCount.Value <= 0)
+                {
+                    return;
+                }
             }
             _inventoryTorchCount.Value -= 1;
 
@@ -397,7 +406,11 @@ namespace BML.Scripts.Player
             // Check torch count
             if (_inventoryRopeCount.Value <= 0)
             {
-                return;
+                _onPurchaseEvent.Raise(_ropeStoreItem);
+                if (_inventoryRopeCount.Value <= 0)
+                {
+                    return;
+                }
             }
             _inventoryRopeCount.Value -= 1;
             
@@ -490,6 +503,11 @@ namespace BML.Scripts.Player
             }
 
             _isStoreOpen.Value = !_isStoreOpen.Value && !_inCombat.Value;
+		}
+
+        public void OnToggleUpgradeStore()
+		{
+            _isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}
         
         #endregion
