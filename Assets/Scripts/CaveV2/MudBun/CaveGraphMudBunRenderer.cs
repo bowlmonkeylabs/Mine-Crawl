@@ -126,9 +126,13 @@ namespace BML.Scripts.CaveV2.MudBun
 
                 // Spawn tunnel
                 GameObject newGameObject;
-                
-                if (source.Difficulty != target.Difficulty)
+
+                if (caveNodeConnectionData.IsBlocked)
+                {
                     newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelWithBarrierPrefab, mudRenderer.transform);
+                    #warning TODO find tunnel barrier game object
+                    // caveNodeConnectionData.Barrier = ;
+                }
                 else
                     newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
                 

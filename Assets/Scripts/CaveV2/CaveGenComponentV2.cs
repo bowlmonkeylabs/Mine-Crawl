@@ -589,6 +589,15 @@ namespace BML.Scripts.CaveV2
                         float objectiveClosenessFactor = 1 - (float) dist / this.MaxObjectiveDistance;
                         node.Difficulty = Mathf.Min(maxDifficulty, Mathf.FloorToInt(objectiveClosenessFactor * _difficultySegmentCount));
                     });
+                    
+                    // Block tunnels between difficulty transitions
+                    foreach (var caveNodeConnectionData in caveGraph.Edges)
+                    {
+                        if (caveNodeConnectionData.Source.Difficulty != caveNodeConnectionData.Target.Difficulty)
+                        {
+                            caveNodeConnectionData.IsBlocked = true;
+                        }
+                    }
                 }
 
                 // Calculate distance from main path

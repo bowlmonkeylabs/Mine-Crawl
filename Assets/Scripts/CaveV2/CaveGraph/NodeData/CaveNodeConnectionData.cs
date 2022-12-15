@@ -19,6 +19,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public float Radius { get; set; }
         [ShowInInspector] public float Length { get; private set; }
         [ShowInInspector] public float SteepnessAngle { get; private set; }
+        [ShowInInspector] public bool IsBlocked { get; set; }
         
         // Calculated properties
         [ShowInInspector] public int MainPathDistance 
@@ -53,6 +54,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public HashSet<Collider> BoundsColliders { get; set; }
         [ShowInInspector] public HashSet<SpawnPoint> SpawnPoints { get; set; }
         [ShowInInspector] public HashSet<Torch> Torches { get; set; }
+        [ShowInInspector] public GameObject Barrier { get; set; }
 
         public CaveNodeConnectionData(CaveNodeData source, CaveNodeData target, float radius)
         {
