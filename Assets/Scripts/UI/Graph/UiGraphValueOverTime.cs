@@ -11,6 +11,7 @@ namespace BML.Scripts.UI.Graph
 
         [SerializeField, Required] private UiGraph _graph;
         [SerializeField, Required] private FloatReference _value;
+        [SerializeField, Required] private bool _enableLogs;
 
         #endregion
 
@@ -35,7 +36,7 @@ namespace BML.Scripts.UI.Graph
         private void OnValueChanged(float prev, float curr)
         {
             var point = new Vector2(Time.time, curr);
-            Debug.Log($"UiGraphValueOverTime OnValueChanged {point}");
+            if (_enableLogs) Debug.Log($"UiGraphValueOverTime OnValueChanged {point}");
             _graph.AddPoint(point);
         }
 

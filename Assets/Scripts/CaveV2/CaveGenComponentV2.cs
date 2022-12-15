@@ -722,7 +722,8 @@ namespace BML.Scripts.CaveV2
 
             containingRoom.nodeData.Torches.Add(payload.Torch);
             
-            Debug.Log($"CaveGen OnTorchPlaced: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
+            if (_enableLogs)
+                Debug.Log($"CaveGen OnTorchPlaced: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
         }
 
         public void UpdateTorchInfluence(ICaveNodeData nodeData)

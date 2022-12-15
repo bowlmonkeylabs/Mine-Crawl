@@ -85,6 +85,8 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Upgrade Store")] private BoolReference _isUpgradeStoreOpen;
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
+        
+        [SerializeField, FoldoutGroup("Debug")] private BoolVariable _enableLogs;
 
         private bool pickaxeInputHeld = false;
         private bool secondaryInputHeld = false;
@@ -436,7 +438,8 @@ namespace BML.Scripts.Player
             newIntensityScore = Mathf.Max(0, newIntensityScore);
             _intensityScore.Value = newIntensityScore;
             
-            Debug.Log($"UpdateIntensityScore (Intensity {_intensityScore.Value})");
+            if (_enableLogs)
+                Debug.Log($"UpdateIntensityScore (Intensity {_intensityScore.Value})");
         }
         
         private IEnumerator UpdateIntensityScoreCoroutine()

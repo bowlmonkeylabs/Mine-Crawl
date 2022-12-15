@@ -167,7 +167,7 @@ namespace BML.Scripts
                 for (int i = 0; i < intermediate.Count; i++)
                 {
                     enemyParams.SpawnAtTags[i].NormalizedSpawnWeight = intermediate[i] / (float) total;
-                    Debug.Log($"{enemyParams.SpawnAtTags[i].Prefab.name} | " +
+                    if (_enableLogs) Debug.Log($"{enemyParams.SpawnAtTags[i].Prefab.name} | " +
                               $"Cost: {enemyParams.SpawnAtTags[i].Cost}" +
                               $"| Norm: {enemyParams.SpawnAtTags[i].NormalizedSpawnWeight}");
                 }
