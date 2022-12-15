@@ -864,7 +864,7 @@ namespace BML.Scripts.CaveV2
             _caveGenParams.OnValidateEvent -= OnValidate;
             _onTorchPlaced.Unsubscribe(OnTorchPlaced);
             _onEnemyKilled.Unsubscribe(OnEnemyKilled);
-            StopCoroutine(_coroutinePlayerInfluence);
+            if (_coroutinePlayerInfluence != null) StopCoroutine(_coroutinePlayerInfluence);
             _coroutinePlayerInfluence = null;
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged -= PlayModeStateChanged;
