@@ -17,6 +17,7 @@ namespace BML.Scripts.UI
         [SerializeField] private IntReference _seedDebugReference;
         [SerializeField] private EvaluateCurveVariable _statPickaxeSwingSpeed;
         [SerializeField] private BoolVariable _playerInCombat;
+        [SerializeField] private BoolVariable _anyEnemiesEngaged;
         [SerializeField] private TimerVariable _playerCombatTimer;
         [SerializeField] private FloatVariable _playerIntensityScore;
 
@@ -47,6 +48,7 @@ Difficulty: {_currentDifficulty.Value}
 Seed: {_seedDebugReference.Value}
 Pickaxe Swing Speed: {_statPickaxeSwingSpeed.Value}
 Player In Combat: {_playerInCombat.Value}
+Any Enemies Engaged: {_anyEnemiesEngaged.Value}
 Combat Timer: {_playerCombatTimer.RemainingTime}
 Intensity Score: {_playerIntensityScore.Value.ToString("0.00")}
 ";
