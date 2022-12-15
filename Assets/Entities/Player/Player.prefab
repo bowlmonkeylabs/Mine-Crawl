@@ -5655,8 +5655,7 @@ GameObject:
   - component: {fileID: 554438775514433392}
   - component: {fileID: 3310494383691780274}
   - component: {fileID: 4982360436039297370}
-  - component: {fileID: 2815286414578693938}
-  - component: {fileID: 6179862772381146405}
+  - component: {fileID: 7207978084493220167}
   m_Layer: 7
   m_Name: IntensityGraphController
   m_TagString: Untagged
@@ -5698,6 +5697,7 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: b9ffab9e48115f84e9ac88db538de371, type: 2}
+  _enableLogs: 0
 --- !u!114 &4982360436039297370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5719,7 +5719,7 @@ MonoBehaviour:
     unityEvent:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 6179862772381146405}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
             StateMachine
           m_MethodName: TryRaise
@@ -5732,7 +5732,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
---- !u!114 &2815286414578693938
+--- !u!114 &7207978084493220167
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5741,96 +5741,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2601160886124357314}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b30e1dba8ca5434283cb2b68a1e91bf, type: 3}
+  m_Script: {fileID: 11500000, guid: bac3452c3d166594f8e8494b57ab1162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: FloatValues
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[BML.ScriptableObjectCore.Scripts.Variables.ValueReferences.FloatValueReference,
-        ScriptableObjectSystem]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
   BoolVariables:
   - {fileID: 11400000, guid: 9d57b34e568e42b42a939f4170f96fd4, type: 2}
-  TriggerVariables: []
   FloatVariables: []
   IntVariables: []
-  TimerVariables: []
   Vector2Variables: []
   Vector3Variables: []
-  OnUpdate:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6179862772381146405}
-        m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
-          StateMachine
-        m_MethodName: TryRaise
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &6179862772381146405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2601160886124357314}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07d9de05a2e70424e8718c7cf216b134, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  conditionPreview: '-  Debug_ Menu Is Open_ Debug
-
-'
-  StateMachines: []
-  ValidStates: []
-  InvalidStates: []
-  BoolConditions:
-  - targetParameter:
-      UseConstant: 0
-      EnableInstanceOptions: 0
-      InstanceName: 
-      InstancePath: IntermediateProperties
-      ConstantValue: 0
-      Variable: {fileID: 11400000, guid: 9d57b34e568e42b42a939f4170f96fd4, type: 2}
-    value:
-      UseConstant: 1
-      EnableInstanceOptions: 0
-      InstanceName: 
-      InstancePath: IntermediateProperties
-      ConstantValue: 1
-      Variable: {fileID: 0}
-  FloatConditions: []
-  IntConditions: []
-  TimerConditions: []
-  Vector2Conditions: []
-  Vector3Conditions: []
-  GameEventConditions: []
-  DynamicGameEventConditions: []
-  OnSuccess:
+  OnIncrease:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2251852899264816926}
@@ -5845,7 +5765,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  OnFailure:
+  OnDecrease:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2251852899264816926}
@@ -6236,6 +6156,8 @@ MonoBehaviour:
     Variable: {fileID: 11400000, guid: 602ed0103fbb1324ab3af06039d48696, type: 2}
   _ropeMovementSpeed: 6
   _ropeGravitySpeed: 0.5
+  reachedRopeBottom: 0
+  reachedRopeTop: 0
   isNoClipEnabled: {fileID: 11400000, guid: eb030997b85161549968d03364b4c38e, type: 2}
   noClipUpDownVelocity: 15
   noClipSprintMultiplier: 5
@@ -6391,6 +6313,7 @@ MonoBehaviour:
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: b097147d192343940aca02f32a439f21, type: 2}
   _isGodModeEnabled: {fileID: 11400000, guid: c3845ac29ad76214893f2b304a42dcef, type: 2}
+  _enableLogs: {fileID: 0}
 --- !u!136 &936822692517190024
 CapsuleCollider:
   m_ObjectHideFlags: 8
@@ -12210,7 +12133,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 58.67579
+  field of view: 58.72517
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
