@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.UI;
 using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
@@ -10,6 +12,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Pathfinding;
 using Sirenix.OdinInspector;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.Player
 {
@@ -63,6 +66,15 @@ namespace BML.Scripts.Player
 
         [SerializeField, FoldoutGroup("Combat State")] private BoolVariable _inCombat;
         [SerializeField, FoldoutGroup("Combat State")] private TimerVariable _combatTimer;
+        
+        [SerializeField, FoldoutGroup("Intensity Score")] private FloatVariable _intensityScore;
+        [SerializeField, FoldoutGroup("Intensity Score")] private DynamicGameEvent _onEnemyKilled;
+        [FormerlySerializedAs("_anyEnemiesAlerted")] [SerializeField, FoldoutGroup("Intensity Score")] private BoolReference _anyEnemiesEngaged;
+        [SerializeField, FoldoutGroup("Intensity Score")] private float _intensityScoreUpdatePeriod = 1f;
+        [SerializeField, FoldoutGroup("Intensity Score")] private float _intensityScoreDecayRate = 1f / 30f;
+        [SerializeField, FoldoutGroup("Intensity Score")] private float _intensityScoreDamageMultiplier = 1f;
+        [SerializeField, FoldoutGroup("Intensity Score")] private Vector2 _intensityScoreKillDistanceMinMax = new Vector2(20, 5);
+        [SerializeField, FoldoutGroup("Intensity Score")] private float _intensityScoreKillMultiplier = 1f;
 
         [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
         [SerializeField, FoldoutGroup("Store")] private GameEvent _onStoreFailOpen;
@@ -84,6 +96,11 @@ namespace BML.Scripts.Player
             _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
             
             SetGodMode();
+
+            // Intensity score
+            _coroutineIntensityScore = StartCoroutine(UpdateIntensityScoreCoroutine());
+            _onEnemyKilled.Subscribe(OnEnemyKilledDynamic);
+            _healthController.OnHealthChange += OnPlayerHealthChanged;
         }
 
         private void OnDisable()
@@ -92,6 +109,15 @@ namespace BML.Scripts.Player
             _health.Unsubscribe(ClampHealth);
             _combatTimer.UnsubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
+
+            // Intensity score
+            if (_coroutineIntensityScore != null)
+            {
+                StopCoroutine(_coroutineIntensityScore);
+                _coroutineIntensityScore = null;
+            }
+            _onEnemyKilled.Unsubscribe(OnEnemyKilledDynamic);
+            _healthController.OnHealthChange -= OnPlayerHealthChanged;
         }
 
         private void Update()
@@ -378,6 +404,64 @@ namespace BML.Scripts.Player
             this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer);
         }
         
+        #endregion
+        
+        
+
+        #region Intensity score
+
+        private Coroutine _coroutineIntensityScore;
+
+        private void UpdateIntensityScore()
+        {
+            bool doDecay = !_anyEnemiesEngaged.Value;
+            if (!doDecay) return;
+
+            float decay = (_intensityScoreDecayRate * _intensityScoreUpdatePeriod);
+            
+            float newIntensityScore = (_intensityScore.Value - decay);
+            newIntensityScore = Mathf.Max(0, newIntensityScore);
+            _intensityScore.Value = newIntensityScore;
+            
+            Debug.Log($"UpdateIntensityScore (Intensity {_intensityScore.Value})");
+        }
+        
+        private IEnumerator UpdateIntensityScoreCoroutine()
+        {
+            while (true)
+            {
+                UpdateIntensityScore();
+                yield return new WaitForSeconds(_intensityScoreUpdatePeriod);
+            }
+        }
+        
+        private void OnEnemyKilledDynamic(object prev, object curr)
+        {
+            var payload = curr as EnemyKilledPayload;
+            OnEnemyKilled(payload);
+        }
+        private void OnEnemyKilled(EnemyKilledPayload curr)
+        {
+            var posDiff = this.transform.position - curr.Position;
+            float dist = posDiff.magnitude;
+            float factor = Mathf.InverseLerp(_intensityScoreKillDistanceMinMax.x, _intensityScoreKillDistanceMinMax.y, dist);
+            factor = Mathf.Clamp01(factor);
+            
+            _intensityScore.Value += (factor * _intensityScoreKillMultiplier);
+            Debug.Log($"OnEnemyKilled (Intensity {_intensityScore.Value})");
+        }
+        
+        private void OnPlayerHealthChanged(int prev, int curr)
+        {
+            int delta = curr - prev;
+            float deltaPct = Mathf.Abs((float) delta / _healthController.StartingHealth);
+            if (delta < 0)
+            {
+                _intensityScore.Value += (deltaPct * _intensityScoreDamageMultiplier);
+                Debug.Log($"OnPlayerHealthChanged (Intensity {_intensityScore.Value})");
+            }
+        }
+
         #endregion
 
         #region Combat State

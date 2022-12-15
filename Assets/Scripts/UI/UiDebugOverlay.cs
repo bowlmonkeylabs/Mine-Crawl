@@ -18,6 +18,7 @@ namespace BML.Scripts.UI
         [SerializeField] private EvaluateCurveVariable _statPickaxeSwingSpeed;
         [SerializeField] private BoolVariable _playerInCombat;
         [SerializeField] private TimerVariable _playerCombatTimer;
+        [SerializeField] private FloatVariable _playerIntensityScore;
 
         #region Unity lifecycle
 
@@ -46,7 +47,9 @@ Difficulty: {_currentDifficulty.Value}
 Seed: {_seedDebugReference.Value}
 Pickaxe Swing Speed: {_statPickaxeSwingSpeed.Value}
 Player In Combat: {_playerInCombat.Value}
-Combat Timer: {_playerCombatTimer.RemainingTime}";
+Combat Timer: {_playerCombatTimer.RemainingTime}
+Intensity Score: {_playerIntensityScore.Value.ToString("0.00")}
+";
         }
 
         private string FormatVector3(Vector3 vector3) 
