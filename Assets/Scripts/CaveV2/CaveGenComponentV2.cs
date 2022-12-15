@@ -589,13 +589,22 @@ namespace BML.Scripts.CaveV2
                         float objectiveClosenessFactor = 1 - (float) dist / this.MaxObjectiveDistance;
                         node.Difficulty = Mathf.Min(maxDifficulty, Mathf.FloorToInt(objectiveClosenessFactor * _difficultySegmentCount));
                     });
-                    
+                }
+
+                // Tunnel blockages
+                {
                     // Block tunnels between difficulty transitions
+                    var maxBlockedRoomSize = caveGenParams.PoissonSampleRadius / 6f; // 6 is the magic number, I think...
                     foreach (var caveNodeConnectionData in caveGraph.Edges)
                     {
                         if (caveNodeConnectionData.Source.Difficulty != caveNodeConnectionData.Target.Difficulty)
                         {
                             caveNodeConnectionData.IsBlocked = true;
+                            
+                            // Force rooms connected to blockages to be small
+                            // (to avoid player walking around the blockage
+                            caveNodeConnectionData.Source.Size = maxBlockedRoomSize;
+                            caveNodeConnectionData.Target.Size = maxBlockedRoomSize;
                         }
                     }
                 }
