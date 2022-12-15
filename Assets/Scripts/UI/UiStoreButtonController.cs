@@ -22,6 +22,7 @@ namespace BML.Scripts.UI
         [SerializeField] private IntVariable _resourceCount;
         [SerializeField] private IntVariable _rareResourceCount;
         [SerializeField] private IntVariable _enemyResourceCount;
+        [SerializeField] private BoolVariable _isGodModeEnabled;
 
         [SerializeField] private StoreItem _itemToPurchase;
         
@@ -49,6 +50,11 @@ namespace BML.Scripts.UI
         }
 
         private void SetInteractable() {
+            if(_isGodModeEnabled.Value) {
+                _button.interactable = true;
+                return;
+            }
+
             _button.interactable = _itemToPurchase._resourceCost <= _resourceCount.Value &&
                 _itemToPurchase._rareResourceCost <= _rareResourceCount.Value &&
                 _itemToPurchase._enemyResourceCost <= _enemyResourceCount.Value &&

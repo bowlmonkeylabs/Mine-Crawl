@@ -32,7 +32,7 @@ MonoBehaviour:
     ReferenceValue_BoolVariable: {fileID: 11400000, guid: daee3acd3757d15499bc89f9c53e2144, type: 2}
   _itemLabel: Red Cross
   _itemIcon: {fileID: 21300000, guid: d105f6e56eece3d42823ab57fc44a7ff, type: 3}
-  _itemEffectDescription: +1 Swing Speed/+2 Max Health
+  _itemEffectDescription: +1 Swing Speed/+1 Max Hearts
   _itemStoreDescription: Encrusted with rubies, its gives off a bloody glow.
   _onPurchased:
     m_PersistentCalls:
@@ -118,51 +118,3 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  PurchaseItems:
-  - _storeText: +1 Swing Speed
-    OnPurchase:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 11400000, guid: daee3acd3757d15499bc89f9c53e2144, type: 2}
-          m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.Variable`1[[System.Boolean,
-            mscorlib
-          m_MethodName: SetValue
-          m_Mode: 6
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2
-        - m_Target: {fileID: 11400000, guid: a154a67fdfe571a4f95520b3d4416149, type: 2}
-          m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
-            ScriptableObjectSystem
-          m_MethodName: Increment
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2
-  - _storeText: +2 Max Health
-    OnPurchase:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
-          m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
-            ScriptableObjectSystem
-          m_MethodName: Increment
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 2
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
