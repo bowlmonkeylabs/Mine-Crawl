@@ -136,15 +136,22 @@ namespace BML.Scripts.Enemy
             // Draw line from sphere to room/tunnel centers it belongs to
             Gizmos.color = Color.white;
 
-            foreach (var node in _currentNodes)
+            if (_currentNodes != null)
             {
-                Gizmos.DrawLine(gizmoPivot, node.Value.GameObject.transform.position);
+                foreach (var node in _currentNodes)
+                {
+                    Gizmos.DrawLine(gizmoPivot, node.Value.GameObject.transform.position);
+                }
+            }
+
+            if (_currentNodeConnections != null)
+            {
+                foreach (var edge in _currentNodeConnections)
+                {
+                    Gizmos.DrawLine(gizmoPivot, edge.Value.GameObject.transform.position);
+                }
             }
             
-            foreach (var edge in _currentNodeConnections)
-            {
-                Gizmos.DrawLine(gizmoPivot, edge.Value.GameObject.transform.position);
-            }
         }
 
         #endregion
