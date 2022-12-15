@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace BML.Scripts.Player
         [SerializeField] private BoolVariable _isGrounded;
         [SerializeField] private BoolReference _isRopeMovementEnabled;
         [SerializeField] private AnimationCurve _fallDamageCurve;
+        [SerializeField] private MMF_Player _fallDamageFeedback;
         
         private float fallStartHeight;
 
@@ -65,6 +67,7 @@ namespace BML.Scripts.Player
             HitInfo hitInfo = 
                 new HitInfo(DamageType.Fall_Damage, damage, Vector3.up, transform.position);
             _damageable.TakeDamage(hitInfo);
+            _fallDamageFeedback.PlayFeedbacks();
         }
     }
 }

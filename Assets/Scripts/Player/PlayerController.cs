@@ -26,6 +26,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private float _interactCastRadius = .25f;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _interactMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
+        [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _enemyMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoxCollider _sweepCollider;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSweepCooldown;
@@ -37,6 +38,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _missSwingFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitTerrainFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitEnemyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepReadyFeedback;
         
@@ -213,6 +215,10 @@ namespace BML.Scripts.Player
                 _hitTerrainFeedback.transform.position = hit.point;
                 _hitTerrainFeedback.PlayFeedbacks();
             }
+            else if (hit.collider.gameObject.IsInLayerMask(_enemyMask))
+            {
+                _hitEnemyFeedback.PlayFeedbacks();
+            }
             else
             {
                 _swingHitFeedbacks.transform.position = hit.point;
@@ -260,12 +266,20 @@ namespace BML.Scripts.Player
             HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)> interactionReceivers =
                 new HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)>();
 
+            bool isEnemyHit = false;
             foreach (var hitCollider in hitColliders)
             {
                 PickaxeInteractionReceiver interactionReceiver = hitCollider.GetComponent<PickaxeInteractionReceiver>();
-                if (interactionReceiver == null) continue;
+                if (interactionReceiver == null)
+                    continue;
+                if (hitCollider.gameObject.IsInLayerMask(_enemyMask))
+                    isEnemyHit = true;
+                
                 interactionReceivers.Add((interactionReceiver, hitCollider.bounds.center));
             }
+            
+            if (isEnemyHit)
+                _hitEnemyFeedback.PlayFeedbacks();
 
             foreach (var (interactionReceiver, colliderCenter) in interactionReceivers)
             {
@@ -278,6 +292,7 @@ namespace BML.Scripts.Player
                 RaycastHit[] hits = Physics.SphereCastAll(_mainCamera.position, .5f, dir, dist, _interactMask,
                     QueryTriggerInteraction.Ignore);
 
+                
                 foreach (var hit in hits)
                 {
                     if (hit.collider.gameObject == interactionReceiver.gameObject)

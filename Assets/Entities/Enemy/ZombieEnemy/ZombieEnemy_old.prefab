@@ -3682,7 +3682,7 @@ MonoBehaviour:
   OnSuccess:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6113328239708198805}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: BML.Scripts.Alertable, BML.Scripts
         m_MethodName: SetAlerted
         m_Mode: 1
@@ -11646,7 +11646,6 @@ GameObject:
   - component: {fileID: 6999498052096669613}
   - component: {fileID: 5178630630282638017}
   - component: {fileID: 1698160910599950490}
-  - component: {fileID: 6113328239708198805}
   - component: {fileID: 5025452799971188646}
   - component: {fileID: 826797241148049898}
   - component: {fileID: 952584137865864921}
@@ -11656,7 +11655,6 @@ GameObject:
   - component: {fileID: 7908423297764247877}
   - component: {fileID: 3503164420953813447}
   - component: {fileID: 863989278844779370}
-  - component: {fileID: 8659584510750209474}
   - component: {fileID: 8708097249451836691}
   m_Layer: 10
   m_Name: ZombieEnemy_old
@@ -11955,22 +11953,6 @@ MonoBehaviour:
       Version: 1.7.3
   gizmoViewMode: 2
   showBehaviorDesignerGizmo: 1
---- !u!114 &6113328239708198805
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8446087147361510364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f33a44ad9d6f0d845b8ce9618da67889, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _behaviorTree: {fileID: 1698160910599950490}
-  _onAlerted:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &5025452799971188646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12121,7 +12103,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 8659584510750209474}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: BML.Scripts.CaveV2.EnemyInfluenceUpdater, BML.CaveGenV2
         m_MethodName: OnDeath
         m_Mode: 1
@@ -12211,19 +12193,6 @@ MonoBehaviour:
   _onDespawn:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8659584510750209474
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8446087147361510364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e54c4b9d6fcc45909c7683448a68f11c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
 --- !u!114 &8708097249451836691
 MonoBehaviour:
   m_ObjectHideFlags: 0
