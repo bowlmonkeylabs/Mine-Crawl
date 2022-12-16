@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2;
 using BML.Scripts.CaveV2.SpawnObjects;
@@ -40,6 +41,7 @@ namespace BML.Scripts
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
         [SerializeField] private IntVariable _currentDifficulty;
+        [SerializeField] private DynamicGameEvent _onEnemyKilled;
         [Required, SerializeField] [InlineEditor()] private List<EnemySpawnerParams> _enemySpawnerParamList = new List<EnemySpawnerParams>();
 
         [UnityEngine.Tooltip(
@@ -86,12 +88,14 @@ namespace BML.Scripts
         {
             _caveGenerator.OnAfterGenerate += InitSpawnPoints;
             _caveGenerator.OnAfterUpdatePlayerDistance += CacheActiveSpawnPoints;
+            _onEnemyKilled.Subscribe(OnEnemyKilled);
         }
 
         private void OnDisable()
         {
             _caveGenerator.OnAfterGenerate -= InitSpawnPoints;
             _caveGenerator.OnAfterUpdatePlayerDistance -= CacheActiveSpawnPoints;
+            _onEnemyKilled.Unsubscribe(OnEnemyKilled);
         }
 
         private void Update()
@@ -303,9 +307,12 @@ namespace BML.Scripts
                 .Select(coll => coll.GetComponent<EnemySpawnable>())
                 .Where(despawnable => despawnable != null)
                 .ToList();
-            
-            if (_enableLogs) Debug.Log($"HandleDespawning Found {despawnablesInRange.Count}/{_enemyContainer.childCount} enemies in active range.");
-            
+
+            if (_enableLogs)
+                Debug.Log(
+                    $"HandleDespawning Found {despawnablesInRange.Count}/{_enemyContainer.childCount} enemies in active range.");
+
+            int despawnCount = 0;
             for (int i = 0; i < _enemyContainer.childCount; i++)
             {
                 var childEnemy = _enemyContainer.GetChild(i).GetComponent<EnemySpawnable>();
@@ -315,8 +322,14 @@ namespace BML.Scripts
                 if (!foundInActive)
                 {
                     childEnemy.Despawn();
+                    despawnCount++;
                 }
             }
+
+            // Subtracting directly instead of calling UpdateEnemyCount because it looks like
+            // child count of enemy container is not update until next tick so that function
+            // doesn't properly update enemy count
+            _currentEnemyCount.Value -= despawnCount;
         }
 
         private void HandleSpawning()
@@ -331,9 +344,7 @@ namespace BML.Scripts
                 return;
 
             // Check against current enemy cap
-            _currentEnemyCount.Value = _enemyContainer.Cast<Transform>()
-                .Select(child => child.GetComponent<EnemySpawnable>())
-                .Count(d => d != null && d.DoCountForSpawnCap && d.gameObject.activeSelf);
+            UpdateEnemyCount();
             if (_currentEnemyCount.Value >= _currentSpawnCap.Value)
                 return;
             
@@ -425,6 +436,18 @@ namespace BML.Scripts
             }
 
             return SpawnEnemy(position, enemy, doCountForSpawnCap, randomOffsetRadius);
+        }
+
+        private void OnEnemyKilled(object prevValue, object currValue)
+        {
+            UpdateEnemyCount();
+        }
+
+        private void UpdateEnemyCount()
+        {
+            _currentEnemyCount.Value = _enemyContainer.Cast<Transform>()
+                .Select(child => child.GetComponent<EnemySpawnable>())
+                .Count(d => d != null && d.DoCountForSpawnCap && d.gameObject.activeSelf);
         }
         
         #endregion
