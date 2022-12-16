@@ -18,8 +18,8 @@ namespace BML.Scripts
         #region Inspector
 
         #if UNITY_EDITOR
-        [FormerlySerializedAs("_isSpawningPaused")] [SerializeField] public bool IsSpawningPaused = false;
-        [FormerlySerializedAs("_isDespawningPaused")] [SerializeField] public bool IsDespawningPaused = false;
+        [SerializeField] public bool IsSpawningPaused = false;
+        [SerializeField] public bool IsDespawningPaused = false;
         #else
         public bool IsSpawningPaused = false;
         public bool IsDespawningPaused = false;
@@ -35,11 +35,11 @@ namespace BML.Scripts
         [SerializeField] private LayerMask _terrainLayerMask;
         [Range(0f,100f)] private float _maxRaycastLength = 10f;
         [SerializeField] private float _spawnOffsetRadius = 5f;
+        [SerializeField] private BoolVariable _isSpawningPaused;
         [SerializeField] private FloatVariable _currentSpawnDelay;
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
         [SerializeField] private IntVariable _currentDifficulty;
-        [SerializeField] private InfluenceStateData _playerInfluenceState;
         [Required, SerializeField] [InlineEditor()] private List<EnemySpawnerParams> _enemySpawnerParamList = new List<EnemySpawnerParams>();
 
         [UnityEngine.Tooltip(
@@ -98,7 +98,7 @@ namespace BML.Scripts
         {
             UpdateDifficultyParams();
             if (!IsDespawningPaused) HandleDespawning();
-            if (!IsSpawningPaused) HandleSpawning();
+            if (!IsSpawningPaused && !_isSpawningPaused.Value) HandleSpawning();
         }
         
         private void OnDrawGizmosSelected()
@@ -266,38 +266,12 @@ namespace BML.Scripts
 
         private void UpdateDifficultyParams()
         {
-            bool isPlayerInNode = _playerInfluenceState._currentNodes.Count > 0;
-            bool isPlayerInNodeConnection = _playerInfluenceState._currentNodeConnections.Count > 0;
-            
-            // Dont update parameters if player is not within node or edge
-            if (!isPlayerInNode && !isPlayerInNodeConnection)
-                return;
-            
             if (_enemySpawnerParamList.Count != _caveGenerator.DifficultySegmentCount)
             {
                 Debug.LogError("Enemy spawn param list should have number of elements equal to the number" +
                                " of difficulty segments set on cave generator!");
                 return;
             }
-            
-            // Aggregate the difficulty of nodes and edges player is currently occupying
-            List<int> aggregateDifficulties = new List<int>();
-
-            if (isPlayerInNode)
-                aggregateDifficulties = aggregateDifficulties
-                    .Union(_playerInfluenceState._currentNodes
-                        .Select(n => n.Value.Difficulty)
-                        ).ToList();
-            
-            if (isPlayerInNodeConnection)
-                aggregateDifficulties = aggregateDifficulties
-                    .Union(_playerInfluenceState._currentNodeConnections
-                        .Select(n => n.Value.Difficulty)
-                    ).ToList();
-
-            float aggregateDifficultyFactor = (float) aggregateDifficulties.Average();
-
-            _currentDifficulty.Value = Mathf.CeilToInt(aggregateDifficultyFactor);
 
             //Use calculated difficulty to decide which parameters to use
             currentParams = _enemySpawnerParamList[_currentDifficulty.Value];

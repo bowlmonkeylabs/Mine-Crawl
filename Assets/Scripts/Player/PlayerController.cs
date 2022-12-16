@@ -430,6 +430,7 @@ namespace BML.Scripts.Player
         private void UpdateIntensityScore()
         {
             bool doDecay = !_anyEnemiesEngaged.Value;
+
             if (!doDecay) return;
 
             float decay = (_intensityScoreDecayRate * _intensityScoreUpdatePeriod);

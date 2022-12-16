@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9182727736491517635}
   - component: {fileID: 9182727736491517644}
+  - component: {fileID: 3977774948287924783}
+  - component: {fileID: 3292769644130016812}
   m_Layer: 0
   m_Name: EnemySpawnManager
   m_TagString: Untagged
@@ -53,11 +55,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8200
   _spawnOffsetRadius: 0.5
+  _isSpawningPaused: {fileID: 11400000, guid: b4e7a4ec09d24a747b1a8f247eee964d, type: 2}
   _currentSpawnDelay: {fileID: 11400000, guid: 352b10b7d534eae4d821308690c1fbfb, type: 2}
   _currentSpawnCap: {fileID: 11400000, guid: f57160f80ef0ba046ac7c6bf4b3f0228, type: 2}
   _currentEnemyCount: {fileID: 11400000, guid: 6fdcc6ab717b88f4fa6f8ecf81b9db82, type: 2}
   _currentDifficulty: {fileID: 11400000, guid: 1c2caa5f2dbacd347ac45e327d3a1fa6, type: 2}
-  _playerInfluenceState: {fileID: 11400000, guid: 04bcdf30c05b96b4c9453f14061e3591, type: 2}
   _enemySpawnerParamList:
   - {fileID: 11400000, guid: b77fad53ac29c2a4d8f695ee6eccc2b4, type: 2}
   - {fileID: 11400000, guid: c00a9dff10eed6e4e8f2dead8903ba9d, type: 2}
@@ -79,3 +81,87 @@ MonoBehaviour:
     m_Bits: 1024
   _despawnDelay: 3
   _enableLogs: 0
+--- !u!114 &3977774948287924783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9182727736491517645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 857976c1b4d74a6790dda9e9f2dbebb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _intensityScore:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: b9ffab9e48115f84e9ac88db538de371, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _maxIntensityScore:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: 2dd49ff9ee93e7d4eb6e2d2b71b73382, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _minIntensityScore:
+    ReferenceTypeSelector: 0
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _currentDifficulty: {fileID: 11400000, guid: 1c2caa5f2dbacd347ac45e327d3a1fa6, type: 2}
+  _maxIntensityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 3
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 4
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 2
+      value: 5
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _timeLimitAtMaxIntensity: 5
+  _timeLimitAtMinIntensity: 5
+  _pollingTime: 1
+  _isSpawningPaused: {fileID: 11400000, guid: b4e7a4ec09d24a747b1a8f247eee964d, type: 2}
+  _enableLogs: 1
+--- !u!114 &3292769644130016812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9182727736491517645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea8c8033b99544c0b1949459600276d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentDifficulty: {fileID: 11400000, guid: 1c2caa5f2dbacd347ac45e327d3a1fa6, type: 2}
+  _playerInfluenceState: {fileID: 11400000, guid: 04bcdf30c05b96b4c9453f14061e3591, type: 2}
+  _updateInterval: 1

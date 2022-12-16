@@ -25,6 +25,13 @@ namespace BML.Scripts.UI.Graph
         [ShowInInspector, ReadOnly] private Vector2 _graphMin;
         [ShowInInspector, ReadOnly] private Vector2 _graphMax;
 
+        public Vector2 GraphMin => _graphMin;
+        public Vector2 GraphMax => _graphMax;
+
+        public delegate void OnUpdateGraph();
+
+        public event OnUpdateGraph onUpdateGraph;
+
         #endregion
 
         #region Unity lifecycle
@@ -49,9 +56,14 @@ namespace BML.Scripts.UI.Graph
 
             if (this.isActiveAndEnabled)
             {
-                Debug.Log("AddPoint UpdateGraph");
                 UpdateGraph();
             }
+        }
+
+        public void SetGraphMinMax(Vector2 min, Vector2 max)
+        {
+            _graphMin = min;
+            _graphMax = max;
         }
         
         private static Rect RectTransformToScreenSpace(RectTransform transform)
@@ -95,6 +107,7 @@ namespace BML.Scripts.UI.Graph
             var positions = _points.Select(PointToGraphPosition).ToArray();
             _lineRenderer.positionCount = positions.Length;
             _lineRenderer.SetPositions(positions);
+            onUpdateGraph?.Invoke();
         }
 
         private void UpdateGraphMinMax()

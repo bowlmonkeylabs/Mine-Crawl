@@ -11,9 +11,13 @@ namespace BML.Scripts.UI.Graph
 
         [SerializeField, Required] private UiGraph _graph;
         [SerializeField, Required] private FloatReference _value;
+        [SerializeField, Required] private bool _updateOverTime;
+        [SerializeField, Required, ShowIf("_updateOverTime")] private float _updateInterval = 1f;
         [SerializeField, Required] private bool _enableLogs;
 
         #endregion
+
+        private float lastUpdateTime = Mathf.NegativeInfinity;
 
         #region Unity lifecycle
 
@@ -29,6 +33,19 @@ namespace BML.Scripts.UI.Graph
             _value.Unsubscribe(OnValueChanged);
         }
 
+        private void Update()
+        {
+            if (!_updateOverTime) return;
+            
+            if (lastUpdateTime + _updateInterval < Time.time)
+            {
+                var point = new Vector2(Time.time, _value.Value);
+                _graph.AddPoint(point);
+                if (_enableLogs) Debug.Log($"UiGraphValueOverTime Update Interval {point} | {gameObject.name}");
+                lastUpdateTime = Time.time;
+            }
+        }
+
         #endregion
 
         #region Graph
@@ -36,7 +53,7 @@ namespace BML.Scripts.UI.Graph
         private void OnValueChanged(float prev, float curr)
         {
             var point = new Vector2(Time.time, curr);
-            if (_enableLogs) Debug.Log($"UiGraphValueOverTime OnValueChanged {point}");
+            if (_enableLogs) Debug.Log($"UiGraphValueOverTime OnValueChanged {point} | {gameObject.name}");
             _graph.AddPoint(point);
         }
 
