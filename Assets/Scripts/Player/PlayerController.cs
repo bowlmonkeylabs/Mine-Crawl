@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Pathfinding;
 using Sirenix.OdinInspector;
+using System.Linq;
 
 namespace BML.Scripts.Player
 {
@@ -19,6 +20,7 @@ namespace BML.Scripts.Player
         
         [SerializeField, FoldoutGroup("Interactable hover")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Interactable hover")] private UiAimReticle _uiAimReticle;
+        [SerializeField, FoldoutGroup("Interactable hover")] private UiAimReticle _uiAimSweepReticle;
         [SerializeField, FoldoutGroup("Interactable hover")] private int _hoverUpdatesPerSecond = 20;
         private float lastHoverUpdateTime;
 
@@ -425,6 +427,8 @@ namespace BML.Scripts.Player
                 return;
 
             lastHoverUpdateTime = Time.time;
+
+            HandleSweepHover();
             
             RaycastHit hit;
             if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
@@ -450,6 +454,20 @@ namespace BML.Scripts.Player
             }
             
             _uiAimReticle.SetReticleHover(false);
+        }
+
+        private void HandleSweepHover() {
+            var center = _sweepCollider.transform.TransformPoint(_sweepCollider.center);
+            var halfExtents = _sweepCollider.size / 2f;
+            Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, _sweepCollider.transform.rotation,
+                    _interactMask, QueryTriggerInteraction.Ignore);
+
+            if(hitColliders.Any((coll) => coll.GetComponent<PickaxeInteractionReceiver>() != null)) {
+                _uiAimSweepReticle.SetReticleHover(true);
+                return;
+            }
+
+            _uiAimSweepReticle.SetReticleHover(false);
         }
         
         #region Health
