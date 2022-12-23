@@ -96,12 +96,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 857976c1b4d74a6790dda9e9f2dbebb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerSceneReference: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
   _intensityScore:
     ReferenceTypeSelector: 1
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 11400000, guid: b9ffab9e48115f84e9ac88db538de371, type: 2}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _intensityScoreUpdatePeriod: 1
+  _intensityScoreDamageMultiplier: 1
+  _intensityScoreKillMultiplier: 1
+  _intensityScoreKillDistanceMinMax: {x: 20, y: 5}
+  _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
+  _intensityScoreDecayRate: 0.033333335
+  _anyEnemiesEngaged:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 93e2d79ad44ed104a9eb3c022677d8a3, type: 2}
   _maxIntensityScore:
     ReferenceTypeSelector: 1
     ConstantValue: 0
@@ -150,7 +164,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   _timeLimitAtMaxIntensity: 5
   _timeLimitAtMinIntensity: 5
-  _pollingTime: 1
   _isSpawningPaused: {fileID: 11400000, guid: b4e7a4ec09d24a747b1a8f247eee964d, type: 2}
   _hasPlayerExitedStartRoom: {fileID: 11400000, guid: 7e64dee33977c4244bc70a927d83e4f2, type: 2}
   _enableLogs: 1
