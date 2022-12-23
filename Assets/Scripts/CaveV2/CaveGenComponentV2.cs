@@ -71,6 +71,7 @@ namespace BML.Scripts.CaveV2
         [SerializeField, SuffixLabel("units/sec")] private float _playerInfluenceDecayRate = 1f/30f;
         [SerializeField, SuffixLabel("units/sec by player distance"), Tooltip("Curve value represents accumulation multiplier as a function of player distance.")] 
         private CurveVariable _playerInfluenceAccumulationFalloff;
+        [SerializeField] private GameEvent _onAfterUpdatePlayerDistance;
 
         [TitleGroup("Torches")] 
         [SerializeField] private DynamicGameEvent _onTorchPlaced;
@@ -662,6 +663,7 @@ namespace BML.Scripts.CaveV2
                 .Max(node => node.ObjectiveDistance);
             
             this.OnAfterUpdatePlayerDistance?.Invoke();
+            _onAfterUpdatePlayerDistance.Raise();
         }
 
         public IEnumerator UpdatePlayerInfluenceCoroutine()

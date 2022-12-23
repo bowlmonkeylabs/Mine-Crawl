@@ -16,6 +16,7 @@ namespace BML.Scripts.Player
         [SerializeField] private BoolReference _isRopeMovementEnabled;
         [SerializeField] private AnimationCurve _fallDamageCurve;
         [SerializeField] private MMF_Player _fallDamageFeedback;
+        [SerializeField] private bool _enableLogs;
         
         private float fallStartHeight;
 
@@ -59,7 +60,7 @@ namespace BML.Scripts.Player
                 return;
 
             int damage = Mathf.FloorToInt(_fallDamageCurve.Evaluate(deltaFall));
-            Debug.Log($"Applying fall damage {damage} | Height {deltaFall}");
+            if (_enableLogs) Debug.Log($"Applying fall damage {damage} | Height {deltaFall}");
 
             if (damage <= 0)
                 return;

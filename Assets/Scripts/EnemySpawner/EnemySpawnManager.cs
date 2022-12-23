@@ -4,7 +4,9 @@ using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2;
+using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.CaveV2.SpawnObjects;
+using BML.Scripts.Enemy;
 using BML.Scripts.Utils;
 using Shapes;
 using Sirenix.OdinInspector;
@@ -30,12 +32,12 @@ namespace BML.Scripts
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
         [SerializeField] private Transform _enemyContainer;
         [SerializeField] private Transform _player;
-        [Required, SerializeField] private SphereCollider _enemyDeleteRadius;
 
         [TitleGroup("Spawning Parameters")]
         [SerializeField] private LayerMask _terrainLayerMask;
-        [Range(0f,100f)] private float _maxRaycastLength = 10f;
-        [SerializeField] private float _spawnOffsetRadius = 5f;
+        [Range(0f,100f), SerializeField] private float _maxRaycastLength = 10f;
+        [SerializeField] private float _spawnOffsetRadius = .5f;
+        [SerializeField, Range(1, 10)] private int _despawnNodeDistance = 5;
         [SerializeField] private BoolVariable _isSpawningPaused;
         [SerializeField] private FloatVariable _currentSpawnDelay;
         [SerializeField] private FloatVariable _currentSpawnCap;
@@ -132,16 +134,6 @@ namespace BML.Scripts
                         }
                     }
                 }
-            }
-
-            if (_enemyDeleteRadius != null)
-            {
-                var center = _enemyDeleteRadius.transform.position + _enemyDeleteRadius.center;
-                var radius = _enemyDeleteRadius.radius;
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireSphere(center, radius);
-                Gizmos.DrawRay(center, _enemyDeleteRadius.transform.up * 30f);
-                Gizmos.DrawSphere(center, 0.75f);
             }
 
             if (_enemyContainer != null)
@@ -314,29 +306,24 @@ namespace BML.Scripts
 
             lastDespawnTime = Time.time;
 
-            var center = _enemyDeleteRadius.transform.position + _enemyDeleteRadius.center;
-            var radius = _enemyDeleteRadius.radius;
-            var despawnablesInRange = Physics.OverlapSphere(center, radius, _enemyLayerMask)
-                .Select(coll => coll.GetComponent<EnemySpawnable>())
-                .Where(despawnable => despawnable != null)
-                .ToList();
-
-            if (_enableLogs)
-                Debug.Log(
-                    $"HandleDespawning Found {despawnablesInRange.Count}/{_enemyContainer.childCount} enemies in active range.");
-
             int despawnCount = 0;
             for (int i = 0; i < _enemyContainer.childCount; i++)
             {
-                var childEnemy = _enemyContainer.GetChild(i).GetComponent<EnemySpawnable>();
-                if (childEnemy == null) continue;
+                var childEnemyState = _enemyContainer.GetChild(i).GetComponent<EnemyState>();
+                if (childEnemyState == null) continue;
+                
+                if (childEnemyState.DistanceToPlayer < _despawnNodeDistance) continue;
 
-                bool foundInActive = despawnablesInRange.Contains(childEnemy);
-                if (!foundInActive)
-                {
-                    childEnemy.Despawn();
-                    despawnCount++;
-                }
+                var childEnemySpawnable = _enemyContainer.GetChild(i).GetComponent<EnemySpawnable>();
+                if (childEnemySpawnable == null) continue;
+                
+                if (_enableLogs)
+                    Debug.Log(
+                        $"HandleDespawning Despawning {childEnemySpawnable.name} " +
+                        $"with node distance from player: {childEnemyState.DistanceToPlayer}.");
+                
+                childEnemySpawnable.Despawn();
+                despawnCount++;
             }
 
             // Subtracting directly instead of calling UpdateEnemyCount because it looks like
@@ -396,14 +383,16 @@ namespace BML.Scripts
             SpawnPoint randomSpawnPoint = RandomUtils.RandomWithWeights(spawnPointWeights);
             
             // Spawn chosen enemy at chosen spawn point
-            var newEnemy = SpawnEnemy(randomSpawnPoint.transform.position, randomEnemy, true, _spawnOffsetRadius);
+            var newEnemy = SpawnEnemy(randomSpawnPoint.transform.position, randomEnemy, 
+                randomSpawnPoint.ParentNode, true, _spawnOffsetRadius);
             totalEnemySpawnCount++;
             
             // Update last spawn time
             lastSpawnTime = Time.time;
         }
         
-        private GameObject SpawnEnemy(Vector3 position, EnemySpawnParams enemy, bool doCountForSpawnCap, float randomOffsetRadius)
+        private GameObject SpawnEnemy(Vector3 position, EnemySpawnParams enemy, ICaveNodeData caveNodeData,
+            bool doCountForSpawnCap, float randomOffsetRadius)
         {
             // Calculate random spawn position offset
             var randomOffset = Random.insideUnitCircle;
@@ -448,7 +437,7 @@ namespace BML.Scripts
                 throw new ArgumentException($"EnemySpawnManager: '{enemyName}' Enemy not found in spawner list");
             }
 
-            return SpawnEnemy(position, enemy, doCountForSpawnCap, randomOffsetRadius);
+            return SpawnEnemy(position, enemy, null, doCountForSpawnCap, randomOffsetRadius);
         }
 
         private void OnEnemyKilled(object prevValue, object currValue)
