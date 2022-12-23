@@ -28,7 +28,8 @@ namespace Intensity
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
         
         [TitleGroup("Intensity Decay")]
-        [SerializeField] private float _intensityScoreDecayRate = 1f / 30f;
+        [Tooltip("The rate of intensity decay as a percent of Max Intensity per second")]
+        [SerializeField, Range(0f, 100f), SuffixLabel("%/s")] private float _intensityScoreDecayPercent = 15f;
         [SerializeField] private BoolReference _anyEnemiesEngaged;
         
         [TitleGroup("Intensity Response")]
@@ -196,7 +197,7 @@ namespace Intensity
 
             if (!doDecay) return;
 
-            float decay = (_intensityScoreDecayRate * _intensityScoreUpdatePeriod);
+            float decay = (_intensityScoreDecayPercent/100f * _maxIntensityScore.Value * _intensityScoreUpdatePeriod);
             
             float newIntensityScore = (_intensityScore.Value - decay);
             newIntensityScore = Mathf.Max(0, newIntensityScore);
