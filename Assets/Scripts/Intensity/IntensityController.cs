@@ -22,6 +22,7 @@ namespace Intensity
         
         [TitleGroup("Spawner Parameters")]
         [SerializeField] private BoolVariable _isSpawningPaused;
+        [SerializeField] private BoolVariable _hasPlayerExitedStartRoom;
         
         [TitleGroup("Debug")]
         [SerializeField] private bool _enableLogs;
@@ -58,6 +59,9 @@ namespace Intensity
 
         private void Update()
         {
+            if (!_hasPlayerExitedStartRoom.Value)
+                return;
+            
             if (lastPollTime + _pollingTime > Time.time)
                 return;
 

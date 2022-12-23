@@ -41,6 +41,7 @@ namespace BML.Scripts
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
         [SerializeField] private IntVariable _currentDifficulty;
+        [SerializeField] private BoolVariable _hasPlayerExitedStartRoom;
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
         [Required, SerializeField] [InlineEditor()] private List<EnemySpawnerParams> _enemySpawnerParamList = new List<EnemySpawnerParams>();
 
@@ -86,9 +87,13 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
+            
             _caveGenerator.OnAfterGenerate += InitSpawnPoints;
             _caveGenerator.OnAfterUpdatePlayerDistance += CacheActiveSpawnPoints;
             _onEnemyKilled.Subscribe(OnEnemyKilled);
+            
+            _isSpawningPaused.Value = true;
+            _hasPlayerExitedStartRoom.Subscribe(EnableSpawning);
         }
 
         private void OnDisable()
@@ -96,6 +101,7 @@ namespace BML.Scripts
             _caveGenerator.OnAfterGenerate -= InitSpawnPoints;
             _caveGenerator.OnAfterUpdatePlayerDistance -= CacheActiveSpawnPoints;
             _onEnemyKilled.Unsubscribe(OnEnemyKilled);
+            _hasPlayerExitedStartRoom.Unsubscribe(EnableSpawning);
         }
 
         private void Update()
@@ -267,6 +273,13 @@ namespace BML.Scripts
         #endregion
         
         #region Spawning
+
+        private void EnableSpawning()
+        {
+            if (_hasPlayerExitedStartRoom.Value)
+                _isSpawningPaused.Value = false;
+            
+        } 
 
         private void UpdateDifficultyParams()
         {
@@ -449,8 +462,8 @@ namespace BML.Scripts
                 .Select(child => child.GetComponent<EnemySpawnable>())
                 .Count(d => d != null && d.DoCountForSpawnCap && d.gameObject.activeSelf);
         }
-        
+
         #endregion
-        
+
     }
 }
