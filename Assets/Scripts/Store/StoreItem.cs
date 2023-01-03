@@ -13,7 +13,7 @@ namespace BML.Scripts.Store
     [CreateAssetMenu(fileName = "StoreItem", menuName = "BML/Store/StoreItem", order = 0)]
     public class StoreItem : ScriptableObject
     {
-        [PropertySpace(5f, 0f)]
+        [PropertySpace(0f, 0f)]
         [BoxGroup("Cost")] [HorizontalGroup("Cost/H", 10f)]
         [LabelText("R")] [LabelWidth(25f)]
         public int _resourceCost;
