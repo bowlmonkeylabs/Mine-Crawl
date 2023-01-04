@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62a8dd97943f407baf43d5381f5becd9, type: 3}
-  m_Name: StoreItem_RedCross
+  m_Name: StoreItem_ScarTissue
   m_EditorClassIdentifier: 
   _resourceCost: 0
   _rareResourceCost: 2
@@ -22,36 +22,23 @@ MonoBehaviour:
     EnableInstanceOptions: 0
     InstanceName: '{I} '
     InstancePath: IntermediateProperties
-    ConstantValue: 1
+    ConstantValue: 4
     Variable: {fileID: 0}
   _playerInventoryAmount:
-    ReferenceTypeSelector: 3
+    ReferenceTypeSelector: 1
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     RoundingBehavior_FloatVariable: 0
-    ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_BoolVariable: {fileID: 11400000, guid: daee3acd3757d15499bc89f9c53e2144, type: 2}
-  _itemLabel: Red Cross
-  _itemIcon: {fileID: 21300000, guid: d105f6e56eece3d42823ab57fc44a7ff, type: 3}
-  _itemEffectDescription: +2 Max Hearts
-  _itemStoreDescription: Encrusted with rubies, its gives off a bloody glow.
+    ReferenceValue_IntVariable: {fileID: 11400000, guid: 64ced0549ee87bf43b7436d371b829e4, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
+  _itemLabel: Scar Tissue
+  _itemIcon: {fileID: 21300000, guid: 4221cb41ab5682b4c8343a560d0c129c, type: 3}
+  _itemEffectDescription: +1 Max Hearts
+  _itemStoreDescription: You've grown accustomed to the pain.
   _onPurchased:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11400000, guid: daee3acd3757d15499bc89f9c53e2144, type: 2}
-        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.Variable`1[[System.Boolean,
-          mscorlib
-        m_MethodName: SetValue
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
+      - m_Target: {fileID: 11400000, guid: 64ced0549ee87bf43b7436d371b829e4, type: 2}
         m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
           ScriptableObjectSystem
         m_MethodName: Increment
@@ -59,23 +46,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 4
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  _onSold:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: daee3acd3757d15499bc89f9c53e2144, type: 2}
-        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.Variable`1[[System.Boolean,
-          mscorlib
-        m_MethodName: SetValue
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -88,8 +59,37 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: -4
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onSold:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 64ced0549ee87bf43b7436d371b829e4, type: 2}
+        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
+          ScriptableObjectSystem
+        m_MethodName: Increment
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: -1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
+        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
+          ScriptableObjectSystem
+        m_MethodName: Increment
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: -1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
