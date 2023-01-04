@@ -155,8 +155,11 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 {
                     updateStoredVertexDistance(caveNodeData, distanceToTarget);
 
-                    var adjacentVertices = this.AdjacentVertices(caveNodeData).Where(v => !checkedVertices.Contains(v));
-                    verticesToCheckNext.AddRange(adjacentVertices);
+                    if (this.ContainsVertex(caveNodeData))
+                    {
+                        var adjacentVertices = this.AdjacentVertices(caveNodeData).Where(v => !checkedVertices.Contains(v));
+                        verticesToCheckNext.AddRange(adjacentVertices);
+                    }
                 }
                 
                 verticesToCheck.Clear();
