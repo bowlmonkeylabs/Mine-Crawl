@@ -25,6 +25,7 @@ namespace BML.Scripts
         [FoldoutGroup("Parameters")] public float SpawnRadiusOffset = .5f;
         [FoldoutGroup("Parameters")] public bool RequireStableSurface;
         [FoldoutGroup("Parameters")] public bool InstanceAsPrefab;
+        [FoldoutGroup("Parameters")] public bool OccupySpawnPoint;
         [ReadOnly] public float NormalizedSpawnWeight;
     }
 }

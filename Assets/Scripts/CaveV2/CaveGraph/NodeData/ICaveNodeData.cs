@@ -25,5 +25,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public HashSet<Collider> BoundsColliders { get; set; }
         [ShowInInspector] public HashSet<SpawnPoint> SpawnPoints { get; set; }
         [ShowInInspector] public HashSet<Torch> Torches { get; set; }
+        
+        // Events
+        public event EventHandler onPlayerVisited;
     }
 }

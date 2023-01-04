@@ -32,11 +32,29 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             => Mathf.Min(Source.PlayerDistance, Target.PlayerDistance);
         [ShowInInspector] public int PlayerDistanceDelta
             => Mathf.RoundToInt((Source.PlayerDistanceDelta + Target.PlayerDistanceDelta) / 2f);
-        [ShowInInspector] public bool PlayerVisited { get; set; }
+        
+        [ShowInInspector] 
+        public bool PlayerVisited
+        {
+            get => playerVisited;
+            set
+            {
+                if (!playerVisited && value)
+                    OnPlayerVisited();
+                
+                playerVisited = value;
+            }
+        }
         [ShowInInspector] public bool PlayerOccupied { get; set; }
         [ShowInInspector] public int TorchRequirement { get; set; }
         [ShowInInspector] public float TorchInfluence { get; set; }
         [ShowInInspector] public float PlayerInfluence { get; set; }
+        
+        // Fields
+        private bool playerVisited;
+        
+        // Events
+        public event EventHandler onPlayerVisited;
         
         // Scene object references
         [ShowInInspector]
@@ -83,5 +101,9 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             Torches = new HashSet<Torch>();
         }
         
+        private void OnPlayerVisited()
+        {
+            onPlayerVisited?.Invoke(this, new EventArgs());
+        }
     }
 }

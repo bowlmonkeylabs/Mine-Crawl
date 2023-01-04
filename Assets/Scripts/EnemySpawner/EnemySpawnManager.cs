@@ -77,6 +77,7 @@ namespace BML.Scripts
         private float lastSpawnTime = Mathf.NegativeInfinity;
         private float lastDespawnTime = Mathf.NegativeInfinity;
         private int totalEnemySpawnCount;
+        private int retryCount;
         
         #region Unity lifecycle
 
@@ -84,6 +85,7 @@ namespace BML.Scripts
         {
             InitSpawnCosts();
             totalEnemySpawnCount = 0;
+            retryCount = 0;
         }
 
         private void OnEnable()
@@ -158,7 +160,6 @@ namespace BML.Scripts
         {
             foreach (var enemyParams in _enemySpawnerParamList)
             {
-                Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount);
                 int minCost = enemyParams.SpawnAtTags.Min(e => e.Cost);
                 int maxCost = enemyParams.SpawnAtTags.Max(e => e.Cost);
 
@@ -352,7 +353,9 @@ namespace BML.Scripts
             var weightPairs =  currentParams.SpawnAtTags.Select(e => 
                 new RandomUtils.WeightPair<EnemySpawnParams>(e, e.NormalizedSpawnWeight)).ToList();
 
-            Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount);
+            Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount + retryCount);
+            retryCount++;
+            
             EnemySpawnParams randomEnemyParams = RandomUtils.RandomWithWeights(weightPairs);
             
             List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemyParams.Tag]
@@ -362,7 +365,7 @@ namespace BML.Scripts
             // If no spawn points in range for this tag, return
             if (potentialSpawnPointsForTag.Count == 0)
             {
-                Debug.LogWarning($"HandleSpawning No valid spawn points available for enemy: {randomEnemyParams.Tag}");
+                if (_enableLogs) Debug.LogWarning($"HandleSpawning No valid spawn points available for enemy: {randomEnemyParams.Tag}");
                 return;
             }
             
@@ -380,6 +383,12 @@ namespace BML.Scripts
             
             // Choose weighted random spawn point
             SpawnPoint randomSpawnPoint = RandomUtils.RandomWithWeights(spawnPointWeights);
+
+            if (randomSpawnPoint.Occupied)
+            {
+                if (_enableLogs) Debug.LogWarning($"HandleSpawning Spawn point occupied for enemy: {randomEnemyParams.Tag}");
+                return;
+            }
 
             // Calculate random spawn position offset
             var randomOffset = Random.insideUnitCircle;
@@ -405,16 +414,19 @@ namespace BML.Scripts
             }
 
             // Spawn chosen enemy at chosen spawn point
-            var newEnemy = SpawnEnemy(spawnPos, randomEnemyParams, randomSpawnPoint.ParentNode,
+            var newEnemy = SpawnEnemy(spawnPos, randomEnemyParams, randomSpawnPoint, randomSpawnPoint.ParentNode,
                 true);
             totalEnemySpawnCount++;
-            
-            // Update last spawn time
+
+            if (randomEnemyParams.OccupySpawnPoint)
+                randomSpawnPoint.Occupied = true;
+
+            retryCount = 0;
             lastSpawnTime = Time.time;
         }
         
-        private GameObject SpawnEnemy(Vector3 position, EnemySpawnParams enemy, ICaveNodeData caveNodeData,
-            bool doCountForSpawnCap)
+        private GameObject SpawnEnemy(Vector3 position, EnemySpawnParams enemy, SpawnPoint spawnPoint,
+            ICaveNodeData caveNodeData, bool doCountForSpawnCap)
         {
             // Instantiate new enemy game object
             var newGameObject =
@@ -428,6 +440,7 @@ namespace BML.Scripts
             if (enemySpawnable != null)
             {
                 enemySpawnable.DoCountForSpawnCap = doCountForSpawnCap;
+                enemySpawnable.SpawnPoint = spawnPoint;
             }
 
             // Log and update enemy count
@@ -447,7 +460,7 @@ namespace BML.Scripts
                 throw new ArgumentException($"EnemySpawnManager: '{enemyName}' Enemy not found in spawner list");
             }
 
-            return SpawnEnemy(position, enemy, null, doCountForSpawnCap);
+            return SpawnEnemy(position, enemy, null, null, doCountForSpawnCap);
         }
 
         private void OnEnemyKilled(object prevValue, object currValue)

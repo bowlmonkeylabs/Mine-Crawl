@@ -242,6 +242,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                             GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
                         newGameObject.transform.SetPositionAndRotation(spawnPos + spawnOffset, spawnPoint.transform.rotation);
                             
+                        // Catalog spawn points again in case this newGameObject added more spawn points
                         CatalogSpawnPoints(newGameObject.transform, spawnPoint.ParentNode);
 
                         if (spawnAtTagParameters.ChooseWithoutReplacement)
