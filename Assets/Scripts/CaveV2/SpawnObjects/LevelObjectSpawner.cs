@@ -233,7 +233,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                         if (spawnAtTagParameters.RequireStableSurface && !hitStableSurface)
                         {
                             if (_caveGenerator.EnableLogs)
-                                Debug.Log($"Failed to spawn {spawnAtTagParameters.Prefab?.name}. No stable " +
+                                Debug.LogWarning($"Failed to spawn {spawnAtTagParameters.Prefab?.name}. No stable " +
                                           $"surface found!");
                             continue;
                         }

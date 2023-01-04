@@ -18,10 +18,13 @@ namespace BML.Scripts
     {
         public string Tag;
         public GameObject Prefab;
-        public bool InstanceAsPrefab;
         public int Cost = 1;
-        public Vector3 RaycastDirection = Vector3.down;
-        public float RaycastOffset = 0f;
+        [FoldoutGroup("Parameters")] public Vector3 RaycastDirection = Vector3.down;
+        [FoldoutGroup("Parameters")] public float RaycastOffset = 0f;
+        [FoldoutGroup("Parameters")] public float SpawnPosOffset = 0f;
+        [FoldoutGroup("Parameters")] public float SpawnRadiusOffset = .5f;
+        [FoldoutGroup("Parameters")] public bool RequireStableSurface;
+        [FoldoutGroup("Parameters")] public bool InstanceAsPrefab;
         [ReadOnly] public float NormalizedSpawnWeight;
     }
 }

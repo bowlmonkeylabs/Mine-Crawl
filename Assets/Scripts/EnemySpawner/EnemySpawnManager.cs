@@ -36,7 +36,6 @@ namespace BML.Scripts
         [TitleGroup("Spawning Parameters")]
         [SerializeField] private LayerMask _terrainLayerMask;
         [Range(0f,100f), SerializeField] private float _maxRaycastLength = 10f;
-        [SerializeField] private float _spawnOffsetRadius = .5f;
         [SerializeField, Range(1, 10)] private int _despawnNodeDistance = 5;
         [SerializeField] private BoolVariable _isSpawningPaused;
         [SerializeField] private FloatVariable _currentSpawnDelay;
@@ -354,16 +353,16 @@ namespace BML.Scripts
                 new RandomUtils.WeightPair<EnemySpawnParams>(e, e.NormalizedSpawnWeight)).ToList();
 
             Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount);
-            EnemySpawnParams randomEnemy = RandomUtils.RandomWithWeights(weightPairs);
+            EnemySpawnParams randomEnemyParams = RandomUtils.RandomWithWeights(weightPairs);
             
-            List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemy.Tag]
+            List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemyParams.Tag]
                 .Where(spawnPoint => spawnPoint.EnemySpawnWeight != 0)
                 .ToList();
             
             // If no spawn points in range for this tag, return
             if (potentialSpawnPointsForTag.Count == 0)
             {
-                Debug.LogWarning($"HandleSpawning No valid spawn points available for enemy: {randomEnemy.Tag}");
+                Debug.LogWarning($"HandleSpawning No valid spawn points available for enemy: {randomEnemyParams.Tag}");
                 return;
             }
             
@@ -381,10 +380,33 @@ namespace BML.Scripts
             
             // Choose weighted random spawn point
             SpawnPoint randomSpawnPoint = RandomUtils.RandomWithWeights(spawnPointWeights);
+
+            // Calculate random spawn position offset
+            var randomOffset = Random.insideUnitCircle;
+            var spawnPoint = randomSpawnPoint.transform.position +
+                             new Vector3(randomOffset.x, 0f, randomOffset.y) * randomEnemyParams.SpawnRadiusOffset;
             
+            // Raycast from spawn position to place new game object along the level surface
+            Vector3 spawnPos;
+            var hitStableSurface = SpawnObjectsUtil.GetPointTowards(
+                (spawnPoint - randomEnemyParams.RaycastDirection * randomEnemyParams.RaycastOffset),
+                randomEnemyParams.RaycastDirection,
+                out spawnPos,
+                _terrainLayerMask,
+                _maxRaycastLength);
+            
+            // Cancel spawn if did not find surface to spawn
+            if (randomEnemyParams.RequireStableSurface && !hitStableSurface)
+            {
+                if (_enableLogs)
+                    Debug.LogWarning($"Failed to spawn {randomEnemyParams.Prefab?.name}. No stable " +
+                              $"surface found!");
+                return;
+            }
+
             // Spawn chosen enemy at chosen spawn point
-            var newEnemy = SpawnEnemy(randomSpawnPoint.transform.position, randomEnemy, 
-                randomSpawnPoint.ParentNode, true, _spawnOffsetRadius);
+            var newEnemy = SpawnEnemy(spawnPos, randomEnemyParams, randomSpawnPoint.ParentNode,
+                true);
             totalEnemySpawnCount++;
             
             // Update last spawn time
@@ -392,27 +414,15 @@ namespace BML.Scripts
         }
         
         private GameObject SpawnEnemy(Vector3 position, EnemySpawnParams enemy, ICaveNodeData caveNodeData,
-            bool doCountForSpawnCap, float randomOffsetRadius)
+            bool doCountForSpawnCap)
         {
-            // Calculate random spawn position offset
-            var randomOffset = Random.insideUnitCircle;
-            var spawnPoint = position +
-                             new Vector3(randomOffset.x, 0f, randomOffset.y) * randomOffsetRadius;
-            
             // Instantiate new enemy game object
             var newGameObject =
                 GameObjectUtils.SafeInstantiate(true, enemy.Prefab, _enemyContainer);
-
-            // Raycast from spawn position to place new game object along the level surface
-            Vector3 spawnPos;
-            SpawnObjectsUtil.GetPointTowards(
-                (spawnPoint - enemy.RaycastDirection * enemy.RaycastOffset),
-                enemy.RaycastDirection,
-                out spawnPos,
-                _terrainLayerMask,
-                _maxRaycastLength);
-            newGameObject.transform.position = spawnPos;
             
+            var spawnOffset = -enemy.RaycastDirection * enemy.SpawnPosOffset;
+            newGameObject.transform.position = position + spawnOffset;
+
             // Set parameters on enemy despawnable instance
             var enemySpawnable = newGameObject.GetComponent<EnemySpawnable>();
             if (enemySpawnable != null)
@@ -421,7 +431,7 @@ namespace BML.Scripts
             }
 
             // Log and update enemy count
-            if (_enableLogs) Debug.Log($"SpawnEnemy {enemy.Prefab.name} {spawnPoint}");
+            if (_enableLogs) Debug.Log($"SpawnEnemy {enemy.Prefab.name} {position}");
             _currentEnemyCount.Value = _enemyContainer.Cast<Transform>().Count(t => t.gameObject.activeSelf);
 
             return newGameObject;
@@ -437,7 +447,7 @@ namespace BML.Scripts
                 throw new ArgumentException($"EnemySpawnManager: '{enemyName}' Enemy not found in spawner list");
             }
 
-            return SpawnEnemy(position, enemy, null, doCountForSpawnCap, randomOffsetRadius);
+            return SpawnEnemy(position, enemy, null, doCountForSpawnCap);
         }
 
         private void OnEnemyKilled(object prevValue, object currValue)
