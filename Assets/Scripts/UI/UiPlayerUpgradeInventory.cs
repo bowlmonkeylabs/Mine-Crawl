@@ -14,25 +14,26 @@ namespace BML.Scripts.UI
         [SerializeField] private Transform _iconsContainer;
         [SerializeField] private DynamicGameEvent _onBuyEvent;
 
-        private List<StoreItem> _itemsPlayerHas;
+        [SerializeField] private List<StoreItem> _itemsPlayerHas;
 
         void OnEnable() {
-            _onBuyEvent.Subscribe(OnBuy);
+            _onBuyEvent.Subscribe(OnBuy_Dynamic);
             
+            ResolveInventory();
             #warning Remove this once we're done working on the stores/inventory
             GenerateStoreIcons();
         }
 
         void OnDisable() {
-            _onBuyEvent.Unsubscribe(OnBuy);
+            _onBuyEvent.Unsubscribe(OnBuy_Dynamic);
         }
 
         [Button]
         private void GenerateStoreIcons() {
             DestroyStoreIcons();
-            
-            _itemsPlayerHas = _upgradeStoreInventory.StoreItems.Where(si => si._playerInventoryAmount.Value > 0).ToList();
 
+            // ResolveInventory();
+            
             if(_itemsPlayerHas.Count > _iconsContainer.childCount) {
                 Debug.LogError("Upgrade inventory does not have enough slots to display all items");
                 return;
@@ -53,8 +54,22 @@ namespace BML.Scripts.UI
             }
         }
 
-        protected void OnBuy(object prevStoreItem, object storeItem) {
+        protected void OnBuy_Dynamic(object prevStoreItem, object storeItem) {
+            OnBuy(storeItem as StoreItem);
+        }
+        protected void OnBuy(StoreItem storeItem)
+        {
+            if (!_itemsPlayerHas.Contains(storeItem))
+            {
+                _itemsPlayerHas.Add(storeItem);
+            }
             GenerateStoreIcons();
         }
+
+        private void ResolveInventory()
+        {
+            _itemsPlayerHas = _upgradeStoreInventory.StoreItems.Where(si => si._playerInventoryAmount.Value > 0).ToList();
+        }
+        
     }
 }
