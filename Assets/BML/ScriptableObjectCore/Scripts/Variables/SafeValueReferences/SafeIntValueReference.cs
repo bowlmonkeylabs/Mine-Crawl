@@ -38,6 +38,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
             FloatVariable = 2,
             BoolVariable = 3,
         }
+
+        public enum IntRoundingBehavior
+        {
+            Truncate = 0,
+            Round = 1,
+        }
         
         [VerticalGroup("Top")]
         [HorizontalGroup("Top/Split", LabelWidth = 0.001f)]
@@ -129,8 +135,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         [ShowIf("@!UseConstant && _showFloatVariable")]
         [InlineEditor()]
         [SerializeField]
-        protected IntVariable ReferenceValue_FloatVariable;
+        protected FloatVariable ReferenceValue_FloatVariable;
         
+        [HideLabel]
+        [ShowIf("@!UseConstant && _showFloatVariable")]
+        [SerializeField]
+        protected IntRoundingBehavior RoundingBehavior_FloatVariable;
         
         private bool _showIntVariable => ReferenceTypeSelector == IntReferenceTypes.IntVariable;
         [BoxGroup("Top/Split/Right", ShowLabel = false)]
@@ -169,7 +179,18 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                 switch (ReferenceTypeSelector)
                 {
                     case IntReferenceTypes.FloatVariable:
-                        return ReferenceValue_FloatVariable?.Value ?? 0;
+                        if (ReferenceValue_FloatVariable == null)
+                        {
+                            return 0;
+                        }
+                        switch (RoundingBehavior_FloatVariable)
+                        {
+                            default:
+                            case IntRoundingBehavior.Truncate:
+                                return (int) Math.Truncate(ReferenceValue_FloatVariable.Value);
+                            case IntRoundingBehavior.Round:
+                                return Mathf.RoundToInt(ReferenceValue_FloatVariable.Value);
+                        }
                     case IntReferenceTypes.IntVariable:
                         return ReferenceValue_IntVariable?.Value ?? 0;
                     case IntReferenceTypes.BoolVariable:
