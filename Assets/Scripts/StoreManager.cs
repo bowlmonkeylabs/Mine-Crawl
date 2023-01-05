@@ -20,6 +20,7 @@ namespace BML.Scripts
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private GameEvent _onStoreFailOpenEvent;
         [SerializeField] private UnityEvent _onPurchaseItem;
+        [SerializeField] private UnityEvent _onPurchaseItemFail;
 
         private void Awake()
         {
@@ -47,7 +48,7 @@ namespace BML.Scripts
                     _rareResourceCount.Value < storeItem._rareResourceCost ||
                     _enemyResourceCount.Value < storeItem._enemyResourceCost)
                 {
-                    _onStoreFailOpenEvent.Raise();
+                    _onPurchaseItemFail.Invoke();
                     return;
                 }
             
