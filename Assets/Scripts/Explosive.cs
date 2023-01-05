@@ -20,12 +20,13 @@ namespace BML.Scripts
         [SerializeField] private UnityEvent _onExplosion;
 
         private bool isActive;
+        private bool isDeActivated;
         private float activateTime;
         private float currentFuseTime;
 
         public void Activate()
         {
-            if (isActive)
+            if (isActive || isDeActivated)
                 return;
             
             Activate(false);
@@ -45,11 +46,13 @@ namespace BML.Scripts
             activateTime = Time.time;
             isActive = true;
             currentFuseTime = isShortFuse ? _explosionShortFuseTime.Value : _explosionTime.Value;
+            Debug.Log($"Activated {name} | IsShortFuse {isShortFuse}");
         }
 
         public void Deactivate()
         {
             isActive = false;
+            isDeActivated = true;
         }
 
         private void Update()
@@ -82,11 +85,13 @@ namespace BML.Scripts
 
                 if(damageable != null) {
                     damageable.TakeDamage(new HitInfo(_damageType, _damage.Value, (col.transform.position - transform.position).normalized));
+                    Debug.Log($"Damaging {damageable.gameObject.name}");
                 }
             }
 
             isActive = false;
             _onExplosion.Invoke();
+            Debug.Log($"Explode {name}");
         }
         
         private void OnDrawGizmos()
