@@ -14,12 +14,17 @@ namespace BML.Scripts
     {
 
         #region Inspector
-        [SerializeField] [ShowIf("_useHealthVariable")] [LabelText("health")] private IntVariable _healthReference;
-        [SerializeField] [HideIf("_useHealthVariable")] private int _health;
         [SerializeField] private bool _useHealthVariable = false;
-        [SerializeField] private SafeFloatValueReference _invincibilitySeconds;
+        [SerializeField, ShowIf("_useHealthVariable")] [LabelText("health")] private IntVariable _healthReference;
+        [SerializeField, HideIf("_useHealthVariable")] private int _health;
+
+        [SerializeField] private bool _hasMaxHealth = false;
+        [SerializeField, ShowIf("_hasMaxHealth")] private IntReference _maxHealthReference;
+
         [SerializeField] private bool _isInvincible = false;
         [ShowInInspector, ReadOnly] private bool _isInvincibleFrames = false;
+        [SerializeField, ShowIf("_isInvincible")] private SafeFloatValueReference _invincibilitySeconds;
+        
         [SerializeField] private UnityEvent<int, int> _onHealthChange;
         [SerializeField] private UnityEvent _onTakeDamage;
         [SerializeField] private UnityEvent _onDeath;
@@ -81,9 +86,9 @@ namespace BML.Scripts
 
         #region Public interface
 
-        public void IncrementHealth(int amount) 
+        public bool Heal(int amount) 
         {
-            this.DecrementHealth(-amount);
+            return this.SetHealth(Value + amount) > 0;
         }
 
         private IEnumerator InvincibilityTimer()
@@ -103,28 +108,20 @@ namespace BML.Scripts
             OnInvincibilityChange?.Invoke(IsInvincible);
         }
         
-        public bool DecrementHealth(int amount) 
+        public bool Damage(int amount) 
         {
             if (IsDead || IsInvincible) return false;
             
             lastDamageTime = Time.time;
             StartCoroutine(InvincibilityTimer());
 
-            _onHealthChange.Invoke(Value, Value - amount);
-            OnHealthChange?.Invoke(Value, Value - amount);
-            if (amount > 0) _onTakeDamage.Invoke();
-            
-            _value -= amount;
-            if (Value <= 0)
-            {
-                Death();
-            }
-
-            return true;
+            return this.SetHealth(Value - amount) < 0;
         }
         
         public int SetHealth(int newValue)
         {
+            newValue = Mathf.Clamp(newValue, 0, _hasMaxHealth ? _maxHealthReference.Value : 999);
+
             var oldValue = Value;
             _value = newValue;
             var delta = Value - oldValue;
@@ -138,7 +135,7 @@ namespace BML.Scripts
                 Death();
             }
 
-            return Value;
+            return delta;
         }
 
         public void Revive()

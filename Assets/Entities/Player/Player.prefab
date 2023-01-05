@@ -6234,36 +6234,9 @@ MonoBehaviour:
     Variable: {fileID: 11400000, guid: 3eb5a28a7ccc61c4b8f7017bb113aae2, type: 2}
   _ropeStoreItem: {fileID: 11400000, guid: 01b8913576a807d498a21b4c024108d5, type: 2}
   _healthController: {fileID: 1905872712608776435}
-  _health:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: '{I} '
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
-  _maxHealth:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: '{I} '
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
+  _tryHeal: {fileID: 11400000, guid: 53271449bb8603c47888fac4bcdcd7e2, type: 2}
   _inCombat: {fileID: 11400000, guid: d14b9ee14bf2cde49a3a03f3e19ba4b3, type: 2}
   _combatTimer: {fileID: 11400000, guid: 42e862b6a0943ac4cb4b626d1975bcba, type: 2}
-  _intensityScore: {fileID: 11400000, guid: b9ffab9e48115f84e9ac88db538de371, type: 2}
-  _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
-  _anyEnemiesEngaged:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 93e2d79ad44ed104a9eb3c022677d8a3, type: 2}
-  _intensityScoreUpdatePeriod: 1
-  _intensityScoreDecayRate: 1
-  _intensityScoreDamageMultiplier: 1
-  _intensityScoreKillDistanceMinMax: {x: 20, y: 5}
-  _intensityScoreKillMultiplier: 1
   _isStoreOpen:
     UseConstant: 0
     EnableInstanceOptions: 0
@@ -6366,16 +6339,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _useHealthVariable: 1
   _healthReference: {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
   _health: 3
-  _useHealthVariable: 1
+  _hasMaxHealth: 1
+  _maxHealthReference:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: '{I} '
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
+  _isInvincible: 0
   _invincibilitySeconds:
     ReferenceTypeSelector: 1
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 11400000, guid: 5c0c6371089aaba47b3c6f1d36c29e80, type: 2}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-  _isInvincible: 0
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -6650,6 +6631,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _fallDamageFeedback: {fileID: 2754442154770889696}
+  _enableLogs: 0
 --- !u!1 &2835735834022315347
 GameObject:
   m_ObjectHideFlags: 0

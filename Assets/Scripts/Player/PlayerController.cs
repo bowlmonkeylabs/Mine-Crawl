@@ -63,8 +63,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Rope")] private StoreItem _ropeStoreItem;
         
         [SerializeField, FoldoutGroup("Health")] private Health _healthController;
-        [SerializeField, FoldoutGroup("Health")] private IntReference _health;
-        [SerializeField, FoldoutGroup("Health")] private IntReference _maxHealth;
+        [SerializeField, FoldoutGroup("Health")] private DynamicGameEvent _tryHeal;
 
         [SerializeField, FoldoutGroup("Combat State")] private BoolVariable _inCombat;
         [SerializeField, FoldoutGroup("Combat State")] private TimerVariable _combatTimer;
@@ -89,9 +88,9 @@ namespace BML.Scripts.Player
         private void OnEnable()
         {
             _isGodModeEnabled.Subscribe(SetGodMode);
-            _health.Subscribe(ClampHealth);
             _combatTimer.SubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
+            _tryHeal.Subscribe(Heal);
             
             SetGodMode();
         }
@@ -99,9 +98,9 @@ namespace BML.Scripts.Player
         private void OnDisable()
         {
             _isGodModeEnabled.Unsubscribe(SetGodMode);
-            _health.Unsubscribe(ClampHealth);
             _combatTimer.UnsubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
+            _tryHeal.Unsubscribe(Heal);
         }
 
         private void Update()
@@ -486,11 +485,15 @@ namespace BML.Scripts.Player
         {
             _healthController.Revive();
         }
-        
-        private void ClampHealth()
+
+        public void Heal(int amount)
         {
-            if (_health.Value > _maxHealth.Value)
-                _health.Value = _maxHealth.Value;
+            _healthController.Heal(amount);
+        }
+
+        public void Heal(object p, object amount)
+        {
+            this.Heal((int) amount);
         }
         
         #endregion
