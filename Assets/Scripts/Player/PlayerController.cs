@@ -66,6 +66,8 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Health")] private DynamicGameEvent _tryHeal;
 
         [SerializeField, FoldoutGroup("Combat State")] private BoolVariable _inCombat;
+        [SerializeField, FoldoutGroup("Combat State")] private BoolVariable _anyEnemiesEngaged;
+        [SerializeField, FoldoutGroup("Combat State")] private float _safeCombatTimerDecayMultiplier = 2f;
         [SerializeField, FoldoutGroup("Combat State")] private TimerVariable _combatTimer;
 
         [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
@@ -108,7 +110,7 @@ namespace BML.Scripts.Player
             if (pickaxeInputHeld) TryUsePickaxe();
             if (secondaryInputHeld) TryUseSweep();
             HandleHover();
-            _combatTimer.UpdateTime();
+            _combatTimer.UpdateTime(!_anyEnemiesEngaged.Value ? _safeCombatTimerDecayMultiplier : 1f);
             _pickaxeSwingCooldown.UpdateTime();
             _pickaxeSweepCooldown.UpdateTime();
         }
