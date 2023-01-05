@@ -18,7 +18,8 @@ namespace BML.Scripts.Player
         [SerializeField] private MMF_Player _fallDamageFeedback;
         [SerializeField] private bool _enableLogs;
         
-        private float fallStartHeight;
+        private float fallStartHeight = Mathf.NegativeInfinity;
+        private bool hasLandedInStartRoom;
 
         #region UnityLifecyle
 
@@ -39,7 +40,16 @@ namespace BML.Scripts.Player
         private void OnGroundingStatusChanged(bool prev, bool isGrounded)
         {
             if (isGrounded)
+            {
+                //This check is to prevent taking fall damage when spawning into start room
+                if (!hasLandedInStartRoom)
+                {
+                    hasLandedInStartRoom = true;
+                    return;
+                }
+                
                 TryApplyFallDamage();
+            }
             else
                 ResetFall();
         }
