@@ -18,6 +18,7 @@ namespace BML.Scripts
         [SerializeField] private BoolVariable _isGodModeEnabled;
         [SerializeField] private BoolVariable _inCombat;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
+        [SerializeField] private GameEvent _onStoreFailOpenEvent;
         [SerializeField] private UnityEvent _onPurchaseItem;
 
         private void Awake()
@@ -34,26 +35,26 @@ namespace BML.Scripts
         {
             StoreItem storeItem = (StoreItem) storeItemObj;
 
-            if (_isGodModeEnabled.Value)
+            if (!_isGodModeEnabled.Value)
             {
-                DoPurchase(storeItem);
-                return;
-            }
-
-            if(_inCombat.Value) {
-                return;
-            }
-
-            if (_resourceCount.Value < storeItem._resourceCost ||
-                _rareResourceCount.Value < storeItem._rareResourceCost ||
-                _enemyResourceCount.Value < storeItem._enemyResourceCost)
-                return;
-            
+                if (_inCombat.Value)
+                {
+                    _onStoreFailOpenEvent.Raise();
+                    return;
+                }
                 
+                if (_resourceCount.Value < storeItem._resourceCost ||
+                    _rareResourceCount.Value < storeItem._rareResourceCost ||
+                    _enemyResourceCount.Value < storeItem._enemyResourceCost)
+                {
+                    _onStoreFailOpenEvent.Raise();
+                    return;
+                }
             
-            _resourceCount.Value -= storeItem._resourceCost;
-            _rareResourceCount.Value -= storeItem._rareResourceCost;
-            _enemyResourceCount.Value -= storeItem._enemyResourceCost;
+                _resourceCount.Value -= storeItem._resourceCost;
+                _rareResourceCount.Value -= storeItem._rareResourceCost;
+                _enemyResourceCount.Value -= storeItem._enemyResourceCost;
+            }
 
             DoPurchase(storeItem);
         }
