@@ -1,11 +1,16 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using BML.Script.Audio;
+using BML.Script.MMFFeedbacks;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using MoreMountains.Tools;
 using UnityEngine;
 
 namespace BML.Scripts
 {
-    public class TimeManager : MonoBehaviour
+    public class TimeManager : MMPersistentSingleton<TimeManager>
     { 
         [SerializeField] private GameEvent _onToggleFreezeTime;
         [SerializeField] private GameEvent _onFreezeTime;
@@ -22,7 +27,14 @@ namespace BML.Scripts
         private float fpsRefresh = .5f;
         private float fpsRefreshTimer;
         private int fps;
-        
+        private List<PauseAudioSource> pauseAudioSources = new List<PauseAudioSource>();
+
+        public delegate void OnPauseGame_();
+        public delegate void OnUnPauseGame_();
+
+        public event OnPauseGame_ OnPauseGame;
+        public event OnUnPauseGame_ OnUnPauseGame;
+
         #region Unity Methods
 
         private void OnEnable()
@@ -118,7 +130,12 @@ namespace BML.Scripts
         {
             Time.timeScale = 0f;
             isFrozen = true;
-            AudioListener.pause = true;
+            //AudioListener.pause = true;
+            
+            pauseAudioSources = FindObjectsOfType<PauseAudioSource>().ToList();
+            pauseAudioSources.ForEach(a => a.Pause());
+            
+            OnPauseGame?.Invoke();
             Debug.Log("Froze Game");
         }
 
@@ -126,7 +143,10 @@ namespace BML.Scripts
         {
             Time.timeScale = timescaleFactor;
             isFrozen = false;
-            AudioListener.pause = false;
+            //AudioListener.pause = false;
+            pauseAudioSources.ForEach(a => a.Resume());
+
+            OnUnPauseGame?.Invoke();
             Debug.Log("UnFroze Game");
         }
 

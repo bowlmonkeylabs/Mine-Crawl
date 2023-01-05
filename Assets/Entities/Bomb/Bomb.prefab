@@ -396,6 +396,8 @@ MonoBehaviour:
           ButtonText: Debug Play Sound
         TestStopButton:
           ButtonText: Debug Stop Sound
+        TimeManagerReference: {fileID: 11400000, guid: c961768a80ab72c409bcf416fcebb4b8, type: 2}
+        PauseSoundWhenPauseGame: 1
         MinVolume: 0.5
         MaxVolume: 0.5
         MinPitch: 1
@@ -705,16 +707,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _useHealthVariable: 0
   _healthReference: {fileID: 0}
   _health: 1
-  _useHealthVariable: 0
+  _hasMaxHealth: 0
+  _maxHealthReference:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 0}
+  _isInvincible: 0
   _invincibilitySeconds:
     ReferenceTypeSelector: 0
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-  _isInvincible: 0
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -967,6 +977,8 @@ MonoBehaviour:
           ButtonText: Debug Play Sound
         TestStopButton:
           ButtonText: Debug Stop Sound
+        TimeManagerReference: {fileID: 0}
+        PauseSoundWhenPauseGame: 1
         MinVolume: 1
         MaxVolume: 1
         MinPitch: 1
