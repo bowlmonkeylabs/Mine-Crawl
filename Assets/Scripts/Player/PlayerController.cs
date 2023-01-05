@@ -25,7 +25,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Interactable hover")] private int _hoverUpdatesPerSecond = 20;
         private float lastHoverUpdateTime;
 
-        [SerializeField, FoldoutGroup("Pickaxe")] private float _interactDistance = 5f;
+        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _interactDistance;
         [SerializeField, FoldoutGroup("Pickaxe")] private float _interactCastRadius = .25f;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _interactMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
@@ -184,7 +184,7 @@ namespace BML.Scripts.Player
             _swingPickaxeFeedback.PlayFeedbacks();
             _pickaxeSwingCooldown.RestartTimer();
             
-            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
+            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance.Value,
                 _interactMask, QueryTriggerInteraction.Ignore))
             {
                 if (hit.collider.gameObject.IsInLayerMask(_terrainMask))
@@ -202,7 +202,7 @@ namespace BML.Scripts.Player
             //Don't consider terrain in sphere cast
             LayerMask interactNoTerrainMask = _interactMask & ~_terrainMask;
             if (Physics.SphereCast(_mainCamera.position, _interactCastRadius, _mainCamera.forward, out hit,
-                _interactDistance, interactNoTerrainMask, QueryTriggerInteraction.Ignore))
+                _interactDistance.Value, interactNoTerrainMask, QueryTriggerInteraction.Ignore))
             {
                 HandlePickaxeHit(hit);
                 return;
@@ -246,7 +246,7 @@ namespace BML.Scripts.Player
 
         public void SetPickaxeDistance(float dist)
         {
-            _interactDistance = dist;
+            _interactDistance.Value = dist;
         }
         
         private void TryUseSweep()
@@ -451,7 +451,7 @@ namespace BML.Scripts.Player
             lastHoverUpdateTime = Time.time;
             
             RaycastHit hit;
-            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
+            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance.Value,
                 _interactMask, QueryTriggerInteraction.Ignore))
             {
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
@@ -463,7 +463,7 @@ namespace BML.Scripts.Player
             }
             
             if (Physics.SphereCast(_mainCamera.position, _interactCastRadius, _mainCamera.forward, out hit,
-                _interactDistance, _interactMask, QueryTriggerInteraction.Ignore))
+                _interactDistance.Value, _interactMask, QueryTriggerInteraction.Ignore))
             {
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
                 if (interactionReceiver != null)
