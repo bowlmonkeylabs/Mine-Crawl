@@ -587,7 +587,7 @@ namespace BML.Scripts.CaveV2
                     caveGraph.FloodFillDistance(objectiveVertices, (node, dist) =>
                     {
                         int maxDifficulty = _difficultySegmentCount - 1;
-                        float objectiveClosenessFactor = 1 - (float) dist / this.MaxObjectiveDistance;
+                        float objectiveClosenessFactor = 1 - (float) dist / startNode.ObjectiveDistance;
                         node.Difficulty = Mathf.Min(maxDifficulty, Mathf.FloorToInt(objectiveClosenessFactor * _difficultySegmentCount));
                     });
                 }
