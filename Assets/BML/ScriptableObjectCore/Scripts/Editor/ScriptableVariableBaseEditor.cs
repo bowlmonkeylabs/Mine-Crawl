@@ -178,11 +178,15 @@ namespace BML.ScriptableObjectCoreEditor
                 test?.BroadcastUpdate();
             }
 
-            if(!this.isInit)
+            if (GUILayout.Button("Find References"))
             {
-                this.isInit = true;
-                this.Init();
+                if (!this.isInit)
+                {
+                    this.isInit = true;
+                    this.Init();
+                }
             }
+
             //if (this.monoBehaviours.Count > 0)
             //{
             EditorGUILayout.Space(10f);
