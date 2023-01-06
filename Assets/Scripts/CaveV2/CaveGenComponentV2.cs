@@ -588,7 +588,9 @@ namespace BML.Scripts.CaveV2
                     {
                         int maxDifficulty = _difficultySegmentCount - 1;
                         float objectiveClosenessFactor = 1 - (float) dist / startNode.ObjectiveDistance;
-                        node.Difficulty = Mathf.Min(maxDifficulty, Mathf.FloorToInt(objectiveClosenessFactor * _difficultySegmentCount));
+                        var intermediate = Mathf.Min(maxDifficulty,
+                            Mathf.FloorToInt(objectiveClosenessFactor * _difficultySegmentCount));
+                        node.Difficulty = Mathf.Max(0, intermediate);
                     });
                 }
 
