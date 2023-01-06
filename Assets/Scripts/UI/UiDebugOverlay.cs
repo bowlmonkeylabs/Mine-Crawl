@@ -1,5 +1,7 @@
+using BML.Script.Intensity;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using Intensity;
 using TMPro;
 using UnityEngine;
 
@@ -8,6 +10,7 @@ namespace BML.Scripts.UI
     public class UiDebugOverlay : MonoBehaviour
     {
         [SerializeField] private TMP_Text _text;
+        [SerializeField] private TMP_Text _intensityResponseText;
         [SerializeField] private TransformSceneReference _playerTransformSceneReference;
         [SerializeField] private FloatVariable _levelTimeElapsed;
         [SerializeField] private FloatVariable _currentSpawnDelay;
@@ -20,6 +23,7 @@ namespace BML.Scripts.UI
         [SerializeField] private BoolVariable _anyEnemiesEngaged;
         [SerializeField] private TimerVariable _playerCombatTimer;
         [SerializeField] private FloatVariable _playerIntensityScore;
+        [SerializeField] private IntensityResponseStateData _intensityResponse;
 
         #region Unity lifecycle
 
@@ -52,6 +56,24 @@ Any Enemies Engaged: {_anyEnemiesEngaged.Value}
 Combat Timer: {_playerCombatTimer.RemainingTime}
 Intensity Score: {_playerIntensityScore.Value.ToString("0.00")}
 ";
+
+            switch (_intensityResponse.Value)
+            {
+                case IntensityController.IntensityResponse.Decreasing:
+                    _intensityResponseText.color = Color.red;
+                    break;
+                case IntensityController.IntensityResponse.Increasing:
+                    _intensityResponseText.color = Color.green;
+                    break;
+                case IntensityController.IntensityResponse.AboveMax:
+                    _intensityResponseText.color = Color.yellow;
+                    break;
+                case IntensityController.IntensityResponse.BelowMin:
+                    _intensityResponseText.color = Color.blue;
+                    break;
+            }
+            
+            _intensityResponseText.text = $@"{_intensityResponse.Value.ToString()}";
         }
 
         private string FormatVector3(Vector3 vector3) 

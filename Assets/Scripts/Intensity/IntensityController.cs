@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using BML.Script.Intensity;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
@@ -33,6 +34,7 @@ namespace Intensity
         [SerializeField] private BoolReference _anyEnemiesEngaged;
         
         [TitleGroup("Intensity Response")]
+        [SerializeField] private IntensityResponseStateData _intensityResponse;
         [SerializeField] private SafeFloatValueReference _maxIntensityScore;
         [SerializeField] private SafeFloatValueReference _minIntensityScore;
         [SerializeField] private IntVariable _currentDifficulty;
@@ -46,16 +48,14 @@ namespace Intensity
         
         [TitleGroup("Debug")]
         [SerializeField] private bool _enableLogs;
-
-        [ShowInInspector, ReadOnly] private IntensityResponse intensityResponse;
-
+        
         #endregion
 
         private Health playerHealthController;
         private float lastUpdateTime = Mathf.NegativeInfinity;
         private float timeAtMaxIntensity, timeAtMinIntensity;
 
-        enum IntensityResponse
+        public enum IntensityResponse
         {
             Increasing,
             AboveMax,
@@ -72,7 +72,7 @@ namespace Intensity
 
         private void Start()
         {
-            intensityResponse = IntensityResponse.Increasing;
+            _intensityResponse.Value = IntensityResponse.Increasing;
         }
 
         private void OnEnable()
@@ -109,14 +109,14 @@ namespace Intensity
 
         private void UpdateIntensityResponse()
         {
-            switch (intensityResponse)
+            switch (_intensityResponse.Value)
             {
                 case IntensityResponse.Increasing:
                     
                     // Just reached max intensity threshold
                     if (_intensityScore.Value >= _maxIntensityScore.Value)
                     {
-                        intensityResponse = IntensityResponse.AboveMax;
+                        _intensityResponse.Value = IntensityResponse.AboveMax;
                     }
 
                     break;
@@ -132,7 +132,7 @@ namespace Intensity
                     // Stop accumulating and reset if drop below threshold
                     if (_intensityScore.Value < _maxIntensityScore.Value)
                     {
-                        intensityResponse = IntensityResponse.Increasing;
+                        _intensityResponse.Value = IntensityResponse.Increasing;
                         timeAtMaxIntensity = 0f;
                         if (_enableLogs) Debug.Log("Intensity dropped below threshold, resetting...");
                     }
@@ -140,7 +140,7 @@ namespace Intensity
                     // If at threshold for enough time, change to Decreasing state
                     if (timeAtMaxIntensity >= _timeLimitAtMaxIntensity)
                     {
-                        intensityResponse = IntensityResponse.Decreasing;
+                        _intensityResponse.Value = IntensityResponse.Decreasing;
                         _isSpawningPaused.Value = true;
                         timeAtMaxIntensity = 0f;
                         if (_enableLogs) Debug.Log("Entering Decreasing Intensity State");
@@ -153,7 +153,7 @@ namespace Intensity
                     // Just reached min intensity threshold
                     if (_intensityScore.Value <= _minIntensityScore.Value)
                     {
-                        intensityResponse = IntensityResponse.BelowMin;
+                        _intensityResponse.Value = IntensityResponse.BelowMin;
                     }
 
                     break;
@@ -168,7 +168,7 @@ namespace Intensity
                     // Stop accumulating and reset if go above threshold
                     if (_intensityScore.Value > _minIntensityScore.Value)
                     {
-                        intensityResponse = IntensityResponse.Decreasing;
+                        _intensityResponse.Value = IntensityResponse.Decreasing;
                         timeAtMinIntensity = 0f;
                         if (_enableLogs) Debug.Log("Intensity went above threshold, resetting...");
                     }
@@ -176,7 +176,7 @@ namespace Intensity
                     // If at threshold for enough time, change to Increasing state
                     if (timeAtMinIntensity >= _timeLimitAtMinIntensity)
                     {
-                        intensityResponse = IntensityResponse.Increasing;
+                        _intensityResponse.Value = IntensityResponse.Increasing;
                         _isSpawningPaused.Value = false;
                         timeAtMinIntensity = 0f;
                         if (_enableLogs) Debug.Log("Entering Increasing Intensity State");
