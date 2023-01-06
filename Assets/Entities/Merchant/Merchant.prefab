@@ -144,6 +144,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4869132406244976780}
   - component: {fileID: 2444245679264073225}
+  - component: {fileID: 7334368126768161504}
   m_Layer: 10
   m_Name: PassiveAudioSource
   m_TagString: Untagged
@@ -174,10 +175,10 @@ AudioSource:
   m_GameObject: {fileID: 2811686866275157431}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8502747269616987881, guid: b88f15b5f1de54e4e8cb1b4899763f5c, type: 2}
   m_audioClip: {fileID: 8300000, guid: 7b88b94b2b6090545a3d1322fe756dee, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.18
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -186,9 +187,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 3
-  MaxDistance: 30
+  MaxDistance: 40
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -196,23 +197,32 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.15
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.45916
+      outSlope: -0.45916
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0.38531405
+    - serializedVersion: 3
+      time: 0.3483383
+      value: 0.3180008
+      inSlope: -1.8472868
+      outSlope: -1.8472868
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.45023367
+      outWeight: 0.112936065
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.34930196
+      outSlope: -0.34930196
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0.25853723
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -261,6 +271,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7334368126768161504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2811686866275157431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb91891b74464c5d9762d0346a6e737f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _source: {fileID: 2444245679264073225}
 --- !u!1 &3188523386600664249
 GameObject:
   m_ObjectHideFlags: 0
