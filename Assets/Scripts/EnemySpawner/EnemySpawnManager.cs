@@ -484,5 +484,40 @@ namespace BML.Scripts
 
         #endregion
 
+        #region Interface
+
+        public void DespawnEnemies(EnemyState.AggroState aggroState, int nodeDist)
+        {
+            int despawnCount = 0;
+            for (int i = 0; i < _enemyContainer.childCount; i++)
+            {
+                var childEnemyState = _enemyContainer.GetChild(i).GetComponent<EnemyState>();
+                if (childEnemyState == null) continue;
+            
+                if (childEnemyState.DistanceToPlayer < nodeDist) continue;
+                if (childEnemyState.Aggro != aggroState) continue;
+
+                var childEnemySpawnable = _enemyContainer.GetChild(i).GetComponent<EnemySpawnable>();
+                if (childEnemySpawnable == null) continue;
+            
+                if (_enableLogs)
+                    Debug.Log(
+                        $"DespawnEnemies Despawning {childEnemySpawnable.name} " +
+                        $"with node distance from player: {childEnemyState.DistanceToPlayer} " +
+                        $"and aggro state {childEnemyState.Aggro}");
+            
+                childEnemySpawnable.Despawn();
+                despawnCount++;
+            }
+
+            // Subtracting directly instead of calling UpdateEnemyCount because it looks like
+            // child count of enemy container is not update until next tick so that function
+            // doesn't properly update enemy count
+            _currentEnemyCount.Value -= despawnCount;
+        
+        }
+
+        #endregion
+
     }
 }

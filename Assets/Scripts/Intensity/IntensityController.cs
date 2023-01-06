@@ -7,6 +7,7 @@ using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts;
 using BML.Scripts.CaveV2.Objects;
+using BML.Scripts.Enemy;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -19,6 +20,7 @@ namespace Intensity
 
         [TitleGroup("Scene References")] 
         [SerializeField] private TransformSceneReference _playerSceneReference;
+        [SerializeField] private EnemySpawnManager _enemySpawnManager;
         
         [TitleGroup("Intensity Parameters")]
         [SerializeField] private SafeFloatValueReference _intensityScore;
@@ -41,6 +43,10 @@ namespace Intensity
         [SerializeField] private AnimationCurve _maxIntensityCurve;
         [SerializeField] private float _timeLimitAtMaxIntensity = 5f;
         [SerializeField] private float _timeLimitAtMinIntensity = 5f;
+        [Tooltip("If true, all idle enemies X nodes away from player when intensity response becomes decreasing will be despawned")]
+        [SerializeField] private bool _despawnIdleEnemies = true;
+        [Tooltip("Min node distance for idle enemies to be considered for despawning")]
+        [SerializeField] private int _despawnIdleEnemyDistance = 2;
 
         [TitleGroup("Spawner Parameters")]
         [SerializeField] private BoolVariable _isSpawningPaused;
@@ -144,6 +150,12 @@ namespace Intensity
                         _isSpawningPaused.Value = true;
                         timeAtMaxIntensity = 0f;
                         if (_enableLogs) Debug.Log("Entering Decreasing Intensity State");
+
+                        // Despawn idle enemies > X nodes away from player
+                        if (_despawnIdleEnemies)
+                        {
+                            _enemySpawnManager.DespawnEnemies(EnemyState.AggroState.Idle, _despawnIdleEnemyDistance);
+                        }
                     }
 
                     break;
