@@ -386,7 +386,14 @@ namespace BML.Scripts
 
             if (randomSpawnPoint.Occupied)
             {
-                if (_enableLogs) Debug.LogWarning($"HandleSpawning Spawn point occupied for enemy: {randomEnemyParams.Tag}");
+                if (_enableLogs) Debug.LogWarning($"HandleSpawning Spawn point occupied for enemy: {randomEnemyParams.Prefab?.name}");
+                return;
+            }
+
+            if (!randomEnemyParams.SpawnInPlayerVistedRooms && randomSpawnPoint.ParentNode.PlayerVisited)
+            {
+                if (_enableLogs) Debug.LogWarning($"HandleSpawning Failed Spawn {randomEnemyParams.Prefab?.name}" +
+                                                  $" : Spawn point's node is visited");
                 return;
             }
 

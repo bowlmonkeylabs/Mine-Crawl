@@ -26,6 +26,7 @@ namespace BML.Scripts
         [FoldoutGroup("Parameters")] public bool RequireStableSurface;
         [FoldoutGroup("Parameters")] public bool InstanceAsPrefab;
         [FoldoutGroup("Parameters")] public bool OccupySpawnPoint;
+        [FoldoutGroup("Parameters")] public bool SpawnInPlayerVistedRooms = true;
         [ReadOnly] public float NormalizedSpawnWeight;
     }
 }
