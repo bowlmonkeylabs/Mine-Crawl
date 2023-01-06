@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.Store;
@@ -16,12 +17,17 @@ namespace BML.Scripts.UI
 
         [SerializeField] private List<StoreItem> _itemsPlayerHas;
 
-        void OnEnable() {
-            _onBuyEvent.Subscribe(OnBuy_Dynamic);
-            
+        private void Start()
+        {
             ResolveInventory();
             #warning Remove this once we're done working on the stores/inventory
             GenerateStoreIcons();
+        }
+
+        void OnEnable() {
+            #warning Remove this once we're done working on the stores/inventory
+            GenerateStoreIcons();
+            _onBuyEvent.Subscribe(OnBuy_Dynamic);
         }
 
         void OnDisable() {
