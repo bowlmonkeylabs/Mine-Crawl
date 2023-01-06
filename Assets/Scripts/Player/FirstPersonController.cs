@@ -192,32 +192,39 @@ namespace BML.Scripts.Player
 		    // Without this, y velocity is converted to horizontal velocity when land
 		    if (_motor.GroundingStatus.IsStableOnGround && !_motor.LastGroundingStatus.IsStableOnGround)
 		    {
-		        currentVelocity = Vector3.ProjectOnPlane(currentVelocity , _motor.CharacterUp);
-		        currentVelocity  = _motor.GetDirectionTangentToSurface(currentVelocity ,
-			        _motor.GroundingStatus.GroundNormal) * currentVelocity .magnitude;
+			    currentVelocity = Vector3.ProjectOnPlane(currentVelocity, _motor.CharacterUp);
+			    currentVelocity = _motor.GetDirectionTangentToSurface(currentVelocity,
+				    _motor.GroundingStatus.GroundNormal) * currentVelocity.magnitude;
 		    }
 
-            if(_isRopeMovementEnabled.Value) {
-                float moveDirection = _input.move.y;
-                float movementSpeed = _ropeMovementSpeed;
+		    // Rope Movement
+		    if (_isRopeMovementEnabled.Value)
+		    {
+			    float moveDirection = _input.move.y;
+			    float movementSpeed = _ropeMovementSpeed;
 
-                if(_input.move.y != 0) {
-                    if(reachedRopeBottom && moveDirection < 0) {
-                    moveDirection = 0;
-                }
+			    if (_input.move.y != 0)
+			    {
+				    if (reachedRopeBottom && moveDirection < 0)
+				    {
+					    moveDirection = 0;
+				    }
 
-                if(reachedRopeTop && moveDirection > 0) {
-                    moveDirection = 0;
-                }
-                } else {
-                    moveDirection = !reachedRopeBottom ? -1 : 0;
-                    movementSpeed = _ropeGravitySpeed;
-                }
+				    if (reachedRopeTop && moveDirection > 0)
+				    {
+					    moveDirection = 0;
+				    }
+			    }
+			    else
+			    {
+				    moveDirection = !reachedRopeBottom ? -1 : 0;
+				    movementSpeed = _ropeGravitySpeed;
+			    }
 
-                currentVelocity = movementSpeed * Vector3.up * moveDirection;
-                return;
-            }
-		    
+			    currentVelocity = movementSpeed * Vector3.up * moveDirection;
+			    return;
+		    }
+
 		    // set target speed based on move speed, sprint speed and if sprint is pressed
 		    float sprintSpeed = isNoClipEnabled.Value ? SprintSpeed.Value * noClipSprintMultiplier : SprintSpeed.Value;
 		    float targetSpeed = _input.sprint ? sprintSpeed : MoveSpeed.Value;
@@ -235,11 +242,13 @@ namespace BML.Scripts.Player
 		    float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
 		    // accelerate or decelerate to target speed
-		    if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
+		    if (currentHorizontalSpeed < targetSpeed - speedOffset ||
+		        currentHorizontalSpeed > targetSpeed + speedOffset)
 		    {
 			    // creates curved result rather than a linear one giving a more organic speed change
 			    // note T in Lerp is clamped, so we don't need to clamp our speed
-			    _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
+			    _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+				    Time.deltaTime * SpeedChangeRate);
 
 			    // round speed to 3 decimal places
 			    _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -248,23 +257,23 @@ namespace BML.Scripts.Player
 		    {
 			    _speed = targetSpeed;
 		    }
-		    
+
 		    Vector3 inputDirection = (_input.move.y * _mainCamera.transform.forward.xoz().normalized +
 		                              _input.move.x * _mainCamera.transform.right.xoz().normalized)
-									.normalized;
-		    
-			if (isNoClipEnabled.Value)
-				inputDirection = (_input.move.y * _mainCamera.transform.forward.normalized +
-				                  _input.move.x * _mainCamera.transform.right.normalized)
-					.normalized;
+			    .normalized;
 
-			Vector3 horizontalVelocity = inputDirection * _speed;
-		    
+		    if (isNoClipEnabled.Value)
+			    inputDirection = (_input.move.y * _mainCamera.transform.forward.normalized +
+			                      _input.move.x * _mainCamera.transform.right.normalized)
+				    .normalized;
+
+		    Vector3 horizontalVelocity = inputDirection * _speed;
+
 		    if (_knockbackActive)
 			    horizontalVelocity = _knockbackDir * KnockbackHorizontalForceCurve.Evaluate(percentToEndKnockback);
 
 		    // move the player
-		    currentVelocity = horizontalVelocity + 
+		    currentVelocity = horizontalVelocity +
 		                      new Vector3(0.0f, _verticalVelocity, 0.0f);
 	    }
 
