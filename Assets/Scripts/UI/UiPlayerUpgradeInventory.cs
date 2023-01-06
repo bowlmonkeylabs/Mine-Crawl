@@ -15,17 +15,16 @@ namespace BML.Scripts.UI
         [SerializeField] private Transform _iconsContainer;
         [SerializeField] private DynamicGameEvent _onBuyEvent;
 
-        [SerializeField] private List<StoreItem> _itemsPlayerHas;
+        [NonSerialized, ShowInInspector] private List<StoreItem> _itemsPlayerHas = new List<StoreItem>();
 
         private void Start()
         {
-            ResolveInventory();
-            #warning Remove this once we're done working on the stores/inventory
+            UpdateInventory();
             GenerateStoreIcons();
         }
 
         void OnEnable() {
-            #warning Remove this once we're done working on the stores/inventory
+            UpdateInventory();
             GenerateStoreIcons();
             _onBuyEvent.Subscribe(OnBuy_Dynamic);
         }
@@ -72,9 +71,26 @@ namespace BML.Scripts.UI
             GenerateStoreIcons();
         }
 
-        private void ResolveInventory()
+        private void UpdateInventory()
         {
-            _itemsPlayerHas = _upgradeStoreInventory.StoreItems.Where(si => si._playerInventoryAmount.Value > 0).ToList();
+            for (int i = 0; i < _itemsPlayerHas.Count; i++)
+            {
+                var inventoryItem = _itemsPlayerHas[i];
+                if (inventoryItem._playerInventoryAmount.Value <= 0)
+                {
+                    _itemsPlayerHas.RemoveAt(i);
+                    i--;
+                }
+            }
+            
+            foreach (var storeItem in _upgradeStoreInventory.StoreItems)
+            {
+                if (storeItem._playerInventoryAmount.Value > 0 &&
+                    !_itemsPlayerHas.Contains(storeItem))
+                {
+                    _itemsPlayerHas.Add(storeItem);
+                }
+            }
         }
         
     }
