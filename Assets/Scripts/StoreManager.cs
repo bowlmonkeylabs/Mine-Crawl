@@ -19,8 +19,8 @@ namespace BML.Scripts
         [SerializeField] private BoolVariable _inCombat;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private GameEvent _onStoreFailOpenEvent;
+        [SerializeField] private DynamicGameEvent _onInsufficientResources;
         [SerializeField] private UnityEvent _onPurchaseItem;
-        [SerializeField] private UnityEvent _onPurchaseItemFail;
 
         private void Awake()
         {
@@ -43,12 +43,12 @@ namespace BML.Scripts
                     _onStoreFailOpenEvent.Raise();
                     return;
                 }
-                
-                if (_resourceCount.Value < storeItem._resourceCost ||
-                    _rareResourceCount.Value < storeItem._rareResourceCost ||
-                    _enemyResourceCount.Value < storeItem._enemyResourceCost)
+
+                var canAffordItem = storeItem.CheckIfCanAfford(_resourceCount.Value, _rareResourceCount.Value, _enemyResourceCount.Value);
+                if (!canAffordItem.Overall)
                 {
-                    _onPurchaseItemFail.Invoke();
+                    _onStoreFailOpenEvent.Raise();
+                    _onInsufficientResources.Raise(storeItem);
                     return;
                 }
             

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Events;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -60,5 +61,35 @@ namespace BML.Scripts.Store
         [FoldoutGroup("Effects")]
         [Tooltip("Effects to induce when item is sold")]
         public UnityEvent _onSold;
+
+        [NonSerialized]
+        public CanAffordItem CanAfford;
+        
+        public CanAffordItem CheckIfCanAfford(int resource, int rareResource, int enemyResource)
+        {
+            var canAfford = new CanAffordItem(
+                resource >= this._resourceCost,
+                rareResource >= this._rareResourceCost,
+                enemyResource >= this._enemyResourceCost
+            );
+            CanAfford = canAfford;
+            return CanAfford;
+        }
+
+        public struct CanAffordItem
+        {
+            public bool Overall;
+            public bool Resource;
+            public bool RareResource;
+            public bool EnemyResource;
+
+            public CanAffordItem(bool resource, bool rareResource, bool enemyResource)
+            {
+                Overall = (resource && rareResource && enemyResource);
+                Resource = resource;
+                RareResource = rareResource;
+                EnemyResource = enemyResource;
+            }
+        }
     }
 }
