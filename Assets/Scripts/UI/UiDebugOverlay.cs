@@ -25,6 +25,8 @@ namespace BML.Scripts.UI
         [SerializeField] private FloatVariable _playerIntensityScore;
         [SerializeField] private IntensityResponseStateData _intensityResponse;
 
+        private float _peakIntensityScore = 0;
+
         #region Unity lifecycle
 
         private void Awake()
@@ -34,6 +36,7 @@ namespace BML.Scripts.UI
 
         private void Update()
         {
+            CalculateValues();
             UpdateText();
         }
 
@@ -55,6 +58,7 @@ Player In Combat: {_playerInCombat.Value}
 Any Enemies Engaged: {_anyEnemiesEngaged.Value}
 Combat Timer: {_playerCombatTimer.RemainingTime}
 Intensity Score: {_playerIntensityScore.Value.ToString("0.00")}
+Peak Intensity Score: {_peakIntensityScore.ToString("0.00")}
 ";
 
             switch (_intensityResponse.Value)
@@ -74,6 +78,12 @@ Intensity Score: {_playerIntensityScore.Value.ToString("0.00")}
             }
             
             _intensityResponseText.text = $@"{_intensityResponse.Value.ToString()}";
+        }
+
+        private void CalculateValues() {
+            if(_playerIntensityScore.Value > _peakIntensityScore) {
+                _peakIntensityScore = _playerIntensityScore.Value;
+            }
         }
 
         private string FormatVector3(Vector3 vector3) 
