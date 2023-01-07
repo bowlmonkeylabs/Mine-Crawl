@@ -190,7 +190,6 @@ namespace BML.Scripts.Player
 
         public void OnOpenDebugUi()
 		{
-            Debug.Log($"Pressed Debug Ui");
 			_isDebugOverlayOpen.Value = !_isDebugOverlayOpen.Value;
 		}
 

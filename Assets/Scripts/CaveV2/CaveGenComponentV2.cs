@@ -769,7 +769,8 @@ namespace BML.Scripts.CaveV2
             
             containingRoom.nodeData.PlayerInfluence = Mathf.Min(1f, containingRoom.nodeData.PlayerInfluence + _enemyKilledAddInfluence);
             
-            Debug.Log($"CaveGen OnEnemyKilled: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
+            if (_enableLogs)
+                Debug.Log($"CaveGen OnEnemyKilled: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
         }
         
         #endregion
