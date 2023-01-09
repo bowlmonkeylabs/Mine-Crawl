@@ -205,12 +205,22 @@ namespace Intensity
 
         private void TryDecayIntensityScore()
         {
-            bool doDecay = !_anyEnemiesEngaged.Value;
+            bool doDecay = !_anyEnemiesEngaged.Value || _intensityResponse.Value == IntensityResponse.Decreasing;
 
             if (!doDecay) return;
 
+            float decayFactor;
+            if (_anyEnemiesEngaged.Value)
+            {
+                // Half decay rate if intensity response is decreasing
+                decayFactor = _intensityResponse.Value == IntensityResponse.Decreasing ? .5f : 0f;
+            }
+            else
+                decayFactor = 1f;
+
             float decay = (_intensityScoreDecayPercent/100f * _maxIntensityScore.Value * _intensityScoreUpdatePeriod);
-            
+            decay *= decayFactor;
+
             float newIntensityScore = (_intensityScore.Value - decay);
             newIntensityScore = Mathf.Max(0, newIntensityScore);
             _intensityScore.Value = newIntensityScore;
