@@ -144,6 +144,8 @@ namespace BML.Scripts
             Time.timeScale = timescaleFactor;
             isFrozen = false;
             //AudioListener.pause = false;
+            
+            pauseAudioSources = FindObjectsOfType<PauseAudioSource>().ToList();
             pauseAudioSources.ForEach(a => a.Resume());
 
             OnUnPauseGame?.Invoke();
