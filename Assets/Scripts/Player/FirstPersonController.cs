@@ -1,4 +1,4 @@
-﻿//FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
+//FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
 //https://assetstore.unity.com/packages/essentials/starter-assets-first-person-character-controller-196525
 
 using System;
@@ -63,6 +63,7 @@ namespace BML.Scripts.Player
 
 		[SerializeField, FoldoutGroup("RopeMovement")] private GameEvent _playerEnteredRopeEvent;
 		[SerializeField, FoldoutGroup("RopeMovement")] private BoolReference _isRopeMovementEnabled;
+        [SerializeField, FoldoutGroup("RopeMovement")] private DynamicGameEvent _playerRopePointStateChanged;
 		[SerializeField, FoldoutGroup("RopeMovement")] private float _ropeMovementSpeed = 15;
 		[SerializeField, FoldoutGroup("RopeMovement")] private float _ropeGravitySpeed = 1;
         [SerializeField, FoldoutGroup("RopeMovement"), Sirenix.OdinInspector.ReadOnly] private bool reachedRopeBottom = false;
@@ -147,12 +148,14 @@ namespace BML.Scripts.Player
 		{
 			isNoClipEnabled.Subscribe(SetNoClip);
             _playerEnteredRopeEvent.Subscribe(OnPlayerEnteredRope);
+            _playerRopePointStateChanged.Subscribe(OnPlayerRopePointStateChanged);
 		}
 
 		private void OnDisable()
 		{
 			isNoClipEnabled.Unsubscribe(SetNoClip);
             _playerEnteredRopeEvent.Unsubscribe(OnPlayerEnteredRope);
+            _playerRopePointStateChanged.Unsubscribe(OnPlayerRopePointStateChanged);
 		}
 
 		private void Update()
@@ -294,26 +297,6 @@ namespace BML.Scripts.Player
 	        // This is called when the motor's ground probing detects a ground hit
 	    }
 
-        void OnTriggerEnter(Collider collider) {
-            if(_isRopeMovementEnabled.Value && collider.gameObject.tag == "RopeTop") {
-                reachedRopeTop = true;
-            }
-
-            if(_isRopeMovementEnabled.Value && collider.gameObject.tag == "RopeBottom") {
-                reachedRopeBottom = true;
-            }
-        }
-
-        void OnTriggerExit(Collider collider) {
-            if(collider.gameObject.tag == "RopeTop") {
-                reachedRopeTop = false;
-            }
-
-            if(collider.gameObject.tag == "RopeBottom") {
-                reachedRopeBottom = false;
-            }
-        }
-
 	    public void OnMovementHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint,
 	        ref HitStabilityReport hitStabilityReport)
 	    {
@@ -426,6 +409,8 @@ namespace BML.Scripts.Player
                     if(_isRopeMovementEnabled.Value) {
                         Gravity = originalGravity;
                         _isRopeMovementEnabled.Value = false;
+                        reachedRopeBottom = false;
+                        reachedRopeTop = false;
                     }
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_motor.ForceUnground();
@@ -490,6 +475,22 @@ namespace BML.Scripts.Player
                 Gravity = 0f;
                 _motor.ForceUnground();
                 _isRopeMovementEnabled.Value = true;
+            }
+        }
+
+        private void OnPlayerRopePointStateChanged(object p, object payload) {
+            var ropePointEvent = (RopePoint.RopePointEvent) payload;
+            if(ropePointEvent == RopePoint.RopePointEvent.EnterRopeTop) {
+                reachedRopeTop = true;
+            }
+            if(ropePointEvent == RopePoint.RopePointEvent.EnterRopeBottom) {
+                reachedRopeBottom = true;
+            }
+            if(ropePointEvent == RopePoint.RopePointEvent.ExitRopeBottom) {
+                reachedRopeBottom = false;
+            }
+            if(ropePointEvent == RopePoint.RopePointEvent.ExitRopeTop) {
+                reachedRopeTop = false;
             }
         }
 

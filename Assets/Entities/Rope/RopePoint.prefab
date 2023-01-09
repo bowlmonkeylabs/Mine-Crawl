@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7657099182100873207}
   - component: {fileID: 1385994735956687391}
+  - component: {fileID: 531343144599478158}
   m_Layer: 0
   m_Name: RopePoint
   m_TagString: LadderPoint
@@ -44,3 +45,28 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &531343144599478158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2172700635274261958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d11e8fc7c0b72f4a830feafe8ccd0b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _trigger: {fileID: 1385994735956687391}
+  _playerTag: Player
+  _playerLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  _isRopeMovementEnabled:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 602ed0103fbb1324ab3af06039d48696, type: 2}
+  _playerRopePointStateChanged: {fileID: 11400000, guid: dd89a65b86b5c0e47b3fdb6c1a6f5099, type: 2}
