@@ -1,6 +1,7 @@
 using BML.Script.Intensity;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using Intensity;
 using TMPro;
 using UnityEngine;
@@ -18,7 +19,11 @@ namespace BML.Scripts.UI
         [SerializeField] private IntVariable _currentEnemyCount;
         [SerializeField] private IntVariable _currentDifficulty;
         [SerializeField] private IntReference _seedDebugReference;
+        [SerializeField] private IntVariable _swingDamage;
+        [SerializeField] private IntVariable _sweepDamage;
         [SerializeField] private EvaluateCurveVariable _statPickaxeSwingSpeed;
+        [SerializeField] private EvaluateCurveVariable _statPickaxeSweepSpeed;
+        [SerializeField] private EvaluateCurveVariable _statSwingCritChance;
         [SerializeField] private BoolVariable _playerInCombat;
         [SerializeField] private BoolVariable _anyEnemiesEngaged;
         [SerializeField] private TimerVariable _playerCombatTimer;
@@ -53,10 +58,14 @@ Cap: {_currentSpawnCap.Value.ToString("0.00")}
 Count: {_currentEnemyCount.Value}
 Difficulty: {_currentDifficulty.Value}
 Seed: {_seedDebugReference.Value}
-Pickaxe Swing Speed: {_statPickaxeSwingSpeed.Value}
+Combat:
+Swing DPS: {(_swingDamage.Value / _statPickaxeSwingSpeed.Value).ToString("0.00")}
+Sweep DPS: {(_sweepDamage.Value / _statPickaxeSweepSpeed.Value).ToString("0.00")}
+Swing Crit Chance: {_statSwingCritChance.Value * 100f}%
 Player In Combat: {_playerInCombat.Value}
 Any Enemies Engaged: {_anyEnemiesEngaged.Value}
 Combat Timer: {_playerCombatTimer.RemainingTime}
+Intensity:
 Intensity Score: {_playerIntensityScore.Value.ToString("0.00")}
 Peak Intensity Score: {_peakIntensityScore.ToString("0.00")}
 ";

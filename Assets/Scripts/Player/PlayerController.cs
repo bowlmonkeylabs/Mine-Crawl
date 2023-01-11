@@ -248,7 +248,7 @@ namespace BML.Scripts.Player
                 _swingHitFeedbacks.transform.position = hit.point;
                 _swingHitFeedbacks.PlayFeedbacks();
             }
-                    
+            
                 
             PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
             if (interactionReceiver == null) return;
