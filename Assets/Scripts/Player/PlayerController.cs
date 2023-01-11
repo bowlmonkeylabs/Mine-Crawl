@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.Scripts.CaveV2;
 using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.UI;
 using BML.Scripts.Utils;
@@ -13,12 +14,14 @@ using UnityEngine.InputSystem;
 using BML.Scripts.Store;
 using Sirenix.OdinInspector;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Player
 {
     public class PlayerController : MonoBehaviour
     {
         #region Inspector
+        [SerializeField, FoldoutGroup("Scene References")] private CaveGenComponentV2 _caveGenerator;
         
         [SerializeField, FoldoutGroup("Interactable hover")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Interactable hover")] private UiAimReticle _uiAimReticle;
@@ -35,6 +38,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSweepCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _pickaxeDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepDamage;
+        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _swingCritChance;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _sweepDamageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingPickaxeFeedback;
@@ -44,6 +48,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitEnemyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepReadyFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingCritFeedbacks;
         
         [SerializeField, FoldoutGroup("Torch")] private GameObject _torchPrefab;
         [SerializeField, FoldoutGroup("Torch")] private float _torchThrowForce;
@@ -82,10 +87,16 @@ namespace BML.Scripts.Player
 
         private bool pickaxeInputHeld = false;
         private bool secondaryInputHeld = false;
+        private int totalSwingCount = 0;
 
         #endregion
 
         #region Unity lifecycle
+
+        private void Start()
+        {
+            totalSwingCount = 0;
+        }
 
         private void OnEnable()
         {
@@ -180,10 +191,12 @@ namespace BML.Scripts.Player
                 return;
             }
             
+            totalSwingCount++;
+            
             _swingPickaxeFeedback.StopFeedbacks();
             _swingPickaxeFeedback.PlayFeedbacks();
             _pickaxeSwingCooldown.RestartTimer();
-            
+
             if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance.Value,
                 _interactMask, QueryTriggerInteraction.Ignore))
             {
@@ -239,8 +252,18 @@ namespace BML.Scripts.Player
                 
             PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
             if (interactionReceiver == null) return;
+            
+            float damage = _pickaxeDamage.Value;
+            
+            Random.InitState(_caveGenerator.CaveGenParams.Seed +  totalSwingCount);
+            bool isCrit = Random.value < _swingCritChance.Value;
 
-            HitInfo pickaxeHitInfo = new HitInfo(_damageType, Mathf.FloorToInt(_pickaxeDamage.Value), _mainCamera.forward, hit.point);
+            if (isCrit)
+            {
+                damage *= 2f;
+                _swingCritFeedbacks.PlayFeedbacks(hit.point);
+            }
+            HitInfo pickaxeHitInfo = new HitInfo(_damageType, Mathf.FloorToInt(damage), _mainCamera.forward, hit.point);
             interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
         }
 

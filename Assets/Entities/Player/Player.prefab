@@ -4436,6 +4436,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 0
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -4700,6 +4701,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 0
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -5600,6 +5602,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -6148,6 +6151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca4d6e2609884fb4a191b404d5a30bf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _caveGenerator: {fileID: 0}
   _mainCamera: {fileID: 7265003986444444711}
   _uiAimReticle: {fileID: 0}
   _hoverUpdatesPerSecond: 20
@@ -6187,17 +6191,23 @@ MonoBehaviour:
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     Variable: {fileID: 11400000, guid: 9f033b9462c6ebe459517c2953e67f35, type: 2}
   _pickaxeDamage:
+    ReferenceTypeSelector: 0
+    ConstantValue: 1
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 541798a3b6084cc46b8f1e48ee3f98be, type: 2}
+  _sweepDamage:
+    ReferenceTypeSelector: 0
+    ConstantValue: 1
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 85076607768e1284b97d73647df3c6e7, type: 2}
+  _swingCritChance:
     ReferenceTypeSelector: 3
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 541798a3b6084cc46b8f1e48ee3f98be, type: 2}
-  _sweepDamage:
-    ReferenceTypeSelector: 3
-    ConstantValue: 0
-    ReferenceValue_FloatVariable: {fileID: 0}
-    ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 85076607768e1284b97d73647df3c6e7, type: 2}
   _damageType: 1
   _sweepDamageType: 1024
   _swingPickaxeFeedback: {fileID: 322946836}
@@ -6207,6 +6217,7 @@ MonoBehaviour:
   _hitEnemyFeedback: {fileID: 8772470274992028070}
   _sweepFeedback: {fileID: 1764730863159798996}
   _sweepReadyFeedback: {fileID: 7052921451866271702}
+  _swingCritFeedbacks: {fileID: 6763227702262468176}
   _torchPrefab: {fileID: 8692043269319617905, guid: edb8efafa5a40e944b6001753e059f59, type: 3}
   _torchThrowForce: 8
   _torchInstanceContainer: {fileID: 0}
@@ -9913,6 +9924,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -10319,6 +10331,7 @@ Transform:
   - {fileID: 3587056977156872642}
   - {fileID: 1572806064126309501}
   - {fileID: 2854961416519983711}
+  - {fileID: 981458945698494185}
   m_Father: {fileID: 8722278798120057416}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11225,6 +11238,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 0
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -12880,6 +12894,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -13059,6 +13074,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -13424,6 +13440,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 0
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -14287,6 +14304,79 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1407806550736918862, guid: 6eb08bfc0fd869c47b796c42ada099da, type: 3}
   m_PrefabInstance: {fileID: 5350706952515162931}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6163448547068399552
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 392949985054318323}
+    m_Modifications:
+    - target: {fileID: 5670417655354747987, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_Name
+      value: SwingCritFeedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+--- !u!114 &6763227702262468176 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+  m_PrefabInstance: {fileID: 6163448547068399552}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &981458945698494185 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+  m_PrefabInstance: {fileID: 6163448547068399552}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6947250416337299594
 PrefabInstance:
