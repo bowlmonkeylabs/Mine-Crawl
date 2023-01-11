@@ -7,5 +7,6 @@ namespace BML.Scripts.CaveV2.CaveGraph
     public class CaveNodeConnectionDataDebugComponent : MonoBehaviour
     {
         [ReadOnly] public CaveNodeConnectionData CaveNodeConnectionData;
+        [ReadOnly] public CaveGenComponentV2 CaveGenerator; 
     }
 }

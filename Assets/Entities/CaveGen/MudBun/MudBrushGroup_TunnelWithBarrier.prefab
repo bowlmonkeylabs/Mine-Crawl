@@ -102,8 +102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2390520846a478242a1b2271b4ddd597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_sharedMaterial: {fileID: 11400000, guid: 9a209ea59dcbd3f49a12afb7d34d5419, type: 2}
-  m_color: {r: 1, g: 1, b: 1, a: 1}
+  m_sharedMaterial: {fileID: 0}
+  m_color: {r: 0.67058825, g: 0.67058825, b: 0.67058825, a: 1}
   m_emission: {r: 0, g: 0, b: 0, a: 1}
   m_metallic: 0
   m_smoothness: 0.5
@@ -145,6 +145,7 @@ GameObject:
   - component: {fileID: 4220442035327184961}
   - component: {fileID: 1989214813743780305}
   - component: {fileID: 1989214813743780304}
+  - component: {fileID: 1799256294608517259}
   m_Layer: 0
   m_Name: MudBrushGroup_TunnelWithBarrier
   m_TagString: Untagged
@@ -182,6 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12fb084bce6647bf90e0d1efc50b9a1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CaveGenerator: {fileID: 0}
 --- !u!114 &1989214813743780305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,7 +197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_sharedMaterial: {fileID: 0}
-  m_color: {r: 1, g: 1, b: 1, a: 1}
+  m_color: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
   m_emission: {r: 0, g: 0, b: 0, a: 1}
   m_metallic: 0
   m_smoothness: 0.5
@@ -221,6 +223,23 @@ MonoBehaviour:
   m_symmetry: 0
   m_countAsBone: 0
   m_canCountAsBone: 0
+--- !u!114 &1799256294608517259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989214813743780302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e6bf74171cd41fab7027fed078505ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isEdge: 1
+  _caveNodeDataDebug: {fileID: 0}
+  _caveNodeEdgeDataDebug: {fileID: 4220442035327184961}
+  _onAfterGenerateMudBun: {fileID: 11400000, guid: ef376d54649841f43a77bca1133a1888, type: 2}
+  _difficultyColorParams: {fileID: 11400000, guid: e91ed318e45c85f4aaa5fc84bfbfe063, type: 2}
 --- !u!1 &8621966116755294041
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,8 +284,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2390520846a478242a1b2271b4ddd597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_sharedMaterial: {fileID: 11400000, guid: a345b5161e8a0764b967a1aeee83a48b, type: 2}
-  m_color: {r: 1, g: 1, b: 1, a: 1}
+  m_sharedMaterial: {fileID: 0}
+  m_color: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
   m_emission: {r: 0, g: 0, b: 0, a: 1}
   m_metallic: 0
   m_smoothness: 0.5

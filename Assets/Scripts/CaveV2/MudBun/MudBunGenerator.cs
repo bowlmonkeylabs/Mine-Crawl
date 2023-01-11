@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.Utils;
 using MudBun;
 using Sirenix.OdinInspector;
@@ -42,21 +43,27 @@ namespace BML.Scripts.CaveV2.MudBun
 
         #region Events
 
+        [SerializeField] private GameEvent _onAfterGenerate;
+
         public delegate void AfterGenerate();
 
         public AfterGenerate OnAfterGenerate;
+
 
         public delegate void AfterLockMesh();
 
         public AfterLockMesh OnAfterLockMesh;
 
+
         public delegate void AfterAddCollider();
 
         public AfterAddCollider OnAfterAddCollider;
 
+
         public delegate void AfterFinished();
 
         public AfterFinished OnAfterFinished;
+
         private bool _onAfterLockMeshTriggered, _onAfterAddColliderTriggered;
         private object _onFinishedLock = new object();
 
@@ -239,6 +246,9 @@ namespace BML.Scripts.CaveV2.MudBun
             }
             
             this.GenerateMudBunInternal(_mudRenderer, _instanceAsPrefabs);
+            
+            OnAfterGenerate?.Invoke();
+            _onAfterGenerate.Raise();
 
             if (_lockAfterGenerate)
             {
@@ -249,8 +259,6 @@ namespace BML.Scripts.CaveV2.MudBun
                     this.LockMesh();
                 }
             }
-            
-            OnAfterGenerate?.Invoke();
         }
 
         protected virtual void GenerateMudBunInternal(

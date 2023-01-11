@@ -865,6 +865,8 @@ namespace BML.Scripts.CaveV2
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
                 debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
+                debugComponent.CaveGenerator = this;
+                Debug.Log(debugComponent.CaveGenerator.name);
                 
                 UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
             }
