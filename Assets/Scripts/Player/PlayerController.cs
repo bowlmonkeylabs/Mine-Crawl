@@ -442,16 +442,29 @@ namespace BML.Scripts.Player
 
         public void OnToggleStore()
 		{
+            if(_isUpgradeStoreOpen.Value) {
+                return;
+            }
+
             if(!_isStoreOpen.Value && _inCombat.Value) {
                 _onStoreFailOpen.Raise();
                 return;
             }
 
-            _isStoreOpen.Value = !_isStoreOpen.Value && !_inCombat.Value;
+            _isStoreOpen.Value = !_isStoreOpen.Value;
 		}
 
         public void OnToggleUpgradeStore()
 		{
+            if(_isStoreOpen.Value) {
+                return;
+            }
+
+            if(!_isUpgradeStoreOpen.Value && _inCombat.Value) {
+                _onStoreFailOpen.Raise();
+                return;
+            }
+
             _isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}
         
