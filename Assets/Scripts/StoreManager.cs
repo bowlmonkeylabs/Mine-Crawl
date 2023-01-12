@@ -19,10 +19,15 @@ namespace BML.Scripts
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private GameEvent _onStoreFailOpenEvent;
         [SerializeField] private DynamicGameEvent _onInsufficientResources;
+        [SerializeField] private StoreInventory _upgradeStoreInventory;
+        [SerializeField] private GameEvent _onVariablesReset;
         [SerializeField] private UnityEvent _onPurchaseItem;
+
+        private bool done = false;
 
         private void Awake()
         {
+            _onVariablesReset.Subscribe(ApplyPlayerInventoryEffects);
             _onPurchaseEvent.Subscribe(AttemptPurchase);
         }
 
@@ -57,6 +62,20 @@ namespace BML.Scripts
         {
             storeItem._onPurchased.Invoke();
             _onPurchaseItem.Invoke();
+        }
+
+        private void ApplyPlayerInventoryEffects() {
+            _upgradeStoreInventory.StoreItems.ForEach((item) => {
+                if(item._playerInventoryAmount.Value > 0) {
+                    var itemCount = item._playerInventoryAmount.Value;
+                    item._playerInventoryAmount.Value = 0;
+                    for(var i = 0; i < itemCount; i++) {
+                        item._onPurchased.Invoke();
+                    }
+                }
+            });
+
+            _onVariablesReset.Unsubscribe(ApplyPlayerInventoryEffects);
         }
     }
 }

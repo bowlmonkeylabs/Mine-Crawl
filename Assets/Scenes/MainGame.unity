@@ -1131,6 +1131,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1451645147}
     m_Modifications:
+    - target: {fileID: 717825892, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 717825892, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
     - target: {fileID: 8649190723377008976, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
       propertyPath: m_Name
       value: GameMenu_UpgradeStore
@@ -3360,7 +3364,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ResetContainer: {fileID: 11400000, guid: 6ca4d46ab2f036249acc3bc318c5205c, type: 2}
   _resetOnStart: 1
-  _onReset: {fileID: 0}
+  _resetVariables: {fileID: 0}
+  _onReset: {fileID: 11400000, guid: 41484265d9c42f64d92033cd6396d3ff, type: 2}
 --- !u!1001 &3052951379666484987
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5295,6 +5300,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: '{UpgradeManager}'
       objectReference: {fileID: 0}
+    - target: {fileID: 8215277160153209744, guid: 99dcf04962a79ee45b65e80ed8a2f85e, type: 3}
+      propertyPath: _onVariablesReset
+      value: 
+      objectReference: {fileID: 11400000, guid: 41484265d9c42f64d92033cd6396d3ff, type: 2}
+    - target: {fileID: 8215277160153209744, guid: 99dcf04962a79ee45b65e80ed8a2f85e, type: 3}
+      propertyPath: _upgradeStoreInventory
+      value: 
+      objectReference: {fileID: 11400000, guid: a43f87dd8518d8b4d8db07f5b08d2281, type: 2}
     - target: {fileID: 8215277160153209745, guid: 99dcf04962a79ee45b65e80ed8a2f85e, type: 3}
       propertyPath: m_RootOrder
       value: 11

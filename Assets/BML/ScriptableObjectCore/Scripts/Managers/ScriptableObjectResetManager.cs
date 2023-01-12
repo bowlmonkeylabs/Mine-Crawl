@@ -12,6 +12,7 @@ namespace BML.ScriptableObjectCore.Scripts.Managers
     {
         [SerializeField] private VariableContainer ResetContainer;
         [SerializeField] private bool _resetOnStart;
+        [SerializeField] private GameEvent _resetVariables;
         [SerializeField] private GameEvent _onReset;
 
         #region Unity lifecycle
@@ -26,17 +27,17 @@ namespace BML.ScriptableObjectCore.Scripts.Managers
 
         private void OnEnable()
         {
-            if (!_onReset.SafeIsUnityNull())
+            if (!_resetVariables.SafeIsUnityNull())
             {
-                _onReset.Subscribe(ResetValues);
+                _resetVariables.Subscribe(ResetValues);
             }
         }
 
         private void OnDisable()
         {
-            if (!_onReset.SafeIsUnityNull())
+            if (!_resetVariables.SafeIsUnityNull())
             {
-                _onReset.Unsubscribe(ResetValues);
+                _resetVariables.Unsubscribe(ResetValues);
             }
         }
 
@@ -71,6 +72,11 @@ namespace BML.ScriptableObjectCore.Scripts.Managers
             foreach (var variable in ResetContainer.GetTimerVariables())
             {
                 variable.ResetTimer();
+            }
+
+            if (!_onReset.SafeIsUnityNull())
+            {
+                _onReset.Raise();
             }
         }
     }
