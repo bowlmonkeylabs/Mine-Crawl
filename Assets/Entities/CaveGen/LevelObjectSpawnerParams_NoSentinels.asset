@@ -13,6 +13,48 @@ MonoBehaviour:
   m_Name: LevelObjectSpawnerParams_NoSentinels
   m_EditorClassIdentifier: 
   SpawnAtTags:
+  - Tag: Spawn_Ore_Rare
+    Prefab: {fileID: 3467410388640837625, guid: fcc9cdee40a7fdb42a3d36607cf18b23, type: 3}
+    RaycastDirection: {x: 0, y: -1, z: 0}
+    SpawnPosOffset: 0
+    RequireStableSurface: 0
+    InstanceAsPrefab: 1
+    ChooseWithoutReplacement: 1
+    SpawnProbability: 1
+    MinMaxGlobalAmount:
+      EnableMin: 0
+      ValueMin: 1
+      EnableMax: 0
+      ValueMax: 1
+    MinMaxClusterSize:
+      EnableMin: 0
+      ValueMin: 1
+      EnableMax: 0
+      ValueMax: 1
+    MainPathProbabilityFalloff:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   - Tag: Spawn_Ore
     Prefab: {fileID: 4180538236121253079, guid: e705995200b2501429ba18570d70af0f, type: 3}
     RaycastDirection: {x: 0, y: -1, z: 0}
