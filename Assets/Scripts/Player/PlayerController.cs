@@ -431,42 +431,11 @@ namespace BML.Scripts.Player
             _combatTimer.StartTimer();
         }
 
-        private void SetNotInCombat() {
+        private void SetNotInCombat() 
+        {
             _inCombat.Value = false;
             _combatTimer.ResetTimer();
         }
-        
-        #endregion
-
-        #region Store
-
-        public void OnToggleStore()
-		{
-            if(_isUpgradeStoreOpen.Value) {
-                return;
-            }
-
-            if(!_isStoreOpen.Value && _inCombat.Value) {
-                _onStoreFailOpen.Raise();
-                return;
-            }
-
-            _isStoreOpen.Value = !_isStoreOpen.Value;
-		}
-
-        public void OnToggleUpgradeStore()
-		{
-            if(_isStoreOpen.Value) {
-                return;
-            }
-
-            if(!_isUpgradeStoreOpen.Value && _inCombat.Value) {
-                _onStoreFailOpen.Raise();
-                return;
-            }
-
-            _isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
-		}
         
         #endregion
 
