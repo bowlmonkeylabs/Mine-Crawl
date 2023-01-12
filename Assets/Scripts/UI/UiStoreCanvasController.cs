@@ -1,19 +1,20 @@
-using System;
+using BML.Scripts.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.Store;
-using BML.Scripts.Utils;
+using BML.Scripts.CaveV2;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 using BML.ScriptableObjectCore.Scripts.Events;
-using BehaviorDesigner.Runtime.Tasks.Unity.UnityTransform;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.UI
 {
     public class UiStoreCanvasController : MonoBehaviour
     {
+        [SerializeField, FoldoutGroup("CaveGen")] private CaveGenComponentV2 _caveGenerator;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private Transform _listContainerStoreButtons;
         [SerializeField] private int _maxItemsShown = 0;
@@ -25,10 +26,13 @@ namespace BML.Scripts.UI
 
         private List<Button> buttonList = new List<Button>();
 
+        private int buyCount;
+
         private void Awake()
         {
             #warning Remove this once we're done working on the stores/inventory
             GenerateStoreItems();
+            buyCount = 0;
         }
 
         void OnEnable() {
@@ -51,7 +55,8 @@ namespace BML.Scripts.UI
             }
 
             if(_randomizeStoreOnBuy) {
-                shownStoreItems = shownStoreItems.Shuffle().ToList();
+                Random.InitState(_caveGenerator.CaveGenParams.Seed + buyCount);
+                shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
             }
 
             if(_maxItemsShown > 0) {
@@ -102,6 +107,7 @@ namespace BML.Scripts.UI
         }
 
         protected void OnBuy(object prevStoreItem, object storeItem) {
+            buyCount++;
             if(_randomizeStoreOnBuy) {
                 GenerateStoreItems();
             }
