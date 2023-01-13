@@ -11,9 +11,15 @@ namespace BML.Scripts.UI
     {
         #region Inspector
 
+        [SerializeField] private int _graphGroup = 0;
+        [SerializeField] private float _graphUpdatePeriod = 1f;
         [SerializeField] private FloatVariable _playerIntensityScore;
         [SerializeField] private FloatVariable _playerIntesityTarget;
         [SerializeField] private IntensityResponseStateData _intensityResponse;
+        
+        private string _graphCombinedMinMax => $"combinedMinMax{_graphGroup}";
+        private string _graphIntensity => $"playerIntensityScore{_graphGroup}";
+        private string _graphIntensityTarget => $"playerIntensityScoreTarget{_graphGroup}";
 
         #endregion
 
@@ -21,11 +27,12 @@ namespace BML.Scripts.UI
 
         private void Awake()
         {
+            _nextUpdateTime = 0;
             DebugGUI.SetGraphProperties(
                 _graphIntensity,
                 "Intensity",
                 0, 1,
-                0,
+                _graphGroup,
                 Color.white,
                 true,
                 false,
@@ -35,7 +42,7 @@ namespace BML.Scripts.UI
                 _graphIntensityTarget,
                 "Target",
                 0, 1,
-                0,
+                _graphGroup,
                 Color.cyan,
                 true,
                 false,
@@ -45,7 +52,7 @@ namespace BML.Scripts.UI
                 _graphCombinedMinMax,
                 "",
                 0, 1,
-                0,
+                _graphGroup,
                 Color.white,
                 true,
                 true,
@@ -53,8 +60,16 @@ namespace BML.Scripts.UI
             );
         }
 
-        private void Update()
+        private float _nextUpdateTime;
+        private void FixedUpdate()
         {
+            if (Time.time < _nextUpdateTime)
+            {
+                return;
+            }
+            Debug.Log($"Graph Update: (Time {Time.time}) (Next update {_nextUpdateTime})");
+            _nextUpdateTime = Time.time + _graphUpdatePeriod;
+            
             Color intensityResponseColor;
             switch (_intensityResponse.Value)
             {
@@ -79,10 +94,6 @@ namespace BML.Scripts.UI
         #endregion
         
         #region Debug graphs
-
-        private string _graphCombinedMinMax = "combinedMinMax";
-        string _graphIntensity = "playerIntensityScore";
-        string _graphIntensityTarget = "playerIntensityScoreTarget";
 
         protected void UpdateGraphs(Color intensityResponseColor)
         {
