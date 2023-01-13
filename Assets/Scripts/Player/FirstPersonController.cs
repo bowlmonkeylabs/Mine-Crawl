@@ -409,6 +409,7 @@ namespace BML.Scripts.Player
                     if(_isRopeMovementEnabled.Value) {
                         Gravity = originalGravity;
                         _isRopeMovementEnabled.Value = false;
+                        _motor.ContrainYAxis = false;
                         reachedRopeBottom = false;
                         reachedRopeTop = false;
                     }
@@ -475,6 +476,7 @@ namespace BML.Scripts.Player
                 Gravity = 0f;
                 _motor.ForceUnground();
                 _isRopeMovementEnabled.Value = true;
+                _motor.ContrainYAxis = true;
             }
         }
 
