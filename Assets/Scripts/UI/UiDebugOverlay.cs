@@ -5,6 +5,7 @@ using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using Intensity;
 using TMPro;
 using UnityEngine;
+using Private.DebugGUI;
 
 namespace BML.Scripts.UI
 {
@@ -28,6 +29,7 @@ namespace BML.Scripts.UI
         [SerializeField] private BoolVariable _anyEnemiesEngaged;
         [SerializeField] private TimerVariable _playerCombatTimer;
         [SerializeField] private FloatVariable _playerIntensityScore;
+        [SerializeField] private FloatVariable _playerIntesityTarget;
         [SerializeField] private IntensityResponseStateData _intensityResponse;
 
         private float _peakIntensityScore = 0;
@@ -46,45 +48,43 @@ namespace BML.Scripts.UI
         }
 
         #endregion
-        
+
         protected void UpdateText()
         {
-            _text.text = $@"Player Coordinates: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
-Timescale: {Time.timeScale.ToString("0.00")}
-Level Time: {this.FormatTime(_levelTimeElapsed.Value)}
-Enemy Spawn Params:
-Delay: {_currentSpawnDelay.Value.ToString("0.00")}
-Cap: {_currentSpawnCap.Value.ToString("0.00")}
-Count: {_currentEnemyCount.Value}
-Difficulty: {_currentDifficulty.Value}
+            _text.text = $@"Player pos: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
+Level Time: {this.FormatTime(_levelTimeElapsed.Value)}, {Time.timeScale.ToString("0.00")}x
 Seed: {_seedDebugReference.Value}
-Combat:
-Swing DPS: {(_swingDamage.Value / _statPickaxeSwingSpeed.Value).ToString("0.00")}
-Sweep DPS: {(_sweepDamage.Value / _statPickaxeSweepSpeed.Value).ToString("0.00")}
-Swing Crit Chance: {_statSwingCritChance.Value * 100f}%
-Player In Combat: {_playerInCombat.Value}
-Any Enemies Engaged: {_anyEnemiesEngaged.Value}
+Enemy Spawn Params ----------
+Difficulty: {_currentDifficulty.Value}
+Spawn delay: {_currentSpawnDelay.Value.ToString("0.00")}
+Count: (Current: {_currentEnemyCount.Value}) (Max: {_currentSpawnCap.Value.ToString("0.00")})
+Combat ----------
+Intensity Score: (Current: {_playerIntensityScore.Value.ToString("0.00")}) (Target: {_playerIntesityTarget.Value.ToString("0.00")})
+Player In Combat: {this.FormatBool(_playerInCombat.Value)}
+Any Enemies Engaged: {this.FormatBool(_anyEnemiesEngaged.Value)}
 Combat Timer: {_playerCombatTimer.RemainingTime}
-Intensity:
-Intensity Score: {_playerIntensityScore.Value.ToString("0.00")}
-Peak Intensity Score: {_peakIntensityScore.ToString("0.00")}
+Swing: (DPS: {(_swingDamage.Value / _statPickaxeSwingSpeed.Value).ToString("0.00")}) (Crit Chance: {_statSwingCritChance.Value * 100f}%)
+Sweep: (DPS: {(_sweepDamage.Value / _statPickaxeSweepSpeed.Value).ToString("0.00")})
 ";
 
+            Color intensityResponseColor;
             switch (_intensityResponse.Value)
             {
                 case IntensityController.IntensityResponse.Decreasing:
-                    _intensityResponseText.color = Color.red;
+                    intensityResponseColor = Color.red;
                     break;
+                default:
                 case IntensityController.IntensityResponse.Increasing:
-                    _intensityResponseText.color = Color.green;
+                    intensityResponseColor = Color.green;
                     break;
                 case IntensityController.IntensityResponse.AboveMax:
-                    _intensityResponseText.color = Color.yellow;
+                    intensityResponseColor = Color.yellow;
                     break;
                 case IntensityController.IntensityResponse.BelowMin:
-                    _intensityResponseText.color = Color.blue;
+                    intensityResponseColor = Color.blue;
                     break;
             }
+            _intensityResponseText.color = intensityResponseColor;
             
             _intensityResponseText.text = $@"{_intensityResponse.Value.ToString()}";
         }
@@ -94,6 +94,8 @@ Peak Intensity Score: {_peakIntensityScore.ToString("0.00")}
                 _peakIntensityScore = _playerIntensityScore.Value;
             }
         }
+        
+        #region Format
 
         private string FormatVector3(Vector3 vector3) 
         {
@@ -108,5 +110,13 @@ Peak Intensity Score: {_peakIntensityScore.ToString("0.00")}
             minutes %= 60;
             return $"{hours.ToString("00")}:{minutes.ToString("00")}:{seconds.ToString("00")}";
         }
+
+        private string FormatBool(bool value)
+        {
+            return value ? "T" : "F";
+        }
+        
+        #endregion
+        
     }
 }

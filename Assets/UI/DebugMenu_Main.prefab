@@ -1,5 +1,300 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &789918982722731400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3933170396717969831}
+  - component: {fileID: 6040761880358583793}
+  - component: {fileID: 930618065528123567}
+  - component: {fileID: 2982385687289011618}
+  - component: {fileID: 2737140999966960165}
+  - component: {fileID: 5134247162877561770}
+  - component: {fileID: 1362277106731420565}
+  m_Layer: 0
+  m_Name: DebugGraphsController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3933170396717969831
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789918982722731400}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6358346554369937829}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.6, y: 0.8}
+  m_AnchorMax: {x: 0.7, y: 0.97}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &6040761880358583793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789918982722731400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07ad3a621c66466fae8ab008cd622f14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _graphGroup: 0
+  _graphUpdatePeriod: 1
+  _playerIntensityScore: {fileID: 11400000, guid: b9ffab9e48115f84e9ac88db538de371, type: 2}
+  _playerIntesityTarget: {fileID: 11400000, guid: 2dd49ff9ee93e7d4eb6e2d2b71b73382, type: 2}
+  _intensityResponse: {fileID: 11400000, guid: 396eba2aa7a981c42837f02430859dfa, type: 2}
+--- !u!114 &930618065528123567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789918982722731400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07ad3a621c66466fae8ab008cd622f14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _graphGroup: 1
+  _graphUpdatePeriod: 0.1
+  _playerIntensityScore: {fileID: 11400000, guid: b9ffab9e48115f84e9ac88db538de371, type: 2}
+  _playerIntesityTarget: {fileID: 11400000, guid: 2dd49ff9ee93e7d4eb6e2d2b71b73382, type: 2}
+  _intensityResponse: {fileID: 11400000, guid: 396eba2aa7a981c42837f02430859dfa, type: 2}
+--- !u!114 &2982385687289011618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789918982722731400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 902b767a45c917245b420593501210c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawInBuild: 1
+  displayGraphs: 1
+  displayLogs: 1
+  fontSize: 18
+  valueFormatString: F1
+  graphPosition: {fileID: 3933170396717969831}
+  backgroundColor: {r: 0, g: 0, b: 0, a: 0.7}
+  graphs: []
+--- !u!114 &2737140999966960165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789918982722731400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bac3452c3d166594f8e8494b57ab1162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoolVariables:
+  - {fileID: 11400000, guid: 9d57b34e568e42b42a939f4170f96fd4, type: 2}
+  FloatVariables: []
+  IntVariables: []
+  Vector2Variables: []
+  Vector3Variables: []
+  OnIncrease:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2982385687289011618}
+        m_TargetAssemblyTypeName: DebugGUI, DebugGUI
+        m_MethodName: SetDisplayGraphs
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2982385687289011618}
+        m_TargetAssemblyTypeName: DebugGUI, DebugGUI
+        m_MethodName: SetDisplayLogs
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnDecrease:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2982385687289011618}
+        m_TargetAssemblyTypeName: DebugGUI, DebugGUI
+        m_MethodName: SetDisplayGraphs
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2982385687289011618}
+        m_TargetAssemblyTypeName: DebugGUI, DebugGUI
+        m_MethodName: SetDisplayLogs
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5134247162877561770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789918982722731400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bcc561d61138de47bdb32d717cd44c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnityEvents:
+  - UnityCallback: 1
+    randomDelay: 0
+    delay: 0
+    delayMin: 0
+    delayMax: 0
+    unityEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1362277106731420565}
+          m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
+            StateMachine
+          m_MethodName: TryRaise
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &1362277106731420565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789918982722731400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07d9de05a2e70424e8718c7cf216b134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  conditionPreview: '-  Debug_ Menu Is Open_ Debug
+
+'
+  StateMachines: []
+  ValidStates: []
+  InvalidStates: []
+  BoolConditions:
+  - targetParameter:
+      UseConstant: 0
+      EnableInstanceOptions: 0
+      InstanceName: 
+      InstancePath: IntermediateProperties
+      ConstantValue: 0
+      Variable: {fileID: 11400000, guid: 9d57b34e568e42b42a939f4170f96fd4, type: 2}
+    value:
+      UseConstant: 1
+      EnableInstanceOptions: 0
+      InstanceName: 
+      InstancePath: IntermediateProperties
+      ConstantValue: 1
+      Variable: {fileID: 0}
+  FloatConditions: []
+  IntConditions: []
+  TimerConditions: []
+  Vector2Conditions: []
+  Vector3Conditions: []
+  GameEventConditions: []
+  DynamicGameEventConditions: []
+  OnSuccess:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2982385687289011618}
+        m_TargetAssemblyTypeName: DebugGUI, DebugGUI
+        m_MethodName: SetDisplayGraphs
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2982385687289011618}
+        m_TargetAssemblyTypeName: DebugGUI, DebugGUI
+        m_MethodName: SetDisplayLogs
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnFailure:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2982385687289011618}
+        m_TargetAssemblyTypeName: DebugGUI, DebugGUI
+        m_MethodName: SetDisplayGraphs
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2982385687289011618}
+        m_TargetAssemblyTypeName: DebugGUI, DebugGUI
+        m_MethodName: SetDisplayLogs
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2865613916029447481
 GameObject:
   m_ObjectHideFlags: 0
@@ -32,10 +327,10 @@ RectTransform:
   m_Father: {fileID: 6358346553319218706}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -281, y: 54}
-  m_SizeDelta: {x: 120, y: 20}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 35, y: 0}
+  m_SizeDelta: {x: 120, y: 14}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6935025045731881362
 CanvasRenderer:
@@ -92,15 +387,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 8
+  m_fontSizeBase: 8
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -398,6 +693,7 @@ MonoBehaviour:
   _anyEnemiesEngaged: {fileID: 11400000, guid: 93e2d79ad44ed104a9eb3c022677d8a3, type: 2}
   _playerCombatTimer: {fileID: 11400000, guid: 42e862b6a0943ac4cb4b626d1975bcba, type: 2}
   _playerIntensityScore: {fileID: 11400000, guid: b9ffab9e48115f84e9ac88db538de371, type: 2}
+  _playerIntesityTarget: {fileID: 11400000, guid: 2dd49ff9ee93e7d4eb6e2d2b71b73382, type: 2}
   _intensityResponse: {fileID: 11400000, guid: 396eba2aa7a981c42837f02430859dfa, type: 2}
 --- !u!1 &6358346554368055770
 GameObject:
@@ -433,7 +729,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0}
+  m_AnchoredPosition: {x: 2, y: -2}
   m_SizeDelta: {x: 300, y: 200}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6358346554368055769
@@ -491,8 +787,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 9
+  m_fontSizeBase: 9
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -565,6 +861,7 @@ RectTransform:
   m_Children:
   - {fileID: 6358346553283009996}
   - {fileID: 6358346554959081706}
+  - {fileID: 3933170396717969831}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -616,7 +913,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &6358346554369937834
 MonoBehaviour:
   m_ObjectHideFlags: 0
