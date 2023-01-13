@@ -28,6 +28,9 @@ namespace BML.Scripts.UI
         {
             _storeItem = storeItem;
             _iconImage.sprite = _storeItem._itemIcon;
+            if(_storeItem._useItemIconColor) {
+                _iconImage.color = _storeItem._itemIconColor;
+            }
             
             if (_countMode == CountMode.None)
             {

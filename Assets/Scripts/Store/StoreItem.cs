@@ -48,6 +48,12 @@ namespace BML.Scripts.Store
         [FoldoutGroup("Descriptors"), Tooltip("Icon representation of item")]
         public Sprite _itemIcon;
 
+        [FoldoutGroup("Descriptors"), Tooltip("Should color be applied to icon")]
+        public bool _useItemIconColor;
+
+        [FoldoutGroup("Descriptors"), Tooltip("Icon color"), ShowIf("_useItemIconColor")]
+        public Color _itemIconColor;
+
         [FoldoutGroup("Descriptors"), Tooltip("Description of item's effects"), TextArea]
         public string _itemEffectDescription;
 
