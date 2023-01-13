@@ -42,9 +42,7 @@ namespace BML.Scripts.CaveV2.MudBun
         #endregion
 
         #region Events
-
-        [SerializeField] private GameEvent _onAfterGenerate;
-
+        
         public delegate void AfterGenerate();
 
         public AfterGenerate OnAfterGenerate;
@@ -248,7 +246,6 @@ namespace BML.Scripts.CaveV2.MudBun
             this.GenerateMudBunInternal(_mudRenderer, _instanceAsPrefabs);
             
             OnAfterGenerate?.Invoke();
-            _onAfterGenerate.Raise();
 
             if (_lockAfterGenerate)
             {
