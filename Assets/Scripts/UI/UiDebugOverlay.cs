@@ -51,25 +51,20 @@ namespace BML.Scripts.UI
 
         protected void UpdateText()
         {
-            _text.text = $@"Player Coordinates: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
-Timescale: {Time.timeScale.ToString("0.00")}
-Level Time: {this.FormatTime(_levelTimeElapsed.Value)}
-Enemy Spawn Params:
-Delay: {_currentSpawnDelay.Value.ToString("0.00")}
-Cap: {_currentSpawnCap.Value.ToString("0.00")}
-Count: {_currentEnemyCount.Value}
-Difficulty: {_currentDifficulty.Value}
+            _text.text = $@"Player pos: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
+Level Time: {this.FormatTime(_levelTimeElapsed.Value)}, {Time.timeScale.ToString("0.00")}x
 Seed: {_seedDebugReference.Value}
-Combat:
-Swing DPS: {(_swingDamage.Value / _statPickaxeSwingSpeed.Value).ToString("0.00")}
-Sweep DPS: {(_sweepDamage.Value / _statPickaxeSweepSpeed.Value).ToString("0.00")}
-Swing Crit Chance: {_statSwingCritChance.Value * 100f}%
-Player In Combat: {_playerInCombat.Value}
-Any Enemies Engaged: {_anyEnemiesEngaged.Value}
+Enemy Spawn Params ----------
+Difficulty: {_currentDifficulty.Value}
+Spawn delay: {_currentSpawnDelay.Value.ToString("0.00")}
+Count: (Current: {_currentEnemyCount.Value}) (Max: {_currentSpawnCap.Value.ToString("0.00")})
+Combat ----------
+Intensity Score: (Current: {_playerIntensityScore.Value.ToString("0.00")}) (Target: {_playerIntesityTarget.Value.ToString("0.00")})
+Player In Combat: {this.FormatBool(_playerInCombat.Value)}
+Any Enemies Engaged: {this.FormatBool(_anyEnemiesEngaged.Value)}
 Combat Timer: {_playerCombatTimer.RemainingTime}
-Intensity:
-Intensity Score: {_playerIntensityScore.Value.ToString("0.00")}
-Intensity Score Target: {_playerIntesityTarget.Value.ToString("0.00")}
+Swing: (DPS: {(_swingDamage.Value / _statPickaxeSwingSpeed.Value).ToString("0.00")}) (Crit Chance: {_statSwingCritChance.Value * 100f}%)
+Sweep: (DPS: {(_sweepDamage.Value / _statPickaxeSweepSpeed.Value).ToString("0.00")})
 ";
 
             Color intensityResponseColor;
@@ -114,6 +109,11 @@ Intensity Score Target: {_playerIntesityTarget.Value.ToString("0.00")}
             int hours = (int) minutes / 60;
             minutes %= 60;
             return $"{hours.ToString("00")}:{minutes.ToString("00")}:{seconds.ToString("00")}";
+        }
+
+        private string FormatBool(bool value)
+        {
+            return value ? "T" : "F";
         }
         
         #endregion
