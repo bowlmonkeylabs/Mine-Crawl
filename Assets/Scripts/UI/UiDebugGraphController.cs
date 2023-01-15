@@ -67,7 +67,6 @@ namespace BML.Scripts.UI
             {
                 return;
             }
-            Debug.Log($"Graph Update: (Time {Time.time}) (Next update {_nextUpdateTime})");
             _nextUpdateTime = Time.time + _graphUpdatePeriod;
             
             Color intensityResponseColor;
