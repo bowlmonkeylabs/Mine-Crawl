@@ -91,7 +91,6 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     roomPrefab = _caveGraphRenderParams.EndRoomPrefab;
                     roomScale = Vector3.one;
-                    changeDifficultyColor = false;
                 }
                 else if(caveNodeData == _caveGraph.MerchantNode &&
                         !_caveGraphRenderParams.MerchantRoomPrefab.SafeIsUnityNull())
