@@ -72,7 +72,6 @@ namespace BML.Scripts.UI.PlayerHealthBar
             _heartChildren.AddRange(
                 this.GetComponentsInChildren<UiHealthHeartController>()
             );
-            Debug.Log($"{_heartChildren.Count}");
             foreach (var heartController in _heartChildren)
             {
                 heartController.Initialize(this);

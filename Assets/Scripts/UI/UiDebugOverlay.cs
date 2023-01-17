@@ -1,22 +1,38 @@
+using BML.Script.Intensity;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using Intensity;
 using TMPro;
 using UnityEngine;
+using Private.DebugGUI;
 
 namespace BML.Scripts.UI
 {
     public class UiDebugOverlay : MonoBehaviour
     {
         [SerializeField] private TMP_Text _text;
+        [SerializeField] private TMP_Text _intensityResponseText;
         [SerializeField] private TransformSceneReference _playerTransformSceneReference;
         [SerializeField] private FloatVariable _levelTimeElapsed;
         [SerializeField] private FloatVariable _currentSpawnDelay;
         [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
+        [SerializeField] private IntVariable _currentDifficulty;
         [SerializeField] private IntReference _seedDebugReference;
+        [SerializeField] private IntVariable _swingDamage;
+        [SerializeField] private IntVariable _sweepDamage;
         [SerializeField] private EvaluateCurveVariable _statPickaxeSwingSpeed;
+        [SerializeField] private EvaluateCurveVariable _statPickaxeSweepSpeed;
+        [SerializeField] private EvaluateCurveVariable _statSwingCritChance;
         [SerializeField] private BoolVariable _playerInCombat;
+        [SerializeField] private BoolVariable _anyEnemiesEngaged;
         [SerializeField] private TimerVariable _playerCombatTimer;
+        [SerializeField] private FloatVariable _playerIntensityScore;
+        [SerializeField] private FloatVariable _playerIntesityTarget;
+        [SerializeField] private IntensityResponseStateData _intensityResponse;
+
+        private float _peakIntensityScore = 0;
 
         #region Unity lifecycle
 
@@ -27,24 +43,59 @@ namespace BML.Scripts.UI
 
         private void Update()
         {
+            CalculateValues();
             UpdateText();
         }
 
         #endregion
-        
+
         protected void UpdateText()
         {
-            _text.text = $@"Player Coordinates: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
-Timescale: {Time.timeScale.ToString("0.00")}
-Level Time: {this.FormatTime(_levelTimeElapsed.Value)}
-Enemy Spawn Params: Delay: {_currentSpawnDelay.Value.ToString("0.00")}
-Cap: {_currentSpawnCap.Value.ToString("0.00")}
-Count: {_currentEnemyCount.Value}
+            _text.text = $@"Player pos: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
+Level Time: {this.FormatTime(_levelTimeElapsed.Value)}, {Time.timeScale.ToString("0.00")}x
 Seed: {_seedDebugReference.Value}
-Pickaxe Swing Speed: {_statPickaxeSwingSpeed.Value}
-Player In Combat: {_playerInCombat.Value}
-Combat Timer: {_playerCombatTimer.RemainingTime}";
+Enemy Spawn Params ----------
+Difficulty: {_currentDifficulty.Value}
+Spawn delay: {_currentSpawnDelay.Value.ToString("0.00")}
+Count: (Current: {_currentEnemyCount.Value}) (Max: {_currentSpawnCap.Value.ToString("0.00")})
+Combat ----------
+Intensity Score: (Current: {_playerIntensityScore.Value.ToString("0.00")}) (Target: {_playerIntesityTarget.Value.ToString("0.00")})
+Player In Combat: {this.FormatBool(_playerInCombat.Value)}
+Any Enemies Engaged: {this.FormatBool(_anyEnemiesEngaged.Value)}
+Combat Timer: {_playerCombatTimer.RemainingTime}
+Swing: (DPS: {(_swingDamage.Value / _statPickaxeSwingSpeed.Value).ToString("0.00")}) (Crit Chance: {_statSwingCritChance.Value * 100f}%)
+Sweep: (DPS: {(_sweepDamage.Value / _statPickaxeSweepSpeed.Value).ToString("0.00")})
+";
+
+            Color intensityResponseColor;
+            switch (_intensityResponse.Value)
+            {
+                case IntensityController.IntensityResponse.Decreasing:
+                    intensityResponseColor = Color.red;
+                    break;
+                default:
+                case IntensityController.IntensityResponse.Increasing:
+                    intensityResponseColor = Color.green;
+                    break;
+                case IntensityController.IntensityResponse.AboveMax:
+                    intensityResponseColor = Color.yellow;
+                    break;
+                case IntensityController.IntensityResponse.BelowMin:
+                    intensityResponseColor = Color.blue;
+                    break;
+            }
+            _intensityResponseText.color = intensityResponseColor;
+            
+            _intensityResponseText.text = $@"{_intensityResponse.Value.ToString()}";
         }
+
+        private void CalculateValues() {
+            if(_playerIntensityScore.Value > _peakIntensityScore) {
+                _peakIntensityScore = _playerIntensityScore.Value;
+            }
+        }
+        
+        #region Format
 
         private string FormatVector3(Vector3 vector3) 
         {
@@ -59,5 +110,13 @@ Combat Timer: {_playerCombatTimer.RemainingTime}";
             minutes %= 60;
             return $"{hours.ToString("00")}:{minutes.ToString("00")}:{seconds.ToString("00")}";
         }
+
+        private string FormatBool(bool value)
+        {
+            return value ? "T" : "F";
+        }
+        
+        #endregion
+        
     }
 }

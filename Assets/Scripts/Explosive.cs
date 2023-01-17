@@ -20,12 +20,13 @@ namespace BML.Scripts
         [SerializeField] private UnityEvent _onExplosion;
 
         private bool isActive;
+        private bool isDeActivated;
         private float activateTime;
         private float currentFuseTime;
 
         public void Activate()
         {
-            if (isActive)
+            if (isActive || isDeActivated)
                 return;
             
             Activate(false);
@@ -50,6 +51,7 @@ namespace BML.Scripts
         public void Deactivate()
         {
             isActive = false;
+            isDeActivated = true;
         }
 
         private void Update()

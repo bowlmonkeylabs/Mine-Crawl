@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using BML.Scripts.CaveV2.SpawnObjects;
+using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 
@@ -8,7 +10,8 @@ namespace BML.Scripts
     {
         #region Inspector
 
-        [FormerlySerializedAs("DoCountTowardsSpawnCap")] [SerializeField] public bool DoCountForSpawnCap = true;
+        [SerializeField] public bool DoCountForSpawnCap = true;
+        [SerializeField, ReadOnly] public SpawnPoint SpawnPoint;
         [SerializeField] private UnityEvent _onDespawn;
         
         #endregion
@@ -19,7 +22,16 @@ namespace BML.Scripts
         {
             _onDespawn?.Invoke();
             
+            if (SpawnPoint != null)
+                SpawnPoint.Occupied = false;
+            
             Destroy(this.gameObject);
+        }
+
+        public void OnDeath()
+        {
+            if (SpawnPoint != null)
+                SpawnPoint.Occupied = false;
         }
 
         #endregion

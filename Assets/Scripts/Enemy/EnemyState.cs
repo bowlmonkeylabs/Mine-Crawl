@@ -13,24 +13,41 @@ namespace BML.Scripts.Enemy
 {
     public class EnemyState : MonoBehaviour
     {
+        #region Inspector
+        
         [SerializeField] private AggroState _aggro;
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
+        [SerializeField] private DynamicGameEvent _onEnemyAdded;
+        [SerializeField] private DynamicGameEvent _onEnemyRemoved;
+        [SerializeField] private GameEvent _onAfterUpdatePlayerDistance;
 
         [ShowInInspector, ReadOnly] private bool isAlerted;
         [ShowInInspector, ReadOnly] private bool isPlayerInLoS;
+        [ShowInInspector, ReadOnly] private int distanceToPlayer;
 
-        public bool IsAlerted { get => isAlerted; set => isAlerted = value; }
+        #endregion
+
+        public AggroState Aggro => _aggro;
+        public bool IsAlerted
+        {
+            get => isAlerted; 
+            set {
+                isAlerted = value;
+                OnAggroStateChanged?.Invoke();
+            }
+        }
         public bool IsPlayerInLoS { get => isPlayerInLoS; set => isPlayerInLoS = value; }
-        
+
+        public int DistanceToPlayer => distanceToPlayer;
+
         private float lastUpdateTime = Mathf.NegativeInfinity;
         
-        private Dictionary<Collider, CaveNodeData> _currentNodes;
-        private Dictionary<Collider, CaveNodeConnectionData> _currentNodeConnections;
+        private Dictionary<Collider, ICaveNodeData> _currentNodes;
 
         #region Enums
 
         [Serializable]
-        enum AggroState
+        public enum AggroState
         {
             Idle,        //Not yet alerted
             Seeking,     //Alerted no LoS
@@ -39,12 +56,25 @@ namespace BML.Scripts.Enemy
 
         #endregion
 
-        #region UnityLifecyle
+        #region Unity lifecyle
 
         private void Awake()
         {
-            _currentNodes = new Dictionary<Collider, CaveNodeData>();
-            _currentNodeConnections = new Dictionary<Collider, CaveNodeConnectionData>();
+            _currentNodes = new Dictionary<Collider, ICaveNodeData>();
+        }
+
+        private void OnEnable()
+        {
+            var payload = new EnemyStateManager.EnemyStatePayload(this);
+            _onEnemyAdded.Raise(payload);
+            _onAfterUpdatePlayerDistance.Subscribe(UpdateDistanceToPlayer);
+        }
+        
+        private void OnDisable()
+        {
+            var payload = new EnemyStateManager.EnemyStatePayload(this);
+            _onEnemyRemoved.Raise(payload);
+            _onAfterUpdatePlayerDistance.Unsubscribe(UpdateDistanceToPlayer);
         }
 
         private void Update()
@@ -54,61 +84,25 @@ namespace BML.Scripts.Enemy
 
         private void OnTriggerEnter(Collider other)
         {
-            bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(CaveNodeDataUtils.RoomBoundsLayerMask);
-            if (isNodeBoundsLayer)
-            {
-                bool isAlreadyEntered =
-                    (_currentNodes.ContainsKey(other) || _currentNodeConnections.ContainsKey(other));
-                
-                if (isAlreadyEntered)
-                {
-                    return;
-                }
-                
-                var caveNodeDataComponent = other.GetComponentInParent<CaveNodeDataDebugComponent>();
-                if (caveNodeDataComponent != null)
-                {
-                    var caveNodeData = caveNodeDataComponent.CaveNodeData;
-                    if (caveNodeData == null)
-                    {
-                        return;
-                    }
-                        
-                    _currentNodes.Add(other, caveNodeData);
-                }
-                else
-                {
-                    var caveNodeConnectionDataComponent =
-                        other.GetComponentInParent<CaveNodeConnectionDataDebugComponent>();
-                    if (caveNodeConnectionDataComponent == null)
-                    {
-                        return;
-                    }
-                        
-                    var caveNodeConnectionData = caveNodeConnectionDataComponent.CaveNodeConnectionData;
-                    if (caveNodeConnectionData == null)
-                    {
-                        return;
-                    }
+            TryRegisterCaveNode(other);
+        }
 
-                    _currentNodeConnections.Add(other, caveNodeConnectionData);
-                }
-            }
+        private void OnTriggerStay(Collider other)
+        {
+            TryRegisterCaveNode(other);
         }
 
         private void OnTriggerExit(Collider other)
         {
             bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(CaveNodeDataUtils.RoomBoundsLayerMask);
-            if (isNodeBoundsLayer)
+
+            if (!isNodeBoundsLayer)
+                return;
+            
+            if (_currentNodes.ContainsKey(other))
             {
-                if (_currentNodes.ContainsKey(other))
-                {
-                    _currentNodes.Remove(other);
-                }
-                else if (_currentNodeConnections.ContainsKey(other))
-                {
-                    _currentNodeConnections.Remove(other);
-                }
+                _currentNodes.Remove(other);
+                UpdateDistanceToPlayer();
             }
         }
 
@@ -136,14 +130,12 @@ namespace BML.Scripts.Enemy
             // Draw line from sphere to room/tunnel centers it belongs to
             Gizmos.color = Color.white;
 
-            foreach (var node in _currentNodes)
+            if (_currentNodes != null)
             {
-                Gizmos.DrawLine(gizmoPivot, node.Value.GameObject.transform.position);
-            }
-            
-            foreach (var edge in _currentNodeConnections)
-            {
-                Gizmos.DrawLine(gizmoPivot, edge.Value.GameObject.transform.position);
+                foreach (var node in _currentNodes)
+                {
+                    Gizmos.DrawLine(gizmoPivot, node.Value.GameObject.transform.position);
+                }
             }
         }
 
@@ -151,24 +143,84 @@ namespace BML.Scripts.Enemy
 
         #region State
 
+        private void TryRegisterCaveNode(Collider other)
+        {
+            bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(CaveNodeDataUtils.RoomBoundsLayerMask);
+
+            if (!isNodeBoundsLayer)
+                return;
+            
+            if (_currentNodes.ContainsKey(other))
+                return;
+
+            var caveNodeDataComponent = other.GetComponentInParent<CaveNodeDataDebugComponent>();
+            if (caveNodeDataComponent != null)
+            {
+                var caveNodeData = caveNodeDataComponent.CaveNodeData;
+                if (caveNodeData == null)
+                {
+                    return;
+                }
+                    
+                _currentNodes.Add(other, caveNodeData);
+                UpdateDistanceToPlayer();
+            }
+            else
+            {
+                var caveNodeConnectionDataComponent =
+                    other.GetComponentInParent<CaveNodeConnectionDataDebugComponent>();
+                if (caveNodeConnectionDataComponent == null)
+                {
+                    return;
+                }
+                    
+                var caveNodeConnectionData = caveNodeConnectionDataComponent.CaveNodeConnectionData;
+                if (caveNodeConnectionData == null)
+                {
+                    return;
+                }
+
+                _currentNodes.Add(other, caveNodeConnectionData);
+                UpdateDistanceToPlayer();
+            }
+        }
+
         private void UpdateAggroState()
         {
             if (!isAlerted)
             {
                 _aggro = AggroState.Idle;
+                OnAggroStateChanged?.Invoke();
                 return;
             }
-
 
             if (!isPlayerInLoS)
                 _aggro = AggroState.Seeking;
             else
                 _aggro = AggroState.Engaged;
+            
+            OnAggroStateChanged?.Invoke();
+        }
 
+        private void UpdateDistanceToPlayer()
+        {
+            int dist = Int32.MaxValue;
+
+            _currentNodes.Values
+                .ToList()
+                .ForEach(n => dist = Mathf.Min(dist, n.PlayerDistance));
+
+            distanceToPlayer = dist;
         }
 
         #endregion
-        
+
+        #region Events
+
+        public delegate void OnAggroStateChangedCallback();
+        public event OnAggroStateChangedCallback OnAggroStateChanged;
+
+        #endregion
         
         #region Public interface
 

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 188216178076231889}
   - component: {fileID: 4961324434641097420}
-  - component: {fileID: 4789147880318306206}
   - component: {fileID: 902545810587700603}
   - component: {fileID: 6663705539820244239}
   m_Layer: 0
@@ -55,28 +54,6 @@ MonoBehaviour:
   _critMarkerMinMaxAngle: {x: 15, y: 41.42908}
   _critMarkerSurfaceOffset: 0.1
   _playerCamRef: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
---- !u!114 &4789147880318306206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 188216178076231887}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45f673bab82a4663919a802c7de7b464, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  _miningEnemyAlertRadius:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: '{I} '
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 48b25f76d712c95489c66247d650c352, type: 2}
 --- !u!114 &902545810587700603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,16 +66,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _useHealthVariable: 0
   _healthReference: {fileID: 0}
   _health: 5
-  _useHealthVariable: 0
+  _hasMaxHealth: 0
+  _maxHealthReference:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 0}
+  _isInvincible: 0
   _invincibilitySeconds:
     ReferenceTypeSelector: 0
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-  _isInvincible: 0
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -2081,6 +2066,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -2303,6 +2289,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -19627,6 +19614,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -20015,7 +20003,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 4789147880318306206}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: BML.Scripts.AlertEnemies, BML.Scripts
         m_MethodName: Alert
         m_Mode: 1
@@ -20042,7 +20030,7 @@ MonoBehaviour:
   _onPickaxeSecondaryInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4789147880318306206}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: BML.Scripts.AlertEnemies, BML.Scripts
         m_MethodName: Alert
         m_Mode: 1
@@ -20079,7 +20067,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 3671839594153206121
+  uniqueID: 7125008149488572610
   updateError: 1
   checkTime: 0.2
 --- !u!114 &3295877874356666708
@@ -20275,6 +20263,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -23055,6 +23044,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -23341,6 +23331,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -24888,17 +24879,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7437511740362481223, guid: ba862138d6619bd449650baaad4863f3, type: 3}
   m_PrefabInstance: {fileID: 4230764367346052056}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6948240474995140366 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-  m_PrefabInstance: {fileID: 4230764367346052056}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 26064794837490706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &26064794837490706 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4245249631717701578, guid: ba862138d6619bd449650baaad4863f3, type: 3}
@@ -24913,5 +24893,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6948240474995140366 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
+  m_PrefabInstance: {fileID: 4230764367346052056}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 26064794837490706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

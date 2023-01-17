@@ -1,11 +1,16 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using BML.Script.Audio;
+using BML.Script.MMFFeedbacks;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using MoreMountains.Tools;
 using UnityEngine;
 
 namespace BML.Scripts
 {
-    public class TimeManager : MonoBehaviour
+    public class TimeManager : MMPersistentSingleton<TimeManager>
     { 
         [SerializeField] private GameEvent _onToggleFreezeTime;
         [SerializeField] private GameEvent _onFreezeTime;
@@ -14,7 +19,7 @@ namespace BML.Scripts
         [SerializeField] private GameEvent _onIncreaseTimeScale;
         [SerializeField] private GameEvent _onDecreaseTimeScale;
         [SerializeField] private GameEvent _onSkipFrame;
-        [SerializeField] private BoolVariable _isPaused;
+        [SerializeField] private VariableContainer _containerUiMenuStates_Frozen;
 
         private bool isFrozen;
         private bool skipFrame;
@@ -22,7 +27,14 @@ namespace BML.Scripts
         private float fpsRefresh = .5f;
         private float fpsRefreshTimer;
         private int fps;
-        
+        private List<PauseAudioSource> pauseAudioSources = new List<PauseAudioSource>();
+
+        public delegate void OnPauseGame_();
+        public delegate void OnUnPauseGame_();
+
+        public event OnPauseGame_ OnPauseGame;
+        public event OnUnPauseGame_ OnUnPauseGame;
+
         #region Unity Methods
 
         private void OnEnable()
@@ -34,7 +46,9 @@ namespace BML.Scripts
             _onIncreaseTimeScale.Subscribe(IncreaseTimeScale);
             _onDecreaseTimeScale.Subscribe(DecreaseTimeScale);
             _onResetTimeScale.Subscribe(ResetTimeScale);
-            _isPaused.Subscribe(TogglePauseFreezeGame);
+            _containerUiMenuStates_Frozen
+                .GetBoolVariables()
+                .ForEach(b => b.Subscribe(SetFreezeGame));
         }
         
         private void OnDisable()
@@ -46,7 +60,9 @@ namespace BML.Scripts
             _onIncreaseTimeScale.Unsubscribe(IncreaseTimeScale);
             _onDecreaseTimeScale.Unsubscribe(DecreaseTimeScale);
             _onResetTimeScale.Unsubscribe(ResetTimeScale);
-            _isPaused.Unsubscribe(TogglePauseFreezeGame);
+            _containerUiMenuStates_Frozen
+                .GetBoolVariables()
+                .ForEach(b => b.Unsubscribe(SetFreezeGame));
         }
 
         private void Update()
@@ -114,7 +130,12 @@ namespace BML.Scripts
         {
             Time.timeScale = 0f;
             isFrozen = true;
-            AudioListener.pause = true;
+            //AudioListener.pause = true;
+            
+            pauseAudioSources = FindObjectsOfType<PauseAudioSource>().ToList();
+            pauseAudioSources.ForEach(a => a.Pause());
+            
+            OnPauseGame?.Invoke();
             Debug.Log("Froze Game");
         }
 
@@ -122,11 +143,16 @@ namespace BML.Scripts
         {
             Time.timeScale = timescaleFactor;
             isFrozen = false;
-            AudioListener.pause = false;
+            //AudioListener.pause = false;
+            
+            pauseAudioSources = FindObjectsOfType<PauseAudioSource>().ToList();
+            pauseAudioSources.ForEach(a => a.Resume());
+
+            OnUnPauseGame?.Invoke();
             Debug.Log("UnFroze Game");
         }
 
-        private void TogglePauseFreezeGame(bool prev, bool val) {
+        private void SetFreezeGame(bool prev, bool val) {
             if(val) FreezeGame();
             else UnFreezeGame();
         }

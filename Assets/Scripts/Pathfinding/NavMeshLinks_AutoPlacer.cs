@@ -20,8 +20,8 @@ using System.Linq;
 using Pathfinding;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
-using UnityEditor.SceneManagement;
 #if UNITY_EDITOR
+using UnityEditor.SceneManagement;
 using UnityEditor;
 #endif
 

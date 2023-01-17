@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.Utils;
 using MudBun;
+using Shapes;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
@@ -22,6 +24,9 @@ namespace BML.Scripts.CaveV2.MudBun
         
         [Required, InlineEditor, SerializeField]
         private CaveGraphMudBunRendererParameters _caveGraphRenderParams;
+        
+        [Required, InlineEditor, SerializeField]
+        private DifficultyColorParams _difficultyColorParams;
 
         #endregion
         
@@ -64,9 +69,13 @@ namespace BML.Scripts.CaveV2.MudBun
 
             var localOrigin = mudRenderer.transform.position;
 
+            
+
             // Spawn "rooms" at each cave node
             foreach (var caveNodeData in _caveGraph.Vertices)
             {
+                bool changeDifficultyColor = true;
+                
                 // Select room to spawn
                 GameObject roomPrefab;
                 Vector3 roomScale;
@@ -75,12 +84,20 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     roomPrefab = _caveGraphRenderParams.StartRoomPrefab;
                     roomScale = Vector3.one;
+                    changeDifficultyColor = false;
                 }
                 else if (caveNodeData == _caveGraph.EndNode &&
                          !_caveGraphRenderParams.EndRoomPrefab.SafeIsUnityNull())
                 {
                     roomPrefab = _caveGraphRenderParams.EndRoomPrefab;
                     roomScale = Vector3.one;
+                }
+                else if(caveNodeData == _caveGraph.MerchantNode &&
+                        !_caveGraphRenderParams.MerchantRoomPrefab.SafeIsUnityNull())
+                {
+                    roomPrefab = _caveGraphRenderParams.MerchantRoomPrefab;
+                    roomScale = Vector3.one;
+                    changeDifficultyColor = false;
                 }
                 else
                 {
@@ -100,30 +117,54 @@ namespace BML.Scripts.CaveV2.MudBun
                 if (caveNodeDataDebugComponent != null)
                 {
                     caveNodeDataDebugComponent.CaveNodeData = caveNodeData;
+                    if (changeDifficultyColor)
+                    {
+                        var difficultyColorList = _difficultyColorParams.DifficultyColorList;
+                        var colorIndex = Mathf.Min(caveNodeData.Difficulty, _difficultyColorParams.DifficultyColorList.Count - 1);
+                        var difficultyColor = difficultyColorList[colorIndex];
+
+                        List<MudMaterial> materials = caveNodeData.GameObject.GetComponentsInChildren<MudMaterial>()?.ToList();
+                        materials?.ForEach(m =>
+                        {
+                            m.Color *= difficultyColor;
+                        });
+                    }
                 }
             }
             
             // Spawn "tunnel" on each edge to ensure nodes are connected
             foreach (var caveNodeConnectionData in _caveGraph.Edges)
             {
+                var source = caveNodeConnectionData.Source;
+                var target = caveNodeConnectionData.Target;
+                
                 // Calculate tunnel position
-                var sourceTargetDiff = (caveNodeConnectionData.Target.LocalPosition -
-                                        caveNodeConnectionData.Source.LocalPosition);
+                var sourceTargetDiff = (target.LocalPosition - source.LocalPosition);
                 var sourceTargetDiffProjectedToGroundNormalized = Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
-                var sourceEdgePosition = caveNodeConnectionData.Source.LocalPosition +
-                                         (caveNodeConnectionData.Source.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * sourceTargetDiffProjectedToGroundNormalized);
-                var targetEdgePosition = caveNodeConnectionData.Target.LocalPosition +
-                                         (caveNodeConnectionData.Target.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * -1 * sourceTargetDiffProjectedToGroundNormalized);
+                var sourceEdgePosition = source.LocalPosition +
+                                         (source.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * sourceTargetDiffProjectedToGroundNormalized);
+                var targetEdgePosition = target.LocalPosition +
+                                         (target.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * -1 * sourceTargetDiffProjectedToGroundNormalized);
                 
                 var edgeDiff = (targetEdgePosition - sourceEdgePosition);
-                var edgeMidPosition = caveNodeConnectionData.Source.LocalPosition + edgeDiff / 2;
+                var edgeMidPosition = source.LocalPosition + edgeDiff / 2;
                 var edgeRotation = Quaternion.LookRotation(edgeDiff);
                 var edgeLength = edgeDiff.magnitude;
                 var localScale = new Vector3(caveNodeConnectionData.Radius, caveNodeConnectionData.Radius, edgeLength);
                 // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
 
                 // Spawn tunnel
-                GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
+                GameObject newGameObject;
+
+                if (caveNodeConnectionData.IsBlocked)
+                {
+                    newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelWithBarrierPrefab, mudRenderer.transform);
+                    #warning TODO find tunnel barrier game object
+                    // caveNodeConnectionData.Barrier = ;
+                }
+                else
+                    newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
+                
                 newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 newGameObject.transform.localScale = localScale;
                 caveNodeConnectionData.GameObject = newGameObject;
@@ -133,6 +174,17 @@ namespace BML.Scripts.CaveV2.MudBun
                 if (caveNodeConnectionDataDebugComponent != null)
                 {
                     caveNodeConnectionDataDebugComponent.CaveNodeConnectionData = caveNodeConnectionData;
+
+                    var difficultyColorList = _difficultyColorParams.DifficultyColorList;
+                    var colorIndex = Mathf.Min(caveNodeConnectionData.Difficulty, _difficultyColorParams.DifficultyColorList.Count - 1);
+                    var difficultyColor = difficultyColorList[colorIndex];
+
+                    List<MudMaterial> materials = caveNodeConnectionData.GameObject.GetComponentsInChildren<MudMaterial>()?.ToList();
+                    materials?.ForEach(m =>
+                    {
+                        m.Color *= difficultyColor;
+                    });
+                    
                 }
             }
         }

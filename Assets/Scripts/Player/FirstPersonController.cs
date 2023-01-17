@@ -1,4 +1,4 @@
-﻿//FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
+//FirstPersonController.cs extends the FirstPersonController.cs from Unity's Starter Assets - First Person Character Controller
 //https://assetstore.unity.com/packages/essentials/starter-assets-first-person-character-controller-196525
 
 using System;
@@ -63,6 +63,7 @@ namespace BML.Scripts.Player
 
 		[SerializeField, FoldoutGroup("RopeMovement")] private GameEvent _playerEnteredRopeEvent;
 		[SerializeField, FoldoutGroup("RopeMovement")] private BoolReference _isRopeMovementEnabled;
+        [SerializeField, FoldoutGroup("RopeMovement")] private DynamicGameEvent _playerRopePointStateChanged;
 		[SerializeField, FoldoutGroup("RopeMovement")] private float _ropeMovementSpeed = 15;
 		[SerializeField, FoldoutGroup("RopeMovement")] private float _ropeGravitySpeed = 1;
         [SerializeField, FoldoutGroup("RopeMovement"), Sirenix.OdinInspector.ReadOnly] private bool reachedRopeBottom = false;
@@ -147,12 +148,14 @@ namespace BML.Scripts.Player
 		{
 			isNoClipEnabled.Subscribe(SetNoClip);
             _playerEnteredRopeEvent.Subscribe(OnPlayerEnteredRope);
+            _playerRopePointStateChanged.Subscribe(OnPlayerRopePointStateChanged);
 		}
 
 		private void OnDisable()
 		{
 			isNoClipEnabled.Unsubscribe(SetNoClip);
             _playerEnteredRopeEvent.Unsubscribe(OnPlayerEnteredRope);
+            _playerRopePointStateChanged.Unsubscribe(OnPlayerRopePointStateChanged);
 		}
 
 		private void Update()
@@ -192,32 +195,39 @@ namespace BML.Scripts.Player
 		    // Without this, y velocity is converted to horizontal velocity when land
 		    if (_motor.GroundingStatus.IsStableOnGround && !_motor.LastGroundingStatus.IsStableOnGround)
 		    {
-		        currentVelocity = Vector3.ProjectOnPlane(currentVelocity , _motor.CharacterUp);
-		        currentVelocity  = _motor.GetDirectionTangentToSurface(currentVelocity ,
-			        _motor.GroundingStatus.GroundNormal) * currentVelocity .magnitude;
+			    currentVelocity = Vector3.ProjectOnPlane(currentVelocity, _motor.CharacterUp);
+			    currentVelocity = _motor.GetDirectionTangentToSurface(currentVelocity,
+				    _motor.GroundingStatus.GroundNormal) * currentVelocity.magnitude;
 		    }
 
-            if(_isRopeMovementEnabled.Value) {
-                float moveDirection = _input.move.y;
-                float movementSpeed = _ropeMovementSpeed;
+		    // Rope Movement
+		    if (_isRopeMovementEnabled.Value)
+		    {
+			    float moveDirection = _input.move.y;
+			    float movementSpeed = _ropeMovementSpeed;
 
-                if(_input.move.y != 0) {
-                    if(reachedRopeBottom && moveDirection < 0) {
-                    moveDirection = 0;
-                }
+			    if (_input.move.y != 0)
+			    {
+				    if (reachedRopeBottom && moveDirection < 0)
+				    {
+					    moveDirection = 0;
+				    }
 
-                if(reachedRopeTop && moveDirection > 0) {
-                    moveDirection = 0;
-                }
-                } else {
-                    moveDirection = !reachedRopeBottom ? -1 : 0;
-                    movementSpeed = _ropeGravitySpeed;
-                }
+				    if (reachedRopeTop && moveDirection > 0)
+				    {
+					    moveDirection = 0;
+				    }
+			    }
+			    else
+			    {
+				    moveDirection = !reachedRopeBottom ? -1 : 0;
+				    movementSpeed = _ropeGravitySpeed;
+			    }
 
-                currentVelocity = movementSpeed * Vector3.up * moveDirection;
-                return;
-            }
-		    
+			    currentVelocity = movementSpeed * Vector3.up * moveDirection;
+			    return;
+		    }
+
 		    // set target speed based on move speed, sprint speed and if sprint is pressed
 		    float sprintSpeed = isNoClipEnabled.Value ? SprintSpeed.Value * noClipSprintMultiplier : SprintSpeed.Value;
 		    float targetSpeed = _input.sprint ? sprintSpeed : MoveSpeed.Value;
@@ -235,11 +245,13 @@ namespace BML.Scripts.Player
 		    float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
 		    // accelerate or decelerate to target speed
-		    if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
+		    if (currentHorizontalSpeed < targetSpeed - speedOffset ||
+		        currentHorizontalSpeed > targetSpeed + speedOffset)
 		    {
 			    // creates curved result rather than a linear one giving a more organic speed change
 			    // note T in Lerp is clamped, so we don't need to clamp our speed
-			    _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
+			    _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+				    Time.deltaTime * SpeedChangeRate);
 
 			    // round speed to 3 decimal places
 			    _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -248,23 +260,23 @@ namespace BML.Scripts.Player
 		    {
 			    _speed = targetSpeed;
 		    }
-		    
+
 		    Vector3 inputDirection = (_input.move.y * _mainCamera.transform.forward.xoz().normalized +
 		                              _input.move.x * _mainCamera.transform.right.xoz().normalized)
-									.normalized;
-		    
-			if (isNoClipEnabled.Value)
-				inputDirection = (_input.move.y * _mainCamera.transform.forward.normalized +
-				                  _input.move.x * _mainCamera.transform.right.normalized)
-					.normalized;
+			    .normalized;
 
-			Vector3 horizontalVelocity = inputDirection * _speed;
-		    
+		    if (isNoClipEnabled.Value)
+			    inputDirection = (_input.move.y * _mainCamera.transform.forward.normalized +
+			                      _input.move.x * _mainCamera.transform.right.normalized)
+				    .normalized;
+
+		    Vector3 horizontalVelocity = inputDirection * _speed;
+
 		    if (_knockbackActive)
 			    horizontalVelocity = _knockbackDir * KnockbackHorizontalForceCurve.Evaluate(percentToEndKnockback);
 
 		    // move the player
-		    currentVelocity = horizontalVelocity + 
+		    currentVelocity = horizontalVelocity +
 		                      new Vector3(0.0f, _verticalVelocity, 0.0f);
 	    }
 
@@ -284,26 +296,6 @@ namespace BML.Scripts.Player
 	    {
 	        // This is called when the motor's ground probing detects a ground hit
 	    }
-
-        void OnTriggerEnter(Collider collider) {
-            if(_isRopeMovementEnabled.Value && collider.gameObject.tag == "RopeTop") {
-                reachedRopeTop = true;
-            }
-
-            if(_isRopeMovementEnabled.Value && collider.gameObject.tag == "RopeBottom") {
-                reachedRopeBottom = true;
-            }
-        }
-
-        void OnTriggerExit(Collider collider) {
-            if(collider.gameObject.tag == "RopeTop") {
-                reachedRopeTop = false;
-            }
-
-            if(collider.gameObject.tag == "RopeBottom") {
-                reachedRopeBottom = false;
-            }
-        }
 
 	    public void OnMovementHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint,
 	        ref HitStabilityReport hitStabilityReport)
@@ -417,6 +409,9 @@ namespace BML.Scripts.Player
                     if(_isRopeMovementEnabled.Value) {
                         Gravity = originalGravity;
                         _isRopeMovementEnabled.Value = false;
+                        _motor.ContrainYAxis = false;
+                        reachedRopeBottom = false;
+                        reachedRopeTop = false;
                     }
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_motor.ForceUnground();
@@ -481,6 +476,23 @@ namespace BML.Scripts.Player
                 Gravity = 0f;
                 _motor.ForceUnground();
                 _isRopeMovementEnabled.Value = true;
+                _motor.ContrainYAxis = true;
+            }
+        }
+
+        private void OnPlayerRopePointStateChanged(object p, object payload) {
+            var ropePointEvent = (RopePoint.RopePointEvent) payload;
+            if(ropePointEvent == RopePoint.RopePointEvent.EnterRopeTop) {
+                reachedRopeTop = true;
+            }
+            if(ropePointEvent == RopePoint.RopePointEvent.EnterRopeBottom) {
+                reachedRopeBottom = true;
+            }
+            if(ropePointEvent == RopePoint.RopePointEvent.ExitRopeBottom) {
+                reachedRopeBottom = false;
+            }
+            if(ropePointEvent == RopePoint.RopePointEvent.ExitRopeTop) {
+                reachedRopeTop = false;
             }
         }
 

@@ -18,13 +18,32 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         // Calculated properties
         [ShowInInspector] public int MainPathDistance { get; set; }
         [ShowInInspector] public int ObjectiveDistance { get; set; }
+        [ShowInInspector] public int Difficulty { get; set; }
         [ShowInInspector] public int PlayerDistance { get; set; }
         [ShowInInspector] public int PlayerDistanceDelta { get; set; }
-        [ShowInInspector] public bool PlayerVisited { get; set; }
+
+        [ShowInInspector]
+        public bool PlayerVisited
+        {
+            get => playerVisited;
+            set
+            {
+                if (!playerVisited && value)
+                    OnPlayerVisited();
+                
+                playerVisited = value;
+            }
+        }
         [ShowInInspector] public bool PlayerOccupied { get; set; }
         [ShowInInspector] public int TorchRequirement { get; set; }
         [ShowInInspector] public float TorchInfluence { get; set; }
         [ShowInInspector] public float PlayerInfluence { get; set; }
+        
+        // Fields
+        private bool playerVisited;
+        
+        // Events
+        public event EventHandler onPlayerVisited;
 
         // Scene object references
         [ShowInInspector]
@@ -62,6 +81,11 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             BoundsColliders = new HashSet<Collider>();
             SpawnPoints = new HashSet<SpawnPoint>();
             Torches = new HashSet<Torch>();
+        }
+
+        private void OnPlayerVisited()
+        {
+            onPlayerVisited?.Invoke(this, new EventArgs());
         }
     }
 }

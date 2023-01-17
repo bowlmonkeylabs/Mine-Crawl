@@ -33,9 +33,12 @@ namespace BML.Scripts.Player
 		public bool playerCursorLocked = true;
 		[SerializeField] private FloatReference _mouseSensitivity;
 		[SerializeField] private BoolReference _invertedLookY;
-		
+
 		[SerializeField] private BoolReference _isPaused;
 		[SerializeField] private BoolReference _isStoreOpen;
+		[SerializeField] private BoolReference _isUpgradeStoreOpen;
+		[SerializeField] private GameEvent _onStoreFailOpen;
+		[SerializeField] private BoolReference _isPlayerInCombat;
 		[SerializeField] private BoolReference _isDebugConsoleOpen;
 		[SerializeField] private BoolReference _settingDoFreezeOnDebugConsole;
 		[SerializeField] private BoolReference _isDebugOverlayOpen; // This is specifically excluded from _containerUiMenuStates, so this acts as an overlay rather than an interactable menu.
@@ -68,7 +71,7 @@ namespace BML.Scripts.Player
 		public bool JumpHeld => jumpHeld;
 		public bool CrouchHeld => crouchHeld;
 		
-		private bool isUsingUi_NoPlayerControl
+		private bool IsUsingUi_NoPlayerControl
 		{
 			get
 			{
@@ -78,13 +81,23 @@ namespace BML.Scripts.Player
 			}
 		}
 		
-		private bool isUsingUi_InteractableOverlay
+		private bool IsUsingUi_InteractableOverlay
 		{
 			get
 			{
 				return _containerUiMenuStates_InteractableOverlay
 					.GetBoolVariables()
 					.Any(b => (b != null && b.Value));
+			}
+		}
+
+		private bool IsUsingUi
+		{
+			get
+			{
+				return IsUsingUi_InteractableOverlay
+				       || IsUsingUi_NoPlayerControl
+				       || _isDebugConsoleOpen.Value;
 			}
 		}
 		
@@ -123,19 +136,6 @@ namespace BML.Scripts.Player
 			_isDebugConsoleOpen.Unsubscribe(ApplyInputState);
 			_isDebugConsoleOpen.Unsubscribe(OnIsDebugConsoleOpenUpdated);
 
-			jumpAction.performed -= SetJumpHeld;
-			jumpAction.canceled -= SetJumpHeld;
-			crouchAction.performed -= SetCrouchHeld;
-			crouchAction.canceled -= SetCrouchHeld;
-		}
-
-		private void OnDestroy()
-		{
-			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
-			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
-			_isDebugConsoleOpen.Unsubscribe(ApplyInputState);
-			_isDebugConsoleOpen.Unsubscribe(OnIsDebugConsoleOpenUpdated);
-			
 			jumpAction.performed -= SetJumpHeld;
 			jumpAction.canceled -= SetJumpHeld;
 			crouchAction.performed -= SetCrouchHeld;
@@ -182,7 +182,43 @@ namespace BML.Scripts.Player
 			// playerInput.SwitchCurrentActionMap("UI");
 			// SetCursorState(false);
 		}
+
+		public void OnToggleStore()
+		{
+			// Do nothing if any other menu is already open
+			if (!_isStoreOpen.Value && IsUsingUi)
+			{
+				return;
+			}
+
+			// Play feedback if store fails to open due to combat
+			if (!_isStoreOpen.Value && _isPlayerInCombat.Value)
+			{
+				_onStoreFailOpen.Raise();
+				return;
+			}
+
+			_isStoreOpen.Value = !_isStoreOpen.Value;
+		}
 		
+		public void OnToggleUpgradeStore()
+		{
+			// Do nothing if any other menu is already open
+			if (!_isUpgradeStoreOpen.Value && IsUsingUi)
+			{
+				return;
+			}
+
+			// Play feedback if store fails to open due to combat
+			if (!_isUpgradeStoreOpen.Value && _isPlayerInCombat.Value)
+			{
+				_onStoreFailOpen.Raise();
+				return;
+			}
+
+			_isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
+		}
+
 		public void OnToggleGodMode()
 		{
 			_isGodModeEnabled.Value = !_isGodModeEnabled.Value;
@@ -203,7 +239,6 @@ namespace BML.Scripts.Player
 
         public void OnOpenDebugUi()
 		{
-            Debug.Log($"Pressed Debug Ui");
 			_isDebugOverlayOpen.Value = !_isDebugOverlayOpen.Value;
 		}
 
@@ -310,12 +345,12 @@ namespace BML.Scripts.Player
 				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "UI");
 				SetCursorState(false);
 			}
-			else if (isUsingUi_NoPlayerControl)
+			else if (IsUsingUi_NoPlayerControl)
 			{
 				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "UI");
 				SetCursorState(false);
 			}
-			else if (isUsingUi_InteractableOverlay)
+			else if (IsUsingUi_InteractableOverlay)
 			{
 				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "UI", "UI_Player");
 				SetCursorState(false);
@@ -325,7 +360,7 @@ namespace BML.Scripts.Player
 				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "Debug_FKeys", "Player");
 				SetCursorState(playerCursorLocked);
 			}
-			if (_enableLogs) Debug.Log($"ApplyInputState Inputs (NoPlayerControl {isUsingUi_NoPlayerControl}) (InteractableOverlay {isUsingUi_InteractableOverlay}) => updated input state to: (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
+			if (_enableLogs) Debug.Log($"ApplyInputState Inputs (NoPlayerControl {IsUsingUi_NoPlayerControl}) (InteractableOverlay {IsUsingUi_InteractableOverlay}) => updated input state to: (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
 		}
 		
 		private void SetCursorState(bool newState)

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 using UnityEngine;
@@ -63,7 +64,7 @@ namespace BML.Scripts.MMFFeedbacks
         public MMF_Button TestPlayButton;
         /// a test button used to stop the sound in inspector
         public MMF_Button TestStopButton;
-        
+
         [MMFInspectorGroup("Sound Properties", true, 24)]
         [Header("Volume")]
         /// the minimum volume to play the sound at
@@ -118,6 +119,8 @@ namespace BML.Scripts.MMFFeedbacks
         /// if this is true, this sound will stop playing when stopping the feedback
         [Tooltip("if this is true, this sound will stop playing when stopping the feedback")]
         public bool StopSoundOnFeedbackStop = false;
+        [Tooltip("If true, this sound will be paused if it is playing when the game is paused. It will resume when unpaused.")]
+        public bool PauseSoundWhenPauseGame = true;
         
         [MMFInspectorGroup("Fade", true, 30)]
         /// whether or not to fade this sound in when playing it
@@ -194,7 +197,7 @@ namespace BML.Scripts.MMFFeedbacks
         /// (Logarithmic rolloff) MaxDistance is the distance a sound stops attenuating at.
         [Tooltip("(Logarithmic rolloff) MaxDistance is the distance a sound stops attenuating at.")]
         public float MaxDistance = 500f;
-        
+
         protected AudioClip _randomClip;
         protected AudioSource _editorAudioSource;
         protected MMSoundManagerPlayOptions _options;
@@ -206,7 +209,15 @@ namespace BML.Scripts.MMFFeedbacks
             TestPlayButton = new MMF_Button("Debug Play Sound", TestPlaySound);
             TestStopButton = new MMF_Button("Debug Stop Sound", TestStopSound);
         }
-        
+
+        protected override void CustomInitialization(MMF_Player owner)
+        {
+            base.CustomInitialization(owner);
+            
+            TimeManager.Instance.OnPauseGame += PauseFeedback;
+            TimeManager.Instance.OnUnPauseGame += ResumeFeedback;
+        }
+
         /// <summary>
         /// Plays either a random sound or the specified sfx
         /// </summary>
@@ -254,6 +265,34 @@ namespace BML.Scripts.MMFFeedbacks
             {
                 _playedAudioSource.Stop();
                 BML_MMSoundManager.Instance.FreeSound(_playedAudioSource);
+            }
+        }
+
+        public void PauseFeedback()
+        {
+            if (!Active || !FeedbackTypeAuthorized || !PauseSoundWhenPauseGame)
+            {
+                return;
+            }
+
+            if (_playedAudioSource != null && FeedbackPlaying)
+            {
+                //_playedAudioSource.Pause();
+                BML_MMSoundManager.Instance.PauseSound(_playedAudioSource);
+            }
+        }
+        
+        public void ResumeFeedback()
+        {
+            if (!Active || !FeedbackTypeAuthorized || !PauseSoundWhenPauseGame)
+            {
+                return;
+            }
+
+            if (_playedAudioSource != null && FeedbackPlaying)
+            {
+                //_playedAudioSource.Play();
+                BML_MMSoundManager.Instance.ResumeSound(_playedAudioSource);
             }
         }
 
@@ -393,7 +432,7 @@ namespace BML.Scripts.MMFFeedbacks
             if (_editorAudioSource != null)
             {
                 _editorAudioSource.Stop();
-            }            
+            }
         }
 
         /// <summary>

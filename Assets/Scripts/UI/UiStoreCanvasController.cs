@@ -1,63 +1,83 @@
-﻿using System;
+using BML.Scripts.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.Store;
-using BML.Scripts.Utils;
+using BML.Scripts.CaveV2;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
+using BML.ScriptableObjectCore.Scripts.Events;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.UI
 {
     public class UiStoreCanvasController : MonoBehaviour
     {
-        [SerializeField] private GameObject _storeUiButtonPrefab;
-        [SerializeField] private GameObject _storeResumeButtonPrefab;
+        [SerializeField, FoldoutGroup("CaveGen")] private CaveGenComponentV2 _caveGenerator;
+        [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private Transform _listContainerStoreButtons;
-        [SerializeField] private UiMenuPageController _storeUiMenuPageController;
-        [SerializeField] private string _resourceIconText;
-        [SerializeField] private string _rareResourceIconText;
-        [SerializeField] private string _enemyResourceIconText;
+        [SerializeField] private int _maxItemsShown = 0;
+        [SerializeField] private bool _randomizeStoreOnBuy;
+        [SerializeField] private bool _filterOutMaxedItems;
+        [SerializeField] private Button _buttonNavLeft;
+        [SerializeField] private Button _buttonNavRight;
         [SerializeField] private StoreInventory _storeInventory;
 
         private List<Button> buttonList = new List<Button>();
 
+        private int buyCount;
+
         private void Awake()
         {
+            #warning Remove this once we're done working on the stores/inventory
             GenerateStoreItems();
+            buyCount = 0;
+        }
+
+        void OnEnable() {
+            _onPurchaseEvent.Subscribe(OnBuy);
+        }
+
+        void OnDisable() {
+            _onPurchaseEvent.Unsubscribe(OnBuy);
         }
 
         [Button("Generate Store Items")]
         public void GenerateStoreItems()
         {
             DestroyShopItems();
-            
-            foreach (var storeItem in _storeInventory.StoreItems)
-            {
-                var prefab = storeItem._uiReplacePrefab != null ? storeItem._uiReplacePrefab : _storeUiButtonPrefab;
-                var newStoreItem = GameObjectUtils.SafeInstantiate(true, prefab, _listContainerStoreButtons);
-                newStoreItem.name = $"Button_{storeItem._storeButtonName}";
-                
-                var purchaseEvent = newStoreItem.GetComponent<StorePurchaseEvent>();
-                purchaseEvent.Init(storeItem._onPurchaseEvent, storeItem);
 
-                var storeItemText = newStoreItem.GetComponentInChildren<TMPro.TMP_Text>();
+            List<StoreItem> shownStoreItems = _storeInventory.StoreItems;
 
-                storeItemText.text = GenerateStoreText(storeItem);
-                
-                var button = newStoreItem.GetComponent<Button>();
-                buttonList.Add(button);
+            if(_filterOutMaxedItems) {
+                shownStoreItems = shownStoreItems.Where(si => !si._hasMaxAmount || (si._playerInventoryAmount.Value < si._maxAmount.Value)).ToList();
             }
-            
-            var newResumeButton  = GameObjectUtils.SafeInstantiate(true, _storeResumeButtonPrefab, _listContainerStoreButtons);
-            var buttonResume = newResumeButton.GetComponent<Button>();
-            buttonList.Add(buttonResume);
-            
-            buttonResume.onClick.AddListener(_storeUiMenuPageController.ClosePage);
-            buttonResume.GetComponent<UiEventHandler>().OnCancelAddListener(_storeUiMenuPageController.ClosePage);
 
-            _storeUiMenuPageController.DefaultSelected = buttonList[0];
+            if(_randomizeStoreOnBuy) {
+                Random.InitState(_caveGenerator.CaveGenParams.Seed + buyCount);
+                shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
+            }
+
+            if(_maxItemsShown > 0) {
+                shownStoreItems = shownStoreItems.Take(_maxItemsShown).ToList();
+            }
+
+            if(shownStoreItems.Count > _listContainerStoreButtons.childCount - 1) {
+                Debug.LogError("Store does not have enough buttons to display options");
+                return;
+            }
+
+            for(int i = 0; i < shownStoreItems.Count; i++) {
+                GameObject buttonGameObject = _listContainerStoreButtons.GetChild(i).gameObject;
+                buttonGameObject.GetComponent<UiStoreButtonController>().Init(shownStoreItems[i]);
+                buttonGameObject.SetActive(true);
+                buttonList.Add(buttonGameObject.GetComponent<Button>());
+            }
+
+            //Resume button will always be last in list
+            buttonList.Add(_listContainerStoreButtons.GetChild(_listContainerStoreButtons.childCount - 1).GetComponent<Button>());
+
             SetNavigationOrder();
         }
 
@@ -65,56 +85,31 @@ namespace BML.Scripts.UI
         public void DestroyShopItems()
         {
             buttonList.Clear();
-            var children = Enumerable.Range(0, _listContainerStoreButtons.childCount)
-                .Select(i => _listContainerStoreButtons.GetChild(i).gameObject)
-                .ToList();
-            foreach (var childObject in children)
-            {
-                GameObject.DestroyImmediate(childObject);
-            }
-        }
-
-        private String GenerateStoreText(StoreItem storeItem)
-        {
-            string costText = "";
             
-            if (storeItem._resourceCost > 0)
-                costText += $" + {storeItem._resourceCost}{_resourceIconText}";
-                
-            if (storeItem._rareResourceCost > 0)
-                costText += $" + {storeItem._rareResourceCost}{_rareResourceIconText}";
-                
-            if (storeItem._enemyResourceCost > 0)
-                costText += $" + {storeItem._enemyResourceCost}{_enemyResourceIconText}";
-
-            //Remove leading +
-            if (costText != "") costText = costText.Substring(3);
-
-            string resultText = "";
-            
-            foreach (var purchaseItem in storeItem.PurchaseItems)
-            {
-                if (!purchaseItem._storeText.IsNullOrWhitespace())  //Dont add if left blank (Ex. for max health also inc health but dont show)
-                    resultText += $" + {purchaseItem._storeText}";
+            for(int i = 0; i < _listContainerStoreButtons.childCount - 1; i++) {
+                _listContainerStoreButtons.GetChild(i).gameObject.SetActive(false);
             }
-
-            //Remove leading +
-            if (resultText != "") resultText = resultText.Substring(3);
-
-            return $"{costText} -> {resultText}";
         }
 
         private void SetNavigationOrder()
         {
-            for (int i = 0; i < buttonList.Count; i++)
-            {
+            for(int i = 0; i < buttonList.Count; i++) {
                 Button prevButton = i > 0 ? buttonList[i - 1] : buttonList[buttonList.Count - 1];
                 Button nextButton = i < buttonList.Count - 1 ? buttonList[i + 1] : buttonList[0];
                 Navigation nav = new Navigation();
                 nav.mode = Navigation.Mode.Explicit;
                 nav.selectOnUp = prevButton;
                 nav.selectOnDown = nextButton;
+                if(_buttonNavLeft != null) nav.selectOnLeft = _buttonNavLeft;
+                if(_buttonNavRight != null) nav.selectOnRight = _buttonNavRight;
                 buttonList[i].navigation = nav;
+            }
+        }
+
+        protected void OnBuy(object prevStoreItem, object storeItem) {
+            buyCount++;
+            if(_randomizeStoreOnBuy) {
+                GenerateStoreItems();
             }
         }
     }

@@ -27,7 +27,7 @@ namespace BML.Scripts
             
             foreach (var health in enemyHealths)
             {
-                health.IncrementHealth(_healthAmountToAdd);
+                health.Heal(_healthAmountToAdd);
             }
         }
     }

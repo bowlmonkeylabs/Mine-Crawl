@@ -47,6 +47,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         [NonSerialized]
         private float startTime = Mathf.NegativeInfinity;
+        
+        [NonSerialized]
+        private float lastUpdateTime = Mathf.NegativeInfinity;
 
         [NonSerialized]
         private bool isStopped = true;
@@ -60,6 +63,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isStopped = false;
             isFinished = false;
             startTime = Time.time;
+            lastUpdateTime = startTime;
+            remainingTime = Duration;
         }
 
         public void ResetTimer()
@@ -68,6 +73,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isStopped = true;
             isFinished = false;
             startTime = Time.time;
+            lastUpdateTime = startTime;
             remainingTime = Duration;
         }
 
@@ -96,11 +102,17 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             this.OnFinished -= callback;
         }
 
-        public void UpdateTime()
+        public void UpdateTime(float multiplier = 1f)
         {
             if (!isStopped && !isFinished)
             {
-                remainingTime = Mathf.Max(0f, Duration - (Time.time - startTime));
+                var updateTime = Time.time;
+                var deltaTime = (updateTime - lastUpdateTime);
+                lastUpdateTime = updateTime;
+                
+                remainingTime -= deltaTime * multiplier;
+                remainingTime = Mathf.Max(0f, remainingTime.Value);
+
                 OnUpdate?.Invoke();
                 if (remainingTime == 0)
                 {
@@ -154,6 +166,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [SerializeField] private TimerVariable Variable;
 
         private float startTime = Mathf.NegativeInfinity;
+        private float lastUpdateTime = Mathf.NegativeInfinity;
 
         public String Tooltip => Variable != null && !UseConstant ? Variable.Description : "";
         public String LabelText => UseConstant ? "" : "?";
@@ -235,6 +248,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isConstantStopped = false;
             isConstantFinished = false;
             startTime = Time.time;
+            lastUpdateTime = startTime;
             ConstantRemainingTime = Duration;
         }
 
@@ -245,6 +259,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isConstantStopped = true;
             isConstantFinished = false;
             startTime = Time.time;
+            lastUpdateTime = startTime;
             ConstantRemainingTime = Duration;
         }
 
@@ -254,12 +269,19 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isConstantStopped = true;
         }
 
-        public void UpdateTime()
+        public void UpdateTime(float multiplier = 1f)
         {
-            Variable?.UpdateTime();
+            Variable?.UpdateTime(multiplier);
+
+            var updateTime = Time.time;
+            var deltaTime = (updateTime - lastUpdateTime);
+            lastUpdateTime = updateTime;
+
             if (!isConstantStopped && !isConstantFinished)
             {
-                ConstantRemainingTime = Mathf.Max(0f, ConstantDuration.Value - (Time.time - startTime));
+                ConstantRemainingTime -= deltaTime * multiplier;
+                ConstantRemainingTime = Mathf.Max(0f, ConstantRemainingTime.Value);
+                
                 if (ConstantRemainingTime == 0)
                 {
                     isConstantFinished = true;

@@ -71,6 +71,7 @@ namespace BML.Scripts.CaveV2
         [SerializeField, SuffixLabel("units/sec")] private float _playerInfluenceDecayRate = 1f/30f;
         [SerializeField, SuffixLabel("units/sec by player distance"), Tooltip("Curve value represents accumulation multiplier as a function of player distance.")] 
         private CurveVariable _playerInfluenceAccumulationFalloff;
+        [SerializeField] private GameEvent _onAfterUpdatePlayerDistance;
 
         [TitleGroup("Torches")] 
         [SerializeField] private DynamicGameEvent _onTorchPlaced;
@@ -87,6 +88,10 @@ namespace BML.Scripts.CaveV2
         [TitleGroup("Enemies")] 
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
         [SerializeField, Range(-1f, 1f)] private float _enemyKilledAddInfluence = 0.5f;
+        [Tooltip("The number of different difficulty segments the cave will be divided into. Ex. 3 means each 1/3rd changes difficulty.")]
+        [SerializeField] private int _difficultySegmentCount = 3;
+        
+        public int DifficultySegmentCount => _difficultySegmentCount;
 
         [TitleGroup("Debug")]
         [SerializeField] private bool _enableLogs = false;
@@ -577,6 +582,34 @@ namespace BML.Scripts.CaveV2
                     caveGraph.FloodFillDistance(objectiveVertices, (node, dist) => node.ObjectiveDistance = dist);
 
                     this.MaxObjectiveDistance = caveGraph.Vertices.Max(e => e.ObjectiveDistance);
+                    
+                    // Assign each node difficulty from [0, _difficultySegmentCount -1]
+                    caveGraph.FloodFillDistance(objectiveVertices, (node, dist) =>
+                    {
+                        int maxDifficulty = _difficultySegmentCount - 1;
+                        float objectiveClosenessFactor = 1 - (float) dist / startNode.ObjectiveDistance;
+                        var intermediate = Mathf.Min(maxDifficulty,
+                            Mathf.FloorToInt(objectiveClosenessFactor * _difficultySegmentCount));
+                        node.Difficulty = Mathf.Max(0, intermediate);
+                    });
+                }
+
+                // Tunnel blockages
+                {
+                    // Block tunnels between difficulty transitions
+                    var maxBlockedRoomSize = caveGenParams.PoissonSampleRadius / 6f; // 6 is the magic number, I think...
+                    foreach (var caveNodeConnectionData in caveGraph.Edges)
+                    {
+                        if (caveNodeConnectionData.Source.Difficulty != caveNodeConnectionData.Target.Difficulty)
+                        {
+                            caveNodeConnectionData.IsBlocked = true;
+                            
+                            // Force rooms connected to blockages to be small
+                            // (to avoid player walking around the blockage
+                            caveNodeConnectionData.Source.Size = maxBlockedRoomSize;
+                            caveNodeConnectionData.Target.Size = maxBlockedRoomSize;
+                        }
+                    }
                 }
 
                 // Calculate distance from main path
@@ -589,6 +622,17 @@ namespace BML.Scripts.CaveV2
                     this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
                 }
             }
+
+            // Choose where the merchant is placed
+            var merchantCandidateVertices = caveGraph.Vertices
+                .AsEnumerable()
+                .OrderBy(v => {
+                    float mainPathDistanceFactor = (float) v.MainPathDistance / MaxMainPathDistance;
+                    float objectiveDistanceFactor = Mathf.Abs(((float) v.ObjectiveDistance / MaxObjectiveDistance) - 0.5f) * -3 + 1;
+                    float sortFactor = (mainPathDistanceFactor * 0.5f) + (objectiveDistanceFactor * 0.5f);
+                    return -sortFactor;
+                });
+            caveGraph.MerchantNode = merchantCandidateVertices.First();
 
             if (_enableLogs) Debug.Log($"Cave graph generated");
             
@@ -621,6 +665,7 @@ namespace BML.Scripts.CaveV2
                 .Max(node => node.ObjectiveDistance);
             
             this.OnAfterUpdatePlayerDistance?.Invoke();
+            _onAfterUpdatePlayerDistance.Raise();
         }
 
         public IEnumerator UpdatePlayerInfluenceCoroutine()
@@ -681,7 +726,8 @@ namespace BML.Scripts.CaveV2
 
             containingRoom.nodeData.Torches.Add(payload.Torch);
             
-            Debug.Log($"CaveGen OnTorchPlaced: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
+            if (_enableLogs)
+                Debug.Log($"CaveGen OnTorchPlaced: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
         }
 
         public void UpdateTorchInfluence(ICaveNodeData nodeData)
@@ -723,7 +769,8 @@ namespace BML.Scripts.CaveV2
             
             containingRoom.nodeData.PlayerInfluence = Mathf.Min(1f, containingRoom.nodeData.PlayerInfluence + _enemyKilledAddInfluence);
             
-            Debug.Log($"CaveGen OnEnemyKilled: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
+            if (_enableLogs)
+                Debug.Log($"CaveGen OnEnemyKilled: (Position {payload.Position}), (Room {containingRoom.nodeData.GameObject.GetInstanceID()})");
         }
         
         #endregion
@@ -818,6 +865,8 @@ namespace BML.Scripts.CaveV2
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
                 debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
+                debugComponent.CaveGenerator = this;
+                Debug.Log(debugComponent.CaveGenerator.name);
                 
                 UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
             }

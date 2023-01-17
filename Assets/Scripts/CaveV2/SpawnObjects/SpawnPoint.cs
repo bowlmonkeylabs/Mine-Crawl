@@ -11,12 +11,25 @@ namespace BML.Scripts.CaveV2.SpawnObjects
     public class SpawnPoint : MonoBehaviour
     {
         #region Inspector
-        
-        [ShowInInspector, ReadOnly] public CaveNodeData ParentNode { get; set; }
+
+        [ShowInInspector, ReadOnly]
+        public ICaveNodeData ParentNode
+        {
+            get => parentNode;
+            set
+            {
+                parentNode = value;
+                parentNode.onPlayerVisited += OnPlayerVisited;
+            }
+        }
         
         [SerializeField] [Range(0f, 1f)] private float _startingSpawnChance = 1f;
+        [SerializeField] private bool _disableIfPlayerVisited;
+        [SerializeField, ReadOnly] public bool Occupied;
         [ShowInInspector, ReadOnly] public float SpawnChance { get; set; } = 1f;
         [ShowInInspector, ReadOnly] public float EnemySpawnWeight { get; set; } = 1f;
+
+        private ICaveNodeData parentNode;
 
         // TODO fetch current object tag and display it. Show a warning/error if object is NOT tagged.
         
@@ -28,7 +41,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             ResetSpawnProbability();
         }
-        
+
+        private void OnDisable()
+        {
+            if (parentNode != null)
+                parentNode.onPlayerVisited -= OnPlayerVisited;
+        }
+
         private void OnDrawGizmosSelected()
         {
             #if UNITY_EDITOR
@@ -65,5 +84,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         }
         
         #endregion
+
+        private void OnPlayerVisited(object o, EventArgs e)
+        {
+            if (_disableIfPlayerVisited)
+                SpawnChance = 0f;
+        }
     }
 }

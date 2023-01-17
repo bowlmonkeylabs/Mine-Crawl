@@ -13,6 +13,48 @@ MonoBehaviour:
   m_Name: LevelObjectSpawnerParams_NoSentinels
   m_EditorClassIdentifier: 
   SpawnAtTags:
+  - Tag: Spawn_Ore_Rare
+    Prefab: {fileID: 3467410388640837625, guid: fcc9cdee40a7fdb42a3d36607cf18b23, type: 3}
+    RaycastDirection: {x: 0, y: -1, z: 0}
+    SpawnPosOffset: 0
+    RequireStableSurface: 0
+    InstanceAsPrefab: 1
+    ChooseWithoutReplacement: 1
+    SpawnProbability: 1
+    MinMaxGlobalAmount:
+      EnableMin: 0
+      ValueMin: 1
+      EnableMax: 0
+      ValueMax: 1
+    MinMaxClusterSize:
+      EnableMin: 0
+      ValueMin: 1
+      EnableMax: 0
+      ValueMax: 1
+    MainPathProbabilityFalloff:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   - Tag: Spawn_Ore
     Prefab: {fileID: 4180538236121253079, guid: e705995200b2501429ba18570d70af0f, type: 3}
     RaycastDirection: {x: 0, y: -1, z: 0}
@@ -206,12 +248,12 @@ MonoBehaviour:
     RequireStableSurface: 0
     InstanceAsPrefab: 1
     ChooseWithoutReplacement: 1
-    SpawnProbability: 0.035
+    SpawnProbability: 0.02
     MinMaxGlobalAmount:
       EnableMin: 1
-      ValueMin: 4
+      ValueMin: 2
       EnableMax: 1
-      ValueMax: 6
+      ValueMax: 4
     MinMaxClusterSize:
       EnableMin: 0
       ValueMin: 1
@@ -283,14 +325,14 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  - Tag: Spawn_Enemy_Bat
-    Prefab: {fileID: 1289867755587324221, guid: 64d12ac9516ff134dadbb34c91ac7de8, type: 3}
-    RaycastDirection: {x: 0, y: 1, z: 0}
-    SpawnPosOffset: 1.2
-    RequireStableSurface: 1
+  - Tag: Spawn_Ore_Barrier
+    Prefab: {fileID: 6438986197002974141, guid: 4c78d7e2f15b0474baa6de9162923bc7, type: 3}
+    RaycastDirection: {x: 0, y: -1, z: 0}
+    SpawnPosOffset: 0
+    RequireStableSurface: 0
     InstanceAsPrefab: 1
-    ChooseWithoutReplacement: 1
-    SpawnProbability: 0.25
+    ChooseWithoutReplacement: 0
+    SpawnProbability: 1
     MinMaxGlobalAmount:
       EnableMin: 0
       ValueMin: 1

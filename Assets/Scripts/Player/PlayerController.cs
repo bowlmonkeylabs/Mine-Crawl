@@ -1,28 +1,34 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.Scripts.CaveV2;
+using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.UI;
 using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Pathfinding;
+using BML.Scripts.Store;
 using Sirenix.OdinInspector;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Player
 {
     public class PlayerController : MonoBehaviour
     {
         #region Inspector
+        [SerializeField, FoldoutGroup("Scene References")] private CaveGenComponentV2 _caveGenerator;
         
         [SerializeField, FoldoutGroup("Interactable hover")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Interactable hover")] private UiAimReticle _uiAimReticle;
         [SerializeField, FoldoutGroup("Interactable hover")] private int _hoverUpdatesPerSecond = 20;
         private float lastHoverUpdateTime;
 
-        [SerializeField, FoldoutGroup("Pickaxe")] private float _interactDistance = 5f;
+        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _interactDistance;
         [SerializeField, FoldoutGroup("Pickaxe")] private float _interactCastRadius = .25f;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _interactMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
@@ -32,6 +38,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSweepCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _pickaxeDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepDamage;
+        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _swingCritChance;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _sweepDamageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingPickaxeFeedback;
@@ -41,11 +48,13 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitEnemyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepReadyFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingCritFeedbacks;
         
         [SerializeField, FoldoutGroup("Torch")] private GameObject _torchPrefab;
         [SerializeField, FoldoutGroup("Torch")] private float _torchThrowForce;
         [SerializeField, FoldoutGroup("Torch")] private Transform _torchInstanceContainer;
         [SerializeField, FoldoutGroup("Torch")] private IntReference _inventoryTorchCount;
+        [SerializeField, FoldoutGroup("Torch")] private StoreItem _torchStoreItem;
         
         [SerializeField, FoldoutGroup("Bomb")] private GameObject _bombPrefab;
         [SerializeField, FoldoutGroup("Bomb")] private float _bombThrowForce;
@@ -56,32 +65,45 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Rope")] private float _ropeThrowForce;
         [SerializeField, FoldoutGroup("Rope")] private Transform _ropeInstanceContainer;
         [SerializeField, FoldoutGroup("Rope")] private IntReference _inventoryRopeCount;
+        [SerializeField, FoldoutGroup("Rope")] private StoreItem _ropeStoreItem;
         
         [SerializeField, FoldoutGroup("Health")] private Health _healthController;
-        [SerializeField, FoldoutGroup("Health")] private IntReference _health;
-        [SerializeField, FoldoutGroup("Health")] private IntReference _maxHealth;
+        [SerializeField, FoldoutGroup("Health")] private DynamicGameEvent _tryHeal;
 
         [SerializeField, FoldoutGroup("Combat State")] private BoolVariable _inCombat;
+        [SerializeField, FoldoutGroup("Combat State")] private BoolVariable _anyEnemiesEngaged;
+        [SerializeField, FoldoutGroup("Combat State")] private float _safeCombatTimerDecayMultiplier = 2f;
         [SerializeField, FoldoutGroup("Combat State")] private TimerVariable _combatTimer;
 
         [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
+        [SerializeField, FoldoutGroup("Store")] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField, FoldoutGroup("Store")] private GameEvent _onStoreFailOpen;
 
+        [SerializeField, FoldoutGroup("Upgrade Store")] private BoolReference _isUpgradeStoreOpen;
+
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
+        
+        [SerializeField, FoldoutGroup("Debug")] private BoolVariable _enableLogs;
 
         private bool pickaxeInputHeld = false;
         private bool secondaryInputHeld = false;
+        private int totalSwingCount = 0;
 
         #endregion
 
         #region Unity lifecycle
 
+        private void Start()
+        {
+            totalSwingCount = 0;
+        }
+
         private void OnEnable()
         {
             _isGodModeEnabled.Subscribe(SetGodMode);
-            _health.Subscribe(ClampHealth);
             _combatTimer.SubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
+            _tryHeal.Subscribe(Heal);
             
             SetGodMode();
         }
@@ -89,9 +111,9 @@ namespace BML.Scripts.Player
         private void OnDisable()
         {
             _isGodModeEnabled.Unsubscribe(SetGodMode);
-            _health.Unsubscribe(ClampHealth);
             _combatTimer.UnsubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
+            _tryHeal.Unsubscribe(Heal);
         }
 
         private void Update()
@@ -99,7 +121,7 @@ namespace BML.Scripts.Player
             if (pickaxeInputHeld) TryUsePickaxe();
             if (secondaryInputHeld) TryUseSweep();
             HandleHover();
-            _combatTimer.UpdateTime();
+            _combatTimer.UpdateTime(!_anyEnemiesEngaged.Value ? _safeCombatTimerDecayMultiplier : 1f);
             _pickaxeSwingCooldown.UpdateTime();
             _pickaxeSweepCooldown.UpdateTime();
         }
@@ -169,11 +191,13 @@ namespace BML.Scripts.Player
                 return;
             }
             
+            totalSwingCount++;
+            
             _swingPickaxeFeedback.StopFeedbacks();
             _swingPickaxeFeedback.PlayFeedbacks();
             _pickaxeSwingCooldown.RestartTimer();
-            
-            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
+
+            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance.Value,
                 _interactMask, QueryTriggerInteraction.Ignore))
             {
                 if (hit.collider.gameObject.IsInLayerMask(_terrainMask))
@@ -191,7 +215,7 @@ namespace BML.Scripts.Player
             //Don't consider terrain in sphere cast
             LayerMask interactNoTerrainMask = _interactMask & ~_terrainMask;
             if (Physics.SphereCast(_mainCamera.position, _interactCastRadius, _mainCamera.forward, out hit,
-                _interactDistance, interactNoTerrainMask, QueryTriggerInteraction.Ignore))
+                _interactDistance.Value, interactNoTerrainMask, QueryTriggerInteraction.Ignore))
             {
                 HandlePickaxeHit(hit);
                 return;
@@ -224,18 +248,28 @@ namespace BML.Scripts.Player
                 _swingHitFeedbacks.transform.position = hit.point;
                 _swingHitFeedbacks.PlayFeedbacks();
             }
-                    
+            
                 
             PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
             if (interactionReceiver == null) return;
+            
+            float damage = _pickaxeDamage.Value;
+            
+            Random.InitState(_caveGenerator.CaveGenParams.Seed +  totalSwingCount);
+            bool isCrit = Random.value < _swingCritChance.Value;
 
-            HitInfo pickaxeHitInfo = new HitInfo(_damageType, Mathf.FloorToInt(_pickaxeDamage.Value), _mainCamera.forward, hit.point);
+            if (isCrit)
+            {
+                damage *= 2f;
+                _swingCritFeedbacks.PlayFeedbacks(hit.point);
+            }
+            HitInfo pickaxeHitInfo = new HitInfo(_damageType, Mathf.FloorToInt(damage), _mainCamera.forward, hit.point);
             interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
         }
 
         public void SetPickaxeDistance(float dist)
         {
-            _interactDistance = dist;
+            _interactDistance.Value = dist;
         }
         
         private void TryUseSweep()
@@ -339,7 +373,11 @@ namespace BML.Scripts.Player
             // Check torch count
             if (_inventoryTorchCount.Value <= 0)
             {
-                return;
+                _onPurchaseEvent.Raise(_torchStoreItem);
+                if (_inventoryTorchCount.Value <= 0)
+                {
+                    return;
+                }
             }
             _inventoryTorchCount.Value -= 1;
 
@@ -371,7 +409,11 @@ namespace BML.Scripts.Player
             // Check torch count
             if (_inventoryRopeCount.Value <= 0)
             {
-                return;
+                _onPurchaseEvent.Raise(_ropeStoreItem);
+                if (_inventoryRopeCount.Value <= 0)
+                {
+                    return;
+                }
             }
             _inventoryRopeCount.Value -= 1;
             
@@ -389,24 +431,11 @@ namespace BML.Scripts.Player
             _combatTimer.StartTimer();
         }
 
-        private void SetNotInCombat() {
+        private void SetNotInCombat() 
+        {
             _inCombat.Value = false;
             _combatTimer.ResetTimer();
         }
-        
-        #endregion
-
-        #region Store
-
-        public void OnToggleStore()
-		{
-            if(!_isStoreOpen.Value && _inCombat.Value) {
-                _onStoreFailOpen.Raise();
-                return;
-            }
-
-            _isStoreOpen.Value = !_isStoreOpen.Value && !_inCombat.Value;
-		}
         
         #endregion
 
@@ -427,7 +456,7 @@ namespace BML.Scripts.Player
             lastHoverUpdateTime = Time.time;
             
             RaycastHit hit;
-            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance,
+            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance.Value,
                 _interactMask, QueryTriggerInteraction.Ignore))
             {
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
@@ -439,7 +468,7 @@ namespace BML.Scripts.Player
             }
             
             if (Physics.SphereCast(_mainCamera.position, _interactCastRadius, _mainCamera.forward, out hit,
-                _interactDistance, _interactMask, QueryTriggerInteraction.Ignore))
+                _interactDistance.Value, _interactMask, QueryTriggerInteraction.Ignore))
             {
                 PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
                 if (interactionReceiver != null)
@@ -463,11 +492,15 @@ namespace BML.Scripts.Player
         {
             _healthController.Revive();
         }
-        
-        private void ClampHealth()
+
+        public void Heal(int amount)
         {
-            if (_health.Value > _maxHealth.Value)
-                _health.Value = _maxHealth.Value;
+            _healthController.Heal(amount);
+        }
+
+        public void Heal(object p, object amount)
+        {
+            this.Heal((int) amount);
         }
         
         #endregion

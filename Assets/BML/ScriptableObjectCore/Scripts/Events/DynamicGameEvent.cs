@@ -47,8 +47,19 @@ namespace BML.ScriptableObjectCore.Scripts.Events
         { listeners.Remove(listener); }
 
         #endregion
-    
-        
+
+        public void Raise(float obj) {
+            this.Raise((object) obj);
+        }
+
+        public void Raise(string obj) {
+            this.Raise((object) obj);
+        }
+
+        public void Raise(int obj) {
+            this.Raise((object) obj);
+        }
+
         public void Raise(System.Object obj)
         {
             OnUpdate?.Invoke(previous, obj);

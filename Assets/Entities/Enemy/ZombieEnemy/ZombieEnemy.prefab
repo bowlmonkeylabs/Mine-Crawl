@@ -209,6 +209,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -1175,6 +1176,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -1310,6 +1312,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -2075,6 +2078,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -5006,8 +5010,8 @@ MonoBehaviour:
         DebugActive: 0
         PauseDuration: 3.4997258
         RandomizePauseDuration: 1
-        MinPauseDuration: 10
-        MaxPauseDuration: 35
+        MinPauseDuration: 25
+        MaxPauseDuration: 50
         RandomizeOnEachPlay: 1
         ScriptDriven: 0
         AutoResume: 0
@@ -5063,6 +5067,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 2
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -5460,6 +5465,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -7671,6 +7677,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -10382,6 +10389,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -11956,7 +11964,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -11964,6 +11972,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
@@ -11975,11 +11987,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1234008653}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Target
+      value: 
+      objectReference: {fileID: 1870709328736205188}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
@@ -11991,12 +12011,20 @@ PrefabInstance:
       value: PlayFeedbacks
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: OnDeath
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: BML.Scripts.RigidBodyLauncher, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
       value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
+      value: BML.Scripts.EnemySpawnable, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
@@ -12008,6 +12036,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3807083870472402562, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
@@ -12349,6 +12381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DoCountForSpawnCap: 1
+  SpawnPoint: {fileID: 0}
   _onDespawn:
     m_PersistentCalls:
       m_Calls: []

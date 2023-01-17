@@ -13,8 +13,8 @@ namespace BML.Scripts.Tasks
     {
         [SerializeField] private float _checkDelay = .05f;
         
-        [BehaviorDesigner.Runtime.Tasks.Tooltip("Mask of everything raycast can interact with (including obstacles and target)")] 
-        [SerializeField]private LayerMask _hitLayerMask;
+        [BehaviorDesigner.Runtime.Tasks.Tooltip("Mask of layers considering a hit (probably just player layer)")] 
+        [SerializeField]private LayerMask _playerLayerMask;
         
         [BehaviorDesigner.Runtime.Tasks.Tooltip("Mask of layers that are considered obstacles")] 
         [SerializeField]  private LayerMask _obstacleLayerMask;
@@ -34,7 +34,8 @@ namespace BML.Scripts.Tasks
 
             RaycastHit hit;
             Vector3 dir = (_target.Value.position - _origin.Value.position).normalized;
-            if (Physics.Raycast(_origin.Value.position, dir, out hit, Mathf.Infinity, _hitLayerMask, QueryTriggerInteraction.Ignore))
+            LayerMask hitMask = _playerLayerMask | _obstacleLayerMask;
+            if (Physics.Raycast(_origin.Value.position, dir, out hit, Mathf.Infinity, hitMask, QueryTriggerInteraction.Ignore))
             {
                 if (hit.collider.gameObject.IsInLayerMask(_obstacleLayerMask))
                 {
