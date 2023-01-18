@@ -319,7 +319,7 @@ namespace BML.Scripts
                 
                 if (_enableLogs)
                     Debug.Log(
-                        $"HandleDespawning Despawning {childEnemySpawnable.name} " +
+                        $"HandleDespawning Despawning {childEnemySpawnable.name} {childEnemySpawnable.gameObject.GetInstanceID()}" +
                         $"with node distance from player: {childEnemyState.DistanceToPlayer}.");
                 
                 childEnemySpawnable.Despawn();
