@@ -1,5 +1,330 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3696348168406179649
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9109812050979061899}
+  - component: {fileID: 3943255190867521077}
+  - component: {fileID: 3767116915394742459}
+  m_Layer: 0
+  m_Name: DeathSplitFeedback
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9109812050979061899
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696348168406179649}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 24681291362770754}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3943255190867521077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696348168406179649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Feedbacks: []
+  InitializationMode: 2
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  DurationMultiplier: 1
+  DisplayFullDurationDetails: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRevert:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  FeedbacksList:
+  - id: 0
+  - id: 1
+  - id: 2
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: MMF_Destroy, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: 1189821925
+        Label: Destroy
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 3943255190867521077}
+        DebugActive: 0
+        TargetGameObject: {fileID: 1677924739546840732}
+        Mode: 0
+    00000001:
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
+      data:
+        Active: 1
+        UniqueID: -733708128
+        Label: BMLSoundManager Sound
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 3943255190867521077}
+        DebugActive: 0
+        Sfx: {fileID: 8300000, guid: 0bbab737d1dad2e4b91594db32c72a16, type: 3}
+        RandomSfx: []
+        TestPlayButton:
+          ButtonText: Debug Play Sound
+        TestStopButton:
+          ButtonText: Debug Stop Sound
+        MinVolume: 1
+        MaxVolume: 1
+        MinPitch: 1
+        MaxPitch: 1
+        PlaybackTime: {x: 0, y: 0}
+        MmSoundManagerTrack: 0
+        ID: 0
+        AudioGroup: {fileID: 0}
+        RecycleAudioSource: {fileID: 0}
+        Loop: 0
+        Persistent: 0
+        LimitConsecutivePlays: 1
+        MaxConsecutivePlays: 3
+        StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
+        Fade: 0
+        FadeInitialVolume: 0
+        FadeDuration: 1
+        FadeTween:
+          MMTweenDefinitionType: 0
+          MMTweenCurve: 9
+          Curve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+        SoloSingleTrack: 0
+        SoloAllTracks: 0
+        AutoUnSoloOnEnd: 0
+        PanStereo: 0
+        SpatialBlend: 1
+        BypassEffects: 0
+        BypassListenerEffects: 0
+        BypassReverbZones: 0
+        Priority: 128
+        ReverbZoneMix: 1
+        DopplerLevel: 1
+        Spread: 0
+        RolloffMode: 1
+        MinDistance: 5
+        MaxDistance: 30
+    00000002:
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: 838057639
+        Label: Events
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 3943255190867521077}
+        DebugActive: 0
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 6317957776843703520}
+              m_TargetAssemblyTypeName: BML.Scripts.EnemyHive, BML.Scripts
+              m_MethodName: SpawnChildren
+              m_Mode: 3
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 2
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
+--- !u!114 &3767116915394742459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696348168406179649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f680a7afde40b49d9741bdbc7aa5bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _firePoint: {fileID: 3582294432623566666}
+  _container: {fileID: 11400000, guid: eddf651308826cd46a3e62a45a34c7cd, type: 2}
+  _forceMode: 1
+  _direction:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 4ce6a649ad996fc4db299c21ed33231c, type: 2}
+  _directionVariance:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 6f2d74543750f50488792649a1c06eaa, type: 2}
+  _force:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: 67851cd4d7b4c1e42867187f80fac7c7, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _forceVariance:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: a4365917159380b49a1411371b092d44, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _torque:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 437a6cb823740bd43a36c4d249851ab8, type: 2}
+  _torqueVariance:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 4697d588ccb41c94992b189d006afeef, type: 2}
 --- !u!1001 &4873226759577987424
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -67,13 +392,114 @@ PrefabInstance:
       propertyPath: _spawnPrefab
       value: 
       objectReference: {fileID: 3507841168381770313, guid: d315f707aa867be468a329805e25ff00, type: 3}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[0]._damageType
+      value: 1361
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._damageType
+      value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._damageMultiplier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[0]._damageTypesPreview
+      value: Player_Pickaxe, Enemy_Sentinel_Projectile, Enemy_Mimic_Projectile, Enemy_Snake_Projectile,
+        Player_Pickaxe_Secondary
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._damageModifierType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._damageTypesPreview
+      value: Player_Bomb, Ore_Explosive
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[0]._onDeath.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._onDeath.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[0]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[0]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3943255190867521077}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8549622870082791432}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[0]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[0]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayFeedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayFeedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[0]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[0]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792030389246204240, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _damageable.Array.data[1]._onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3808216174104718560, guid: 40715c857926914489d8ac34029b4c92, type: 3}
       propertyPath: _health
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3808216174104718560, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3808216174104718560, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1032743403095757757}
+    - target: {fileID: 3808216174104718560, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OnDeath
+      objectReference: {fileID: 0}
+    - target: {fileID: 3808216174104718560, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: BML.Scripts.EnemySpawnable, BML.Scripts
+      objectReference: {fileID: 0}
     - target: {fileID: 3821147435045339496, guid: 40715c857926914489d8ac34029b4c92, type: 3}
       propertyPath: FeedbacksList.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3821147435045339496, guid: 40715c857926914489d8ac34029b4c92, type: 3}
       propertyPath: FeedbacksList.Array.data[2]
@@ -265,17 +691,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+--- !u!1 &1677924739546840732 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6118142576375994364, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+  m_PrefabInstance: {fileID: 4873226759577987424}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6317957776843703520 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1444750534404566400, guid: 40715c857926914489d8ac34029b4c92, type: 3}
   m_PrefabInstance: {fileID: 4873226759577987424}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1677924739546840732}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb38f1ee372e4a48913e87f20a0a7381, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1032743403095757757 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5617157844206123741, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+  m_PrefabInstance: {fileID: 4873226759577987424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1677924739546840732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7be757edf6e4dc9920a0a8af410acf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &3582294432623566666 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8221303689108911658, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+  m_PrefabInstance: {fileID: 4873226759577987424}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &24681291362770754 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4897245044892005922, guid: 40715c857926914489d8ac34029b4c92, type: 3}
+  m_PrefabInstance: {fileID: 4873226759577987424}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8549622870082791432 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3821147435045339496, guid: 40715c857926914489d8ac34029b4c92, type: 3}
