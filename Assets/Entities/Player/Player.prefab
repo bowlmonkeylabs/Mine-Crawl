@@ -5932,7 +5932,7 @@ MonoBehaviour:
   lookScaleMouse: {x: 0.005, y: 0.005}
   lookScaleGamepad: {x: 12.5, y: 12.5}
   jump: 0
-  sprint: 0
+  dash: 0
   analogMovement: 1
   playerCursorLocked: 1
   _mouseSensitivity:
@@ -6042,12 +6042,6 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 3eaaa5f19236c3b44b1bf9c07f9affd1, type: 2}
-  SprintSpeed:
-    ReferenceTypeSelector: 3
-    ConstantValue: 0
-    ReferenceValue_FloatVariable: {fileID: 0}
-    ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 3eaaa5f19236c3b44b1bf9c07f9affd1, type: 2}
   RotationSpeed: 1
   SpeedChangeRate: 10
   AnalogMovementCurve:
@@ -6132,6 +6126,21 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  DashSpeed:
+    ReferenceTypeSelector: 0
+    ConstantValue: 18
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  DashTime:
+    ReferenceTypeSelector: 0
+    ConstantValue: 0.2
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  DashActive: {fileID: 11400000, guid: 0cfe6ddbe3de93e45ac2c79fcbe0f181, type: 2}
+  DashInCooldown: {fileID: 11400000, guid: a37b8913d77aa8e47b5d1504e78331aa, type: 2}
+  DashCooldownTimer: {fileID: 11400000, guid: 937a698e47634ff4283f92fbd3b3f16e, type: 2}
   _playerEnteredRopeEvent: {fileID: 11400000, guid: 79f6c3fbdcaa27645a06b439ec82da13, type: 2}
   _isRopeMovementEnabled:
     UseConstant: 0
@@ -12256,7 +12265,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 58.67579
+  field of view: 65.07074
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

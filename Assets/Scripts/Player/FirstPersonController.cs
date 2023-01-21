@@ -28,8 +28,6 @@ namespace BML.Scripts.Player
 
 		[Tooltip("Move speed of the character in m/s")]
 		[SerializeField, FoldoutGroup("Player")] SafeFloatValueReference MoveSpeed;
-		[Tooltip("Sprint speed of the character in m/s")]
-		[SerializeField, FoldoutGroup("Player")] SafeFloatValueReference SprintSpeed;
 		[Tooltip("Rotation speed of the character")]
 		[SerializeField, FoldoutGroup("Player")] float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
@@ -60,6 +58,12 @@ namespace BML.Scripts.Player
 		[SerializeField, FoldoutGroup("Knockback")] float KnockbackVerticalForce = 10f;
 		[SerializeField, FoldoutGroup("Knockback")] float KnockbackDuration = .2f;
 		[SerializeField, FoldoutGroup("Knockback")] AnimationCurve KnockbackHorizontalForceCurve;
+
+		[SerializeField, FoldoutGroup("Dash"), Tooltip("Dash speed of the character in m/s")] private SafeFloatValueReference DashSpeed;
+        [SerializeField, FoldoutGroup("Dash"), Tooltip("Dash duration, in seconds")] private SafeFloatValueReference DashTime;
+        [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Player Currently Dashing")] private BoolVariable DashActive;
+        [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Player Dash In Cooldown")] private BoolVariable DashInCooldown;
+        [SerializeField, FoldoutGroup("Dash"), Tooltip("Dash Cooldown Length, in seconds")] private TimerVariable DashCooldownTimer;
 
 		[SerializeField, FoldoutGroup("RopeMovement")] private GameEvent _playerEnteredRopeEvent;
 		[SerializeField, FoldoutGroup("RopeMovement")] private BoolReference _isRopeMovementEnabled;
@@ -106,6 +110,9 @@ namespace BML.Scripts.Player
 		// no clip mode
 		private float originalGravity;
 		private LayerMask orignalCollisionMask;
+
+        //dash
+        private float _startDashTime;
 
 		private PlayerInput _playerInput;
 		private KinematicCharacterMotor _motor;
@@ -166,6 +173,8 @@ namespace BML.Scripts.Player
 			{
 				percentToEndKnockback = (Time.time - knockbackStartTime) / KnockbackDuration;
 			}
+
+            CheckDashCooldown();
 		}
 
 		private void LateUpdate()
@@ -180,6 +189,7 @@ namespace BML.Scripts.Player
 		public void BeforeCharacterUpdate(float deltaTime)
 	    {
 	        // This is called before the motor does anything
+            CheckDash();
 	        JumpAndGravity();
 	        GroundedCheck();
 	    }
@@ -228,38 +238,41 @@ namespace BML.Scripts.Player
 			    return;
 		    }
 
-		    // set target speed based on move speed, sprint speed and if sprint is pressed
-		    float sprintSpeed = isNoClipEnabled.Value ? SprintSpeed.Value * noClipSprintMultiplier : SprintSpeed.Value;
-		    float targetSpeed = _input.sprint ? sprintSpeed : MoveSpeed.Value;
+		    // set target speed based on move speed
+            float targetSpeed = MoveSpeed.Value;
 
-		    // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
+            if(!DashActive.Value) {
+                // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
-		    // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-		    // if there is no input, set the target speed to 0
-		    if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+                // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                // if there is no input, set the target speed to 0
+                if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
-		    // a reference to the players current horizontal velocity
-		    float currentHorizontalSpeed = currentVelocity.xoz().magnitude;
+                // a reference to the players current horizontal velocity
+                float currentHorizontalSpeed = currentVelocity.xoz().magnitude;
 
-		    float speedOffset = 0.1f;
-		    float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+                float speedOffset = 0.1f;
+                float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
-		    // accelerate or decelerate to target speed
-		    if (currentHorizontalSpeed < targetSpeed - speedOffset ||
-		        currentHorizontalSpeed > targetSpeed + speedOffset)
-		    {
-			    // creates curved result rather than a linear one giving a more organic speed change
-			    // note T in Lerp is clamped, so we don't need to clamp our speed
-			    _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-				    Time.deltaTime * SpeedChangeRate);
+                // accelerate or decelerate to target speed
+                if (currentHorizontalSpeed < targetSpeed - speedOffset ||
+                    currentHorizontalSpeed > targetSpeed + speedOffset)
+                {
+                    // creates curved result rather than a linear one giving a more organic speed change
+                    // note T in Lerp is clamped, so we don't need to clamp our speed
+                    _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                        Time.deltaTime * SpeedChangeRate);
 
-			    // round speed to 3 decimal places
-			    _speed = Mathf.Round(_speed * 1000f) / 1000f;
-		    }
-		    else
-		    {
-			    _speed = targetSpeed;
-		    }
+                    // round speed to 3 decimal places
+                    _speed = Mathf.Round(_speed * 1000f) / 1000f;
+                }
+                else
+                {
+                    _speed = targetSpeed;
+                }
+            } else {
+                _speed = DashSpeed.Value;
+            }
 
 		    Vector3 inputDirection = (_input.move.y * _mainCamera.transform.forward.xoz().normalized +
 		                              _input.move.x * _mainCamera.transform.right.xoz().normalized)
@@ -406,13 +419,7 @@ namespace BML.Scripts.Player
 				// Jump
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
-                    if(_isRopeMovementEnabled.Value) {
-                        Gravity = originalGravity;
-                        _isRopeMovementEnabled.Value = false;
-                        _motor.ContrainYAxis = false;
-                        reachedRopeBottom = false;
-                        reachedRopeTop = false;
-                    }
+                    ExitRopeMovement();
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_motor.ForceUnground();
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
@@ -458,6 +465,27 @@ namespace BML.Scripts.Player
 			}
 		}
 
+        private void CheckDash() {
+            if(!DashActive.Value && !DashInCooldown.Value && _input.dash) {
+                ExitRopeMovement();
+                DashActive.Value = true;
+                _startDashTime = Time.time;
+            }
+            if(DashActive.Value && Time.time - _startDashTime >= DashTime.Value) {
+                DashActive.Value = false;
+                DashCooldownTimer.StartTimer();
+                DashInCooldown.Value = true;
+            }
+        }
+
+        private void CheckDashCooldown() {
+            DashCooldownTimer.UpdateTime();
+            if(DashInCooldown.Value && DashCooldownTimer.IsFinished) {
+                DashInCooldown.Value = false;
+                DashCooldownTimer.ResetTimer();
+            }
+        }
+
 		public void Knockback(HitInfo hitInfo)
 		{
 			if (_knockbackActive)
@@ -477,6 +505,16 @@ namespace BML.Scripts.Player
                 _motor.ForceUnground();
                 _isRopeMovementEnabled.Value = true;
                 _motor.ContrainYAxis = true;
+            }
+        }
+
+        private void ExitRopeMovement() {
+            if(_isRopeMovementEnabled.Value) {
+                Gravity = originalGravity;
+                _isRopeMovementEnabled.Value = false;
+                _motor.ContrainYAxis = false;
+                reachedRopeBottom = false;
+                reachedRopeTop = false;
             }
         }
 
