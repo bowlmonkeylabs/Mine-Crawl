@@ -38,6 +38,8 @@ namespace BML.Scripts.Player
 		[SerializeField, FoldoutGroup("Player")] float lookAccelerationFactor = .0001f;
 		[Tooltip("Rate of look acceleration")]
 		[SerializeField, FoldoutGroup("Player")] FloatReference LookAcceleration;
+		[Tooltip("Outputted Velocity")]
+		[SerializeField, FoldoutGroup("Player")] Vector3Reference CurrentVelocityOut;
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -291,6 +293,10 @@ namespace BML.Scripts.Player
 		    // move the player
 		    currentVelocity = horizontalVelocity +
 		                      new Vector3(0.0f, _verticalVelocity, 0.0f);
+
+		    CurrentVelocityOut.Value = currentVelocity.normalized;
+
+
 	    }
 
 	    public void AfterCharacterUpdate(float deltaTime)
