@@ -480,7 +480,7 @@ namespace BML.Scripts.Player
         }
         
         private void CheckDash() {
-            if(!DashActive.Value && !DashInCooldown.Value && _input.dash) {
+            if(!DashActive.Value && !isNoClipEnabled.Value && !DashInCooldown.Value && _input.dash) {
                 ExitRopeMovement();
                 originalGravity = Gravity;
                 Gravity = 0f;
