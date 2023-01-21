@@ -238,10 +238,10 @@ namespace BML.Scripts.Player
 			    return;
 		    }
 
-		    // set target speed based on move speed
-            float targetSpeed = MoveSpeed.Value;
+		    // set target speed based on move speed, sprint speed and if sprint is pressed
+		    float targetSpeed = (_input.dash && isNoClipEnabled.Value) ? (MoveSpeed.Value * noClipSprintMultiplier) : MoveSpeed.Value;
 
-            if(!DashActive.Value) {
+            if(!DashActive.Value || isNoClipEnabled.Value) {
                 // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
                 // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude

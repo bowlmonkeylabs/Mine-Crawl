@@ -66,6 +66,8 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Rope")] private Transform _ropeInstanceContainer;
         [SerializeField, FoldoutGroup("Rope")] private IntReference _inventoryRopeCount;
         [SerializeField, FoldoutGroup("Rope")] private StoreItem _ropeStoreItem;
+
+        [SerializeField, FoldoutGroup("Dash")] private BoolReference _isDashActive;
         
         [SerializeField, FoldoutGroup("Health")] private Health _healthController;
         [SerializeField, FoldoutGroup("Health")] private DynamicGameEvent _tryHeal;
@@ -104,6 +106,7 @@ namespace BML.Scripts.Player
             _combatTimer.SubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
             _tryHeal.Subscribe(Heal);
+            _isDashActive.Subscribe(OnDashSetActive);
             
             SetGodMode();
         }
@@ -114,6 +117,7 @@ namespace BML.Scripts.Player
             _combatTimer.UnsubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
             _tryHeal.Unsubscribe(Heal);
+            _isDashActive.Unsubscribe(OnDashSetActive);
         }
 
         private void Update()
@@ -418,6 +422,15 @@ namespace BML.Scripts.Player
             _inventoryRopeCount.Value -= 1;
             
             this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer);
+        }
+        
+        #endregion
+
+        #region Dash
+
+        private void OnDashSetActive(bool prevValue, bool dashActive)
+        {
+            _healthController.SetInvincible(dashActive);
         }
         
         #endregion
