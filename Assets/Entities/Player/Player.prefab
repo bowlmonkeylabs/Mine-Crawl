@@ -13838,6 +13838,7 @@ MonoBehaviour:
   FeedbacksList:
   - id: 0
   - id: 1
+  - id: 2
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   references:
@@ -13978,6 +13979,61 @@ MonoBehaviour:
         RandomParticleSystems: []
         MoveToPosition: 0
         ActivateOnPlay: 0
+    00000002:
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: 1949864104
+        Label: Events
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 1764730863159798996}
+        DebugActive: 0
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 4157159614027033211}
+              m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+              m_MethodName: SetTrigger
+              m_Mode: 5
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: DoSweep
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
 --- !u!1 &8358215118179947233
 GameObject:
   m_ObjectHideFlags: 0
@@ -14605,31 +14661,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6087071
+      value: -0.25700024
       objectReference: {fileID: 0}
     - target: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7790114
+      value: -0.20081584
       objectReference: {fileID: 0}
     - target: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.11850285
+      value: -0.5820406
       objectReference: {fileID: 0}
     - target: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.09259623
+      value: 0.74488425
       objectReference: {fileID: 0}
     - target: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -103.993
+      value: -256.00702
       objectReference: {fileID: 0}
     - target: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 17.298996
+      value: 38.071
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
@@ -14841,25 +14897,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6514263781450521087}
     m_Modifications:
-    - target: {fileID: 7597839329562230988, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7597839329562230988, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.81066877
-      objectReference: {fileID: 0}
-    - target: {fileID: 7597839329562230988, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.r
-      value: 0.3254717
-      objectReference: {fileID: 0}
     - target: {fileID: 7755986796828648598, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7755986796828648598, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.00002193451
       objectReference: {fileID: 0}
     - target: {fileID: 7755986796828648598, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -14867,7 +14911,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7755986796828648598, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.2810196
+      value: 1.993954
       objectReference: {fileID: 0}
     - target: {fileID: 7755986796828648598, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
       propertyPath: m_LocalRotation.w

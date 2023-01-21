@@ -13,7 +13,10 @@ namespace BML.Scripts
 
         private void Update()
         {
-            transform.rotation = Quaternion.LookRotation(_horizontalOnly ? _rotateTowardsVector.Value.xoz() : _rotateTowardsVector.Value);
+            Vector3 lookVector = _horizontalOnly ? _rotateTowardsVector.Value.xoz() : _rotateTowardsVector.Value;
+            
+            if (!Mathf.Approximately(0f, lookVector.sqrMagnitude))
+                transform.rotation = Quaternion.LookRotation(lookVector);
         }
     }
 }

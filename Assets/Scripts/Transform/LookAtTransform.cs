@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BML.Scripts
 {
-    public class LookAtTransform : MonoBehaviour
+    public class pLookAtTransform : MonoBehaviour
     {
         [SerializeField] [HideIf("_useReference")] private Transform _targetTransform;
         [SerializeField] [ShowIf("_useReference")] private TransformSceneReference _targetTransformReference;
