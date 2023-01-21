@@ -658,12 +658,20 @@ namespace BML.Scripts.CaveV2
                     node.PlayerDistanceDelta = (dist - node.PlayerDistance);
                     node.PlayerDistance = dist;
                 });
-            
-            this.MaxPlayerDistance = _caveGraph.Vertices.Max(node => node.PlayerDistance);
-            this.CurrentMaxPlayerObjectiveDistance = _caveGraph.Vertices
-                .Where(node => node.PlayerDistance == 0)
-                .Max(node => node.ObjectiveDistance);
-            
+
+            if (_caveGraph.Vertices.Any())
+            {
+                this.MaxPlayerDistance = _caveGraph.Vertices.Max(node => node.PlayerDistance);
+                this.CurrentMaxPlayerObjectiveDistance = _caveGraph.Vertices
+                    .Where(node => node.PlayerDistance == 0)
+                    .Max(node => node.ObjectiveDistance);
+            }
+            else
+            {
+                this.MaxPlayerDistance = -1;
+                this.CurrentMaxPlayerObjectiveDistance = -1;
+            }
+
             this.OnAfterUpdatePlayerDistance?.Invoke();
             _onAfterUpdatePlayerDistance.Raise();
         }
@@ -866,7 +874,6 @@ namespace BML.Scripts.CaveV2
                 var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
                 debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
                 debugComponent.CaveGenerator = this;
-                Debug.Log(debugComponent.CaveGenerator.name);
                 
                 UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
             }

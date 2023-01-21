@@ -9,6 +9,7 @@ using BML.Scripts;
 using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.Enemy;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -19,7 +20,8 @@ namespace Intensity
         #region Inspector
 
         [TitleGroup("Scene References")] 
-        [SerializeField] private TransformSceneReference _playerSceneReference;
+        [SerializeField] private TransformSceneReference _playerTransformSceneReference;
+        [SerializeField] private GameObjectSceneReference _playerHealthSceneReference;
         [SerializeField] private EnemySpawnManager _enemySpawnManager;
         
         [TitleGroup("Intensity Parameters")]
@@ -57,7 +59,7 @@ namespace Intensity
         
         #endregion
 
-        private Health playerHealthController;
+        private Health playerHealthController => _playerHealthSceneReference?.CachedComponent as Health;
         private float lastUpdateTime = Mathf.NegativeInfinity;
         private float timeAtMaxIntensity, timeAtMinIntensity;
 
@@ -71,11 +73,6 @@ namespace Intensity
 
         #region Unity Lifecycle
 
-        private void Awake()
-        {
-            playerHealthController = _playerSceneReference.Value.GetComponent<Health>();
-        }
-
         private void Start()
         {
             _intensityResponse.Value = IntensityResponse.Increasing;
@@ -85,14 +82,28 @@ namespace Intensity
         {
             _currentDifficulty.Subscribe(UpdateMaxIntensity);
             _onEnemyKilled.Subscribe(OnEnemyKilledDynamic);
-            playerHealthController.OnHealthChange += OnPlayerHealthChanged;
+            if (!playerHealthController.SafeIsUnityNull())
+            {
+                playerHealthController.OnHealthChange += OnPlayerHealthChanged;
+            }
+            else
+            {
+                Debug.LogWarning("Player health controller is not assigned");
+            }
         }
 
         private void OnDisable()
         {
             _currentDifficulty.Unsubscribe(UpdateMaxIntensity);
             _onEnemyKilled.Unsubscribe(OnEnemyKilledDynamic);
-            playerHealthController.OnHealthChange -= OnPlayerHealthChanged;
+            if (!playerHealthController.SafeIsUnityNull())
+            {
+                playerHealthController.OnHealthChange -= OnPlayerHealthChanged;
+            }
+            else
+            {
+                Debug.LogWarning("Player health controller is not assigned");
+            }
         }
 
         private void Update()
@@ -240,7 +251,7 @@ namespace Intensity
         }
         private void OnEnemyKilled(EnemyKilledPayload curr)
         {
-            var posDiff = _playerSceneReference.Value.position - curr.Position;
+            var posDiff = _playerTransformSceneReference.Value.position - curr.Position;
             float dist = posDiff.magnitude;
             float factor = Mathf.InverseLerp(_intensityScoreKillDistanceMinMax.x, _intensityScoreKillDistanceMinMax.y, dist);
             factor = Mathf.Clamp01(factor);

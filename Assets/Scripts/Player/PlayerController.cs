@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.CaveV2;
@@ -13,6 +14,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using BML.Scripts.Store;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
@@ -21,7 +23,8 @@ namespace BML.Scripts.Player
     public class PlayerController : MonoBehaviour
     {
         #region Inspector
-        [SerializeField, FoldoutGroup("Scene References")] private CaveGenComponentV2 _caveGenerator;
+        [SerializeField, FoldoutGroup("Scene References")] private GameObjectSceneReference _caveGeneratorGameObjectSceneReference;
+        private CaveGenComponentV2 _caveGenerator => _caveGeneratorGameObjectSceneReference?.CachedComponent as CaveGenComponentV2;
         
         [SerializeField, FoldoutGroup("Interactable hover")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Interactable hover")] private UiAimReticle _uiAimReticle;
@@ -258,8 +261,15 @@ namespace BML.Scripts.Player
             if (interactionReceiver == null) return;
             
             float damage = _pickaxeDamage.Value;
-            
-            Random.InitState(_caveGenerator.CaveGenParams.Seed +  totalSwingCount);
+
+            if (!_caveGenerator.SafeIsUnityNull())
+            {
+                Random.InitState(_caveGenerator.CaveGenParams.Seed + totalSwingCount);
+            }
+            else
+            {
+                Debug.LogWarning($"Cave generator is not assigned, so random seed is not able to be used.");
+            }
             bool isCrit = Random.value < _swingCritChance.Value;
 
             if (isCrit)

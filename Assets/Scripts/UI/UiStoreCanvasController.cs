@@ -8,13 +8,15 @@ using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.UI
 {
     public class UiStoreCanvasController : MonoBehaviour
     {
-        [SerializeField, FoldoutGroup("CaveGen")] private CaveGenComponentV2 _caveGenerator;
+        [SerializeField, FoldoutGroup("CaveGen")] private GameObjectSceneReference _caveGeneratorGameObjectSceneReference;
+        private CaveGenComponentV2 _caveGenerator => _caveGeneratorGameObjectSceneReference?.CachedComponent as CaveGenComponentV2;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private Transform _listContainerStoreButtons;
         [SerializeField] private int _maxItemsShown = 0;
@@ -55,7 +57,14 @@ namespace BML.Scripts.UI
             }
 
             if(_randomizeStoreOnBuy) {
-                Random.InitState(_caveGenerator.CaveGenParams.Seed + buyCount);
+                if (!_caveGenerator.SafeIsUnityNull())
+                {
+                    Random.InitState(_caveGenerator.CaveGenParams.Seed + buyCount);
+                }
+                else
+                {
+                    Debug.Log($"Cave generator is not assigned, so random seed is not able to be used.");
+                }
                 shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
             }
 

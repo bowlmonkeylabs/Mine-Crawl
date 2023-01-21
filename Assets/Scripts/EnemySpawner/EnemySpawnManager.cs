@@ -31,7 +31,6 @@ namespace BML.Scripts
         [TitleGroup("Scene References")]
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
         [SerializeField] private Transform _enemyContainer;
-        [SerializeField] private Transform _player;
 
         [TitleGroup("Spawning Parameters")]
         [SerializeField] private LayerMask _terrainLayerMask;
@@ -158,6 +157,8 @@ namespace BML.Scripts
         [Button("Debug Init Spawn Costs")]
         private void InitSpawnCosts()
         {
+            if (_enableLogs) Debug.Log("EnemySpawner InitSpawnCosts");
+            
             foreach (var enemyParams in _enemySpawnerParamList)
             {
                 int minCost = enemyParams.SpawnAtTags.Min(e => e.Cost);
@@ -169,9 +170,10 @@ namespace BML.Scripts
                 for (int i = 0; i < intermediate.Count; i++)
                 {
                     enemyParams.SpawnAtTags[i].NormalizedSpawnWeight = intermediate[i] / (float) total;
-                    if (_enableLogs) Debug.Log($"{enemyParams.SpawnAtTags[i].Prefab.name} | " +
-                              $"Cost: {enemyParams.SpawnAtTags[i].Cost}" +
-                              $"| Norm: {enemyParams.SpawnAtTags[i].NormalizedSpawnWeight}");
+                    if (_enableLogs) Debug.Log(
+                        $"EnemySpawner InitSpawnCosts {enemyParams.SpawnAtTags[i].Prefab.name} | " +
+                              $"(Cost {enemyParams.SpawnAtTags[i].Cost})" +
+                              $"(Norm {enemyParams.SpawnAtTags[i].NormalizedSpawnWeight})");
                 }
             }
         }
@@ -185,7 +187,7 @@ namespace BML.Scripts
                 .ToList();
 
             var tags = String.Join(", ", tagsToSpawn);
-            // Debug.Log($"InitSpawnPoints {tags}");
+            if (_enableLogs) Debug.Log($"EnemySpawner InitSpawnPoints {tags}");
 
             _allSpawnPointsByTag = _caveGenerator.CaveGraph.AllNodes
                 .SelectMany(caveNodeData => caveNodeData.SpawnPoints)
@@ -193,11 +195,14 @@ namespace BML.Scripts
                 .Where(group => tagsToSpawn.Contains(group.Key))
                 .ToDictionary(group => group.Key, group => group.ToList());
 
-            // Debug.Log($"{_allSpawnPointsByTag.Keys.Count} tags with spawn points");
-            // foreach (var kv     in _allSpawnPointsByTag)
-            // {
-            //     Debug.Log($"{kv.Key}: {kv.Value.Count}");
-            // }
+            if (_enableLogs)
+            {
+                Debug.Log($"EnemySpawner InitSpawnPoints {_allSpawnPointsByTag.Keys.Count} tags with spawn points");
+                foreach (var kv in _allSpawnPointsByTag)
+                {
+                    Debug.Log($"EnemySpawner InitSpawnPoints ({kv.Key} {kv.Value.Count})");
+                }
+            }
             
             CacheActiveSpawnPoints();
         }
@@ -220,6 +225,15 @@ namespace BML.Scripts
             {
                 // Debug.Log($"CacheActiveSpawnPoints {kv.Key}");
                 _activeSpawnPointsByTag[kv.Key] = kv.Value.Where(SpawnPointIsActive).ToList();
+            }
+            
+            if (_enableLogs)
+            {
+                Debug.Log($"EnemySpawner CacheActiveSpawnPoints {_activeSpawnPointsByTag.Keys.Count} tags with spawn points");
+                foreach (var kv in _activeSpawnPointsByTag)
+                {
+                    Debug.Log($"EnemySpawner CacheActiveSpawnPoints ({kv.Key} {kv.Value.Count})");
+                }
             }
             
             CalculateSpawnPointWeight();
@@ -336,17 +350,23 @@ namespace BML.Scripts
         {
             if (Time.time < lastSpawnTime + _currentSpawnDelay.Value)
                 return;
-
+            
             bool noActiveSpawnPoints = _activeSpawnPointsByTag == null
                                        || _activeSpawnPointsByTag.Count == 0
                                        || _activeSpawnPointsByTag.All(kv => kv.Value.Count == 0);
             if (noActiveSpawnPoints)
+            {
+                if (_enableLogs) Debug.Log($"HandleSpawning No active spawn points");
                 return;
+            }
 
             // Check against current enemy cap
             UpdateEnemyCount();
             if (_currentEnemyCount.Value >= _currentSpawnCap.Value)
+            {
+                if (_enableLogs) Debug.Log($"HandleSpawning Spawn cap full");
                 return;
+            }
             
             //TODO: Here use the right spawn params based on difficulty of room enemy is being spawned in
             

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using AdvancedSceneManager.Models;
+using AdvancedSceneManager.Utility;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using MoreMountains.Feedbacks;
@@ -15,8 +18,8 @@ namespace BML.Scripts
         [SerializeField] private GameEvent _restartGame;
         [SerializeField] private GameEvent _quitGame;
 
-        [SerializeField] private MMF_Player _restartFeedbacks;
-        [SerializeField] private MMF_Player _quitFeedbacks;
+        [SerializeField] private SceneCollection _retstartSceneCollection;
+        [SerializeField] private SceneCollection _quitSceneCollection;
 
         [SerializeField] private BoolVariable _isGameLost;
         [SerializeField] private FloatVariable _levelStartTime;
@@ -36,12 +39,12 @@ namespace BML.Scripts
         
         public void RestartGame()
         {
-            _restartFeedbacks.PlayFeedbacks();
+            _retstartSceneCollection.OpenOrReopen();
         }
 
         public void QuitGame()
         {
-            _quitFeedbacks.PlayFeedbacks();
+            _quitSceneCollection.OpenOrReopen();
         }
         
         #endregion
