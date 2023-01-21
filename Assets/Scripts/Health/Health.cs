@@ -146,6 +146,11 @@ namespace BML.Scripts
             _onRevive.Invoke();
             OnRevive?.Invoke();
         }
+
+        public void Kill()
+        {
+            SetHealth(0);
+        }
         
         public void SetInvincible(bool isInvincible)
         {
