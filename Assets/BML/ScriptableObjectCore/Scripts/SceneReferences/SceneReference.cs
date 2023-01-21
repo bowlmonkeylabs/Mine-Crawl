@@ -10,11 +10,12 @@ namespace BML.ScriptableObjectCore.Scripts.SceneReferences
         [TextArea (7, 10)] [HideInInlineEditors] public string Description;
         [SerializeField] private T reference;
     
-        public T Value
+        public virtual T Value
         {
             get => reference;
             set => reference = value;
         }
+
     }
 }
 
