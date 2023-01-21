@@ -115,6 +115,7 @@ namespace BML.Scripts.Player
 
         //dash
         private float _startDashTime;
+        private Vector3 _dashDirection;
 
 		private PlayerInput _playerInput;
 		private KinematicCharacterMotor _motor;
@@ -276,14 +277,14 @@ namespace BML.Scripts.Player
                 _speed = DashSpeed.Value;
             }
 
-		    Vector3 inputDirection = (_input.move.y * _mainCamera.transform.forward.xoz().normalized +
-		                              _input.move.x * _mainCamera.transform.right.xoz().normalized)
-			    .normalized;
-
-		    if (isNoClipEnabled.Value)
-			    inputDirection = (_input.move.y * _mainCamera.transform.forward.normalized +
-			                      _input.move.x * _mainCamera.transform.right.normalized)
-				    .normalized;
+            Vector3 inputDirection;
+            if(DashActive.Value) {
+                inputDirection = _dashDirection;
+            } else if(isNoClipEnabled.Value) {
+                inputDirection = (_input.move.y * _mainCamera.transform.forward.normalized + _input.move.x * _mainCamera.transform.right.normalized).normalized;
+            } else {
+                inputDirection = (_input.move.y * _mainCamera.transform.forward.xoz().normalized + _input.move.x * _mainCamera.transform.right.xoz().normalized).normalized;
+            }
 
 		    Vector3 horizontalVelocity = inputDirection * _speed;
 
@@ -471,14 +472,26 @@ namespace BML.Scripts.Player
 			}
 		}
 
+        private Vector3 GetInputDirection() {
+            return (_input.move.y * _mainCamera.transform.forward.xoz().normalized + _input.move.x * _mainCamera.transform.right.xoz().normalized).normalized;
+        }
+        
         private void CheckDash() {
             if(!DashActive.Value && !DashInCooldown.Value && _input.dash) {
                 ExitRopeMovement();
+                originalGravity = Gravity;
+                Gravity = 0f;
                 DashActive.Value = true;
                 _startDashTime = Time.time;
+                Vector3 inputDir = GetInputDirection();
+                if(Mathf.Approximately(inputDir.magnitude, 0)) {
+                    inputDir = _mainCamera.transform.forward.xoz().normalized;
+                }
+                _dashDirection = inputDir;
             }
             if(DashActive.Value && Time.time - _startDashTime >= DashTime.Value) {
                 DashActive.Value = false;
+                Gravity = originalGravity;
                 DashCooldownTimer.StartTimer();
                 DashInCooldown.Value = true;
             }
