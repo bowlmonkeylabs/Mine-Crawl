@@ -470,6 +470,9 @@ namespace BML.Scripts.Player
 				else
 					_verticalVelocity = 0f;
 			}
+
+			if (DashActive.Value)
+				_verticalVelocity = 0f;
 		}
 
         private Vector3 GetInputDirection() {
