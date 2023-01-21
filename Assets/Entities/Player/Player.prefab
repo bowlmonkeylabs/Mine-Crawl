@@ -85,7 +85,7 @@ GameObject:
   - component: {fileID: 322946835}
   - component: {fileID: 322946836}
   m_Layer: 8
-  m_Name: SwingFeedbacks
+  m_Name: StartSwingFeedbacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -407,6 +407,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 322946835}
+  - {fileID: 4609729888589634980}
   - {fileID: 1354617643903255110}
   - {fileID: 6379217981028843582}
   - {fileID: 488940884654781242}
@@ -509,6 +510,7 @@ GameObject:
   - component: {fileID: 4157159614027033211}
   - component: {fileID: 5261003297864719754}
   - component: {fileID: 8484812193524231295}
+  - component: {fileID: 6966748986661601176}
   m_Layer: 8
   m_Name: Pickaxe
   m_TagString: Untagged
@@ -581,6 +583,35 @@ MonoBehaviour:
   _animator: {fileID: 4157159614027033211}
   _parameterName: SwingSpeedScale_Back
   _scale: {fileID: 11400000, guid: 809fd1d566282484495576b95c0a906d, type: 2}
+--- !u!114 &6966748986661601176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1355230512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 391855fd2063423e8e266d3f92151bd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animEvents:
+  - EventName: DoSwing
+    Response:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8891924336984254849}
+          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+          m_MethodName: PlayFeedbacks
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1689290211
 GameObject:
   m_ObjectHideFlags: 0
@@ -4694,7 +4725,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 863770675}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8772470274992028070
 MonoBehaviour:
@@ -4956,7 +4987,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 863770675}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5814108615011793704
 MonoBehaviour:
@@ -5182,7 +5213,7 @@ Transform:
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children: []
   m_Father: {fileID: 863770675}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9155316783490342460
 MonoBehaviour:
@@ -6656,7 +6687,7 @@ MonoBehaviour:
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 541798a3b6084cc46b8f1e48ee3f98be, type: 2}
   _damageType: 1
   _sweepDamageType: 1024
-  _swingPickaxeFeedback: {fileID: 322946836}
+  _startSwingPickaxeFeedback: {fileID: 322946836}
   _swingHitFeedbacks: {fileID: 9155316783490342460}
   _missSwingFeedback: {fileID: 2413257103601364852}
   _hitTerrainFeedback: {fileID: 5814108615011793704}
@@ -10113,7 +10144,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 863770675}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7052921451866271702
 MonoBehaviour:
@@ -11585,7 +11616,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 863770675}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2413257103601364852
 MonoBehaviour:
@@ -13788,7 +13819,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 863770675}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1764730863159798996
 MonoBehaviour:
@@ -14140,6 +14171,172 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8656089019429711449
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4609729888589634980}
+  - component: {fileID: 8891924336984254849}
+  - component: {fileID: 4967792955360272280}
+  m_Layer: 8
+  m_Name: DoSwingFeedbacks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4609729888589634980
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8656089019429711449}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 863770675}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8891924336984254849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8656089019429711449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Feedbacks: []
+  InitializationMode: 2
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  DurationMultiplier: 1
+  DisplayFullDurationDetails: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRevert:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  FeedbacksList:
+  - id: 0
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: 1852649206
+        Label: Events
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 8891924336984254849}
+        DebugActive: 0
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 4112429824577967131}
+              m_TargetAssemblyTypeName: BML.Scripts.Player.PlayerController, BML.Scripts
+              m_MethodName: DoSwing
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: DoSwing
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
+--- !u!114 &4967792955360272280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8656089019429711449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bafb937cf1a47f04f8d27c5e9d7e6f96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 922beffabd6f83b498f1c8265b00ac6c, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8891924336984254849}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8729721466319757042
 GameObject:
   m_ObjectHideFlags: 0
@@ -14874,11 +15071,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
---- !u!4 &981458945698494185 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
-  m_PrefabInstance: {fileID: 6163448547068399552}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6763227702262468176 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
@@ -14890,6 +15082,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &981458945698494185 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+  m_PrefabInstance: {fileID: 6163448547068399552}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6543468985606383630
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14947,14 +15144,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
---- !u!198 &3728946144052914370 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 7597839329562230988, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
-  m_PrefabInstance: {fileID: 6543468985606383630}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3561747769528798360 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7755986796828648598, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
+  m_PrefabInstance: {fileID: 6543468985606383630}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3728946144052914370 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7597839329562230988, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
   m_PrefabInstance: {fileID: 6543468985606383630}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6947250416337299594

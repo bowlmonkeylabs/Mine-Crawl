@@ -41,7 +41,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _swingCritChance;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _sweepDamageType;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingPickaxeFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startSwingPickaxeFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _missSwingFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitTerrainFeedback;
@@ -122,7 +122,7 @@ namespace BML.Scripts.Player
 
         private void Update()
         {
-            if (pickaxeInputHeld) TryUsePickaxe();
+            if (pickaxeInputHeld) TrySwingPickaxe();
             if (secondaryInputHeld) TryUseSweep();
             HandleHover();
             _combatTimer.UpdateTime(!_anyEnemiesEngaged.Value ? _safeCombatTimerDecayMultiplier : 1f);
@@ -139,7 +139,7 @@ namespace BML.Scripts.Player
             if (value.isPressed)
             {
                 pickaxeInputHeld = true;
-                TryUsePickaxe();
+                TrySwingPickaxe();
             }
             else
             {
@@ -185,22 +185,24 @@ namespace BML.Scripts.Player
 
         #region Pickaxe
         
-        private void TryUsePickaxe()
+        private void TrySwingPickaxe()
         {
-            RaycastHit hit;
-            RaycastHit? lowPriorityHit = null;
-
             if (_pickaxeSwingCooldown.IsStarted && !_pickaxeSwingCooldown.IsFinished)
             {
                 return;
             }
             
+            _startSwingPickaxeFeedback.PlayFeedbacks();
             totalSwingCount++;
-            
-            _swingPickaxeFeedback.StopFeedbacks();
-            _swingPickaxeFeedback.PlayFeedbacks();
             _pickaxeSwingCooldown.RestartTimer();
+        }
 
+        // To be called from animation
+        public void DoSwing()
+        {
+            RaycastHit hit;
+            RaycastHit? lowPriorityHit = null;
+            
             if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance.Value,
                 _interactMask, QueryTriggerInteraction.Ignore))
             {
@@ -233,7 +235,6 @@ namespace BML.Scripts.Player
             }
             
             _missSwingFeedback.PlayFeedbacks();
-            
         }
         
         private void HandlePickaxeHit(RaycastHit hit)
