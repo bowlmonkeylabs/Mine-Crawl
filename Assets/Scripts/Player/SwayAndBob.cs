@@ -8,10 +8,10 @@ namespace BML.Scripts.Player
     public class SwayAndBob : MonoBehaviour
     {
         [Header("External References")]
-        [SerializeField]private Vector2Variable _moveInput;
-        [SerializeField]private Vector2Variable _mouseInput;
-        [SerializeField]private Vector3Variable _currentVelocity;
-        [SerializeField]private BoolVariable _isGrounded;
+        [SerializeField]private Vector2Reference _moveInput;
+        [SerializeField]private Vector2Reference _mouseInput;
+        [SerializeField]private Vector3Reference _currentVelocity;
+        [SerializeField]private BoolReference _isGrounded;
 
         [Header("Settings")]
         [SerializeField] private bool _sway = true;
@@ -36,7 +36,7 @@ namespace BML.Scripts.Player
         [SerializeField] private float _speedMultiplier = 1f;
         [SerializeField] private float _idleMultiplier;
         [FormerlySerializedAs("_bobPhaseOffsetX")]
-        [Tooltip("Probably this set to some value for left-hand items")]
+        [Tooltip("Probably this set to some value to offset left-hand items from right hand")]
         [SerializeField] [Range(0f, 360f)] private float _bobPhaseOffset;
         
         [Tooltip("Maximum limits of travel from move input")]
