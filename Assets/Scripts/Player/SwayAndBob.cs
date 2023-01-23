@@ -35,8 +35,9 @@ namespace BML.Scripts.Player
         [SerializeField] private float _speedCurve;
         [SerializeField] private float _speedMultiplier = 1f;
         [SerializeField] private float _idleMultiplier;
-        [Tooltip("Want this set to 180 for left-hand items")]
-        [SerializeField] [Range(0f, 360f)] private float _bobPhaseOffsetX;
+        [FormerlySerializedAs("_bobPhaseOffsetX")]
+        [Tooltip("Probably this set to some value for left-hand items")]
+        [SerializeField] [Range(0f, 360f)] private float _bobPhaseOffset;
         
         [Tooltip("Maximum limits of travel from move input")]
         [SerializeField] private Vector3 _travelLimit = Vector3.one * 0.025f;
@@ -74,7 +75,7 @@ namespace BML.Scripts.Player
             Sway();
             SwayRotation();
 
-            _speedCurve += Time.deltaTime * _speedMultiplier * (_isGrounded.Value ? _currentVelocity.Value.magnitude : 1f);
+            _speedCurve += Time.deltaTime * _speedMultiplier * (_isGrounded.Value ? _currentVelocity.Value.magnitude : 1f) + 1f * Time.deltaTime;
             
             BobOffset();
             BobRotation();
@@ -134,9 +135,9 @@ namespace BML.Scripts.Player
         {
             if (!_bobSway) { bobEulerRot = Vector3.zero; return; }
             
-            bobEulerRot.x = (_moveInput.Value != Vector2.zero ? _bobMultiplier.x * (Mathf.Sin(2 * _speedCurve + _bobPhaseOffsetX)) :
-                                                            _idleMultiplier * (Mathf.Sin(2 * _speedCurve + _bobPhaseOffsetX) / 2f));
-            bobEulerRot.y = (_moveInput.Value != Vector2.zero ? _bobMultiplier.y * curveCos : 0);
+            bobEulerRot.x = (_moveInput.Value != Vector2.zero ? _bobMultiplier.x * (Mathf.Sin(2 * _speedCurve + _bobPhaseOffset)) :
+                                                            _idleMultiplier * (Mathf.Sin(2 * _speedCurve + _bobPhaseOffset) / 2f));
+            bobEulerRot.y = (_moveInput.Value != Vector2.zero ? _bobMultiplier.y * Mathf.Cos(_speedCurve + _bobPhaseOffset) : 0);
             bobEulerRot.z = (_moveInput.Value != Vector2.zero ? _bobMultiplier.z * curveCos * _moveInput.Value.x : 0);
 
             if (!rotX) bobEulerRot.x = 0f;
