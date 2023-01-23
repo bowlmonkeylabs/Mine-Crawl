@@ -204,6 +204,8 @@ namespace BML.Scripts.Player
 
 	    public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
 	    {
+		    CurrentVelocityOut.Value = currentVelocity;
+		    
 		    // Kill Y velocity if just get grounded so not to slide
 		    // Without this, y velocity is converted to horizontal velocity when land
 		    if (_motor.GroundingStatus.IsStableOnGround && !_motor.LastGroundingStatus.IsStableOnGround)
@@ -294,10 +296,6 @@ namespace BML.Scripts.Player
 		    // move the player
 		    currentVelocity = horizontalVelocity +
 		                      new Vector3(0.0f, _verticalVelocity, 0.0f);
-
-		    CurrentVelocityOut.Value = currentVelocity.normalized;
-
-
 	    }
 
 	    public void AfterCharacterUpdate(float deltaTime)
@@ -480,7 +478,7 @@ namespace BML.Scripts.Player
         }
         
         private void CheckDash() {
-            if(!DashActive.Value && !DashInCooldown.Value && _input.dash) {
+            if(!DashActive.Value && !isNoClipEnabled.Value && !DashInCooldown.Value && _input.dash) {
                 ExitRopeMovement();
                 originalGravity = Gravity;
                 Gravity = 0f;

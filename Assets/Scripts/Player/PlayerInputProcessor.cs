@@ -16,7 +16,7 @@ namespace BML.Scripts.Player
 	public class PlayerInputProcessor : MonoBehaviour
 	{
 		[SerializeField] private bool _enableLogs = true;
-		
+
 		[Header("Character Input Values")]
 		public Vector2 move;
 		public Vector2 look;
@@ -34,6 +34,8 @@ namespace BML.Scripts.Player
 		[SerializeField] private FloatReference _mouseSensitivity;
 		[SerializeField] private BoolReference _invertedLookY;
 
+		[SerializeField] private Vector2Reference _mouseInput;
+		[SerializeField] private Vector2Reference _moveInput;
 		[SerializeField] private BoolReference _isPaused;
 		[SerializeField] private BoolReference _isStoreOpen;
 		[SerializeField] private BoolReference _isUpgradeStoreOpen;
@@ -154,7 +156,8 @@ namespace BML.Scripts.Player
 		
 		public void OnMove(InputValue value)
 		{
-			MoveInput(value.Get<Vector2>());
+			Vector2 moveInput = value.Get<Vector2>();
+			MoveInput(moveInput);
 		}
 
 		public void OnLook(InputValue value)
@@ -250,7 +253,8 @@ namespace BML.Scripts.Player
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
-		} 
+			_moveInput.Value = move;
+		}
 
 		public void LookInput(Vector2 newLookDirection)
 		{
@@ -263,6 +267,8 @@ namespace BML.Scripts.Player
 
 			if (_invertedLookY.Value)
 				look.y = -look.y;
+
+			_mouseInput.Value = look;
 		}
 
 		public void DashInput(bool newDashState)
