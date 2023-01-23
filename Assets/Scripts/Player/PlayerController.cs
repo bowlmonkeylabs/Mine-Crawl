@@ -287,7 +287,11 @@ namespace BML.Scripts.Player
             _sweepFeedback.PlayFeedbacks();
             _pickaxeSweepCooldown.RestartTimer();
             _pickaxeSwingCooldown.RestartTimer();
-
+        }
+        
+        // To be called by anim
+        public void DoSweep()
+        {
             var center = _sweepCollider.transform.TransformPoint(_sweepCollider.center);
             var halfExtents = _sweepCollider.size / 2f;
             Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, _sweepCollider.transform.rotation,

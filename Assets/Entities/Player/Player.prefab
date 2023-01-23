@@ -4556,8 +4556,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 0
   serializedVersion: 2
-  m_Size: {x: 3, y: 1, z: 3}
-  m_Center: {x: 0, y: 0, z: 1.5}
+  m_Size: {x: 3.5, y: 1, z: 3.5}
+  m_Center: {x: 0, y: 0, z: 1.75}
 --- !u!1 &715590448085940539
 GameObject:
   m_ObjectHideFlags: 0
@@ -5500,6 +5500,7 @@ MonoBehaviour:
   FeedbacksList:
   - id: 0
   - id: 1
+  - id: 2
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   references:
@@ -5640,6 +5641,61 @@ MonoBehaviour:
         RandomParticleSystems: []
         MoveToPosition: 0
         ActivateOnPlay: 0
+    00000002:
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: -664748586
+        Label: Events
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 8082952045955059110}
+        DebugActive: 0
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 4112429824577967131}
+              m_TargetAssemblyTypeName: BML.Scripts.Player.PlayerController, BML.Scripts
+              m_MethodName: DoSweep
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
 --- !u!1 &1270082553906115485
 GameObject:
   m_ObjectHideFlags: 0
@@ -13318,7 +13374,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 65.07074
+  field of view: 88.51846
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -14634,7 +14690,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4609729888589634980}
   - component: {fileID: 8891924336984254849}
-  - component: {fileID: 4967792955360272280}
   m_Layer: 8
   m_Name: DoSwingFeedbacks
   m_TagString: Untagged
@@ -14762,34 +14817,6 @@ MonoBehaviour:
         ResetEvents:
           m_PersistentCalls:
             m_Calls: []
---- !u!114 &4967792955360272280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8656089019429711449}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bafb937cf1a47f04f8d27c5e9d7e6f96, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 922beffabd6f83b498f1c8265b00ac6c, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8891924336984254849}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &8729721466319757042
 GameObject:
   m_ObjectHideFlags: 0
@@ -15524,6 +15551,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+--- !u!4 &981458945698494185 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+  m_PrefabInstance: {fileID: 6163448547068399552}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6763227702262468176 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
@@ -15535,11 +15567,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &981458945698494185 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
-  m_PrefabInstance: {fileID: 6163448547068399552}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6543468985606383630
 PrefabInstance:
   m_ObjectHideFlags: 0
