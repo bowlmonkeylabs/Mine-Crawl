@@ -414,6 +414,7 @@ Transform:
   - {fileID: 488940884654781242}
   - {fileID: 1875426104357521216}
   - {fileID: 4172424076495046127}
+  - {fileID: 4202865626655948805}
   - {fileID: 2984988902098288162}
   m_Father: {fileID: 8722278798120057416}
   m_RootOrder: 6
@@ -643,6 +644,22 @@ MonoBehaviour:
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 1
+          m_CallState: 2
+  - EventName: DoSweep
+    Response:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8082952045955059110}
+          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+          m_MethodName: PlayFeedbacks
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
           m_CallState: 2
 --- !u!1 &1689290211
 GameObject:
@@ -5404,6 +5421,225 @@ MonoBehaviour:
         NestParticles: 0
         ApplyRotation: 0
         ApplyScale: 1
+--- !u!1 &1030959007279787337
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4202865626655948805}
+  - component: {fileID: 8082952045955059110}
+  m_Layer: 8
+  m_Name: DoSweepFeedbacks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4202865626655948805
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030959007279787337}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_Children: []
+  m_Father: {fileID: 863770675}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8082952045955059110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030959007279787337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Feedbacks: []
+  InitializationMode: 2
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  DurationMultiplier: 1
+  DisplayFullDurationDetails: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRevert:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  FeedbacksList:
+  - id: 0
+  - id: 1
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
+      data:
+        Active: 1
+        UniqueID: -1002088315
+        Label: BMLSoundManager Sound
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 8082952045955059110}
+        DebugActive: 0
+        Sfx: {fileID: 0}
+        RandomSfx:
+        - {fileID: 8300000, guid: 8f081b09efe77e0459da0cd80be0cdcd, type: 3}
+        - {fileID: 8300000, guid: 181dfd7cab1b67e4fbb624058ebe92cd, type: 3}
+        - {fileID: 8300000, guid: b4782e2602a9eb147b06478f1f030013, type: 3}
+        TestPlayButton:
+          ButtonText: Debug Play Sound
+        TestStopButton:
+          ButtonText: Debug Stop Sound
+        MinVolume: 0.5
+        MaxVolume: 0.5
+        MinPitch: 1
+        MaxPitch: 1
+        PlaybackTime: {x: 0, y: 0}
+        MmSoundManagerTrack: 0
+        ID: 0
+        AudioGroup: {fileID: 0}
+        RecycleAudioSource: {fileID: 0}
+        Loop: 0
+        Persistent: 0
+        LimitConsecutivePlays: 0
+        MaxConsecutivePlays: 3
+        StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
+        Fade: 0
+        FadeInitialVolume: 0
+        FadeDuration: 1
+        FadeTween:
+          MMTweenDefinitionType: 0
+          MMTweenCurve: 9
+          Curve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+        SoloSingleTrack: 0
+        SoloAllTracks: 0
+        AutoUnSoloOnEnd: 0
+        PanStereo: 0
+        SpatialBlend: 0
+        BypassEffects: 0
+        BypassListenerEffects: 0
+        BypassReverbZones: 0
+        Priority: 128
+        ReverbZoneMix: 1
+        DopplerLevel: 1
+        Spread: 0
+        RolloffMode: 0
+        MinDistance: 1
+        MaxDistance: 500
+    00000001:
+      type: {class: MMF_Particles, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: -467917919
+        Label: Particles Play
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 8082952045955059110}
+        DebugActive: 0
+        Mode: 0
+        BoundParticleSystem: {fileID: 2599902467193343756}
+        RandomParticleSystems: []
+        MoveToPosition: 0
+        ActivateOnPlay: 0
 --- !u!1 &1270082553906115485
 GameObject:
   m_ObjectHideFlags: 0
@@ -10410,7 +10646,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 863770675}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7052921451866271702
 MonoBehaviour:
@@ -14156,7 +14392,7 @@ GameObject:
   - component: {fileID: 4172424076495046127}
   - component: {fileID: 1764730863159798996}
   m_Layer: 8
-  m_Name: SweepFeedbacks
+  m_Name: StartSweepFeedbacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14223,149 +14459,11 @@ MonoBehaviour:
   DebugActive: 0
   FeedbacksList:
   - id: 0
-  - id: 1
-  - id: 2
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   references:
     version: 1
     00000000:
-      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
-      data:
-        Active: 1
-        UniqueID: -1002088315
-        Label: BMLSoundManager Sound
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 1764730863159798996}
-        DebugActive: 0
-        Sfx: {fileID: 0}
-        RandomSfx:
-        - {fileID: 8300000, guid: 8f081b09efe77e0459da0cd80be0cdcd, type: 3}
-        - {fileID: 8300000, guid: 181dfd7cab1b67e4fbb624058ebe92cd, type: 3}
-        - {fileID: 8300000, guid: b4782e2602a9eb147b06478f1f030013, type: 3}
-        TestPlayButton:
-          ButtonText: Debug Play Sound
-        TestStopButton:
-          ButtonText: Debug Stop Sound
-        MinVolume: 0.5
-        MaxVolume: 0.5
-        MinPitch: 1
-        MaxPitch: 1
-        PlaybackTime: {x: 0, y: 0}
-        MmSoundManagerTrack: 0
-        ID: 0
-        AudioGroup: {fileID: 0}
-        RecycleAudioSource: {fileID: 0}
-        Loop: 0
-        Persistent: 0
-        LimitConsecutivePlays: 0
-        MaxConsecutivePlays: 3
-        StopSoundOnFeedbackStop: 0
-        PauseSoundWhenPauseGame: 1
-        Fade: 0
-        FadeInitialVolume: 0
-        FadeDuration: 1
-        FadeTween:
-          MMTweenDefinitionType: 0
-          MMTweenCurve: 9
-          Curve:
-            serializedVersion: 2
-            m_Curve:
-            - serializedVersion: 3
-              time: 0
-              value: 0
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            - serializedVersion: 3
-              time: 1
-              value: 1
-              inSlope: 0
-              outSlope: 0
-              tangentMode: 0
-              weightedMode: 0
-              inWeight: 0
-              outWeight: 0
-            m_PreInfinity: 2
-            m_PostInfinity: 2
-            m_RotationOrder: 4
-        SoloSingleTrack: 0
-        SoloAllTracks: 0
-        AutoUnSoloOnEnd: 0
-        PanStereo: 0
-        SpatialBlend: 0
-        BypassEffects: 0
-        BypassListenerEffects: 0
-        BypassReverbZones: 0
-        Priority: 128
-        ReverbZoneMix: 1
-        DopplerLevel: 1
-        Spread: 0
-        RolloffMode: 0
-        MinDistance: 1
-        MaxDistance: 500
-    00000001:
-      type: {class: MMF_Particles, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: -467917919
-        Label: Particles Play
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 1764730863159798996}
-        DebugActive: 0
-        Mode: 0
-        BoundParticleSystem: {fileID: 2599902467193343756}
-        RandomParticleSystems: []
-        MoveToPosition: 0
-        ActivateOnPlay: 0
-    00000002:
       type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
         Active: 1
@@ -15241,14 +15339,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
---- !u!198 &2599902467193343756 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1291339071860702140, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
-  m_PrefabInstance: {fileID: 3890960061709579440}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2794262310649021554 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
+  m_PrefabInstance: {fileID: 3890960061709579440}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &2599902467193343756 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1291339071860702140, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
   m_PrefabInstance: {fileID: 3890960061709579440}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5350706952515162931
@@ -15499,14 +15597,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
---- !u!198 &3728946144052914370 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 7597839329562230988, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
-  m_PrefabInstance: {fileID: 6543468985606383630}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3561747769528798360 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7755986796828648598, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
+  m_PrefabInstance: {fileID: 6543468985606383630}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3728946144052914370 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7597839329562230988, guid: 23dc9730189695248b503458e84c2c9b, type: 3}
   m_PrefabInstance: {fileID: 6543468985606383630}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6947250416337299594

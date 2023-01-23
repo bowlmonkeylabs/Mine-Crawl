@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,7 +15,7 @@ namespace BML.Scripts.Animation
         public class AnimEvent
         {
             public string EventName;
-            public UnityEvent Response;
+            [FoldoutGroup("Response"), HideLabel] public UnityEvent Response;
         }
 
         public void ReceiveAnimEvent(string name)
