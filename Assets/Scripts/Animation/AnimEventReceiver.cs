@@ -21,7 +21,7 @@ namespace BML.Scripts.Animation
         {
             if (_animEvents.IsNullOrEmpty())
             {
-                Debug.LogWarning("Tried to receive AnimEvent but Anim Event List is empty or null!");
+                Debug.LogWarning($"Tried to receive AnimEvent with name {name} but Anim Event List is empty or null!");
                 return;
             }
 
@@ -29,7 +29,7 @@ namespace BML.Scripts.Animation
 
             if (animEvent == null)
             {
-                Debug.LogWarning("No Anim Event exits with the received name!");
+                Debug.LogWarning($"No Anim Event exits with the received name: {name}");
                 return;
             }
 

@@ -50,6 +50,7 @@ namespace BML.Scripts.Player
         private float curveCos { get => Mathf.Cos((_speedCurve)); }
 
         private Vector3 originalPosition;
+        private Quaternion originalRotation;
 
         [Header("BobRotation")]
         [SerializeField] private Vector3 _bobMultiplier;
@@ -68,6 +69,13 @@ namespace BML.Scripts.Player
         private void OnEnable()
         {
             originalPosition = transform.localPosition;
+            originalRotation = transform.localRotation;
+        }
+
+        private void OnDisable()
+        {
+            transform.localPosition = originalPosition;
+            transform.localRotation = originalRotation;
         }
 
         private void Update()
