@@ -3,6 +3,7 @@ using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.Scripts.Utils;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace BML.Scripts.Tasks
@@ -29,9 +30,10 @@ namespace BML.Scripts.Tasks
         
         public override TaskStatus OnUpdate()
         {
-            if (lastCheckTime + _checkDelay > Time.time)
-                return TaskStatus.Failure;
-
+            if (lastCheckTime + _checkDelay > Time.time) return TaskStatus.Failure;
+            
+            if (_target.Value.SafeIsUnityNull()) return TaskStatus.Failure;
+            
             RaycastHit hit;
             Vector3 dir = (_target.Value.position - _origin.Value.position).normalized;
             LayerMask hitMask = _playerLayerMask | _obstacleLayerMask;

@@ -2,6 +2,7 @@
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace BML.Scripts
@@ -16,6 +17,10 @@ namespace BML.Scripts
         private void Update()
         {
             Transform target = _useReference ? _targetTransformReference.Value : _targetTransform;
+            if (target.SafeIsUnityNull())
+            {
+                return;
+            }
             Vector3 delta = target.position - transform.position;
 
             Quaternion rot;

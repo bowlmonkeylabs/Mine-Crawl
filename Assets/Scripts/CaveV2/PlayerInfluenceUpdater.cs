@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.Utils;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace BML.Scripts.CaveV2
@@ -15,9 +17,12 @@ namespace BML.Scripts.CaveV2
         #region Inspector
 
         [SerializeField] private LayerMask _nodeBoundsLayerMask;
-        [SerializeField] private CaveGenComponentV2 _caveGenerator;
+        [SerializeField] private GameObjectSceneReference _caveGenComponentGameObjectSceneReference;
+        private CaveGenComponentV2 _caveGenerator => _caveGenComponentGameObjectSceneReference.CachedComponent as CaveGenComponentV2;
         [SerializeField] private BoolReference _isExitChallengeActive;
         [SerializeField] private InfluenceStateData _influenceState;
+
+        [SerializeField] private bool _enableLogs = true;
 
         #endregion
         
@@ -35,15 +40,11 @@ namespace BML.Scripts.CaveV2
 
         private void OnTriggerEnter(Collider other)
         {
-            var layerName = LayerMask.LayerToName(other.gameObject.layer);
-            if (layerName == "Room Bounds")
-            {
-                // Debug.Log($"OnTriggerEnter ROOM BOUNDS");
-            }
             bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(_nodeBoundsLayerMask);
             if (isNodeBoundsLayer)
             {
-                // Debug.Log($"PlayerInfluenceUpdater: OnTriggerEnter");
+                if (_enableLogs) Debug.Log($"PlayerInfluenceUpdater OnTriggerEnter");
+                    
                 bool isAlreadyEntered =
                     (!_influenceState._currentNodes.ContainsKey(other) &&
                      !_influenceState._currentNodeConnections.ContainsKey(other));
@@ -55,10 +56,11 @@ namespace BML.Scripts.CaveV2
                         var caveNodeData = caveNodeDataComponent.CaveNodeData;
                         if (caveNodeData == null)
                         {
-                            // Debug.LogError($"Cave node data NULL for this {other.gameObject.layer} collider");
+                            if (_enableLogs) Debug.Log($"PlayerInfluenceUpdater OnTriggerEnter: Cave node data NULL for this {other.gameObject.layer} collider");
                             return;
                         }
 
+                        // Below is an experiment to only add new nodes which are directly connected to the already occupied nodes. The code achieves this, but it caused as many issues as it solved.
                         // bool areOtherCurrentNodes = (_currentNodes.Count > 0);
                         // bool newNodeAdjacentToCurrentNodes = _currentNodes.Values
                         //     .Any(currentNode => 
@@ -73,8 +75,9 @@ namespace BML.Scripts.CaveV2
                         caveNodeData.PlayerVisited = true;
                         caveNodeData.PlayerOccupied = true;
                         _influenceState._currentNodes.Add(other, caveNodeData);
-                        _caveGenerator.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
-                        // Debug.Log($"PLAYER IN {caveNodeData.LocalPosition}");
+                        _caveGenerator?.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
+                        
+                        if (_enableLogs) Debug.Log($"PlayerInfluenceUpdater OnTriggerEnter: Player entered {caveNodeData.LocalPosition}");
                     }
                     else
                     {
@@ -82,59 +85,58 @@ namespace BML.Scripts.CaveV2
                             other.GetComponentInParent<CaveNodeConnectionDataDebugComponent>();
                         if (caveNodeConnectionDataComponent == null)
                         {
-                            // Debug.LogError($"Cave node component was not found for this {other.gameObject.layer} collider");
+                            if (_enableLogs) Debug.Log($"PlayerInfluenceUpdater OnTriggerEnter: Cave node component was not found for this {other.gameObject.layer} collider");
                             return;
                         }
                         
                         var caveNodeConnectionData = caveNodeConnectionDataComponent.CaveNodeConnectionData;
                         if (caveNodeConnectionData == null)
                         {
-                            // Debug.LogError($"Cave node connection data NULL for this {other.gameObject.layer} collider");
+                            if (_enableLogs) Debug.LogError($"PlayerInfluenceUpdater OnTriggerEnter: Cave node connection data NULL for this {other.gameObject.layer} collider");
                             return;
                         }
                         
                         caveNodeConnectionData.PlayerVisited = true;
                         caveNodeConnectionData.PlayerOccupied = true;
                         _influenceState._currentNodeConnections.Add(other, caveNodeConnectionData);
-                        // _caveGenerator.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
-                        // Debug.Log($"PLAYER IN {caveNodeConnectionData.Source.LocalPosition} <-> {caveNodeConnectionData.Target.LocalPosition}");
+                        // _caveGenerator?.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
+                        
+                        if (_enableLogs) Debug.Log($"PlayerInfluenceUpdater OnTriggerEnter: Player entered {caveNodeConnectionData.Source.LocalPosition} <-> {caveNodeConnectionData.Target.LocalPosition}");
                     }
                 }
                 else
                 {
-                    // Debug.LogError($"{other.gameObject.layer} trigger entered, but already in bounds");
+                    if (_enableLogs) Debug.LogError($"PlayerInfluenceUpdater OnTriggerEnter: {other.gameObject.layer} trigger entered, but already in bounds");
                 }
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            var layerName = LayerMask.LayerToName(other.gameObject.layer);
-            if (layerName == "Room Bounds")
-            {
-                // Debug.Log($"OnTriggerExit ROOM BOUNDS");
-            }
             bool isNodeBoundsLayer = other.gameObject.IsInLayerMask(_nodeBoundsLayerMask);
             if (isNodeBoundsLayer)
             {
-                // Debug.Log($"PlayerInfluenceUpdater: OnTriggerExit");
+                if (_enableLogs) Debug.Log($"PlayerInfluenceUpdater OnTriggerExit");
+                
                 if (_influenceState._currentNodes.ContainsKey(other))
                 {
-                    // Debug.Log($"PLAYER LEFT {_currentNodes[other]}");
+                    if (_enableLogs) Debug.Log($"PlayerInfluenceUpdater OnTriggerExit: Player left {_influenceState._currentNodes[other].LocalPosition}");
+                    
                     _influenceState._currentNodes[other].PlayerOccupied = false;
                     _influenceState._currentNodes.Remove(other);
-                    _caveGenerator.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
+                    _caveGenerator?.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
                 }
                 else if (_influenceState._currentNodeConnections.ContainsKey(other))
                 {
-                    // Debug.Log($"PLAYER LEFT {_currentNodeConnections[other].Source.LocalPosition} <-> {_currentNodeConnections[other].Target.LocalPosition}");
+                    if (_enableLogs) Debug.Log($"PlayerInfluenceUpdater OnTriggerExit: Player left {_influenceState._currentNodeConnections[other].Source.LocalPosition} <-> {_influenceState._currentNodeConnections[other].Target.LocalPosition}");
+                    
                     _influenceState._currentNodeConnections[other].PlayerOccupied = false;
                     _influenceState._currentNodeConnections.Remove(other);
-                    _caveGenerator.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
+                    _caveGenerator?.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
                 }
                 else
                 {
-                    // Debug.LogError($"{other.gameObject.layer} trigger exited, but already left room");
+                    if (_enableLogs) Debug.LogError($"{other.gameObject.layer} trigger exited, but already left room");
                 }
             }
         }
@@ -143,7 +145,7 @@ namespace BML.Scripts.CaveV2
 
         private void UpdatePlayerDistanceToCurrent()
         {
-            _caveGenerator.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
+            _caveGenerator?.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
         }
     }
 }

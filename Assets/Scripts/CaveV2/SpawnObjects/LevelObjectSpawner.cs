@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.CaveV2.MudBun;
@@ -34,7 +35,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
         
-        [Required, SerializeField] private GameObject _player;
+        [Required, SerializeField] private TransformSceneReference _player;
 
         [InlineEditor]
         [Required, SerializeField] private LevelObjectSpawnerParameters _levelObjectSpawnerParams;
@@ -106,7 +107,14 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             
             if (_caveGenerator.EnableLogs) Debug.Log($"Level Object Spawner: Generate");
 
-            SpawnPlayer(_caveGenerator, this.transform, _player);
+            if (!_player.SafeIsUnityNull() && !_player.Value.SafeIsUnityNull())
+            {
+                SpawnPlayer(_caveGenerator, this.transform, _player.Value.gameObject);
+            }
+            else
+            {
+                if (_caveGenerator.EnableLogs) Debug.Log($"Level Object Spawner: No player assigned");
+            }
 
             ResetSpawnPoints();
             CatalogSpawnPoints(_caveGenerator);
@@ -281,9 +289,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             if (caveGenerator.CaveGraph.StartNode != null)
             {
                 var startWorldPosition = caveGenerator.LocalToWorld(caveGenerator.CaveGraph.StartNode.LocalPosition);
-                var playerInThisScene = (player.scene.handle != 0 && player.scene.handle == parent.gameObject.scene.handle);
                 // Debug.Log($"Call SpawnPlayer: Position {startWorldPosition} | Player in scene {playerInThisScene}");
-                if (playerInThisScene)
+                if (player.scene.isLoaded)
                 {
                     MovePlayer(player, startWorldPosition);
                 }
