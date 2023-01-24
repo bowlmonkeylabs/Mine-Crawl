@@ -46,6 +46,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _missSwingFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitTerrainFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitEnemyFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitEnemyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepReadyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingCritFeedbacks;
@@ -320,7 +321,7 @@ namespace BML.Scripts.Player
             }
             
             if (isEnemyHit)
-                _hitEnemyFeedback.PlayFeedbacks();
+                _sweepHitEnemyFeedback.PlayFeedbacks();
 
             foreach (var (interactionReceiver, colliderCenter) in interactionReceivers)
             {
