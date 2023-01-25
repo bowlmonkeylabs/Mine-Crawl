@@ -197,13 +197,14 @@ namespace BML.Scripts.Player
             }
             
             _startSwingPickaxeFeedback.PlayFeedbacks();
-            totalSwingCount++;
             _pickaxeSwingCooldown.RestartTimer();
         }
 
         // To be called from animation
         public void DoSwing()
         {
+            totalSwingCount++;
+            
             RaycastHit hit;
             RaycastHit? lowPriorityHit = null;
             
