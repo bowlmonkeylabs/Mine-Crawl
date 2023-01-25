@@ -16,7 +16,7 @@ namespace BML.Scripts.QuantumConsoleExtensions
     {
         private static string _percentToMaxSpawnAddress = "Assets/ScriptableObjects/EnemySpawner/Spawner_CurrentPercentToMaxSpawn.asset";
 
-        private static string _enemySpawnerGameObjectSceneReferenceAddress = "Assets/ScriptableObjects/EnemySpawner/Spawner_GameObjectSceneReference.asset";
+        private static string _enemySpawnerGameObjectSceneReferenceAddress = "Assets/Entities/EnemySpawner/ScriptableObjects/Spawner_GameObjectSceneReference.asset";
 
         #region Commands
         

@@ -14,7 +14,7 @@ namespace BML.Scripts.QuantumConsoleExtensions
     [CommandPrefix("player.")]
     public static class PlayerCommands
     {
-        private static string _playerControllerTransformSceneReferenceAddress = "Assets/Entities/Player/PlayerTransformSceneReference.asset";
+        private static string _playerControllerTransformSceneReferenceAddress = "Assets/Entities/Player/ScriptableObjects/PlayerTransformSceneReference.asset";
 
         #region Commands
 
