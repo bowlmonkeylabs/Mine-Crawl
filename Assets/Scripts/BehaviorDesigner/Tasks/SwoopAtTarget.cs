@@ -18,6 +18,7 @@ namespace BML.Scripts.Tasks
         [SerializeField] private Transform _rotationPivot;
         [SerializeField] private SharedFloat _swoopTime;
         [SerializeField] private SharedFloat _swoopYOffset;
+        [SerializeField] private SharedBool _isGrounded;
         [SerializeField] private AnimationCurve _horizontalMoveCurve;
         [SerializeField] private AnimationCurve _verticalMoveCurve;
         [SerializeField] private AIBase ai;
@@ -28,6 +29,7 @@ namespace BML.Scripts.Tasks
         private Vector3 horizontalDir, verticalDir;
         private float horizontalDelta, verticalDelta;
         private CharacterController charController;
+        private bool hasGrounded;
 
         public override void OnStart()
         {
@@ -41,6 +43,7 @@ namespace BML.Scripts.Tasks
             horizontalDelta = (destination.xoz() - startPos.xoz()).magnitude;
             verticalDir = Vector3.down;
             verticalDelta = Mathf.Abs(destination.y - startPos.y);
+            hasGrounded = false;
         }
         
         public override void OnEnd()
@@ -54,6 +57,10 @@ namespace BML.Scripts.Tasks
         {
             if (swoopStartTime + _swoopTime.Value > Time.time)
             {
+                if (!hasGrounded && _isGrounded.Value)
+                    hasGrounded = true;
+                
+                
                 HandleSwoop();
                 return TaskStatus.Running;
             }
@@ -69,7 +76,7 @@ namespace BML.Scripts.Tasks
             var horizontalMove = (horizontalTarget - _swoopTransform.Value.position.xoz()).magnitude * horizontalDir;
             
             var verticalTarget = startPos.oyo() + verticalDir * verticalDelta * _verticalMoveCurve.Evaluate(percentComplete);
-            var verticalMove = (verticalTarget - _swoopTransform.Value.position.oyo()).magnitude * verticalDir;
+            var verticalMove = hasGrounded ? Vector3.zero : (verticalTarget - _swoopTransform.Value.position.oyo()).magnitude * verticalDir;
 
             var velocity = horizontalMove + verticalMove;
             charController.Move(velocity);
