@@ -739,7 +739,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2934121876944362564}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.897, z: 0.876}
+  m_LocalPosition: {x: 0, y: 1.897, z: 0.55799997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7765338735277983065}
@@ -1784,11 +1784,11 @@ MonoBehaviour:
         AutoResume: 0
         AutoResumeAfter: 0.25
     00000002:
-      type: {class: MMF_InstantiateObject, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      type: {class: BMLInstantiateProjectile, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
       data:
         Active: 1
-        UniqueID: -897362608
-        Label: Instantiate Object
+        UniqueID: 1945373268
+        Label: BML Instantiate Projectile
         Channel: 0
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -1815,8 +1815,10 @@ MonoBehaviour:
         Owner: {fileID: 8613735048462608351}
         DebugActive: 0
         GameObjectToInstantiate: {fileID: 7554193727545157493, guid: cc486a73b41a47c4daae5105ad567c21, type: 3}
+        _collidersForProjectileToIgnore:
+        - {fileID: 8446440918170649333}
         PositionMode: 1
-        AlsoApplyRotation: 1
+        AlsoApplyRotation: 0
         AlsoApplyScale: 0
         TargetTransform: {fileID: 8963650106447795293}
         TargetPosition: {x: 0, y: 0, z: 0}
