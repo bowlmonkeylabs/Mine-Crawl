@@ -41,7 +41,6 @@ namespace BML.Scripts
             Activate(true);
         }
 
-
         private void Activate(bool isShortFuse)
         {
             if (!isActive)

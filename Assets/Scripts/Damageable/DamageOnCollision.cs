@@ -1,4 +1,5 @@
 ﻿using BML.Scripts.Utils;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,6 +11,8 @@ namespace BML.Scripts
         [SerializeField] private LayerMask _damageMask;
         [SerializeField] private float _damageCooldown = 2;
         [SerializeField] private DamageType _damageType;
+        [SerializeField] private bool _useRigidbodyVelocity = false;
+        [SerializeField, ShowIf("_useRigidbodyVelocity")] private Rigidbody _rigidbody;
         [SerializeField] private UnityEvent _onCollisionEnter;
 
         private float _lastDamageTime = Mathf.NegativeInfinity;
@@ -34,7 +37,8 @@ namespace BML.Scripts
                 damageable = other.attachedRigidbody.GetComponent<Damageable>();
             
             if (damageable != null) {
-                damageable.TakeDamage(new HitInfo(_damageType, _damage, (other.transform.position - transform.position).normalized));
+                var hitDirection = (_useRigidbodyVelocity ? _rigidbody.velocity : other.transform.position - transform.position).normalized;
+                damageable.TakeDamage(new HitInfo(_damageType, _damage, hitDirection));
                 _lastDamageTime = Time.time;
             }
             
