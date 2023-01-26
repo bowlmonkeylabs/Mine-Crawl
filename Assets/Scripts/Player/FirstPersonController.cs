@@ -98,6 +98,7 @@ namespace BML.Scripts.Player
 		private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
+        private float _currentGravity;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -110,7 +111,6 @@ namespace BML.Scripts.Player
 		private float percentToEndKnockback = 0f;
 		
 		// no clip mode
-		private float originalGravity;
 		private LayerMask orignalCollisionMask;
 
         //dash
@@ -143,7 +143,7 @@ namespace BML.Scripts.Player
 			_motor.CharacterController = this;
 			_input = GetComponent<PlayerInputProcessor>();
 			_playerInput = GetComponent<PlayerInput>();
-			originalGravity = Gravity;
+			_currentGravity = Gravity;
 			orignalCollisionMask = _motor.CollidableLayers;
 		}
 
@@ -454,7 +454,7 @@ namespace BML.Scripts.Player
 			// apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
 			if (_verticalVelocity < _terminalVelocity)
 			{
-				_verticalVelocity += Gravity * Time.deltaTime;
+				_verticalVelocity += _currentGravity * Time.deltaTime;
 			}
 			
 			//Move up and down in NoClip mode
@@ -480,8 +480,7 @@ namespace BML.Scripts.Player
         private void CheckDash() {
             if(!DashActive.Value && !isNoClipEnabled.Value && !DashInCooldown.Value && _input.dash) {
                 ExitRopeMovement();
-                originalGravity = Gravity;
-                Gravity = 0f;
+                _currentGravity = 0f;
                 DashActive.Value = true;
                 _startDashTime = Time.time;
                 Vector3 inputDir = GetInputDirection();
@@ -492,7 +491,7 @@ namespace BML.Scripts.Player
             }
             if(DashActive.Value && Time.time - _startDashTime >= DashTime.Value) {
                 DashActive.Value = false;
-                Gravity = originalGravity;
+                _currentGravity = Gravity;
                 DashCooldownTimer.StartTimer();
                 DashInCooldown.Value = true;
             }
@@ -520,8 +519,7 @@ namespace BML.Scripts.Player
 
         private void OnPlayerEnteredRope() {
             if(!_isRopeMovementEnabled.Value) {
-                 originalGravity = Gravity;
-                Gravity = 0f;
+                _currentGravity = 0f;
                 _motor.ForceUnground();
                 _isRopeMovementEnabled.Value = true;
                 _motor.ContrainYAxis = true;
@@ -530,7 +528,7 @@ namespace BML.Scripts.Player
 
         private void ExitRopeMovement() {
             if(_isRopeMovementEnabled.Value) {
-                Gravity = originalGravity;
+                _currentGravity = Gravity;
                 _isRopeMovementEnabled.Value = false;
                 _motor.ContrainYAxis = false;
                 reachedRopeBottom = false;
@@ -562,8 +560,7 @@ namespace BML.Scripts.Player
 			
 			if (isNoClipEnabled.Value)
 			{
-				originalGravity = Gravity;
-				Gravity = 0f;
+				_currentGravity = 0f;
 				_verticalVelocity = 0f;
 				orignalCollisionMask = _motor.CollidableLayers;
 				_motor.CollidableLayers = noClipCollisionMask;
@@ -571,7 +568,7 @@ namespace BML.Scripts.Player
 			}
 			else
 			{
-				Gravity = originalGravity;
+				_currentGravity = Gravity;
 				_motor.CollidableLayers = orignalCollisionMask;
 			}
 		}
