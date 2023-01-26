@@ -49,9 +49,10 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _missSwingFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitTerrainFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitEnemyFeedback;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitEnemyFeedback;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepReadyFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startSweepFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitEnemyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingCritFeedbacks;
         
         [SerializeField, FoldoutGroup("Torch")] private GameObject _torchPrefab;
@@ -295,7 +296,7 @@ namespace BML.Scripts.Player
                 return;
             }
             
-            _sweepFeedback.PlayFeedbacks();
+            _startSweepFeedback.PlayFeedbacks();
             _pickaxeSweepCooldown.RestartTimer();
             _pickaxeSwingCooldown.RestartTimer();
         }
@@ -350,7 +351,7 @@ namespace BML.Scripts.Player
                     if (hit.collider.gameObject == interactionReceiver.gameObject)
                     {
                         hitPos = hit.point;
-                        _swingHitFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
                         break;
                     }
                 }
