@@ -3,6 +3,8 @@ using BML.ScriptableObjectCore.Scripts.Variables;
 using UnityEngine;
 using UnityEngine.Events;
 using BML.Scripts.Utils;
+using MoreMountains.Feedbacks;
+using Sirenix.OdinInspector;
 
 namespace BML.Scripts
 {
@@ -15,6 +17,8 @@ namespace BML.Scripts
         [SerializeField] private LayerMask _explosionMask;
         [SerializeField] private DamageType _damageType;
         [SerializeField] private IntReference _damage;
+        [SerializeField] private bool _useExplosiveRadiusFeedback = true;
+        [SerializeField, ShowIf("_useExplosiveRadiusFeedback")] private MMF_Player _explosiveRadiusFeedback;
 
         [SerializeField] private UnityEvent _onActivate;
         [SerializeField] private UnityEvent _onExplosion;
@@ -88,6 +92,12 @@ namespace BML.Scripts
             }
 
             isActive = false;
+
+            if(_useExplosiveRadiusFeedback) {
+                _explosiveRadiusFeedback.transform.localScale = _explosionRadius.Value * 2 * Vector3.one;
+                _explosiveRadiusFeedback.PlayFeedbacks();
+            }
+            
             _onExplosion.Invoke();
         }
         

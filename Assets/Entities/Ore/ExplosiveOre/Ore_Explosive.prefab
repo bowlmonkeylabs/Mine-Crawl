@@ -178,6 +178,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -257,7 +258,7 @@ MonoBehaviour:
         PlayEvents:
           m_PersistentCalls:
             m_Calls:
-            - m_Target: {fileID: 3517634964588529505}
+            - m_Target: {fileID: 0}
               m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
               m_MethodName: PlayFeedbacks
               m_Mode: 1
@@ -278,208 +279,6 @@ MonoBehaviour:
         ResetEvents:
           m_PersistentCalls:
             m_Calls: []
---- !u!1 &3489590630273332299
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8573157053554586608}
-  - component: {fileID: 3517634964588529505}
-  - component: {fileID: 1988145095633978707}
-  m_Layer: 6
-  m_Name: ExplodeRangeFeedbacks
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8573157053554586608
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3489590630273332299}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.318, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 3589966396068635165}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3517634964588529505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3489590630273332299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Feedbacks: []
-  InitializationMode: 2
-  SafeMode: 3
-  Direction: 0
-  AutoChangeDirectionOnEnd: 0
-  AutoPlayOnStart: 0
-  AutoPlayOnEnable: 0
-  DurationMultiplier: 1
-  DisplayFullDurationDetails: 0
-  CooldownDuration: 0
-  InitialDelay: 0
-  CanPlayWhileAlreadyPlaying: 1
-  ChanceToPlay: 100
-  FeedbacksIntensity: 1
-  Events:
-    TriggerMMFeedbacksEvents: 0
-    TriggerUnityEvents: 1
-    OnPlay:
-      m_PersistentCalls:
-        m_Calls: []
-    OnPause:
-      m_PersistentCalls:
-        m_Calls: []
-    OnResume:
-      m_PersistentCalls:
-        m_Calls: []
-    OnRevert:
-      m_PersistentCalls:
-        m_Calls: []
-    OnComplete:
-      m_PersistentCalls:
-        m_Calls: []
-  DebugActive: 0
-  FeedbacksList:
-  - id: 0
-  - id: 1
-  KeepPlayModeChanges: 0
-  PerformanceMode: 0
-  references:
-    version: 1
-    00000000:
-      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: -1488558820
-        Label: Events
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 3517634964588529505}
-        DebugActive: 0
-        PlayEvents:
-          m_PersistentCalls:
-            m_Calls:
-            - m_Target: {fileID: 1988145095633978707}
-              m_TargetAssemblyTypeName: Helper.ApplyScaleFromVariable, BML.Scripts
-              m_MethodName: Apply
-              m_Mode: 1
-              m_Arguments:
-                m_ObjectArgument: {fileID: 0}
-                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-                m_IntArgument: 0
-                m_FloatArgument: 0
-                m_StringArgument: 
-                m_BoolArgument: 0
-              m_CallState: 2
-        StopEvents:
-          m_PersistentCalls:
-            m_Calls: []
-        InitializationEvents:
-          m_PersistentCalls:
-            m_Calls: []
-        ResetEvents:
-          m_PersistentCalls:
-            m_Calls: []
-    00000001:
-      type: {class: MMF_ParticlesInstantiation, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: -953149415
-        Label: Particles Instantiation
-        Channel: 0
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        Owner: {fileID: 3517634964588529505}
-        DebugActive: 0
-        Mode: 1
-        CachedRecycle: 1
-        ParticlesPrefab: {fileID: 4981079543803345020, guid: c90fba7acfb10e74db364bbf811636da, type: 3}
-        RandomParticlePrefabs: []
-        ForceSetActiveOnPlay: 0
-        PositionMode: 0
-        InstantiateParticlesPosition: {fileID: 0}
-        TargetWorldPosition: {x: 0, y: 0, z: 0}
-        Offset: {x: 0, y: 0, z: 0}
-        NestParticles: 0
-        ApplyRotation: 0
-        ApplyScale: 1
---- !u!114 &1988145095633978707
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3489590630273332299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d303737af573472ebbecf9e56975bfa5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scaleToApply:
-    ReferenceTypeSelector: 1
-    ConstantValue: 0
-    ReferenceValue_FloatVariable: {fileID: 11400000, guid: deb0116f2dce187439f33946f472cc05, type: 2}
-    ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-  _multiplier: 2
-  _applyOnEnable: 1
 --- !u!1 &4466660159638306558
 GameObject:
   m_ObjectHideFlags: 0
@@ -655,6 +454,7 @@ MonoBehaviour:
         LimitConsecutivePlays: 1
         MaxConsecutivePlays: 3
         StopSoundOnFeedbackStop: 1
+        PauseSoundWhenPauseGame: 1
         Fade: 0
         FadeInitialVolume: 0
         FadeDuration: 1
@@ -1352,7 +1152,7 @@ PrefabInstance:
     - target: {fileID: 2678112690150122818, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onCrit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 6430536584139540547}
+      objectReference: {fileID: 0}
     - target: {fileID: 2678112690150122818, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDamage.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
@@ -2351,17 +2151,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2f680a7afde40b49d9741bdbc7aa5bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6430536584139540547 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5116163273417737045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
-  m_PrefabInstance: {fileID: 2179066638743915286}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &84605811673381606 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2238584893062115824, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
@@ -2411,6 +2200,8 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 999
     Variable: {fileID: 0}
+  _useExplosiveRadiusFeedback: 1
+  _explosiveRadiusFeedback: {fileID: 4035673441891397864}
   _onActivate:
     m_PersistentCalls:
       m_Calls:
@@ -2559,3 +2350,71 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 196072, guid: 0b4ea991852d6984aab98759fa8d4ebb, type: 3}
   m_PrefabInstance: {fileID: 3626209154061579613}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8027088869419682647
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 3589966396068635165}
+    m_Modifications:
+    - target: {fileID: 374974201095847643, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_Name
+      value: ExplosionRadiusFeedback
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2583950697656471490, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+--- !u!114 &4035673441891397864 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6297269578328882111, guid: f7fa4978704325c4288d601e3830bcff, type: 3}
+  m_PrefabInstance: {fileID: 8027088869419682647}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
