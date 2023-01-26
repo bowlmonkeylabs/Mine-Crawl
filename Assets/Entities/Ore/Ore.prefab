@@ -40,6 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3454127850065686867}
   - component: {fileID: 3454127850065686866}
+  - component: {fileID: 7098438743458149331}
   m_Layer: 6
   m_Name: DamageFeedbacks
   m_TagString: Untagged
@@ -109,6 +110,7 @@ MonoBehaviour:
   FeedbacksList:
   - id: 0
   - id: 1
+  - id: 2
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   references:
@@ -144,16 +146,17 @@ MonoBehaviour:
           TargetBPM: 120
         Owner: {fileID: 3454127850065686866}
         DebugActive: 0
-        Sfx: {fileID: 8300000, guid: 27a37e8e24eeb4d4d96f77612a2d20a1, type: 3}
-        RandomSfx: []
+        Sfx: {fileID: 0}
+        RandomSfx:
+        - {fileID: 8300000, guid: 27a37e8e24eeb4d4d96f77612a2d20a1, type: 3}
         TestPlayButton:
           ButtonText: Debug Play Sound
         TestStopButton:
           ButtonText: Debug Stop Sound
         MinVolume: 0.7
         MaxVolume: 0.7
-        MinPitch: 0.95
-        MaxPitch: 1.05
+        MinPitch: 0.85
+        MaxPitch: 1.1
         PlaybackTime: {x: 0, y: 0}
         MmSoundManagerTrack: 0
         ID: 0
@@ -249,6 +252,61 @@ MonoBehaviour:
         FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
         MaterialIndexes: 
         UseMaterialPropertyBlocks: 0
+    00000002:
+      type: {class: MMF_ParticlesInstantiation, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: -1228045564
+        Label: Particles Instantiation
+        Channel: 0
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        Owner: {fileID: 3454127850065686866}
+        DebugActive: 0
+        Mode: 1
+        CachedRecycle: 1
+        ParticlesPrefab: {fileID: 7421040828693409565, guid: 4af101432fd1aed44ad5b41138cf5e48, type: 3}
+        RandomParticlePrefabs: []
+        ForceSetActiveOnPlay: 0
+        PositionMode: 0
+        InstantiateParticlesPosition: {fileID: 0}
+        TargetWorldPosition: {x: 0, y: 0, z: 0}
+        Offset: {x: 0, y: 0, z: 0}
+        NestParticles: 1
+        ApplyRotation: 0
+        ApplyScale: 0
+--- !u!114 &7098438743458149331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454127850065686864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb817c89909b4b2095d4fc1a3f8f2a5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3454127850101988312
 GameObject:
   m_ObjectHideFlags: 0
@@ -493,6 +551,18 @@ MonoBehaviour:
   _onDamage:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 7098438743458149331}
+        m_TargetAssemblyTypeName: BML.Scripts.MoveToHitPositon, BML.Scripts
+        m_MethodName: Move
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 3454127850065686866}
         m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
         m_MethodName: PlayFeedbacks
@@ -675,8 +745,8 @@ MonoBehaviour:
           ButtonText: Debug Play Sound
         TestStopButton:
           ButtonText: Debug Stop Sound
-        MinVolume: 0.8
-        MaxVolume: 0.8
+        MinVolume: 0.9
+        MaxVolume: 0.9
         MinPitch: 0.95
         MaxPitch: 1.05
         PlaybackTime: {x: 0, y: 0}
@@ -1382,10 +1452,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3454127850225854731}
     m_Modifications:
-    - target: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
-      propertyPath: FeedbacksList.Array.data[0].PositionMode
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
       propertyPath: FeedbacksList.Array.data[0].InstantiateParticlesPosition
       value: 
@@ -3563,14 +3629,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
---- !u!4 &517902721090737292 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8340204686617603418, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
-  m_PrefabInstance: {fileID: 8399686363568519638}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2238584893062115824 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7746370747038451750, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+  m_PrefabInstance: {fileID: 8399686363568519638}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &517902721090737292 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8340204686617603418, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
   m_PrefabInstance: {fileID: 8399686363568519638}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &6985341303465785546 stripped

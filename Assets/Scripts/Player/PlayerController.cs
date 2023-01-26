@@ -253,11 +253,10 @@ namespace BML.Scripts.Player
             {
                 _hitEnemyFeedback.PlayFeedbacks();
             }
-            else
-            {
-                _swingHitFeedbacks.transform.position = hit.point;
-                _swingHitFeedbacks.PlayFeedbacks();
-            }
+
+            _swingHitFeedbacks.transform.position = hit.point;
+            _swingHitFeedbacks.PlayFeedbacks();
+            
             
                 
             PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
