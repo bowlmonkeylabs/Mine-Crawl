@@ -300,6 +300,7 @@ GameObject:
   - component: {fileID: 2397865955889468302}
   - component: {fileID: 5936925736263570091}
   - component: {fileID: 2303808602677369255}
+  - component: {fileID: 1885979069486394423}
   m_Layer: 15
   m_Name: Projectile_Deflectable
   m_TagString: Untagged
@@ -461,8 +462,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _upgradeDeflectProjectiles: {fileID: 11400000, guid: f00d0caa0c04b95448db19d7dde9c078, type: 2}
-  _projectileColliders:
-  - {fileID: 2363402180298159716}
   _onDeflectSuccess:
     m_PersistentCalls:
       m_Calls:
@@ -502,6 +501,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1885979069486394423}
+        m_TargetAssemblyTypeName: BML.Scripts.Projectile.IgnoredCollisionsHandler,
+          BML.Scripts
+        m_MethodName: EnableCollisions
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _onDeflectFailure:
     m_PersistentCalls:
       m_Calls:
@@ -517,6 +529,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1885979069486394423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264773026492306718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 706469d2538b49a689b3db6d32a458fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _colliders:
+  - {fileID: 2363402180298159716}
 --- !u!1 &7105204453429942838
 GameObject:
   m_ObjectHideFlags: 0

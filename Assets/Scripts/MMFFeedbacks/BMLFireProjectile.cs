@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BML.Scripts.Projectile;
 using MoreMountains.Feedbacks;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -150,12 +151,12 @@ namespace BML.Scripts.MMFFeedbacks
             if (_collidersForProjectileToIgnore.IsNullOrEmpty())
                 return;
 
-            PlayerDeflectable playerDeflectable = _newGameObject.GetComponentInChildren<PlayerDeflectable>();
+            IgnoredCollisionsHandler ignoredCollisionsHandler = _newGameObject.GetComponentInChildren<IgnoredCollisionsHandler>();
             
-            if (playerDeflectable == null)
+            if (ignoredCollisionsHandler == null)
                 return;
             
-            playerDeflectable.InitIgnoredColliders(_collidersForProjectileToIgnore);
+            ignoredCollisionsHandler.InitIgnoredColliders(_collidersForProjectileToIgnore);
         }
 
         protected virtual void PositionObject(Vector3 position)
