@@ -19,7 +19,6 @@ namespace BML.Scripts.Tasks
         [SerializeField] private SharedFloat KnockbackMinSpeed;
         [SerializeField] private SharedFloat KnockbackVerticalSpeed;
 
-        [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private AIBase ai;
 
         private float knockBackStartTime;
