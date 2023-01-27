@@ -1,5 +1,7 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using Sirenix.OdinInspector;
+using TreeEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -20,6 +22,10 @@ namespace BML.Scripts.Player
         [SerializeField] private bool _bobSway = true;
         [SerializeField] private bool _fallOffset = true;
         [SerializeField] private bool _fallRotation = true;
+        [Tooltip("Max distance between original position and modified position.")]
+        [SerializeField] private float _positionOffsetLimit = .1f;
+        [Tooltip("Max angle between original rotation euler x and modified rotation euler x.")]
+        [SerializeField, SuffixLabel("degrees")] private float _rotationAngleLimitX = 60f;
         
         [Header("Sway")]
         [SerializeField] private float _step = 0.01f;
@@ -177,11 +183,36 @@ namespace BML.Scripts.Player
                     originalPosition + swayPos + bobPosition + fallPosition,
                     Time.deltaTime * smooth);
             
+            // Limit Position
+            if (Vector3.SqrMagnitude(transform.localPosition - originalPosition) > Mathf.Pow(_positionOffsetLimit, 2))
+            {
+                transform.localPosition = originalPosition +
+                                          (transform.localPosition - originalPosition).normalized *
+                                          _positionOffsetLimit;
+            }
+            
             // Rotation
             transform.localRotation =
                 Quaternion.Slerp(transform.localRotation,
                     Quaternion.Euler(swayEulerRot) * Quaternion.Euler(bobEulerRot) * Quaternion.Euler(fallEulerRot),
                     Time.deltaTime * smoothRot);
+            
+            // Limit Rotation X
+            var currentRotX = transform.localRotation.eulerAngles.x;
+            var originalRotX = originalRotation.eulerAngles.x;
+            var deltaAngle = Mathf.DeltaAngle(originalRotX, currentRotX);
+
+            if (Mathf.Abs(deltaAngle) > _rotationAngleLimitX)
+            {
+                if (deltaAngle > 0)
+                    transform.localRotation = Quaternion.Euler(currentRotX - deltaAngle + _rotationAngleLimitX,
+                                                                transform.localRotation.eulerAngles.y,
+                                                                transform.localRotation.eulerAngles.z);
+                else
+                    transform.localRotation = Quaternion.Euler(currentRotX - deltaAngle - _rotationAngleLimitX,
+                                                                transform.localRotation.eulerAngles.y,
+                                                                transform.localRotation.eulerAngles.z);
+            }
         }
     }
 }

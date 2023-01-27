@@ -46,6 +46,7 @@ namespace BML.Scripts.Player
 		[SerializeField, FoldoutGroup("Player")] float JumpHeight = 1.2f;
 		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
 		[SerializeField, FoldoutGroup("Player")] float Gravity = -15.0f;
+		[SerializeField, FoldoutGroup("Player")] float _terminalVelocity = 53.0f;
 
 		[Space(10)]
 		[Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
@@ -97,8 +98,7 @@ namespace BML.Scripts.Player
 		private float _speed;
 		private float _rotationVelocity;
 		private float _verticalVelocity;
-		private float _terminalVelocity = 53.0f;
-        private float _currentGravity;
+		private float _currentGravity;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
