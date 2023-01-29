@@ -14,6 +14,7 @@ namespace BML.Scripts.Player
         [SerializeField] private Damageable _damageable;
         [SerializeField] private BoolVariable _isGrounded;
         [SerializeField] private BoolReference _isRopeMovementEnabled;
+        [SerializeField] private BoolReference _isDashActive;
         [SerializeField] private AnimationCurve _fallDamageCurve;
         [SerializeField] private MMF_Player _fallDamageFeedback;
         [SerializeField] private bool _enableLogs;
@@ -27,12 +28,14 @@ namespace BML.Scripts.Player
         {
             _isGrounded.Subscribe(OnGroundingStatusChanged);
             _isRopeMovementEnabled.Subscribe(ResetFall);
+            _isDashActive.Subscribe(ResetFall);
         }
 
         private void OnDisable()
         {
             _isGrounded.Unsubscribe(OnGroundingStatusChanged);
             _isRopeMovementEnabled.Unsubscribe(ResetFall);
+            _isDashActive.Unsubscribe(ResetFall);
         }
 
         #endregion
