@@ -24,6 +24,14 @@ namespace BML.Scripts
         this.MoveCritMarker();
     }
 
+    public void ActivateCritMarker()
+    {
+        if (_critMarker.activeSelf)
+            return;
+        
+        MoveCritMarker();
+    }
+
     public void MoveCritMarker()
     {
         if (_health.IsDead)
