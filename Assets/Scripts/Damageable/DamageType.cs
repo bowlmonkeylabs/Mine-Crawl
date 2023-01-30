@@ -12,6 +12,7 @@ namespace BML.Scripts {
         Enemy_Snake_Projectile = 256,
         Fall_Damage = 512,
         Player_Pickaxe_Secondary = 1024,
-        Enemy_Bomb_Explosion = 2048
+        Enemy_Bomb_Explosion = 2048,
+        Trap_Spike = 4096
     }
 }
