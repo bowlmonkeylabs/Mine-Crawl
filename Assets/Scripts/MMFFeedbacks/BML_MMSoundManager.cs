@@ -1051,7 +1051,7 @@ namespace BML.Scripts.MMFFeedbacks
             }
         }
 
-        public virtual void OnMMSfxEvent(AudioClip clipToPlay, AudioMixerGroup audioGroup = null, float volume = 1f, float pitch = 1f)
+        public virtual void OnMMSfxEvent(AudioClip clipToPlay, AudioMixerGroup audioGroup = null, float volume = 1f, float pitch = 1f, int priority = 128)
         {
             MMSoundManagerPlayOptions options = MMSoundManagerPlayOptions.Default;
             options.Location = this.transform.position;
