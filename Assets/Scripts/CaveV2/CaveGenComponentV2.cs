@@ -298,14 +298,17 @@ namespace BML.Scripts.CaveV2
             
             // Add an edge between every possible combination of nodes, and calculate the distance/cost
             var numVertices = caveGraph.Vertices.Count();
-            if (numVertices > 300)
+            if (numVertices > 2000)
             {
                 throw new Exception($"Cave graph has too many vertices ({numVertices}) for our inefficient adjacency calculation; consider revising this code in order to continue!");
             }
             var vertexCombinations =
                 from v1 in caveGraph.Vertices
                 from v2 in caveGraph.Vertices
-                where v1 != v2
+                where v1 != v2 &&
+                      v1.LocalPosition.RoughDistanceThresholdCheck(
+                          v2.LocalPosition, 
+                          caveGenParams.PoissonSampleRadius * caveGenParams.MaxEdgeLengthFactor)
                 select new {v1, v2};
             foreach (var vertexPair in vertexCombinations)
             {
@@ -606,8 +609,8 @@ namespace BML.Scripts.CaveV2
                             
                             // Force rooms connected to blockages to be small
                             // (to avoid player walking around the blockage
-                            caveNodeConnectionData.Source.Size = maxBlockedRoomSize;
-                            caveNodeConnectionData.Target.Size = maxBlockedRoomSize;
+                            caveNodeConnectionData.Source.Size = Math.Min(caveNodeConnectionData.Source.Size, maxBlockedRoomSize);
+                            caveNodeConnectionData.Target.Size = Math.Min(caveNodeConnectionData.Target.Size, maxBlockedRoomSize);
                         }
                     }
                 }

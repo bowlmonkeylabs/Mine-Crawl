@@ -64,6 +64,14 @@ namespace BML.Scripts.Utils
             return Mathf.Pow(point2.x - point1.x, 2) +
                    Mathf.Pow(point2.z - point1.z, 2);
         }
+
+        public static bool RoughDistanceThresholdCheck(this Vector3 point1, Vector3 point2, float distanceThreshold)
+        {
+            var diff = (point2 - point1).Abs();
+            return (diff.x <= distanceThreshold) && 
+                   (diff.y <= distanceThreshold) && 
+                   (diff.z <= distanceThreshold);
+        }
         
         #endregion
 
