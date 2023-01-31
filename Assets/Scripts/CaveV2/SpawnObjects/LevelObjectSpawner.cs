@@ -148,6 +148,10 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
         }
 
+        /// <summary>
+        /// Catalog the owned spawn points for every cave node and connection in the graph.
+        /// </summary>
+        /// <param name="caveGenerator"></param>
         private void CatalogSpawnPoints(CaveGenComponentV2 caveGenerator)
         {
             foreach (var caveNodeData in caveGenerator.CaveGraph.Vertices)
@@ -183,6 +187,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
         }
 
+        /// <summary>
+        /// Catalog the spawn points under a give transform and add them to the given cave node. Useful when checking for spawn points under newly added objects, for example.
+        /// </summary>
+        /// <param name="parent">The transform to search under. (Also includes the transform level in the search)</param>
+        /// <param name="iCaveNodeData">The cave node the spawn points should belong to.</param>
         private void CatalogSpawnPoints(Transform parent, ICaveNodeData iCaveNodeData)
         {
             if (parent.SafeIsUnityNull()) return;
@@ -225,17 +234,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     if (_caveGenerator.EnableLogs) Debug.Log($"Try spawn {spawnAtTagParameters.Prefab?.name}: (Spawn point {spawnPoint.SpawnChance}) (Main path {mainPathProbability}) (Spawn chance {spawnChance}) (Random {rand}) (Do Spawn {doSpawn})");
                     if (doSpawn)
                     {
-                        Vector3 spawnPos;
-
-                        var hitStableSurface = SpawnObjectsUtil.GetPointTowards(
-                            spawnPoint.transform.position, 
-                            spawnAtTagParameters.RaycastDirection, 
-                            out spawnPos,
-                            _levelObjectSpawnerParams.TerrainLayerMask,
-                            _levelObjectSpawnerParams.MaxRaycastLength);
-                        
-                        var spawnOffset = -spawnAtTagParameters.RaycastDirection * 
-                                          spawnAtTagParameters.SpawnPosOffset;
+                        Vector3? spawnPos = spawnPoint.Project(spawnAtTagParameters.SpawnPosOffset);
+                        bool hitStableSurface = spawnPos.HasValue;
+                        spawnPos = spawnPos ?? spawnPoint.transform.position;
                         
                         // Cancel spawn if did not find surface to spawn
                         if (spawnAtTagParameters.RequireStableSurface && !hitStableSurface)
@@ -248,7 +249,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
                         var newGameObject =
                             GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
-                        newGameObject.transform.SetPositionAndRotation(spawnPos + spawnOffset, spawnPoint.transform.rotation);
+                        newGameObject.transform.SetPositionAndRotation(spawnPos.Value, spawnPoint.transform.rotation);
                             
                         // Catalog spawn points again in case this newGameObject added more spawn points
                         CatalogSpawnPoints(newGameObject.transform, spawnPoint.ParentNode);
