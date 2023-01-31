@@ -94,7 +94,7 @@ namespace BML.Scripts
 
             if(_useExplosiveRadiusFeedback) {
                 _explosiveRadiusFeedback.transform.localScale = _explosionRadius.Value * 2 * Vector3.one;
-                _explosiveRadiusFeedback.PlayFeedbacks();
+                _explosiveRadiusFeedback.PlayFeedbacks(transform.position);
             }
             
             _onExplosion.Invoke();

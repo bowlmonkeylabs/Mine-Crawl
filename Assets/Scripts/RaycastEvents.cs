@@ -8,6 +8,8 @@ namespace BML.Scripts
 {
     public class RaycastEvents : MonoBehaviour
     {
+        [Tooltip("Defines origin and direction of raycast (if empty will use this transform)")]
+        [SerializeField] private Transform _origin;
         [Tooltip("Mask of layers considered a hit")]
         [SerializeField] private LayerMask _hitMask;
         [Tooltip("Mask of layers considered an obstacle (doesn't trigger hit but consumes raycast)")]
@@ -31,16 +33,19 @@ namespace BML.Scripts
 
             lastRaycastTime = Time.time;
             
+            Transform originTransform = _origin != null ? _origin : transform;
+            
             RaycastHit hit;
-            Vector3 dir = transform.forward.normalized;
+            Vector3 dir = originTransform.forward.normalized;
+            Vector3 origin = originTransform.position;
             LayerMask hitMask = _hitMask | _obstacleMask;
             float raycastDist = Mathf.Approximately(0f, _raycastMaxDistance) ? Mathf.Infinity : _raycastMaxDistance;
 
             // Use raycast or spherecast based on whether radius is provided
             bool hitSomething = Mathf.Approximately(0f, _thicknessRadius)
-                ? Physics.Raycast(transform.position, dir, out hit, raycastDist, hitMask,
+                ? Physics.Raycast(origin, dir, out hit, raycastDist, hitMask,
                     QueryTriggerInteraction.Ignore)
-                : Physics.SphereCast(transform.position, _thicknessRadius, dir, out hit, raycastDist, hitMask,
+                : Physics.SphereCast(origin, _thicknessRadius, dir, out hit, raycastDist, hitMask,
                     QueryTriggerInteraction.Ignore);
 
             if (!hitSomething)
