@@ -636,7 +636,7 @@ namespace BML.Scripts.CaveV2
                     return -sortFactor;
                 });
             caveGraph.MerchantNode = merchantCandidateVertices.First();
-
+            
             if (_enableLogs) Debug.Log($"Cave graph generated");
             
             return caveGraph;

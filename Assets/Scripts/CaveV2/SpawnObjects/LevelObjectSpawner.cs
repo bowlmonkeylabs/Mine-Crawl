@@ -234,9 +234,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     if (_caveGenerator.EnableLogs) Debug.Log($"Try spawn {spawnAtTagParameters.Prefab?.name}: (Spawn point {spawnPoint.SpawnChance}) (Main path {mainPathProbability}) (Spawn chance {spawnChance}) (Random {rand}) (Do Spawn {doSpawn})");
                     if (doSpawn)
                     {
-                        Vector3? spawnPos = spawnPoint.Project(spawnAtTagParameters.SpawnPosOffset);
-                        bool hitStableSurface = spawnPos.HasValue;
-                        spawnPos = spawnPos ?? spawnPoint.transform.position;
+                        var spawnAt = spawnPoint.Project(spawnAtTagParameters.SpawnPosOffset);
+                        bool hitStableSurface = spawnAt.position.HasValue;
+                        var cachedTransform = spawnPoint.transform;
+                        spawnAt.position = spawnAt.position ?? cachedTransform.position;
+                        spawnAt.rotation = spawnAt.rotation ?? cachedTransform.rotation;
                         
                         // Cancel spawn if did not find surface to spawn
                         if (spawnAtTagParameters.RequireStableSurface && !hitStableSurface)
@@ -249,7 +251,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
                         var newGameObject =
                             GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
-                        newGameObject.transform.SetPositionAndRotation(spawnPos.Value, spawnPoint.transform.rotation);
+                        newGameObject.transform.SetPositionAndRotation(spawnAt.position.Value, spawnAt.rotation.Value);
                             
                         // Catalog spawn points again in case this newGameObject added more spawn points
                         CatalogSpawnPoints(newGameObject.transform, spawnPoint.ParentNode);

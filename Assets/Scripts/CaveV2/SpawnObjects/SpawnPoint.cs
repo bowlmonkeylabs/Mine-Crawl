@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEditor.Graphs;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2.SpawnObjects
 {
@@ -16,6 +17,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             None,
             Gravity,
             Vector,
+            Randomize,
         }
         
         #region Inspector
@@ -34,11 +36,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         [SerializeField] private SpawnPointProjectionBehavior _projectionBehavior;
         [SerializeField] private LayerMask _projectionLayerMask;
-        [SerializeField, ShowIf("@this._projectionBehavior == SpawnPointProjectionBehavior.Vector")] 
+        [SerializeField, ShowIf("@this._projectionBehavior == SpawnPointProjectionBehavior.Vector || this._projectionBehavior == SpawnPointProjectionBehavior.Randomize")] 
         private Vector3 _projectionVector = Vector3.down;
+        [SerializeField, ShowIf("@this._projectionBehavior == SpawnPointProjectionBehavior.Randomize")] private Vector2 _projectionDirectionRandomnessRangeDegrees = new Vector2(30, 15);
         [SerializeField] private float _projectionDistance = 45f;
 
         [SerializeField, ReadOnly] private Vector3? _projectedPosition = null; 
+        [SerializeField, ReadOnly] private Quaternion? _projectedRotation = null; 
         
         [SerializeField] [Range(0f, 1f)] private float _startingSpawnChance = 1f;
         [SerializeField] private bool _disableIfPlayerVisited;
@@ -124,20 +128,33 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             Project();
         }
         
-        public Vector3? Project(float spawnPosOffset = 0)
+        public (Vector3? position, Quaternion? rotation) Project(float spawnPosOffset = 0)
         {
+            // TODO Use seed !!!!
+            // Random.InitState();
+            
             Vector3 projectDirection;
             switch (_projectionBehavior)
             {
                 default:
                 case SpawnPointProjectionBehavior.None:
                     _projectedPosition = this.transform.position + (Vector3.up * spawnPosOffset);
-                    return _projectedPosition;
+                    _projectedRotation = Quaternion.identity;
+                    return (_projectedPosition, _projectedRotation);
                 case SpawnPointProjectionBehavior.Gravity:
                     projectDirection = Vector3.down;
                     break;
                 case SpawnPointProjectionBehavior.Vector:
-                    projectDirection = _projectionVector;
+                    // convert to local direction
+                    projectDirection = this.transform.InverseTransformDirection(_projectionVector);
+                    break;
+                case SpawnPointProjectionBehavior.Randomize:
+                    float randomDegreesX = Random.Range(-_projectionDirectionRandomnessRangeDegrees.x,
+                        _projectionDirectionRandomnessRangeDegrees.x);
+                    float randomDegreesY = Random.Range(-_projectionDirectionRandomnessRangeDegrees.y,
+                        _projectionDirectionRandomnessRangeDegrees.y);
+                    Quaternion rotation = Quaternion.Euler(randomDegreesX, randomDegreesY, 0);
+                    projectDirection = rotation * this.transform.InverseTransformDirection(_projectionVector);
                     break;
             }
 
@@ -153,11 +170,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             if (hitStableSurface)
             {
                 _projectedPosition = hitPos + (projectDirection * -spawnPosOffset);
-                return _projectedPosition;
+                _projectedRotation = Quaternion.LookRotation(this.transform.position - _projectedPosition.Value) * Quaternion.Euler(90, 0, 0);
+                return (_projectedPosition, _projectedRotation);
             }
 
             _projectedPosition = null;
-            return _projectedPosition;
+            _projectedRotation = null;
+            return (_projectedPosition, _projectedRotation);
         }
         
         #endregion
