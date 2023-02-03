@@ -52,6 +52,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepReadyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startSweepFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepSuccessHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitEnemyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingCritFeedbacks;
         
@@ -314,6 +315,8 @@ namespace BML.Scripts.Player
                 _missSwingFeedback.PlayFeedbacks();
                 return;
             }
+            
+            _sweepSuccessHitFeedbacks.PlayFeedbacks();
 
             // HashSet to prevent duplicates
             HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)> interactionReceivers =
