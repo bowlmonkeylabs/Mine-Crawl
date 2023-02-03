@@ -159,7 +159,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     break;
                 case SpawnPointProjectionBehavior.Vector:
                     // convert to local direction
-                    projectDirection = this.transform.InverseTransformDirection(_projectionVector);
+                    projectDirection = this.transform.TransformDirection(_projectionVector);
                     break;
                 case SpawnPointProjectionBehavior.Randomize:
                     float randomDegreesX = Random.Range(-_projectionDirectionRandomnessRangeDegrees.x,
