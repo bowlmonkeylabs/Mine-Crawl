@@ -80,6 +80,19 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             if (SelectionUtils.InSelection(checkTransforms))
             {
                 var position = transformCached.position;
+                
+                if (_projectionBehavior == SpawnPointProjectionBehavior.Randomize)
+                {
+                    float fovVertical = _projectionDirectionRandomnessRangeDegrees.y * 2;
+                    float fovHorizontal = _projectionDirectionRandomnessRangeDegrees.x * 2;
+                    float aspect = fovHorizontal / fovVertical;
+                    Gizmos.color = Color.yellow;
+                    Gizmos.matrix = this.transform.localToWorldMatrix;
+                    Gizmos.DrawFrustum(Vector3.zero, fovVertical, _projectionDistance, 0, aspect);
+                    Gizmos.matrix = Matrix4x4.identity;
+                    Gizmos.DrawRay(position, this.transform.TransformDirection(_projectionVector));
+                }
+                
                 if (_projectedPosition == null && _projectionBehavior != SpawnPointProjectionBehavior.None)
                 {
                     Project();
@@ -95,7 +108,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     Gizmos.color = Color.grey;
                     Gizmos.DrawSphere(position, 0.25f);
                 }
-                
+
                 var style = new GUIStyle
                 {
                     alignment = TextAnchor.MiddleCenter,
@@ -153,8 +166,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                         _projectionDirectionRandomnessRangeDegrees.x);
                     float randomDegreesY = Random.Range(-_projectionDirectionRandomnessRangeDegrees.y,
                         _projectionDirectionRandomnessRangeDegrees.y);
-                    Quaternion rotation = Quaternion.Euler(randomDegreesX, randomDegreesY, 0);
-                    projectDirection = rotation * this.transform.InverseTransformDirection(_projectionVector);
+                    Quaternion rotation = Quaternion.Euler(randomDegreesY, randomDegreesX, 0); // This switch is intentional
+                    projectDirection = rotation * this.transform.TransformDirection(_projectionVector);
                     break;
             }
 
