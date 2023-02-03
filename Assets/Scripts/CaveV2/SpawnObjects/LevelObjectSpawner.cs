@@ -234,7 +234,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     if (_caveGenerator.EnableLogs) Debug.Log($"Try spawn {spawnAtTagParameters.Prefab?.name}: (Spawn point {spawnPoint.SpawnChance}) (Main path {mainPathProbability}) (Spawn chance {spawnChance}) (Random {rand}) (Do Spawn {doSpawn})");
                     if (doSpawn)
                     {
-                        var spawnAt = spawnPoint.Project(spawnAtTagParameters.SpawnPosOffset);
+                        var spawnAt = spawnPoint.Project(spawnAtTagParameters.SpawnPosOffset, _caveGenerator.CaveGenParams.Seed);
                         bool hitStableSurface = spawnAt.position.HasValue;
                         var cachedTransform = spawnPoint.transform;
                         spawnAt.position = spawnAt.position ?? cachedTransform.position;

@@ -136,15 +136,16 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         }
 
         [Button]
-        private void UpdateGizmo()
+        private void Test()
         {
             Project();
         }
         
-        public (Vector3? position, Quaternion? rotation) Project(float spawnPosOffset = 0)
+        public (Vector3? position, Quaternion? rotation) Project(float spawnPosOffset = 0, int? seed = null)
         {
-            // TODO Use seed !!!!
-            // Random.InitState();
+            Vector3 cachedPosition = this.transform.position;
+            int thisSeed = (seed ?? 0) + Mathf.RoundToInt(cachedPosition.x + cachedPosition.y + cachedPosition.z);
+            Random.InitState(thisSeed);
             
             Vector3 projectDirection;
             switch (_projectionBehavior)
