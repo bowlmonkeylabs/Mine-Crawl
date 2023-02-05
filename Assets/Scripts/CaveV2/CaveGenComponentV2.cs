@@ -88,10 +88,6 @@ namespace BML.Scripts.CaveV2
         [TitleGroup("Enemies")] 
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
         [SerializeField, Range(-1f, 1f)] private float _enemyKilledAddInfluence = 0.5f;
-        [Tooltip("The number of different difficulty segments the cave will be divided into. Ex. 3 means each 1/3rd changes difficulty.")]
-        [SerializeField] private int _difficultySegmentCount = 3;
-        
-        public int DifficultySegmentCount => _difficultySegmentCount;
 
         [TitleGroup("Debug")]
         [SerializeField] private bool _enableLogs = false;
@@ -582,34 +578,6 @@ namespace BML.Scripts.CaveV2
                     caveGraph.FloodFillDistance(objectiveVertices, (node, dist) => node.ObjectiveDistance = dist);
 
                     this.MaxObjectiveDistance = caveGraph.Vertices.Max(e => e.ObjectiveDistance);
-                    
-                    // Assign each node difficulty from [0, _difficultySegmentCount -1]
-                    caveGraph.FloodFillDistance(objectiveVertices, (node, dist) =>
-                    {
-                        int maxDifficulty = _difficultySegmentCount - 1;
-                        float objectiveClosenessFactor = 1 - (float) dist / startNode.ObjectiveDistance;
-                        var intermediate = Mathf.Min(maxDifficulty,
-                            Mathf.FloorToInt(objectiveClosenessFactor * _difficultySegmentCount));
-                        node.Difficulty = Mathf.Max(0, intermediate);
-                    });
-                }
-
-                // Tunnel blockages
-                {
-                    // Block tunnels between difficulty transitions
-                    var maxBlockedRoomSize = caveGenParams.PoissonSampleRadius / 6f; // 6 is the magic number, I think...
-                    foreach (var caveNodeConnectionData in caveGraph.Edges)
-                    {
-                        if (caveNodeConnectionData.Source.Difficulty != caveNodeConnectionData.Target.Difficulty)
-                        {
-                            caveNodeConnectionData.IsBlocked = true;
-                            
-                            // Force rooms connected to blockages to be small
-                            // (to avoid player walking around the blockage
-                            caveNodeConnectionData.Source.Size = maxBlockedRoomSize;
-                            caveNodeConnectionData.Target.Size = maxBlockedRoomSize;
-                        }
-                    }
                 }
 
                 // Calculate distance from main path

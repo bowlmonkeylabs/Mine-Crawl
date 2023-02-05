@@ -26,8 +26,6 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             => Mathf.Min(Source.MainPathDistance, Target.MainPathDistance);
         [ShowInInspector] public int ObjectiveDistance 
             => Mathf.Min(Source.ObjectiveDistance, Target.ObjectiveDistance);
-        [ShowInInspector] public int Difficulty
-            => Mathf.Max(Source.Difficulty , Target.Difficulty);
         [ShowInInspector] public int PlayerDistance 
             => Mathf.Min(Source.PlayerDistance, Target.PlayerDistance);
         [ShowInInspector] public int PlayerDistanceDelta

@@ -123,6 +123,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &42471530
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 42471532}
+  - component: {fileID: 42471531}
+  m_Layer: 0
+  m_Name: '{ScriptableObjectResetManager}'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &42471531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42471530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47ae23945dc17674f9449284de1a2a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ResetContainer: {fileID: 11400000, guid: 381537679d3083a40b935bebcb997dd0, type: 2}
+  _resetOnStart: 1
+  _resetVariables: {fileID: 0}
+  _onReset: {fileID: 0}
+--- !u!4 &42471532
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42471530}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 170.29852, y: -9.062851, z: 250.87122}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &119103842
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,7 +264,7 @@ Transform:
   m_LocalScale: {x: 50, y: 1, z: 50}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &215491102
 PrefabInstance:
@@ -232,7 +279,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 913293304684772414, guid: 9569d39d8cde1524685af524ae2396c6, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 913293304684772414, guid: 9569d39d8cde1524685af524ae2396c6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -374,7 +421,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &664597755
 MonoBehaviour:
@@ -481,7 +528,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 50, y: 30, z: 0}
 --- !u!1 &737431656
 GameObject:
@@ -565,7 +612,7 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: c857b0d81cdcf3c46a02132ca1a0cfd4, type: 2}
-  _caveGenParams: {fileID: 11400000, guid: 9c1d369403a90204d9b4c64a252643dc, type: 2}
+  _caveGenParams: {fileID: 11400000, guid: 4d5e9b9179ff7c14184949efeb3b98ce, type: 2}
   _caveGraphMudBunRenderer: {fileID: 1231575172}
   _levelObjectSpawner: {fileID: 1496774518}
   _decorObjectSpawner: {fileID: 820661968}
@@ -578,7 +625,6 @@ MonoBehaviour:
   _torchInfluenceUpdatePeriod: 1
   _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
   _enemyKilledAddInfluence: 0.5
-  _difficultySegmentCount: 3
   _enableLogs: 0
   _showTraversabilityCheck: 1
   _generateDebugObjects: 0
@@ -637,7 +683,7 @@ Transform:
   - {fileID: 1496774519}
   - {fileID: 820661969}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &820661967
 GameObject:
@@ -672,7 +718,7 @@ MonoBehaviour:
   _onAfterGenerateLevelObjects: {fileID: 11400000, guid: 6b14c457b3e8a0446918006e4929ed06, type: 2}
   _caveGen: {fileID: 771419349}
   _mudRendererObj: {fileID: 1231575171}
-  param: {fileID: 11400000, guid: 89d1bccdc8637474cbc6fa6115d676d7, type: 2}
+  param: {fileID: 11400000, guid: 455a966a8f693ee4a9fa36ce374e07f5, type: 2}
 --- !u!4 &820661969
 Transform:
   m_ObjectHideFlags: 0
@@ -815,8 +861,7 @@ MonoBehaviour:
   _instanceAsPrefabs: 1
   _enableLogs: 0
   _caveGenerator: {fileID: 771419349}
-  _caveGraphRenderParams: {fileID: 11400000, guid: 6ec58bae35629cd408fb088282212513, type: 2}
-  _difficultyColorParams: {fileID: 11400000, guid: e91ed318e45c85f4aaa5fc84bfbfe063, type: 2}
+  _caveGraphRenderParams: {fileID: 11400000, guid: 8b90ae7c3635cc44396dbbb752202875, type: 2}
 --- !u!114 &1231575173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -880,6 +925,7 @@ MonoBehaviour:
   SurfaceNetsHighAccuracyMode: 0
   DualContouringDualQuadsBlend: 0.2
   DualContouringRelaxation: 0
+  DualContouringSolverIterations: 5
   DualContouringHighAccuracyMode: 0
   CastShadows: 0
   ReceiveShadows: 1
@@ -888,7 +934,7 @@ MonoBehaviour:
   m_masterEmission: {r: 1, g: 1, b: 1, a: 1}
   m_masterMetallic: 1
   m_masterSmoothness: 1
-  RenderMaterialMesh: {fileID: 2100000, guid: 461d41af040d87045a49720510d3a3f7, type: 2}
+  RenderMaterialMesh: {fileID: 2100000, guid: b23896774c7c51d42ad6fb0fe5c17421, type: 2}
   RenderMaterialSplats: {fileID: 0}
   RenderMaterialDecal: {fileID: 0}
   RenderMaterialRayMarchedSurface: {fileID: 0}
@@ -920,8 +966,8 @@ MonoBehaviour:
   DrawVoxelNodesDepth: -1
   DrawVoxelNodesScale: 1
   m_firstTrackedVersion: 1.4.36
-  m_previousTrackedVersion: 1.4.36
-  m_currentTrackedVersion: 1.4.36
+  m_previousTrackedVersion: 1.4.37
+  m_currentTrackedVersion: 1.4.37
   MeshGenerationCreateNewObject: 0
   MeshGenerationCreateCollider: 1
   MeshGenerationForceConvexCollider: 0
@@ -1022,7 +1068,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1255605506
 AudioSource:
@@ -1148,7 +1194,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1297833592
 GameObject:
@@ -1345,11 +1391,6 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
---- !u!1 &1471086885 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9182727736491517645, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-  m_PrefabInstance: {fileID: 9182727735177154347}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1496774517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1387,7 +1428,7 @@ MonoBehaviour:
   _onAfterGenerateLevelObjects: {fileID: 11400000, guid: 6b14c457b3e8a0446918006e4929ed06, type: 2}
   _caveGenerator: {fileID: 771419349}
   _player: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
-  _levelObjectSpawnerParams: {fileID: 11400000, guid: e51ec90dd39a5a84286456df654b9b3d, type: 2}
+  _levelObjectSpawnerParams: {fileID: 11400000, guid: cf11e57ffc4a90648baa5e77e157ceb2, type: 2}
 --- !u!4 &1496774519
 Transform:
   m_ObjectHideFlags: 0
@@ -1495,7 +1536,7 @@ MonoBehaviour:
   TransformSceneList: []
   GameObjectSceneList:
   - sceneReference: {fileID: 11400000, guid: 5d486f1a84e15ac488d7a8272329b42e, type: 2}
-    sceneValue: {fileID: 1471086885}
+    sceneValue: {fileID: 1994959334}
   - sceneReference: {fileID: 11400000, guid: 70c332354ecbb9c46bf117bd4c575bab, type: 2}
     sceneValue: {fileID: 771419348}
   ParticleSystemSceneList: []
@@ -1543,7 +1584,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1751489071
 GameObject:
@@ -1568,6 +1609,84 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1751489071}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1994959334
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1994959336}
+  - component: {fileID: 1994959335}
+  - component: {fileID: 5214182126185530628}
+  m_Layer: 0
+  m_Name: EnemySpawnManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1994959335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1994959334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b35a275cd6d47c3a72152c1639f65f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsSpawningPaused: 0
+  IsDespawningPaused: 0
+  _caveGenerator: {fileID: 771419349}
+  _enemyContainer: {fileID: 1751489072}
+  _terrainLayerMask:
+    serializedVersion: 2
+    m_Bits: 8200
+  _maxRaycastLength: 10
+  _despawnNodeDistance: 4
+  _isSpawningPaused: {fileID: 11400000, guid: b4e7a4ec09d24a747b1a8f247eee964d, type: 2}
+  _currentEnemyCount: {fileID: 11400000, guid: 6fdcc6ab717b88f4fa6f8ecf81b9db82, type: 2}
+  _currentDifficulty: {fileID: 11400000, guid: 0830305a053404448bcd7a413e453b06, type: 2}
+  _currentParams: {fileID: 11400000, guid: c671f77f8ce47ad4e809a4b432bd8e52, type: 2}
+  _hasPlayerExitedStartRoom: {fileID: 11400000, guid: 7e64dee33977c4244bc70a927d83e4f2, type: 2}
+  _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
+  _enemySpawnerParamList:
+  - {fileID: 11400000, guid: 06fa4a96b09ea6c448220996e5c6a2e9, type: 2}
+  _minMaxSpawnPlayerDistance: {x: 1, y: 2}
+  _weightSpawningInUnexplored: 0.5
+  _weightSpawningTowardsObjective: 0.6
+  _weightSpawningAheadOfPlayer: 0.6
+  _weightSpawningByPlayerInfluence: 1
+  _isExitChallengeActive:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: '{I} '
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 581c62d8d27167049b20ffc6d8c7c015, type: 2}
+  _enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  _despawnDelay: 3
+  _enableLogs: 0
+--- !u!4 &1994959336
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1994959334}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -1619,7 +1738,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4858638137147962592
 MonoBehaviour:
@@ -1648,68 +1767,46 @@ MonoBehaviour:
   _meshCollider: {fileID: 0}
   _groundObj: {fileID: 0}
   _wallObj: {fileID: 0}
---- !u!1001 &9182727735177154347
-PrefabInstance:
+--- !u!114 &5214182126185530628
+MonoBehaviour:
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_RootOrder
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _caveGenerator
-      value: 
-      objectReference: {fileID: 771419349}
-    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _enemyContainer
-      value: 
-      objectReference: {fileID: 1751489072}
-    - target: {fileID: 9182727736491517645, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: m_Name
-      value: EnemySpawnManager
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1994959334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 857976c1b4d74a6790dda9e9f2dbebb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerTransformSceneReference: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
+  _playerHealthSceneReference: {fileID: 11400000, guid: fb7b2e3ba8a4e724aa1716fcc22f0007, type: 2}
+  _enemySpawnManager: {fileID: 1994959335}
+  _intensityScore:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: b9ffab9e48115f84e9ac88db538de371, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _intensityScoreUpdatePeriod: 1
+  _intensityScoreDamageMultiplier: 3
+  _intensityScoreKillMultiplier: 1
+  _intensityScoreKillDistanceMinMax: {x: 20, y: 5}
+  _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
+  _intensityScoreDecayPercent: 15
+  _anyEnemiesEngaged:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 93e2d79ad44ed104a9eb3c022677d8a3, type: 2}
+  _intensityResponse: {fileID: 11400000, guid: 396eba2aa7a981c42837f02430859dfa, type: 2}
+  _currentParams: {fileID: 11400000, guid: c671f77f8ce47ad4e809a4b432bd8e52, type: 2}
+  _timeLimitAtMaxIntensity: 5
+  _timeLimitAtMinIntensity: 3
+  _despawnIdleEnemies: 1
+  _despawnIdleEnemyDistance: 1
+  _isSpawningPaused: {fileID: 11400000, guid: b4e7a4ec09d24a747b1a8f247eee964d, type: 2}
+  _hasPlayerExitedStartRoom: {fileID: 11400000, guid: 7e64dee33977c4244bc70a927d83e4f2, type: 2}
+  _enableLogs: 0

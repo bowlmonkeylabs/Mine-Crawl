@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdvancedSceneManager;
+using AdvancedSceneManager.Core;
 using AdvancedSceneManager.Models;
 using AdvancedSceneManager.Utility;
 using BML.ScriptableObjectCore.Scripts.Events;
@@ -30,6 +32,15 @@ namespace BML.Scripts
         [SerializeField] private UnityEvent _onAllLevelsCompleted;
         [SerializeField] private LevelSceneCollections _levels;
 
+        private void Awake() {
+            for (int i = 0; i < _levels.Levels.Count; i++)
+            {
+                if(SceneHelper.current.IsOpen(_levels.Levels[i])) {
+                    _currentLevel.Value = i;
+                }
+            }
+        }
+
         private void Start()
         {
             _levelStartTime.Value = Time.time;
@@ -44,8 +55,12 @@ namespace BML.Scripts
         
         public void RestartGame()
         {
+            // override close settings of main game (0) in order to make sure the scene is completeley reset
             _levels.Levels[_currentLevel.Value].Close();
+            _levels.Levels[_currentLevel.Value][0].Close();
+            //reset the current level back to 0
             _currentLevel.Reset();
+            //open first level
             _levels.Levels[_currentLevel.Value].Open();
         }
 

@@ -24,9 +24,6 @@ namespace BML.Scripts.CaveV2.MudBun
         
         [Required, InlineEditor, SerializeField]
         private CaveGraphMudBunRendererParameters _caveGraphRenderParams;
-        
-        [Required, InlineEditor, SerializeField]
-        private DifficultyColorParams _difficultyColorParams;
 
         #endregion
         
@@ -74,7 +71,7 @@ namespace BML.Scripts.CaveV2.MudBun
             // Spawn "rooms" at each cave node
             foreach (var caveNodeData in _caveGraph.Vertices)
             {
-                bool changeDifficultyColor = true;
+                bool changeNodeColor = true;
                 
                 // Select room to spawn
                 GameObject roomPrefab;
@@ -84,7 +81,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     roomPrefab = _caveGraphRenderParams.StartRoomPrefab;
                     roomScale = Vector3.one;
-                    changeDifficultyColor = false;
+                    changeNodeColor = false;
                 }
                 else if (caveNodeData == _caveGraph.EndNode &&
                          !_caveGraphRenderParams.EndRoomPrefab.SafeIsUnityNull())
@@ -97,7 +94,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     roomPrefab = _caveGraphRenderParams.MerchantRoomPrefab;
                     roomScale = Vector3.one;
-                    changeDifficultyColor = false;
+                    changeNodeColor = false;
                 }
                 else
                 {
@@ -117,16 +114,12 @@ namespace BML.Scripts.CaveV2.MudBun
                 if (caveNodeDataDebugComponent != null)
                 {
                     caveNodeDataDebugComponent.CaveNodeData = caveNodeData;
-                    if (changeDifficultyColor)
+                    if (changeNodeColor)
                     {
-                        var difficultyColorList = _difficultyColorParams.DifficultyColorList;
-                        var colorIndex = Mathf.Min(caveNodeData.Difficulty, _difficultyColorParams.DifficultyColorList.Count - 1);
-                        var difficultyColor = difficultyColorList[colorIndex];
-
                         List<MudMaterial> materials = caveNodeData.GameObject.GetComponentsInChildren<MudMaterial>()?.ToList();
                         materials?.ForEach(m =>
                         {
-                            m.Color *= difficultyColor;
+                            m.Color *= _caveGraphRenderParams.CaveColor;
                         });
                     }
                 }
@@ -175,14 +168,10 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     caveNodeConnectionDataDebugComponent.CaveNodeConnectionData = caveNodeConnectionData;
 
-                    var difficultyColorList = _difficultyColorParams.DifficultyColorList;
-                    var colorIndex = Mathf.Min(caveNodeConnectionData.Difficulty, _difficultyColorParams.DifficultyColorList.Count - 1);
-                    var difficultyColor = difficultyColorList[colorIndex];
-
                     List<MudMaterial> materials = caveNodeConnectionData.GameObject.GetComponentsInChildren<MudMaterial>()?.ToList();
                     materials?.ForEach(m =>
                     {
-                        m.Color *= difficultyColor;
+                        m.Color *= _caveGraphRenderParams.CaveColor;
                     });
                     
                 }
