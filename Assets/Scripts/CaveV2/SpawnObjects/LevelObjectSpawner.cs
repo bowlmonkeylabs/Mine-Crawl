@@ -223,8 +223,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
                 foreach (var spawnPoint in taggedSpawnPoints)
                 {
-                    float mainPathDistanceFactor = (float) spawnPoint.ParentNode.MainPathDistance /
-                                                   (float)_caveGenerator.MaxMainPathDistance;
+                    float mainPathDistanceFactor = _caveGenerator.MaxMainPathDistance == 0 ? 0 
+                        : (float) spawnPoint.ParentNode.MainPathDistance / (float)_caveGenerator.MaxMainPathDistance;
                     float mainPathProbability = spawnAtTagParameters.MainPathProbabilityFalloff.Evaluate(mainPathDistanceFactor);
 
                     float spawnChance = (spawnPoint.SpawnChance * spawnAtTagParameters.SpawnProbability *

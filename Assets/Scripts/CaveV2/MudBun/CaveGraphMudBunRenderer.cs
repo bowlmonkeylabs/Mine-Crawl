@@ -58,7 +58,7 @@ namespace BML.Scripts.CaveV2.MudBun
         )
         {
             int totalBrushCount = _caveGraph.VertexCount + _caveGraph.EdgeCount; 
-            if (totalBrushCount > 100)
+            if (totalBrushCount > 200)
             {
                 throw new Exception($"MudBun will not be generated with such a large cave graph (Vertices:{_caveGraph.VertexCount}, Edge:{_caveGraph.EdgeCount})");
             }

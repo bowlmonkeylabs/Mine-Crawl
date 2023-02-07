@@ -309,6 +309,14 @@ namespace BML.Scripts.CaveV2.MudBun
             _mudRenderer.UnlockMesh();
         }
         
+        [Button, PropertyOrder(-1)]
+        public void RelockMesh()
+        {
+            if (_enableLogs) Debug.Log($"MudBun: Relock mesh");
+            if (IsMeshLocked) UnlockMesh();
+            LockMesh();
+        }
+        
         protected void DoLockMesh(Transform t, bool recursive, int depth = 0)
         {
             if (t == null)

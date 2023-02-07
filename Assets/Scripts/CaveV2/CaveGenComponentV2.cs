@@ -298,7 +298,7 @@ namespace BML.Scripts.CaveV2
             
             // Add an edge between every possible combination of nodes, and calculate the distance/cost
             var numVertices = caveGraph.Vertices.Count();
-            if (numVertices > 2000)
+            if (numVertices > 10000)
             {
                 throw new Exception($"Cave graph has too many vertices ({numVertices}) for our inefficient adjacency calculation; consider revising this code in order to continue!");
             }

@@ -53,6 +53,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private ICaveNodeData parentNode;
 
         // TODO fetch current object tag and display it. Show a warning/error if object is NOT tagged.
+        [ShowInInspector, ReadOnly, InfoBox("", InfoMessageType.Error, "@this.tag")] 
+        private string _tag => this.tag;
         
         #endregion
 
