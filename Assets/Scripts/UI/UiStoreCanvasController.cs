@@ -62,7 +62,7 @@ namespace BML.Scripts.UI
                 shownStoreItems = shownStoreItems.Take(_maxItemsShown).ToList();
             }
 
-            if(shownStoreItems.Count > _listContainerStoreButtons.childCount - 1) {
+            if(shownStoreItems.Count > _listContainerStoreButtons.childCount) {
                 Debug.LogError("Store does not have enough buttons to display options");
                 return;
             }
@@ -73,9 +73,6 @@ namespace BML.Scripts.UI
                 buttonGameObject.SetActive(true);
                 buttonList.Add(buttonGameObject.GetComponent<Button>());
             }
-
-            //Resume button will always be last in list
-            buttonList.Add(_listContainerStoreButtons.GetChild(_listContainerStoreButtons.childCount - 1).GetComponent<Button>());
 
             SetNavigationOrder();
         }

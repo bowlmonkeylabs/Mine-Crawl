@@ -83,9 +83,6 @@ namespace BML.Scripts.Player
 
         [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
         [SerializeField, FoldoutGroup("Store")] private DynamicGameEvent _onPurchaseEvent;
-        [SerializeField, FoldoutGroup("Store")] private GameEvent _onStoreFailOpen;
-
-        [SerializeField, FoldoutGroup("Upgrade Store")] private BoolReference _isUpgradeStoreOpen;
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
         
