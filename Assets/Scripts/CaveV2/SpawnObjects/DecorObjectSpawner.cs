@@ -227,7 +227,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     removePoint = true;
                 }
                 
-                Random.InitState(STEP_ID);
+                Random.InitState(_caveGen.CaveGenParams.Seed + STEP_ID);
                 removePoint |= FilterPointDistanceToMainPath(containingRoom.nodeData.MainPathDistance);
                 removePoint |= FilterPointStartEndRoom(containingRoom.nodeData);
 
