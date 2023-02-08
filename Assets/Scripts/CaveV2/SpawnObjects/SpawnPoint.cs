@@ -41,6 +41,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField, ShowIf("@this._projectionBehavior == SpawnPointProjectionBehavior.Randomize")] private Vector2 _projectionDirectionRandomnessRangeDegrees = new Vector2(30, 15);
         [SerializeField] private float _projectionDistance = 45f;
 
+        [SerializeField] private bool _rotateTowardsSurfaceNormal = true;
         [SerializeField, ReadOnly] private Vector3? _projectedPosition = null; 
         [SerializeField, ReadOnly] private Quaternion? _projectedRotation = null; 
         
@@ -186,7 +187,10 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             if (hitStableSurface)
             {
                 _projectedPosition = hitPos + (projectDirection * -spawnPosOffset);
-                _projectedRotation = Quaternion.LookRotation(this.transform.position - _projectedPosition.Value) * Quaternion.Euler(90, 0, 0);
+                _projectedRotation = _rotateTowardsSurfaceNormal
+                    ? Quaternion.LookRotation(this.transform.position - _projectedPosition.Value) *
+                      Quaternion.Euler(90, 0, 0)
+                    : Quaternion.identity;
                 return (_projectedPosition, _projectedRotation);
             }
 
