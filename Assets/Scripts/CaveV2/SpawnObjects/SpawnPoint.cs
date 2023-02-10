@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -41,6 +44,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private float _projectionDistance = 45f;
 
         [SerializeField] private bool _rotateTowardsSurfaceNormal = true;
+        [SerializeField] private Vector3 _rotationEulerOffset = Vector3.zero;
         [SerializeField, ReadOnly] private Vector3? _projectedPosition = null; 
         [SerializeField, ReadOnly] private Quaternion? _projectedRotation = null; 
         
@@ -49,6 +53,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField, ReadOnly] public bool Occupied;
         [ShowInInspector, ReadOnly] public float SpawnChance { get; set; } = 1f;
         [ShowInInspector, ReadOnly] public float EnemySpawnWeight { get; set; } = 1f;
+        
+        [SerializeField] private bool _showDebugPrefab;
+        [SerializeField] private GameObject _debugPrefab;
 
         private ICaveNodeData parentNode;
 
@@ -95,20 +102,17 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     Gizmos.DrawRay(position, this.transform.TransformDirection(_projectionVector));
                 }
                 
-                if (_projectedPosition == null && _projectionBehavior != SpawnPointProjectionBehavior.None)
-                {
-                    Project();
-                }
+                Project();
                 if (_projectedPosition != null && _projectedPosition != position)
                 {
                     Gizmos.color = Color.grey;
-                    Gizmos.DrawSphere(_projectedPosition.Value, 0.25f);
+                    DrawDebugMesh(_projectedPosition.Value);
                     Gizmos.DrawLine(position, _projectedPosition.Value);
                 }
                 else
                 {
                     Gizmos.color = Color.grey;
-                    Gizmos.DrawSphere(position, 0.25f);
+                    DrawDebugMesh(position);
                 }
 
                 var style = new GUIStyle
@@ -150,12 +154,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             Random.InitState(thisSeed);
             
             Vector3 projectDirection;
+            Quaternion rotationOffset = Quaternion.Euler(_rotationEulerOffset);
             switch (_projectionBehavior)
             {
                 default:
                 case SpawnPointProjectionBehavior.None:
                     _projectedPosition = this.transform.position + (Vector3.up * spawnPosOffset);
-                    _projectedRotation = Quaternion.identity;
+                    _projectedRotation = Quaternion.identity * Quaternion.Euler(_rotationEulerOffset) * rotationOffset;
                     return (_projectedPosition, _projectedRotation);
                 case SpawnPointProjectionBehavior.Gravity:
                     projectDirection = Vector3.down;
@@ -190,6 +195,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     ? Quaternion.LookRotation(this.transform.position - _projectedPosition.Value) *
                       Quaternion.Euler(90, 0, 0)
                     : Quaternion.identity;
+                _projectedRotation *= rotationOffset;
                 return (_projectedPosition, _projectedRotation);
             }
 
@@ -204,6 +210,31 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             if (_disableIfPlayerVisited)
                 SpawnChance = 0f;
+        }
+
+        private void DrawDebugMesh(Vector3 position)
+        {
+            if (_debugPrefab == null)
+            {
+                Gizmos.DrawSphere(position, 0.25f);
+                return;
+            }
+            
+            List<MeshFilter> meshFilters = _debugPrefab.GetComponentsInChildren<MeshFilter>().ToList();
+            if (meshFilters.IsNullOrEmpty())
+                return;
+
+            Quaternion rotationOffset = Quaternion.Euler(_rotationEulerOffset);
+            foreach (var meshFilter in meshFilters)
+            {
+                Quaternion rotation = rotationOffset * meshFilter.transform.rotation;
+                
+                Gizmos.DrawMesh(meshFilter.sharedMesh,
+                (position + meshFilter.transform.localPosition)
+                    .RotatePointAroundPivot(_projectedPosition.Value, rotationOffset), 
+                rotation, 
+                meshFilter.transform.lossyScale);
+            }
         }
     }
 }
