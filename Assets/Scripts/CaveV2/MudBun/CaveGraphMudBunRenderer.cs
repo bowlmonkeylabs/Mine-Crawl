@@ -99,7 +99,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 else
                 {
                     // TODO systematically choose which rooms to spawn
-                    roomPrefab = _caveGraphRenderParams.GetRandomRoom();
+                    roomPrefab = _caveGraphRenderParams.GetRandomRoom(caveNodeData.NodeType);
                     roomScale = Vector3.one * caveNodeData.Scale;
                 }
 

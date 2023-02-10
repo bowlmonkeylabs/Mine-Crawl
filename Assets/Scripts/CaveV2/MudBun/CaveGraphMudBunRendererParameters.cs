@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.Utils;
+using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2.MudBun
 {
     [CreateAssetMenu(fileName = "CaveGenMudBunRenderParams", menuName = "BML/Cave Gen/CaveGenMudBunRenderParameters", order = 0)]
-    public class CaveGraphMudBunRendererParameters : ScriptableObject
+    public class CaveGraphMudBunRendererParameters : SerializedScriptableObject
     {
         #region Inspector
 
@@ -33,8 +36,13 @@ namespace BML.Scripts.CaveV2.MudBun
             // [Tooltip("Set to -1 to disable limit.")]
             // public int countLimit = -1;
         }
-        [SerializeField] private List<RandomUtils.WeightPair<RoomOption>> _roomOptions;
-        
+
+        [DictionaryDrawerSettings(KeyLabel = "Room Type", ValueLabel = "Options",
+            DisplayMode = DictionaryDisplayOptions.ExpandedFoldout)]
+        [SerializeField]
+        private Dictionary<CaveNodeType, RandomUtils.WeightedOptions<RoomOption>> _roomTypes =
+            new Dictionary<CaveNodeType, RandomUtils.WeightedOptions<RoomOption>>();
+
         #endregion
 
         #region Buttons
@@ -56,13 +64,18 @@ namespace BML.Scripts.CaveV2.MudBun
         #endregion
 
         #region Utils
-
-        public GameObject GetRandomRoom()
-        {
-            // var roomOptions = _roomOptions.Where(r => r.value.countLimit)
-            return RandomUtils.RandomWithWeights(_roomOptions).roomPrefab;
-        }
         
+        public GameObject GetRandomRoom(CaveNodeType nodeType = CaveNodeType.Unassigned)
+        {
+            if (!_roomTypes.ContainsKey(nodeType))
+            {
+                return null;
+            }
+
+            var randomRoom = _roomTypes[nodeType].RandomWithWeights();
+            return randomRoom.roomPrefab;
+        }
+
         public IEnumerable<GameObject> GetAllRooms()
         {
             var allPrefabs = new List<GameObject>();
@@ -71,7 +84,11 @@ namespace BML.Scripts.CaveV2.MudBun
             allPrefabs.Add(this.EndRoomPrefab);
             allPrefabs.Add(this.MerchantRoomPrefab);
             allPrefabs.Add(this.TunnelPrefab);
-            allPrefabs.AddRange(this._roomOptions.Select(r => r.value.roomPrefab));
+            var roomTypePrefabs = this._roomTypes
+                .Values.SelectMany(v => 
+                    v.Options.Select(op => op.value.roomPrefab)
+                );
+            allPrefabs.AddRange(roomTypePrefabs);
 
             return allPrefabs;
         }

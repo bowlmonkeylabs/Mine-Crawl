@@ -605,6 +605,13 @@ namespace BML.Scripts.CaveV2
                 });
             caveGraph.MerchantNode = merchantCandidateVertices.First();
             
+            // Assign node types
+            // TODO more intelligent logic
+            foreach (var caveGraphVertex in caveGraph.Vertices)
+            {
+                caveGraphVertex.NodeType = (CaveNodeType)RandomUtils.Range((int)CaveNodeType.Small, (int)CaveNodeType.Large);
+            }
+            
             if (_enableLogs) Debug.Log($"Cave graph generated");
             
             return caveGraph;
