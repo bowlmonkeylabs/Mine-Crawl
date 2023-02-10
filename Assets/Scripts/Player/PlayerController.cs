@@ -58,18 +58,18 @@ namespace BML.Scripts.Player
         
         [SerializeField, FoldoutGroup("Torch")] private GameObject _torchPrefab;
         [SerializeField, FoldoutGroup("Torch")] private float _torchThrowForce;
-        [SerializeField, FoldoutGroup("Torch")] private Transform _torchInstanceContainer;
+        [SerializeField, FoldoutGroup("Torch")] private TransformSceneReference _torchInstanceContainer;
         [SerializeField, FoldoutGroup("Torch")] private IntReference _inventoryTorchCount;
         [SerializeField, FoldoutGroup("Torch")] private StoreItem _torchStoreItem;
         
         [SerializeField, FoldoutGroup("Bomb")] private GameObject _bombPrefab;
         [SerializeField, FoldoutGroup("Bomb")] private float _bombThrowForce;
-        [SerializeField, FoldoutGroup("Bomb")] private Transform _bombInstanceContainer;
+        [SerializeField, FoldoutGroup("Bomb")] private TransformSceneReference _bombInstanceContainer;
         [SerializeField, FoldoutGroup("Bomb")] private IntReference _inventoryBombCount;
 
         [SerializeField, FoldoutGroup("Rope")] private GameObject _ropePrefab;
         [SerializeField, FoldoutGroup("Rope")] private float _ropeThrowForce;
-        [SerializeField, FoldoutGroup("Rope")] private Transform _ropeInstanceContainer;
+        [SerializeField, FoldoutGroup("Rope")] private TransformSceneReference _ropeInstanceContainer;
         [SerializeField, FoldoutGroup("Rope")] private IntReference _inventoryRopeCount;
         [SerializeField, FoldoutGroup("Rope")] private StoreItem _ropeStoreItem;
 
@@ -403,7 +403,7 @@ namespace BML.Scripts.Player
             }
             _inventoryTorchCount.Value -= 1;
 
-            this.Throw(_torchThrowForce, _torchPrefab, _torchInstanceContainer);
+            this.Throw(_torchThrowForce, _torchPrefab, _torchInstanceContainer.Value);
         }
         
         #endregion
@@ -419,7 +419,7 @@ namespace BML.Scripts.Player
             }
             _inventoryBombCount.Value -= 1;
 
-            this.Throw(_bombThrowForce, _bombPrefab, _bombInstanceContainer);
+            this.Throw(_bombThrowForce, _bombPrefab, _bombInstanceContainer.Value);
         }
         
         #endregion
@@ -439,7 +439,7 @@ namespace BML.Scripts.Player
             }
             _inventoryRopeCount.Value -= 1;
             
-            this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer);
+            this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer.Value);
         }
         
         #endregion

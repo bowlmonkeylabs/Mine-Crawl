@@ -15,10 +15,8 @@ namespace BML.Scripts.UI
         [SerializeField] private TMP_Text _intensityResponseText;
         [SerializeField] private TransformSceneReference _playerTransformSceneReference;
         [SerializeField] private FloatVariable _levelTimeElapsed;
-        [SerializeField] private FloatVariable _currentSpawnDelay;
-        [SerializeField] private FloatVariable _currentSpawnCap;
+        [SerializeField] private EnemySpawnerParams _currentParams;
         [SerializeField] private IntVariable _currentEnemyCount;
-        [SerializeField] private IntVariable _currentDifficulty;
         [SerializeField] private IntReference _seedDebugReference;
         [SerializeField] private IntVariable _swingDamage;
         [SerializeField] private IntVariable _sweepDamage;
@@ -29,7 +27,6 @@ namespace BML.Scripts.UI
         [SerializeField] private BoolVariable _anyEnemiesEngaged;
         [SerializeField] private TimerVariable _playerCombatTimer;
         [SerializeField] private FloatVariable _playerIntensityScore;
-        [SerializeField] private FloatVariable _playerIntesityTarget;
         [SerializeField] private IntensityResponseStateData _intensityResponse;
 
         private float _peakIntensityScore = 0;
@@ -55,11 +52,10 @@ namespace BML.Scripts.UI
 Level Time: {this.FormatTime(_levelTimeElapsed.Value)}, {Time.timeScale.ToString("0.00")}x
 Seed: {_seedDebugReference.Value}
 Enemy Spawn Params ----------
-Difficulty: {_currentDifficulty.Value}
-Spawn delay: {_currentSpawnDelay.Value.ToString("0.00")}
-Count: (Current: {_currentEnemyCount.Value}) (Max: {_currentSpawnCap.Value.ToString("0.00")})
+Spawn delay: {_currentParams.SpawnDelay.ToString("0.00")}
+Count: (Current: {_currentEnemyCount.Value}) (Max: {_currentParams.SpawnCap.ToString("0.00")})
 Combat ----------
-Intensity Score: (Current: {_playerIntensityScore.Value.ToString("0.00")}) (Target: {_playerIntesityTarget.Value.ToString("0.00")})
+Intensity Score: (Current: {_playerIntensityScore.Value.ToString("0.00")}) (Target: {_currentParams.MaxIntensity.ToString("0.00")})
 Player In Combat: {this.FormatBool(_playerInCombat.Value)}
 Any Enemies Engaged: {this.FormatBool(_anyEnemiesEngaged.Value)}
 Combat Timer: {_playerCombatTimer.RemainingTime}

@@ -23,8 +23,6 @@ namespace BML.Scripts
         [SerializeField] private GameEvent _onVariablesReset;
         [SerializeField] private UnityEvent _onPurchaseItem;
 
-        private bool done = false;
-
         private void Awake()
         {
             _onVariablesReset.Subscribe(ApplyPlayerInventoryEffects);
