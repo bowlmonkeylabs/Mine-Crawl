@@ -62,8 +62,19 @@ namespace BML.Scripts.Player
 		[Tooltip("Include UI INTERACTABLE states which OVERLAY gameplay (meaning player still has movement, but mouse is unlocked to interact with the overlays)")]
 		[SerializeField] private VariableContainer _containerUiMenuStates_InteractableOverlay;
 
+		[Tooltip("Include UI INTERACTABLE states which should FREEZE TIME.")] 
+		[SerializeField] private VariableContainer _containerUiMenuStates_Frozen;
+		// Freezing is actually handled by the TimeManager game object; this is just referenced here to note its existence.
+
+		[Tooltip("Include UI INTERACTABLE states which should HIDE PLAYER HUD.")]
+		[SerializeField] private VariableContainer _containerUiMenuStates_HidePlayerHUD;
+		// Hiding is handled the each respective UI element by referencing the value assigned to _isUsingUi_Out_HidePlayerHUD.
+
 		[SerializeField] private PlayerInput playerInput;
 
+		[SerializeField] private BoolVariable _isUsingUi_Out_Any;
+		[SerializeField] private BoolVariable _isUsingUi_Out_HidePlayerHUD;
+		
 		private InputAction jumpAction;
 		private InputAction crouchAction;
 
@@ -88,6 +99,26 @@ namespace BML.Scripts.Player
 			get
 			{
 				return _containerUiMenuStates_InteractableOverlay
+					.GetBoolVariables()
+					.Any(b => (b != null && b.Value));
+			}
+		}
+		
+		private bool IsUsingUi_Frozen
+		{
+			get
+			{
+				return _containerUiMenuStates_Frozen
+					.GetBoolVariables()
+					.Any(b => (b != null && b.Value));
+			}
+		}
+		
+		private bool IsUsingUi_HidePlayerHUD
+		{
+			get
+			{
+				return _containerUiMenuStates_HidePlayerHUD
 					.GetBoolVariables()
 					.Any(b => (b != null && b.Value));
 			}
@@ -366,6 +397,10 @@ namespace BML.Scripts.Player
 				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "Debug_FKeys", "Player");
 				SetCursorState(playerCursorLocked);
 			}
+
+			_isUsingUi_Out_Any.Value = IsUsingUi;
+			_isUsingUi_Out_HidePlayerHUD.Value = IsUsingUi_HidePlayerHUD;
+			
 			if (_enableLogs) Debug.Log($"ApplyInputState Inputs (NoPlayerControl {IsUsingUi_NoPlayerControl}) (InteractableOverlay {IsUsingUi_InteractableOverlay}) => updated input state to: (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
 		}
 		
