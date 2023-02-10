@@ -37,7 +37,7 @@ namespace BML.Scripts.Utils
             
             [Button]
             [PropertyOrder(-1)]
-            [DisableIf("@Mathf.Apprxoximately(this.SumWeights, 1f)")]
+            [DisableIf("@Mathf.Approximately(this.SumWeights, 1f)")]
             [HorizontalGroup("Split", 0.5f, LabelWidth = 100)]
             public void Normalize()
             {
