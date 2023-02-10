@@ -94,11 +94,21 @@ namespace BML.Scripts.CaveV2
         
         [TitleGroup("Graph processing"), PropertySpace(10f, 10f)]
         public List<SteepnessRange> SteepnessRanges = new List<SteepnessRange>();
+
+        [TitleGroup("Graph processing")]
+        [UnityEngine.Tooltip("If true, cave node scaling is calculated based on the closeness of adjacent nodes.")]
+        public bool CalculateRoomSize = false;
         
         [TitleGroup("Graph processing")]
+        [ShowIf("$CalculateRoomSize")]
         [UnityEngine.Tooltip("If true, cave node scaling is calculated based adjacency before nodes are filtered to the resulting level path.")]
         public bool CalculateRoomSizeBasedOnRawAdjacency = false;
         
+        [TitleGroup("Graph processing")]
+        [MinMaxSlider(0.1f, 10f, true)]
+        [ShowIf("$CalculateRoomSize")]
+        public Vector2 RoomScaling = Vector2.one;
+
         [TitleGroup("Graph processing")]
         public bool OnlyShortestPathBetweenStartAndEnd = true;
         
@@ -119,10 +129,6 @@ namespace BML.Scripts.CaveV2
         
         [TitleGroup("Graph processing")]
         public bool RemoveOrphanNodes = true;
-        
-        [TitleGroup("Mesh generation")]
-        [MinMaxSlider(0.1f, 10f, true)]
-        public Vector2 RoomScaling = Vector2.one;
 
         #endregion
 

@@ -350,7 +350,7 @@ namespace BML.Scripts.CaveV2
             });
             
             // Calculate based on adjacency size
-            if (caveGenParams.CalculateRoomSizeBasedOnRawAdjacency)
+            if (caveGenParams.CalculateRoomSize && caveGenParams.CalculateRoomSizeBasedOnRawAdjacency)
             {
                 foreach (var caveNodeData in caveGraph.Vertices)
                 {
@@ -560,7 +560,7 @@ namespace BML.Scripts.CaveV2
             // Calculate graph properties for use in later generation steps (e.g. object spawning, enemy spawning)
             {
                 // Calculate size
-                if (!caveGenParams.CalculateRoomSizeBasedOnRawAdjacency)
+                if (caveGenParams.CalculateRoomSize && !caveGenParams.CalculateRoomSizeBasedOnRawAdjacency)
                 {
                     foreach (var caveNodeData in caveGraph.Vertices)
                     {
