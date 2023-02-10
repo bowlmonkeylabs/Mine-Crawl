@@ -100,13 +100,13 @@ namespace BML.Scripts.CaveV2
         public bool CalculateRoomSize = false;
         
         [TitleGroup("Graph processing")]
-        [ShowIf("$CalculateRoomSize")]
+        [ShowIf("$CalculateRoomSize")] [Indent]
         [UnityEngine.Tooltip("If true, cave node scaling is calculated based adjacency before nodes are filtered to the resulting level path.")]
         public bool CalculateRoomSizeBasedOnRawAdjacency = false;
         
         [TitleGroup("Graph processing")]
         [MinMaxSlider(0.1f, 10f, true)]
-        [ShowIf("$CalculateRoomSize")]
+        [ShowIf("$CalculateRoomSize")] [Indent]
         public Vector2 RoomScaling = Vector2.one;
 
         [TitleGroup("Graph processing")]
@@ -116,15 +116,18 @@ namespace BML.Scripts.CaveV2
         public bool UseOffshootsFromMainPath = true;
         
         [TitleGroup("Graph processing")]
+        [ShowIf("$UseOffshootsFromMainPath")] [Indent]
         public int NumOffshoots = 2;
 
         [TitleGroup("Graph processing")] [MinMaxSlider(1, 50, true)]
+        [ShowIf("$UseOffshootsFromMainPath")] [Indent]
         public Vector2Int MinMaxOffshootLength = new Vector2Int(1, 3);
 
         [TitleGroup("Graph processing")]
         public bool MinimumSpanningTree = true;
         
         [TitleGroup("Graph processing")]
+        [ShowIf("$MinimumSpanningTree")] [Indent]
         public int MinimumSpanningNodes = 3;
         
         [TitleGroup("Graph processing")]
