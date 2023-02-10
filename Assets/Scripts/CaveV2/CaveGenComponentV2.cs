@@ -316,7 +316,7 @@ namespace BML.Scripts.CaveV2
                     continue;
                 }
 
-                var edgeRadius = Math.Max(vertexPair.v1.Size, vertexPair.v2.Size);
+                var edgeRadius = Math.Max(vertexPair.v1.Scale, vertexPair.v2.Scale);
                 
                 var edge = new CaveNodeConnectionData(vertexPair.v1, vertexPair.v2, edgeRadius);
                 caveGraph.AddEdge(edge);
@@ -365,8 +365,8 @@ namespace BML.Scripts.CaveV2
                     var edgeLengthFactor =
                         averageEdgeLength / caveGenParams.PoissonSampleRadius;
                     var fac = Mathf.InverseLerp(1f, caveGenParams.MaxEdgeLengthFactor, edgeLengthFactor);
-                    var size = Mathf.Lerp(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y, fac);
-                    caveNodeData.Size = size;
+                    var scale = Mathf.Lerp(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y, fac);
+                    caveNodeData.Scale = scale;
                 }
             }
 
@@ -510,7 +510,7 @@ namespace BML.Scripts.CaveV2
                             continue;
                         }
 
-                        var edgeRadius = Math.Max(sourceNode.Size, targetNode.Size);
+                        var edgeRadius = Math.Max(sourceNode.Scale, targetNode.Scale);
                         var edge = new CaveNodeConnectionData(sourceNode, targetNode, edgeRadius);
                         edges.Add(edge);
                     }
@@ -570,8 +570,8 @@ namespace BML.Scripts.CaveV2
                         var edgeLengthFactor =
                             averageEdgeLength / caveGenParams.PoissonSampleRadius;
                         var fac = Mathf.InverseLerp(1f, caveGenParams.MaxEdgeLengthFactor, edgeLengthFactor);
-                        var size = Mathf.Lerp(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y, fac);
-                        caveNodeData.Size = size;
+                        var scale = Mathf.Lerp(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y, fac);
+                        caveNodeData.Scale = scale;
                     }
                 }
                 

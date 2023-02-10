@@ -100,7 +100,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     // TODO systematically choose which rooms to spawn
                     roomPrefab = _caveGraphRenderParams.GetRandomRoom();
-                    roomScale = Vector3.one * caveNodeData.Size;
+                    roomScale = Vector3.one * caveNodeData.Scale;
                 }
 
                 // Spawn room
@@ -135,9 +135,9 @@ namespace BML.Scripts.CaveV2.MudBun
                 var sourceTargetDiff = (target.LocalPosition - source.LocalPosition);
                 var sourceTargetDiffProjectedToGroundNormalized = Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
                 var sourceEdgePosition = source.LocalPosition +
-                                         (source.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * sourceTargetDiffProjectedToGroundNormalized);
+                                         (source.Scale / 2 * _caveGraphRenderParams.BaseRoomRadius * sourceTargetDiffProjectedToGroundNormalized);
                 var targetEdgePosition = target.LocalPosition +
-                                         (target.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * -1 * sourceTargetDiffProjectedToGroundNormalized);
+                                         (target.Scale / 2 * _caveGraphRenderParams.BaseRoomRadius * -1 * sourceTargetDiffProjectedToGroundNormalized);
                 
                 var edgeDiff = (targetEdgePosition - sourceEdgePosition);
                 var edgeMidPosition = source.LocalPosition + edgeDiff / 2;

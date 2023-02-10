@@ -13,7 +13,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
     {
         // Fundamental properties
         [ShowInInspector] public Vector3 LocalPosition { get; private set; }
-        [ShowInInspector] public float Size { get; set; }
+        [ShowInInspector] public float Scale { get; set; }
         
         // Calculated properties
         [ShowInInspector] public int MainPathDistance { get; set; }
@@ -62,10 +62,10 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public HashSet<SpawnPoint> SpawnPoints { get; set; }
         [ShowInInspector] public HashSet<Torch> Torches { get; set; }
 
-        public CaveNodeData(Vector3 localPosition, float size)
+        public CaveNodeData(Vector3 localPosition, float scale)
         {
             LocalPosition = localPosition;
-            Size = size;
+            Scale = scale;
 
             MainPathDistance = -1;
             ObjectiveDistance = -1;
