@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62a8dd97943f407baf43d5381f5becd9, type: 3}
-  m_Name: StoreItem_MagnetoGem
+  m_Name: StoreItem_MoveSpeed
   m_EditorClassIdentifier: 
   _resourceCost: 0
   _rareResourceCost: 2
@@ -22,24 +22,24 @@ MonoBehaviour:
     EnableInstanceOptions: 0
     InstanceName: '{I} '
     InstancePath: IntermediateProperties
-    ConstantValue: 3
+    ConstantValue: 4
     Variable: {fileID: 0}
   _playerInventoryAmount:
     ReferenceTypeSelector: 1
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     RoundingBehavior_FloatVariable: 0
-    ReferenceValue_IntVariable: {fileID: 11400000, guid: bb960006aa2584646ac89b22957cebb1, type: 2}
-    ReferenceValue_BoolVariable: {fileID: 0}
-  _itemLabel: Magneto Gem
-  _itemIcon: {fileID: 21300000, guid: aaed6a405cd61bf4cb12599e64ac2bd1, type: 3}
-  _itemEffectDescription: +2 Pickup Range
-  _itemStoreDescription: Each of its gems swirl in vast array of colors, and you
-    can feel it pull ever so sligjhtly at your bag.
+    ReferenceValue_IntVariable: {fileID: 11400000, guid: 91213320195356b4bbcfff3d0fdfcca6, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 11400000, guid: 5c55f6744af7d434db0416ae70bd77b9, type: 2}
+  _itemLabel: Sprint Plus
+  _itemIcon: {fileID: 21300000, guid: 5075a6d2b12309c40943b628bbb8626f, type: 3}
+  _itemEffectDescription: +1 Move Speed
+  _itemStoreDescription: Subscribe to Sprint Plus and receive your benefits today,
+    for free!
   _onPurchased:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11400000, guid: bb960006aa2584646ac89b22957cebb1, type: 2}
+      - m_Target: {fileID: 11400000, guid: 91213320195356b4bbcfff3d0fdfcca6, type: 2}
         m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
           ScriptableObjectSystem
         m_MethodName: Increment
@@ -52,7 +52,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 11400000, guid: 9ded2d411fafa004b82ca64fdb700a62, type: 2}
+      - m_Target: {fileID: 11400000, guid: 3b4bcea2e82687e40bbf849eb67cda46, type: 2}
         m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
           ScriptableObjectSystem
         m_MethodName: Increment
@@ -60,7 +60,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
@@ -68,7 +68,7 @@ MonoBehaviour:
   _onSold:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11400000, guid: bb960006aa2584646ac89b22957cebb1, type: 2}
+      - m_Target: {fileID: 11400000, guid: 91213320195356b4bbcfff3d0fdfcca6, type: 2}
         m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
           ScriptableObjectSystem
         m_MethodName: Increment
@@ -81,7 +81,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 11400000, guid: 9ded2d411fafa004b82ca64fdb700a62, type: 2}
+      - m_Target: {fileID: 11400000, guid: 3b4bcea2e82687e40bbf849eb67cda46, type: 2}
         m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.IntVariable,
           ScriptableObjectSystem
         m_MethodName: Increment
@@ -89,7 +89,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: -2
+          m_IntArgument: -1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
