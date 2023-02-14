@@ -32,6 +32,7 @@ namespace BML.Scripts.UI
         [SerializeField] private UnityEvent _onSubmit;
         [SerializeField] private UnityEvent _onCancel;
         [SerializeField] private UnityEvent _onClose;
+        [SerializeField] private UnityEvent _onOpen;
         [SerializeField] private Button.ButtonClickedEvent _onClickBackdrop;
 
         public Selectable DefaultSelected
@@ -123,6 +124,8 @@ namespace BML.Scripts.UI
             {
                 _defaultPage.OpenPage();
             }
+
+            _onOpen?.Invoke();
         }
 
         public void ClosePage()
@@ -150,6 +153,8 @@ namespace BML.Scripts.UI
             {
                 _defaultPage.ClosePage();
             }
+
+            _onClose?.Invoke();
         }
 
         private void TryOpenPage()

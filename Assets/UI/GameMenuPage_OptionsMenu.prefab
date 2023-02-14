@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 451744115645149002}
   - component: {fileID: 451744115645149003}
   - component: {fileID: 6480908368226795394}
+  - component: {fileID: 594978124797931742}
   m_Layer: 5
   m_Name: GameMenuPage_OptionsMenu
   m_TagString: Untagged
@@ -83,7 +84,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &451744115645149003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,7 +141,34 @@ MonoBehaviour:
         m_CallState: 2
   _onClose:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 594978124797931742}
+        m_TargetAssemblyTypeName: BML.Scripts.PersistVariables, BML.Scripts
+        m_MethodName: Save
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onOpen:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 594978124797931742}
+        m_TargetAssemblyTypeName: BML.Scripts.PersistVariables, BML.Scripts
+        m_MethodName: Load
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _onClickBackdrop:
     m_PersistentCalls:
       m_Calls:
@@ -156,6 +184,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &594978124797931742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451744115645149000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83e15411dd2d33c4282bfe6ebe57ae5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _variables: {fileID: 11400000, guid: 5cc03ec63f1b53043904adfed67ed81a, type: 2}
+  _filePath: Settings.es3
 --- !u!1 &451744116074006751
 GameObject:
   m_ObjectHideFlags: 0
@@ -2141,11 +2183,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 832b67d2393474246a0fbe55c72aa45e, type: 3}
---- !u!224 &6694810340917085687 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1087292291921523482, guid: 832b67d2393474246a0fbe55c72aa45e, type: 3}
-  m_PrefabInstance: {fileID: 6052389422928312045}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6694810340613060997 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1087292292359999336, guid: 832b67d2393474246a0fbe55c72aa45e, type: 3}
@@ -2157,6 +2194,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &6694810340917085687 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1087292291921523482, guid: 832b67d2393474246a0fbe55c72aa45e, type: 3}
+  m_PrefabInstance: {fileID: 6052389422928312045}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6751158791754762355
 PrefabInstance:
   m_ObjectHideFlags: 0
