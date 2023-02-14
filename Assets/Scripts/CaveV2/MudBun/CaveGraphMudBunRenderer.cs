@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph;
@@ -49,7 +50,7 @@ namespace BML.Scripts.CaveV2.MudBun
 
         private const int STEP_ID = 2;
 
-        protected override void GenerateMudBunInternal(
+        protected override IEnumerator GenerateMudBunInternal(
             MudRenderer mudRenderer,
             bool instanceAsPrefabs
         )
@@ -65,9 +66,7 @@ namespace BML.Scripts.CaveV2.MudBun
             Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
 
             var localOrigin = mudRenderer.transform.position;
-
             
-
             // Spawn "rooms" at each cave node
             foreach (var caveNodeData in _caveGraph.Vertices)
             {
@@ -124,24 +123,62 @@ namespace BML.Scripts.CaveV2.MudBun
                     }
                 }
             }
+
+            // Doing some of this work across multiple frames actually seems to be pretty important;
+            // For one, the colliders which are placed with the rooms seem to need to do some initialization before their bounds correctly reflect their world position.
+            yield return null;
             
             // Spawn "tunnel" on each edge to ensure nodes are connected
+            bool first = true;
             foreach (var caveNodeConnectionData in _caveGraph.Edges)
             {
+                
                 var source = caveNodeConnectionData.Source;
                 var target = caveNodeConnectionData.Target;
+                var sourceWorldPosition = _caveGenerator.LocalToWorld(source.LocalPosition);
+                var targetWorldPosition = _caveGenerator.LocalToWorld(target.LocalPosition);
                 
                 // Calculate tunnel position
-                var sourceTargetDiff = (target.LocalPosition - source.LocalPosition);
-                var sourceTargetDiffProjectedToGroundNormalized = Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
-                var sourceEdgePosition = source.LocalPosition +
-                                         (source.Scale / 2 * _caveGraphRenderParams.BaseRoomRadius * sourceTargetDiffProjectedToGroundNormalized);
-                var targetEdgePosition = target.LocalPosition +
-                                         (target.Scale / 2 * _caveGraphRenderParams.BaseRoomRadius * -1 * sourceTargetDiffProjectedToGroundNormalized);
-                
-                var edgeDiff = (targetEdgePosition - sourceEdgePosition);
-                var edgeMidPosition = source.LocalPosition + edgeDiff / 2;
+                var edgeDiff = (targetWorldPosition - sourceWorldPosition);
+                var edgeDirFlattened = Vector3.ProjectOnPlane(edgeDiff, Vector3.up).normalized * 1f;
+                var edgeMidPosition = sourceWorldPosition + edgeDiff / 2;
                 var edgeRotation = Quaternion.LookRotation(edgeDiff);
+                var edgeFlattenedRotation = Quaternion.LookRotation(edgeDirFlattened, Vector3.up);
+
+                if (first)
+                {
+                    // first = false;
+
+                    var sourceTestPosition = sourceWorldPosition + edgeDiff / 4;
+                    var targetTestPosition = targetWorldPosition - edgeDiff / 4;
+                    // TODO prevent tunnels from cutting into rooms
+                    // var sourceEdgePosition = source.LocalPosition;
+                    // var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(edgeMidPosition);
+                    var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(sourceTestPosition, edgeRotation);
+                    var sourceColliderCenter = source.BoundsColliders.Select(coll => coll.bounds.center).Average();
+                    sourceEdgePosition.y = sourceColliderCenter.y;
+                    // sourceEdgePosition -= edgeDirFlattened;
+                    sourceEdgePosition -= (edgeFlattenedRotation * _caveGraphRenderParams.TunnelConnectionOffset);
+                    
+                    // var targetEdgePosition = target.LocalPosition;
+                    // var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(edgeMidPosition);
+                    var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(targetTestPosition, edgeRotation);
+                    var targetColliderCenter = target.BoundsColliders.Select(coll => coll.bounds.center).Average();
+                    targetEdgePosition.y = targetColliderCenter.y;
+                    // targetEdgePosition += edgeDirFlattened;
+                    targetEdgePosition += (edgeFlattenedRotation * _caveGraphRenderParams.TunnelConnectionOffset);
+                    // var targetColl = target.BoundsColliders.First();
+                    // Debug.Log(
+                    //     $"Collider Pos Target (Transform {targetColl.transform.position}) (Collider {targetColl.bounds.center}) (Node {target.LocalPosition})");
+                    // var targetEdgePosition = target.BoundsColliders.First().transform.position;
+                    // Debug.Log($"Local Position (Source {source.LocalPosition}) (Target {target.LocalPosition})");
+                    // Debug.Log($"Closest Point (Source {sourceEdgePosition}) (Target {targetEdgePosition}) (Edge Mid {edgeMidPosition})");
+
+                    edgeDiff = (targetEdgePosition - sourceEdgePosition);
+                    edgeMidPosition = sourceEdgePosition + edgeDiff / 2;
+                    edgeRotation = Quaternion.LookRotation(edgeDiff);
+                }
+
                 var edgeLength = edgeDiff.magnitude;
                 var localScale = new Vector3(caveNodeConnectionData.Radius, caveNodeConnectionData.Radius, edgeLength);
                 // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
@@ -176,6 +213,8 @@ namespace BML.Scripts.CaveV2.MudBun
                     
                 }
             }
+
+            yield break;
         }
 
         protected override void GenerateMudBunInternal()

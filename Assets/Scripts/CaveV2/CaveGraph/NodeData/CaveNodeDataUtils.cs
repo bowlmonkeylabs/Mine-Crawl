@@ -49,6 +49,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
                 Vector3 boundsWorldSize = Vector3.Scale(collider.bounds.size, collider.transform.lossyScale);
                 return boundsWorldSize.x * boundsWorldSize.z;
             });
+            // TODO instead of the Max, this should really measure the total NON-OVERLAPPING collider area
             float nodeApproxArea = approxBoundsAreas.Max();
             
             float torchRequirement = nodeApproxArea / GetTorchAreaCoverage();

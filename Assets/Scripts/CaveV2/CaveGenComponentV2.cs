@@ -974,6 +974,11 @@ namespace BML.Scripts.CaveV2
         {
             return LocalOrigin + localPosition;
         }
+        
+        public Vector3 WorldToLocal(Vector3 worldPosition)
+        {
+            return worldPosition - LocalOrigin;
+        }
 
         #endregion
     }

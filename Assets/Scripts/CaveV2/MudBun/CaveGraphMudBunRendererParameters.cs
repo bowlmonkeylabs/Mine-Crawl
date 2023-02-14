@@ -21,6 +21,8 @@ namespace BML.Scripts.CaveV2.MudBun
         [SerializeField] public float BaseRoomRadius;
 
         [SerializeField] public Color CaveColor;
+
+        [SerializeField] public Vector3 TunnelConnectionOffset = Vector3.zero;
         
         [SerializeField] public GameObject StartRoomPrefab;
         [SerializeField] public GameObject EndRoomPrefab;

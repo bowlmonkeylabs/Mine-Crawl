@@ -167,6 +167,11 @@ namespace BML.Scripts.Utils
             
             return flattenedDirection;
         }
+
+        public static float Max(this Vector3 v)
+        {
+            return Mathf.Max(v.x, v.y, v.z);
+        }
     }
 
     [Serializable]
