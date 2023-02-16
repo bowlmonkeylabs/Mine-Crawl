@@ -31,7 +31,7 @@ jobs:
       - name: Create LFS file list
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
 
-      - name: Restore-LFS-cache
+      - name: Restore LFS cache
         uses: pat-s/always-upload-cache@v3.0.11
         id: cache-lfs
         with:
@@ -71,8 +71,8 @@ jobs:
           cd ../..
           
       - name: Cache unversioned
-        id: cache-unversioned
         uses: pat-s/always-upload-cache@v3.0.11
+        id: cache-unversioned
         with:
           path: Assets/Unversioned
           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
@@ -112,8 +112,8 @@ jobs:
           git annex unlock
 
       # Unity cache
-      - uses: actions/cache@v3
-        id: pat-s/always-upload-cache@v3.0.11
+      - uses: pat-s/always-upload-cache@v3.0.11
+        id: cache-library
         with:
           path: Library
           key: ${{ runner.os }}-Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
