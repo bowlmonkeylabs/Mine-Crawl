@@ -19,11 +19,11 @@ jobs:
     name: Build my project ✨
     runs-on: ubuntu-latest
     steps:
-      # Checkout (without LFS)
+      # Checkout (without LFS content, just pointers)
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          submodules: true
+          submodules: 'recursive'
           lfs: true
           token: ${{ secrets.REPOS_ACCESS_TOKEN }}
 
