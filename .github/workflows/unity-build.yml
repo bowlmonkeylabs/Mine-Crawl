@@ -72,7 +72,7 @@ jobs:
           export AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
           git config user.email "bowlmonkeylabs@gmail.com"
           git config user.name bowlmonkeylabs
-          git annex init ${{ runner.os }}
+          git annex init
           git annex list "Epic Toon FX/Materials/Basics/glow5_ADD.mat"
           git annex info
           git annex enableremote cloud-s3
