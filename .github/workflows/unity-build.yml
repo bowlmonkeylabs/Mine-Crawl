@@ -82,20 +82,22 @@ jobs:
           
       - name: Test unversioned annex
         run: |
+          cd Assets/Unversioned
           find . -type f | cut -d/ -f2 | sort | uniq -c
           git annex list "Epic Toon FX/Materials/Basics/glow5_ADD.mat"
           git annex info
           
       - name: Enable annex special remotes
         run: |
+          cd Assets/Unversioned
           git annex enableremote cloud-s3
           git annex enableremote cloud
           
       - name: Sync unversioned annex
         run: |
+          cd Assets/Unversioned
           git annex sync --content
           git annex unlock
-          cd ../..
 
       # Unity cache
       - uses: actions/cache@v2
