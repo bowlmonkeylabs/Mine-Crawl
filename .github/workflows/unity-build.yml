@@ -55,7 +55,7 @@ jobs:
       - name: Test unversioned
         run: |
           cd Assets/Unversioned
-          ls
+          ls -Uba1 | grep ^log | wc -l
           cd ../..
           
       - name: Cache unversioned
