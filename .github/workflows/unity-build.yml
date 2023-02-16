@@ -112,7 +112,8 @@ jobs:
           git annex unlock
 
       # Unity cache
-      - uses: pat-s/always-upload-cache@v3.0.11
+      - name: Cache library
+        uses: pat-s/always-upload-cache@v3.0.11
         id: cache-library
         with:
           path: Library
@@ -138,6 +139,11 @@ jobs:
         with:
           targetPlatform: StandaloneWindows64
           customParameters: -Development
+          
+      - name: Own project directory
+        run: |
+          export executing_user=$(whoami)
+          sudo chown "$executing_user" ./
 
       # Output
       - uses: actions/upload-artifact@v3
