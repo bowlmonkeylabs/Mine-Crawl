@@ -51,6 +51,12 @@ jobs:
           repository: ${{ github.repository }}-Unversioned
           path: Assets/Unversioned
           token: ${{ secrets.REPOS_ACCESS_TOKEN }}
+      
+      - name: Test unversioned
+        run: |
+          cd Assets/Unversioned
+          ls
+          cd ../..
           
       - name: Cache unversioned
         id: cache-unversioned
