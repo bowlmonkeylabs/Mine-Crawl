@@ -68,6 +68,7 @@ jobs:
           git config user.name bowlmonkeylabs
           git annex init ${{ runner.os }}
           git annex list "Epic Toon FX/Materials/Basics/glow5_ADD.mat"
+          git annex info
           git annex enableremote cloud-s3
           git annex enableremote cloud
           
