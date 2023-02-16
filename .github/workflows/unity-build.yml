@@ -75,6 +75,8 @@ jobs:
           
       - name: Configure unversioned annex 2
         run: |
+          git config user.email "bowlmonkeylabs@gmail.com"
+          git config user.name bowlmonkeylabs
           git annex init
           find . -type f | cut -d/ -f2 | sort | uniq -c
           
