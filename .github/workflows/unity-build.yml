@@ -31,7 +31,7 @@ jobs:
       - name: Create LFS file list
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
 
-      - name: Restore LFS cache
+      - name: Restore-LFS-cache
         uses: pat-s/always-upload-cache@v3.0.11
         id: cache-lfs
         with:
