@@ -46,7 +46,7 @@ jobs:
           sudo apt-get install git-annex
           
       - name: Clone unversioned repo
-        uses: actions/checkout@main
+        uses: actions/checkout@v2
         with:
           repository: ${{ github.repository }}-Unversioned
           path: Assets/Unversioned
