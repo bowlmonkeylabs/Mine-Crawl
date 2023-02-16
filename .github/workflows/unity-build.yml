@@ -73,6 +73,7 @@ jobs:
           git config user.email "bowlmonkeylabs@gmail.com"
           git config user.name bowlmonkeylabs
           git annex init
+          find . -type f | cut -d/ -f2 | sort | uniq -c
           git annex list "Epic Toon FX/Materials/Basics/glow5_ADD.mat"
           git annex info
           git annex enableremote cloud-s3
