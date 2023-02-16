@@ -32,11 +32,13 @@ jobs:
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
 
       - name: Restore LFS cache
-        uses: actions/cache@v3
-        id: lfs-cache
+        uses: pat-s/always-upload-cache@v3.0.11
+        id: cache-lfs
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+          restore-keys: |
+            ${{ runner.os }}-lfs-
 
       - name: Git LFS Pull
         run: |
@@ -70,10 +72,12 @@ jobs:
           
       - name: Cache unversioned
         id: cache-unversioned
-        uses: actions/cache@v3
+        uses: pat-s/always-upload-cache@v3.0.11
         with:
           path: Assets/Unversioned
           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
+          restore-keys: |
+            ${{ runner.os }}-UnversionedAssets-
           
       - name: Configure git credentials
         run: |
@@ -109,11 +113,12 @@ jobs:
 
       # Unity cache
       - uses: actions/cache@v3
+        id: pat-s/always-upload-cache@v3.0.11
         with:
           path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: ${{ runner.os }}-Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            Library-
+            ${{ runner.os }}-Library-
 
       # Test
 #       - name: Run tests
