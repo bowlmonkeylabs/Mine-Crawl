@@ -78,6 +78,10 @@ jobs:
       - name: Configure unversioned annex
         run: |
           cd Assets/Unversioned
+          git config user.email
+          git config user.name
+          echo $AWS_ACCESS_KEY_ID
+          echo $AWS_SECRET_ACCESS_KEY
           git annex init
           
       - name: Test unversioned annex
