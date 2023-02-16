@@ -72,23 +72,29 @@ jobs:
           export AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
           git config user.email "bowlmonkeylabs@gmail.com"
           git config user.name bowlmonkeylabs
+          cd ../..
           
       - name: Configure unversioned annex 2
         run: |
+          cd Assets/Unversioned
           git config user.email "bowlmonkeylabs@gmail.com"
           git config user.name bowlmonkeylabs
           git annex init
           find . -type f | cut -d/ -f2 | sort | uniq -c
+          cd ../..
           
       - name: Configure unversioned annex 3
         run: |
+          cd Assets/Unversioned
           git annex list "Epic Toon FX/Materials/Basics/glow5_ADD.mat"
           git annex info
           git annex enableremote cloud-s3
           git annex enableremote cloud
+          cd ../..
           
       - name: Sync unversioned annex
         run: |
+          cd Assets/Unversioned
           git annex sync --content
           git annex unlock
           cd ../..
