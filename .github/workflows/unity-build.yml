@@ -55,6 +55,7 @@ jobs:
           repository: ${{ github.repository }}-Unversioned
           path: Assets/Unversioned
           token: ${{ secrets.REPOS_ACCESS_TOKEN }}
+          fetch-depth: 0
       
       - name: Test unversioned
         run: |
