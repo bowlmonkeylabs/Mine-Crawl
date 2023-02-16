@@ -65,6 +65,7 @@ jobs:
           git config user.email "bowlmonkeylabs@gmail.com"
           git config user.name bowlmonkeylabs
           git annex init ${{ runner.os }}
+          git annex list "Epic Toon FX/Materials/Basics/glow5_ADD.mat"
           git annex enableremote cloud-s3
           git annex enableremote cloud
           git annex sync --content
