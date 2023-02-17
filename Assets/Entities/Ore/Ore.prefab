@@ -433,9 +433,9 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 3454127850065686866}
         DebugActive: 0
-        Mode: 1
-        ObjectPoolSize: 5
-        MutualizePools: 0
+        Mode: 2
+        ObjectPoolSize: 10
+        MutualizePools: 1
         ParentTransform: {fileID: 0}
         CachedRecycle: 1
         ParticlesPrefab: {fileID: 7421040828693409565, guid: 4af101432fd1aed44ad5b41138cf5e48, type: 3}
@@ -644,7 +644,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 5319621539874114181
+  uniqueID: 7702160378659975351
   updateError: 1
   checkTime: 0.2
 --- !u!114 &5432566915175241370
@@ -1317,9 +1317,9 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 3454127851599513215}
         DebugActive: 0
-        Mode: 1
-        ObjectPoolSize: 5
-        MutualizePools: 0
+        Mode: 2
+        ObjectPoolSize: 15
+        MutualizePools: 1
         ParentTransform: {fileID: 0}
         CachedRecycle: 1
         ParticlesPrefab: {fileID: 3244364848958238059, guid: c6c11d0734b28ad47936e0b024de1d55, type: 3}
@@ -1775,6 +1775,10 @@ PrefabInstance:
     - target: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
       propertyPath: ForceStopFeedbacksOnDisable
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].MutualizePools
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
       propertyPath: FeedbacksList.Array.data[0].InstantiateParticlesPosition
