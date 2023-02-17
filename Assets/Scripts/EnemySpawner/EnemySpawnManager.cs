@@ -42,6 +42,7 @@ namespace BML.Scripts
         [SerializeField] private EnemySpawnerParams _currentParams;
         [SerializeField] private BoolVariable _hasPlayerExitedStartRoom;
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
+        [SerializeField] private GameEvent _onAfterGenerateLevelObjects;
         [Required, SerializeField] [InlineEditor()] private List<EnemySpawnerParams> _enemySpawnerParamList = new List<EnemySpawnerParams>();
 
         [UnityEngine.Tooltip(
@@ -87,22 +88,22 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
-            _caveGenerator.OnAfterGenerate += InitSpawnPoints;
             _caveGenerator.OnAfterUpdatePlayerDistance += CacheActiveSpawnPoints;
             _onEnemyKilled.Subscribe(OnEnemyKilled);
             _currentDifficulty.Subscribe(UpdateDifficultyParams);
             
             _isSpawningPaused.Value = true;
             _hasPlayerExitedStartRoom.Subscribe(EnableSpawning);
+            _onAfterGenerateLevelObjects.Subscribe(InitSpawnPoints);
         }
 
         private void OnDisable()
         {
-            _caveGenerator.OnAfterGenerate -= InitSpawnPoints;
             _caveGenerator.OnAfterUpdatePlayerDistance -= CacheActiveSpawnPoints;
             _onEnemyKilled.Unsubscribe(OnEnemyKilled);
             _currentDifficulty.Unsubscribe(UpdateDifficultyParams);
             _hasPlayerExitedStartRoom.Unsubscribe(EnableSpawning);
+            _onAfterGenerateLevelObjects.Unsubscribe(InitSpawnPoints);
         }
 
         private void Update()
@@ -261,6 +262,9 @@ namespace BML.Scripts
                     weightModifierAhead = (playerDistanceDelta * _weightSpawningAheadOfPlayer);                 // [-1, 0]
 
                     weightModifierPlayerInfluence = (0 - caveNodeData.PlayerInfluence) * _weightSpawningByPlayerInfluence;                         // [-1, 0]
+
+                    if (_enableLogs)
+                        Debug.Log($"baseWeight({baseWeight}) + weightModifierUnexplored({weightModifierUnexplored}) + weightModifierObjective({weightModifierObjective}) + weightModifierAhead({weightModifierAhead}) + weightModifierPlayerInfluence({weightModifierPlayerInfluence})");
                 }
                     
                 float modifiedWeight = Mathf.Clamp01(baseWeight + weightModifierUnexplored + weightModifierObjective + weightModifierAhead + weightModifierPlayerInfluence);
