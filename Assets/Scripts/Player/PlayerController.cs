@@ -74,6 +74,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Rope")] private StoreItem _ropeStoreItem;
 
         [SerializeField, FoldoutGroup("Dash")] private BoolReference _isDashActive;
+        [SerializeField, FoldoutGroup("Dash")] private SafeFloatValueReference _postDashInvincibilityTime;
         
         [SerializeField, FoldoutGroup("Health")] private Health _healthController;
         [SerializeField, FoldoutGroup("Health")] private DynamicGameEvent _tryHeal;
@@ -448,7 +449,13 @@ namespace BML.Scripts.Player
 
         private void OnDashSetActive(bool prevValue, bool dashActive)
         {
-            _healthController.SetInvincible(dashActive);
+            if (dashActive)
+                _healthController.SetInvincible(true);
+            else
+            {
+                LeanTween.value(0f, 1f, _postDashInvincibilityTime.Value)
+                    .setOnComplete(_ => _healthController.SetInvincible(false));
+            }
         }
         
         #endregion

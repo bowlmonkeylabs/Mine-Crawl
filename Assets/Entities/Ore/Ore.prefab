@@ -644,7 +644,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 7702160378659975351
+  uniqueID: 7726886379330005085
   updateError: 1
   checkTime: 0.2
 --- !u!114 &5432566915175241370
@@ -663,12 +663,27 @@ MonoBehaviour:
   _damageable:
   - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
       Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile, Player_Pickaxe_Secondary,
-      Enemy_Bomb_Explosion, Trap_Spike, Trap_Stalactite
-    _damageType: 15827
+      Enemy_Bomb_Explosion, Trap_Stalactite
+    _damageType: 11731
     _damageModifierType: 0
     _damageMultiplier: 1
     _damageResistance: 0
     _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  - _damageTypesPreview: Trap_Spike
+    _damageType: 4096
+    _damageModifierType: 2
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 999
     _onDamage:
       m_PersistentCalls:
         m_Calls: []
