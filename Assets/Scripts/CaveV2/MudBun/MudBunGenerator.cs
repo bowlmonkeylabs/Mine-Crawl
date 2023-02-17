@@ -233,9 +233,14 @@ namespace BML.Scripts.CaveV2.MudBun
             TryGenerateWithCooldown();
         }
 
+        [Button("Generate Mud Bun"), PropertyOrder(-1), EnableIf("IsMudBunGenerationEnabled")]
+        public void GenerateMudBunInternalButton()
+        {
+            GenerateMudBunInternal();
+        }
+
         private Coroutine _coroutine_GenerateMudBunInternalHelper;
         
-        [Button("Generate Mud Bun"), PropertyOrder(-1), EnableIf("IsMudBunGenerationEnabled")]
         protected virtual void GenerateMudBunInternal()
         {
             _coroutine_GenerateMudBunInternalHelper = StartCoroutine(this.GenerateMudBunInternalHelper());
