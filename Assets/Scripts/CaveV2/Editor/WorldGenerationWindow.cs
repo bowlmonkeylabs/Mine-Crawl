@@ -4,9 +4,8 @@ using BML.Scripts.CaveV2.SpawnObjects;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
-using UnityEngine;
 
-namespace BML.Scripts.Editor
+namespace BML.Scripts.CaveV2.Editor
 {
     public class WorldGenerationWindow : OdinEditorWindow
     {
@@ -14,7 +13,7 @@ namespace BML.Scripts.Editor
         private CaveGraphMudBunRenderer _mudBunRenderer => FindObjectOfType<CaveGraphMudBunRenderer>();
         private LevelObjectSpawner _levelObjectSpawner => FindObjectOfType<LevelObjectSpawner>();
         
-        [MenuItem("Window/World Generation")]
+        [MenuItem("Window/BML/World Generation")]
         private static void OpenWindow()
         {
             GetWindow<WorldGenerationWindow>().Show();
