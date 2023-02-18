@@ -521,7 +521,7 @@ namespace BML.Scripts.CaveV2
                         edge => edge.Length).ToList();
                 minimumGraph.RemoveEdgeIf(edge => !minimumSpanningTree.Contains(edge));
                 _minimumSpanningTreeGraphTEMP = minimumGraph;
-                // TODO
+                // TODO use or remove minimum spanning tree
             }
             
             // Remove orphaned nodes
