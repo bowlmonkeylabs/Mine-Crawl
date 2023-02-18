@@ -10,6 +10,10 @@ namespace BML.Scripts.Editor
 {
     public class WorldGenerationWindow : OdinEditorWindow
     {
+        private CaveGenComponentV2 _caveGenerator => FindObjectOfType<CaveGenComponentV2>();
+        private CaveGraphMudBunRenderer _mudBunRenderer => FindObjectOfType<CaveGraphMudBunRenderer>();
+        private LevelObjectSpawner _levelObjectSpawner => FindObjectOfType<LevelObjectSpawner>();
+        
         [MenuItem("Window/World Generation")]
         private static void OpenWindow()
         {
@@ -20,56 +24,56 @@ namespace BML.Scripts.Editor
         //[EnableIf("$IsGenerationEnabled")]
         private void GenerateCaveGraphButton()
         {
-            FindObjectOfType<CaveGenComponentV2>().GenerateCaveGraphButton();
+            _caveGenerator.GenerateCaveGraphButton();
         }
         
         [TitleGroup("Cave Graph"), Button]
         //[EnableIf("$IsGenerationEnabled")]
         private void DestroyCaveGraph()
         {
-            FindObjectOfType<CaveGenComponentV2>().DestroyCaveGraph();
+            _caveGenerator.DestroyCaveGraph();
         }
         
         [TitleGroup("Mudbun"), Button("Generate Mud Bun")]
         protected virtual void GenerateMudBunInternal()
         {
-            FindObjectOfType<MudBunGenerator>().GenerateMudBunInternalButton();
+            _mudBunRenderer.GenerateMudBunInternalButton();
         }
 
         [TitleGroup("Mudbun"), Button]
         public void DestroyMudBun()
         {
-            FindObjectOfType<MudBunGenerator>().DestroyMudBun();
+            _mudBunRenderer.DestroyMudBun();
         }
         
         [TitleGroup("Mudbun"), Button]
         public void LockMesh()
         {
-            FindObjectOfType<MudBunGenerator>().LockMesh();
+            _mudBunRenderer.LockMesh();
         }
         
         [TitleGroup("Mudbun"), Button]
         private void UnlockMesh()
         {
-            FindObjectOfType<MudBunGenerator>().UnlockMesh();
+            _mudBunRenderer.UnlockMesh();
         }
         
         [TitleGroup("Mudbun"), Button]
         public void RelockMesh()
         {
-            FindObjectOfType<MudBunGenerator>().RelockMesh();
+            _mudBunRenderer.RelockMesh();
         }
         
         [TitleGroup("Level Object Spawner"), Button, LabelText("Spawn Level Objects")]
         public void SpawnLevelObjectsButton()
         {
-            FindObjectOfType<LevelObjectSpawner>().SpawnLevelObjectsButton();
+            _levelObjectSpawner.SpawnLevelObjectsButton();
         }
         
         [TitleGroup("Level Object Spawner"), Button]
         public void DestroyLevelObjects()
         {
-            FindObjectOfType<LevelObjectSpawner>().DestroyLevelObjects();
+            _levelObjectSpawner.DestroyLevelObjects();
         }
     }
 }
