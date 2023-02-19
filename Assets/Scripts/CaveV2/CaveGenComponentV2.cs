@@ -379,11 +379,28 @@ namespace BML.Scripts.CaveV2
                 shortestPathFromStartFunc(endNode, out var shortestPathFromStartToEnd);
                 var shortestPathFromStartToEndList = shortestPathFromStartToEnd?.ToList();
                 
+                if (shortestPathFromStartToEnd == null)
+                {
+                    // Not traversable
+                    if (_showTraversabilityCheck)
+                    {
+                        Debug.LogWarning($"Seed {caveGenParams.Seed} failed traversability check, retrying cave generation.");
+                    }
+                    
+                    _retryDepth++;
+                    if (_retryDepth >= _maxRetryDepth)
+                    {
+                        Debug.LogError($"Exceeded cave generation max retries ({_maxRetryDepth})");
+                        return caveGraph;
+                    }
+                    return RetryGenerateCaveGraph(false);
+                }
+                
                 // Calculate distance from main path
                 // This is intentionally done twice; the second run is the "real" result, this first run is just for the generation algorithm to reference. 
                 {
                     var mainPathVertices = shortestPathFromStartToEndList
-                        .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target})
+                        .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target })
                         .Distinct();
                     caveGraph.FloodFillDistance(mainPathVertices, (node, dist) => node.MainPathDistance = dist);
 
@@ -605,7 +622,7 @@ namespace BML.Scripts.CaveV2
                 }
 
                 // Calculate distance from main path
-                // This is intentionally done twice; the second run is the "real" result, this first run is just for the generation algorithm to reference. 
+                // This is intentionally done twice; the second run is the "real" result, the first run is just for the generation algorithm to reference. 
                 {
                     var mainPathVertices = caveGraph.MainPath
                         .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target})
