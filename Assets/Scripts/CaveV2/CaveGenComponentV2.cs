@@ -156,7 +156,8 @@ namespace BML.Scripts.CaveV2
         private int _retryDepth = 0;
         
         [PropertyOrder(-1)]
-        [Button, LabelText("Generate Cave Graph")]
+        [ButtonGroup("Generation")]
+        [Button("Generate")]
         //[EnableIf("$IsGenerationEnabled")]
         public void GenerateCaveGraphButton()
         {
@@ -225,7 +226,8 @@ namespace BML.Scripts.CaveV2
         }
 
         [PropertyOrder(-1)]
-        [Button] 
+        [ButtonGroup("Generation")]
+        [Button("Destroy")] 
         //[EnableIf("$IsGenerationEnabled")]
         public void DestroyCaveGraph()
         {

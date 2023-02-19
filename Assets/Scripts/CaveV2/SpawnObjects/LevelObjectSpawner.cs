@@ -90,7 +90,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         
         private const int STEP_ID = 2;
 
-        [Button, PropertyOrder(-1), LabelText("Spawn Level Objects")]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Generation")]
+        [Button("Generate")]
         //[EnableIf("$_isGenerationEnabled")]
         public void SpawnLevelObjectsButton()
         {
@@ -123,7 +125,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             _onAfterGenerateLevelObjects.Raise();
         }
 
-        [Button, PropertyOrder(-1)]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Generation")]
+        [Button("Destroy")]
         //[EnableIf("$_isGenerationEnabled")]
         public void DestroyLevelObjects()
         {

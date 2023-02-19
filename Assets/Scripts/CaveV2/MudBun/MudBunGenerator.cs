@@ -233,7 +233,10 @@ namespace BML.Scripts.CaveV2.MudBun
             TryGenerateWithCooldown();
         }
 
-        [Button("Generate Mud Bun"), PropertyOrder(-1), EnableIf("IsMudBunGenerationEnabled")]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Generation")]
+        [Button("Generate")]
+        [EnableIf("IsMudBunGenerationEnabled")]
         public void GenerateMudBunInternalButton()
         {
             GenerateMudBunInternal();
@@ -280,7 +283,10 @@ namespace BML.Scripts.CaveV2.MudBun
             yield break;
         }
         
-        [Button, PropertyOrder(-1), EnableIf("IsMudBunGenerationEnabled")]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Generation")]
+        [Button("Destroy")]
+        [EnableIf("IsMudBunGenerationEnabled")]
         public void DestroyMudBun()
         {
             DestroyMudBun(_mudRenderer);
@@ -312,7 +318,10 @@ namespace BML.Scripts.CaveV2.MudBun
 
         private Coroutine _coroutine_LockMesh;
 
-        [Button, PropertyOrder(-1), DisableIf("$IsMeshLocked")]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Locking")]
+        [Button("Lock")]
+        [DisableIf("$IsMeshLocked")]
         public void LockMesh()
         {
             _coroutine_LockMesh = StartCoroutine(LockMeshCoroutine());
@@ -327,7 +336,10 @@ namespace BML.Scripts.CaveV2.MudBun
         
         private Coroutine _coroutine_UnlockMesh;
         
-        [Button, PropertyOrder(-1), EnableIf("$IsMeshLocked")]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Locking")]
+        [Button("Unlock")]
+        [EnableIf("$IsMeshLocked")]
         public void UnlockMesh()
         {
             _coroutine_UnlockMesh = StartCoroutine(UnlockMeshCoroutine());
@@ -343,7 +355,9 @@ namespace BML.Scripts.CaveV2.MudBun
 
         private Coroutine _coroutine_RelockMesh;
         
-        [Button, PropertyOrder(-1)]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Locking")]
+        [Button("Re-lock")]
         public void RelockMesh()
         {
             if (_coroutine_RelockMesh != null) return;
