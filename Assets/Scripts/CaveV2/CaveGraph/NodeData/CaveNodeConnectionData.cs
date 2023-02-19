@@ -103,5 +103,12 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         {
             onPlayerVisited?.Invoke(this, new EventArgs());
         }
+        
+        public CaveNodeData OtherEnd(CaveNodeData known)
+        {
+            if (known == Source) return Target;
+            if (known == Target) return Source;
+            return null;
+        }
     }
 }

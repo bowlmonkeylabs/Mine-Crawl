@@ -377,6 +377,17 @@ namespace BML.Scripts.CaveV2
                 shortestPathFromStartFunc(endNode, out var shortestPathFromStartToEnd);
                 var shortestPathFromStartToEndList = shortestPathFromStartToEnd?.ToList();
                 
+                // Calculate distance from main path
+                // This is intentionally done twice; the second run is the "real" result, this first run is just for the generation algorithm to reference. 
+                {
+                    var mainPathVertices = shortestPathFromStartToEndList
+                        .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target})
+                        .Distinct();
+                    caveGraph.FloodFillDistance(mainPathVertices, (node, dist) => node.MainPathDistance = dist);
+
+                    this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
+                }
+                
                 if (shortestPathFromStartToEndList != null)
                 {
                     var keepEdges = new List<CaveNodeConnectionData>();
@@ -440,9 +451,17 @@ namespace BML.Scripts.CaveV2
                                     }
                                     break;
                                 }
-                            
-                                int randomEdgeIndex = Random.Range(0, adjacentEdges.Count);
-                                var randomEdge = adjacentEdges[randomEdgeIndex];
+
+                                var sortedAdjacentEdges = adjacentEdges
+                                    .OrderByDescending(e =>
+                                    {
+                                        CaveNodeData other = e.OtherEnd(offshootStart);
+                                        if (other == null) return -1;
+                                        return other.MainPathDistance;
+                                    })
+                                    .ToList();
+                                int randomEdgeIndex = Mathf.RoundToInt(RandomUtils.RandomGaussian(0, adjacentEdges.Count - 1));
+                                var randomEdge = sortedAdjacentEdges[randomEdgeIndex];
                                 offshootPath.Add(randomEdge);
 
                                 if (offshootStart == randomEdge.Source) offshootStart = randomEdge.Target;
@@ -584,6 +603,7 @@ namespace BML.Scripts.CaveV2
                 }
 
                 // Calculate distance from main path
+                // This is intentionally done twice; the second run is the "real" result, this first run is just for the generation algorithm to reference. 
                 {
                     var mainPathVertices = caveGraph.MainPath
                         .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target})
