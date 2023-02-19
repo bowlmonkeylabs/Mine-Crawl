@@ -120,7 +120,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
             ResetSpawnPoints();
             CatalogSpawnPoints(_caveGenerator);
-            SpawnObjectsAtTags(this.transform, retryOnFailure);
+            bool success = SpawnObjectsAtTags(this.transform, retryOnFailure);
+            if (!success)
+            {
+                Debug.LogError("LevelObjectSpawner failed.");
+                _caveGenerator.RetryGenerateCaveGraph();
+                return;
+            }
             
             _onAfterGenerateLevelObjects.Raise();
         }
@@ -211,7 +217,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
         }
 
-        private void SpawnObjectsAtTags(Transform parent, bool retryOnFailure)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="retryOnFailure"></param>
+        /// <returns>False if spawning failed or the spawning parameters are not satisfied.</returns>
+        private bool SpawnObjectsAtTags(Transform parent, bool retryOnFailure)
         {
             foreach (var spawnAtTagParameters in _levelObjectSpawnerParams.SpawnAtTags)
             {
@@ -279,13 +291,14 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     && spawnCount < spawnAtTagParameters.MinMaxGlobalAmount.ValueMin)
                 {
                     if (_caveGenerator.EnableLogs) Debug.LogWarning($"Level Object Spawner: Minimum not met for object {spawnAtTagParameters.Prefab?.name} on tag {spawnAtTagParameters.Tag} ({spawnCount}/{spawnAtTagParameters.MinMaxGlobalAmount.ValueMin})");
-                    _caveGenerator.RetryGenerateCaveGraph();
-                    return;
+                    return false;
                 }
                 
                 //Debug.Log($"Remaining Spawn Points After: {tagged.Count - pointsToRemove.Count}");
 
             }
+
+            return true;
         }
 
         private static void SpawnPlayer(CaveGenComponentV2 caveGenerator, Transform parent, GameObject player)
