@@ -609,7 +609,22 @@ namespace BML.Scripts.CaveV2
             // TODO more intelligent logic
             foreach (var caveGraphVertex in caveGraph.Vertices)
             {
-                caveGraphVertex.NodeType = (CaveNodeType)RandomUtils.Range((int)CaveNodeType.Small, (int)CaveNodeType.Large);
+                // Rooms with only one connection (dead ends) are large rooms
+                int numEdges = caveGraph.AdjacentEdges(caveGraphVertex).Count();
+                if (numEdges == 1)
+                {
+                    caveGraphVertex.NodeType = CaveNodeType.Large;
+                    continue;
+                } 
+                else if (numEdges >= 4)
+                {
+                    caveGraphVertex.NodeType = CaveNodeType.Small;
+                    continue;
+                }
+                else
+                {
+                    caveGraphVertex.NodeType = (CaveNodeType)Random.Range((int)CaveNodeType.Small, (int)CaveNodeType.Medium + 1);
+                }
             }
             
             if (_enableLogs) Debug.Log($"Cave graph generated");
