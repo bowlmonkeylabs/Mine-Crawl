@@ -24,6 +24,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         // Calculated properties
         [ShowInInspector] public int MainPathDistance 
             => Mathf.Min(Source.MainPathDistance, Target.MainPathDistance);
+        [ShowInInspector] public int StartDistance 
+            => Mathf.Min(Source.StartDistance, Target.StartDistance);
         [ShowInInspector] public int ObjectiveDistance 
             => Mathf.Min(Source.ObjectiveDistance, Target.ObjectiveDistance);
         [ShowInInspector] public int PlayerDistance 
@@ -109,6 +111,18 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             if (known == Source) return Target;
             if (known == Target) return Source;
             return null;
+        }
+
+        public bool HasNode(CaveNodeData node)
+        {
+            return node == Source || node == Target;
+        }
+
+        public bool BidirectionalCheck(Func<CaveNodeData, CaveNodeData, bool> check)
+        {
+            var resultA = check(this.Source, this.Target);
+            var resultB = check(this.Target, this.Source);
+            return resultA || resultB;
         }
     }
 }

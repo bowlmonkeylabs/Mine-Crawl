@@ -129,6 +129,7 @@ namespace BML.Scripts.CaveV2
         [FoldoutGroup("Gizmo colors")] [SerializeField] public Gradient DebugNodeColor_Gradient;
 
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxMainPathDistance { get; private set; }
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxStartDistance { get; private set; }
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxObjectiveDistance { get; private set; }
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxPlayerDistance { get; private set; }
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int CurrentMaxPlayerObjectiveDistance { get; private set; }
@@ -626,6 +627,14 @@ namespace BML.Scripts.CaveV2
                         var scale = Mathf.Lerp(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y, fac);
                         caveNodeData.Scale = scale;
                     }
+                }
+                
+                // Calculate distance from level start
+                {
+                    var objectiveVertices = new List<CaveNodeData> { caveGraph.StartNode };
+                    caveGraph.FloodFillDistance(objectiveVertices, (node, dist) => node.StartDistance = dist);
+
+                    this.MaxStartDistance = caveGraph.Vertices.Max(e => e.StartDistance);
                 }
                 
                 // Calculate distance from objective
