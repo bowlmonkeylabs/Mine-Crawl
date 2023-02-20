@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
@@ -11,6 +12,7 @@ using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.CaveV2.Util;
 using BML.Scripts.CaveV2.SpawnObjects;
+using BML.Scripts.Player.Utils;
 using BML.Scripts.Utils;
 using GK;
 using QuikGraph.Algorithms;
@@ -49,7 +51,9 @@ namespace BML.Scripts.CaveV2
         [SerializeField] private BoolReference _retrySameSeed;
 
         [SerializeField] private IntReference _seedDebugReference;
-        
+        [SerializeField] private TransformSceneReference _playerSceneReference;
+        [SerializeField] private TransformSceneReference _greenRoomSceneReference;
+
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGenParameters _caveGenParams;
 
@@ -177,6 +181,7 @@ namespace BML.Scripts.CaveV2
                 _caveGenParams.UpdateRandomSeed();
             }
             
+            PlayerUtils.MovePlayer(_playerSceneReference.Value.gameObject, _greenRoomSceneReference.Value.position);
             _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
             IsGenerated = true;
             

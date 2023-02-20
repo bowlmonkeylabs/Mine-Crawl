@@ -6,6 +6,7 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.CaveV2.MudBun;
+using BML.Scripts.Player.Utils;
 using BML.Scripts.Utils;
 using KinematicCharacterController;
 using Mono.CSharp;
@@ -312,7 +313,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 // Debug.Log($"Call SpawnPlayer: Position {startWorldPosition} | Player in scene {playerInThisScene}");
                 if (player.scene.isLoaded)
                 {
-                    MovePlayer(player, startWorldPosition);
+                    PlayerUtils.MovePlayer(player, startWorldPosition);
                 }
                 else
                 {
@@ -322,7 +323,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     var isPrefab = false;
 #endif
                     player = GameObjectUtils.SafeInstantiate(isPrefab, player, parent);
-                    MovePlayer(player, startWorldPosition);
+                    PlayerUtils.MovePlayer(player, startWorldPosition);
                 }
                 
                 // Stop velocity
@@ -334,29 +335,6 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
         }
 
-        private static void MovePlayer(GameObject player, Vector3 destination)
-        {
-            // If in play mode, move player using kinematicCharController motor to avoid race condition
-            if (ApplicationUtils.IsPlaying_EditorSafe)
-            {
-                KinematicCharacterMotor motor = player.GetComponent<KinematicCharacterMotor>();
-                if (motor != null)
-                {
-                    motor.SetPosition(destination);
-                }
-                else
-                {
-                    player.transform.position = destination;
-                    Debug.LogWarning("Could not find KinematicCharacterMotor on player! " +
-                                     "Moving player position directly via Transform.");
-                }
-            }
-            else
-            {
-                player.transform.position = destination;
-            }
-        }
-        
         #endregion
 
         #region Spawn objects utility
