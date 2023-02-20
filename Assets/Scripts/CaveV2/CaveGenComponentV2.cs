@@ -18,6 +18,7 @@ using GK;
 using QuikGraph.Algorithms;
 using Shapes;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEditor;
 using Random = UnityEngine.Random;
 
@@ -181,7 +182,16 @@ namespace BML.Scripts.CaveV2
                 _caveGenParams.UpdateRandomSeed();
             }
             
-            PlayerUtils.MovePlayer(_playerSceneReference.Value.gameObject, _greenRoomSceneReference.Value.position);
+            if (!_playerSceneReference.SafeIsUnityNull() && !_playerSceneReference.Value.SafeIsUnityNull())
+            {
+                // Move player to a holding area outside the level generation bounds. (we didn't want them interacting with level objects during the generation process)
+                PlayerUtils.MovePlayer(_playerSceneReference.Value.gameObject, _greenRoomSceneReference.Value.position);
+            }
+            else
+            {
+                if (EnableLogs) Debug.Log($"Level Object Spawner: No player assigned");
+            }
+            
             _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
             IsGenerated = true;
             
