@@ -689,6 +689,41 @@ namespace BML.Scripts.CaveV2
                     caveGraphVertex.NodeType = (CaveNodeType)Random.Range((int)CaveNodeType.Small, (int)CaveNodeType.Medium + 1);
                 }
             }
+                
+            // Decide which tunnels should be blocked
+            foreach (var nodeA in caveGraph.Vertices)
+            {
+                bool isMainPath = nodeA.MainPathDistance == 0;
+                if (isMainPath)
+                {
+                    bool hasBranch = caveGraph.AdjacentVertices(nodeA)
+                        .Any(nodeB =>
+                            nodeB.MainPathDistance != 0 &&
+                            caveGraph.AdjacentVertices(nodeB)
+                                .Any(v => v != nodeA && v.MainPathDistance != 0)
+                        );
+                    if (!hasBranch) continue;
+                    
+                    foreach (var nodeB in caveGraph.AdjacentVertices(nodeA))
+                    {
+                        bool nodeBIsTowardsStart = (nodeB.StartDistance <= nodeA.StartDistance);
+                        bool nodeBIsMainPath = (nodeB.MainPathDistance == 0);
+                        if (nodeBIsMainPath && !nodeBIsTowardsStart)
+                        {
+                            bool nodeBHasBranch = caveGraph.AdjacentVertices(nodeB)
+                                .Any(v => v != nodeA && v.MainPathDistance != 0);
+
+                            if (nodeBHasBranch) continue;
+                        }
+
+                        caveGraph.TryGetEdge(nodeA, nodeB, out var edge);
+                        if (edge != null)
+                        {
+                            edge.IsBlocked = !nodeBIsTowardsStart;
+                        }
+                    }
+                }
+            }
             
             if (_enableLogs) Debug.Log($"Cave graph generated");
             
