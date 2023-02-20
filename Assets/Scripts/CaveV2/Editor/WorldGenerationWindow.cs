@@ -14,7 +14,7 @@ namespace BML.Scripts.CaveV2.Editor
         private CaveGraphMudBunRenderer _mudBunRenderer => FindObjectOfType<CaveGraphMudBunRenderer>();
         private LevelObjectSpawner _levelObjectSpawner => FindObjectOfType<LevelObjectSpawner>();
         
-        [MenuItem("Window/BML/World Generation")]
+        [MenuItem("Window/BML  c(･o･)ɔ  c(･o･)ɔ  c(･o･)ɔ/World Generation")]
         private static void OpenWindow()
         {
             GetWindow<WorldGenerationWindow>().Show();
