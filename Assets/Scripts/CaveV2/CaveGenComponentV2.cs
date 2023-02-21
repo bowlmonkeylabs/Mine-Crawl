@@ -49,9 +49,6 @@ namespace BML.Scripts.CaveV2
         private bool _notOverrideBounds => !_overrideBounds;
         public Bounds CaveGenBounds => (_overrideBounds ? _caveGenBounds : _caveGenParams.PoissonBounds);
 
-        [SerializeField] private BoolReference _retrySameSeed;
-
-        [SerializeField] private IntReference _seedDebugReference;
         [SerializeField] private TransformSceneReference _playerSceneReference;
         [SerializeField] private TransformSceneReference _greenRoomSceneReference;
 
@@ -177,11 +174,6 @@ namespace BML.Scripts.CaveV2
             //     return;
             
             DestroyCaveGraph();
-
-            if (useRandomSeed)
-            {
-                _caveGenParams.UpdateRandomSeed();
-            }
             
             if (!_playerSceneReference.SafeIsUnityNull() && !_playerSceneReference.Value.SafeIsUnityNull())
             {
@@ -209,14 +201,14 @@ namespace BML.Scripts.CaveV2
                 throw new Exception($"Exceeded cave generation max retries ({_maxRetryDepth})");
             }
             
-            if (_caveGenParams.LockSeed || !RetryOnFailure)
+            if (SeedManager.Instance.LockSeed || !RetryOnFailure)
             {
                 throw new Exception("Cave generation failed. To automatically resolve, ensure 'Retry on failure' is checked and 'Lock seed' is unchecked.");
             }
             else
             {
-                _caveGenParams.UpdateRandomSeed(false);
-                GenerateCaveGraph(false);
+                SeedManager.Instance.UpdateRandomSeed(false);
+                GenerateCaveGraph();
             }
         }
 
@@ -230,13 +222,13 @@ namespace BML.Scripts.CaveV2
                 }
             }
             
-            if (_caveGenParams.LockSeed || !RetryOnFailure)
+            if (SeedManager.Instance.LockSeed || !RetryOnFailure)
             {
                 throw new Exception("Cave generation failed; level is not traversable. To automatically resolve, ensure 'Retry on failure' is checked and 'Lock seed' is unchecked.");
             }
             else
             {
-                _caveGenParams.UpdateRandomSeed(false);
+                SeedManager.Instance.UpdateRandomSeed(false);
                 return GenerateCaveGraph(_caveGenParams, CaveGenBounds);
             }
         }
@@ -263,9 +255,9 @@ namespace BML.Scripts.CaveV2
         
         private CaveGraphV2 GenerateCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)
         {
-            Random.InitState(caveGenParams.Seed);
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("CaveGraph"));
             
-            if (_enableLogs) Debug.Log($"Generating level ({_caveGenParams.Seed})");
+            if (_enableLogs) Debug.Log($"Generating level ({SeedManager.Instance.GetSteppedSeed("CaveGraph")})");
             
             var caveGraph = new CaveGraphV2();
             
@@ -400,7 +392,7 @@ namespace BML.Scripts.CaveV2
                     // Not traversable
                     if (_showTraversabilityCheck)
                     {
-                        Debug.LogWarning($"Seed {caveGenParams.Seed} failed traversability check, retrying cave generation.");
+                        Debug.LogWarning($"Seed {SeedManager.Instance.GetSteppedSeed("CaveGraph")} failed traversability check, retrying cave generation.");
                     }
                     
                     _retryDepth++;
@@ -598,7 +590,7 @@ namespace BML.Scripts.CaveV2
                     // Not traversable
                     if (_showTraversabilityCheck)
                     {
-                        Debug.LogWarning($"Seed {caveGenParams.Seed} failed traversability check, retrying cave generation.");
+                        Debug.LogWarning($"Seed {SeedManager.Instance.GetSteppedSeed("CaveGraph")} failed traversability check, retrying cave generation.");
                     }
                     
                     _retryDepth++;
@@ -975,11 +967,6 @@ namespace BML.Scripts.CaveV2
         #endregion
 
         #region Unity lifecycle
-        
-        private void Awake()
-        {
-            _seedDebugReference.Value = _caveGenParams.Seed;
-        }
 
         private void Start()
         {
@@ -990,8 +977,7 @@ namespace BML.Scripts.CaveV2
             {
                 if (_enableLogs) Debug.Log($"CaveGraph: Generate random on start");
                 _retryDepth = 0;
-                bool randomSeed = !_keepEditModeLevel && !_retrySameSeed.Value;
-                GenerateCaveGraph(randomSeed);
+                GenerateCaveGraph();
             }
         }
 
@@ -1072,7 +1058,7 @@ namespace BML.Scripts.CaveV2
             
             #if UNITY_EDITOR
             // Draw seed label
-            Handles.Label(transform.position, _caveGenParams.Seed.ToString());
+            Handles.Label(transform.position, SeedManager.Instance.GetSteppedSeed("CaveGraph").ToString());
             #endif
 
         }

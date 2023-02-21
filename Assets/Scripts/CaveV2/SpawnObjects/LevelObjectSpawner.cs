@@ -88,8 +88,6 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 }
             }
         }
-        
-        private const int STEP_ID = 2;
 
         [PropertyOrder(-1)]
         [ButtonGroup("Generation")]
@@ -104,7 +102,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             // if (!_caveGenerator.IsGenerationEnabled) return;
             
-            Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("LevelObjectSpawer"));
             
             DestroyLevelObjects();
             
@@ -251,7 +249,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     if (_caveGenerator.EnableLogs) Debug.Log($"Try spawn {spawnAtTagParameters.Prefab?.name}: (Spawn point {spawnPoint.SpawnChance}) (Main path {mainPathProbability}) (Spawn chance {spawnChance}) (Random {rand}) (Do Spawn {doSpawn})");
                     if (doSpawn)
                     {
-                        var spawnAt = spawnPoint.Project(spawnAtTagParameters.SpawnPosOffset, _caveGenerator.CaveGenParams.Seed);
+                        var spawnAt = spawnPoint.Project(spawnAtTagParameters.SpawnPosOffset, SeedManager.Instance.Seed);
                         bool hitStableSurface = spawnAt.position.HasValue;
                         var cachedTransform = spawnPoint.transform;
                         spawnAt.position = spawnAt.position ?? cachedTransform.position;

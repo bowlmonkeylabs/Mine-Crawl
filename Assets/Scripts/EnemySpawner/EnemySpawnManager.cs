@@ -74,16 +74,12 @@ namespace BML.Scripts
 
         private float lastSpawnTime = Mathf.NegativeInfinity;
         private float lastDespawnTime = Mathf.NegativeInfinity;
-        private int totalEnemySpawnCount;
-        private int retryCount;
         
         #region Unity lifecycle
 
         private void Awake()
         {
             InitSpawnCosts();
-            totalEnemySpawnCount = 0;
-            retryCount = 0;
         }
 
         private void OnEnable()
@@ -150,8 +146,6 @@ namespace BML.Scripts
         #endregion
         
         #region Spawn points
-
-        private int StepID = 4;
 
         [Button("Debug Init Spawn Costs")]
         private void InitSpawnCosts()
@@ -366,8 +360,8 @@ namespace BML.Scripts
             var weightPairs =  _currentParams.SpawnAtTags.Select(e => 
                 new RandomUtils.WeightPair<EnemySpawnParams>(e, e.NormalizedSpawnWeight)).ToList();
 
-            Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount + retryCount);
-            retryCount++;
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("EnemySpawerCount") + SeedManager.Instance.GetSteppedSeed("EnemySpawerRetry"));
+            SeedManager.Instance.UpdateSteppedSeed("EnemySpawerRetry");
             
             EnemySpawnParams randomEnemyParams = RandomUtils.RandomWithWeights(weightPairs);
             
@@ -436,12 +430,12 @@ namespace BML.Scripts
             // Spawn chosen enemy at chosen spawn point
             var newEnemy = SpawnEnemy(spawnPos, randomEnemyParams, randomSpawnPoint, randomSpawnPoint.ParentNode,
                 true);
-            totalEnemySpawnCount++;
+            SeedManager.Instance.UpdateSteppedSeed("EnemySpawerCount");
 
             if (randomEnemyParams.OccupySpawnPoint)
                 randomSpawnPoint.Occupied = true;
 
-            retryCount = 0;
+            SeedManager.Instance.UpdateSteppedSeed("EnemySpawerRetry", SeedManager.Instance.Seed);
             lastSpawnTime = Time.time;
         }
         

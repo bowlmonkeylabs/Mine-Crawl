@@ -48,8 +48,6 @@ namespace BML.Scripts.CaveV2.MudBun
 
         #region MudBun
 
-        private const int STEP_ID = 2;
-
         protected override IEnumerator GenerateMudBunInternal(
             MudRenderer mudRenderer,
             bool instanceAsPrefabs
@@ -63,7 +61,7 @@ namespace BML.Scripts.CaveV2.MudBun
             
             base.GenerateMudBunInternal(mudRenderer, instanceAsPrefabs);
             
-            Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("MudBunRenderer"));
 
             var localOrigin = mudRenderer.transform.position;
             

@@ -1,7 +1,7 @@
 using BML.Script.Intensity;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
-using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.Scripts.CaveV2;
 using Intensity;
 using TMPro;
 using UnityEngine;
@@ -50,7 +50,7 @@ namespace BML.Scripts.UI
         {
             _text.text = $@"Player pos: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
 Level Time: {this.FormatTime(_levelTimeElapsed.Value)}, {Time.timeScale.ToString("0.00")}x
-Seed: {_seedDebugReference.Value}
+Seed: {SeedManager.Instance.Seed}
 Enemy Spawn Params ----------
 Spawn delay: {_currentParams.SpawnDelay.ToString("0.00")}
 Count: (Current: {_currentEnemyCount.Value}) (Max: {_currentParams.SpawnCap.ToString("0.00")})

@@ -23,9 +23,6 @@ namespace BML.Scripts.Player
     public class PlayerController : MonoBehaviour
     {
         #region Inspector
-        [SerializeField, FoldoutGroup("Scene References")] private GameObjectSceneReference _caveGeneratorGameObjectSceneReference;
-        private CaveGenComponentV2 _caveGenerator => _caveGeneratorGameObjectSceneReference?.CachedComponent as CaveGenComponentV2;
-        
         [SerializeField, FoldoutGroup("Interactable hover")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Interactable hover")] private UiAimReticle _uiAimReticle;
         [SerializeField, FoldoutGroup("Interactable hover")] private int _hoverUpdatesPerSecond = 20;
@@ -96,16 +93,10 @@ namespace BML.Scripts.Player
 
         private bool pickaxeInputHeld = false;
         private bool secondaryInputHeld = false;
-        private int totalSwingCount = 0;
 
         #endregion
 
         #region Unity lifecycle
-
-        private void Start()
-        {
-            totalSwingCount = 0;
-        }
 
         private void OnEnable()
         {
@@ -206,7 +197,7 @@ namespace BML.Scripts.Player
         // To be called from animation
         public void DoSwing()
         {
-            totalSwingCount++;
+            SeedManager.Instance.UpdateSteppedSeed("PickaxeSwing");
             
             RaycastHit hit;
             RaycastHit? lowPriorityHit = null;
@@ -259,22 +250,13 @@ namespace BML.Scripts.Player
 
             _swingHitFeedbacks.transform.position = hit.point;
             _swingHitFeedbacks.PlayFeedbacks();
-            
-            
                 
             PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
             if (interactionReceiver == null) return;
             
             float damage = _pickaxeDamage.Value;
 
-            if (!_caveGenerator.SafeIsUnityNull())
-            {
-                Random.InitState(_caveGenerator.CaveGenParams.Seed + totalSwingCount);
-            }
-            else
-            {
-                Debug.LogWarning($"Cave generator is not assigned, so random seed is not able to be used.");
-            }
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
             bool isCrit = Random.value < _swingCritChance.Value;
 
             if (isCrit)

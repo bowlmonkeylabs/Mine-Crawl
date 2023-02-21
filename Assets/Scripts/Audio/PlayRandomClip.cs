@@ -43,7 +43,7 @@ namespace BML.Scripts
         private void OrderListRandomly()
         {
             randomizedList.Clear();
-            Random.InitState(_caveGenComponent.CaveGenParams.Seed);
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("RandomClips"));
             randomizedList = _clips.OrderBy(c => Random.value).ToList();
         }
     }
