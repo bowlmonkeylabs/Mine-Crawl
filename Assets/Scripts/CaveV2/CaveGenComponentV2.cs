@@ -685,6 +685,17 @@ namespace BML.Scripts.CaveV2
             // Decide which tunnels should be blocked
             foreach (var nodeA in caveGraph.Vertices)
             {
+                // Block any tunnels connected to exit to make it slightly more difficult to find
+                bool isObjective = nodeA.ObjectiveDistance == 0;
+                if (isObjective)
+                {
+                    foreach (var caveNodeConnectionData in caveGraph.AdjacentEdges(nodeA))
+                    {
+                        caveNodeConnectionData.IsBlocked = true;
+                    }
+                    continue;
+                }
+                
                 bool isMainPath = nodeA.MainPathDistance == 0;
                 if (isMainPath)
                 {
