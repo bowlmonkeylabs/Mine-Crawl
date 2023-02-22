@@ -165,10 +165,11 @@ namespace BML.Scripts.CaveV2
         public void GenerateCaveGraphButton()
         {
             _retryDepth = 0;
+            SeedManager.Instance.UpdateRandomSeed();
             GenerateCaveGraph();
         }
         
-        private void GenerateCaveGraph(bool useRandomSeed = true)
+        private void GenerateCaveGraph()
         {
             // if (!IsGenerationEnabled)
             //     return;
@@ -1023,7 +1024,7 @@ namespace BML.Scripts.CaveV2
             {
                 if (_enableLogs) Debug.Log($"CaveGraph: Generate on change {_isGenerateOnChangeEnabled}");
                 _retryDepth = 0;
-                GenerateCaveGraph(false);
+                GenerateCaveGraph();
             } 
         }
 
