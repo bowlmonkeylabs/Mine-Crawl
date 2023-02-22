@@ -102,6 +102,12 @@ namespace BML.Scripts.Utils
             return list[randomIndex];
         }
         
+        /// <summary>
+        /// Credit:  http://answers.unity.com/answers/1734538/view.html
+        /// </summary>
+        /// <param name="minValue"></param>
+        /// <param name="maxValue"></param>
+        /// <returns></returns>
         public static float RandomGaussian(float minValue = 0.0f, float maxValue = 1.0f)
         {
             float u, v, S;
