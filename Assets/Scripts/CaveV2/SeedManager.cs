@@ -14,6 +14,8 @@ namespace BML.Scripts.CaveV2 {
         [ShowInInspector, ReadOnly] private bool seedInitialized = false;
         [ShowInInspector, ReadOnly] private Dictionary<string, int> steppedSeeds = new Dictionary<string, int>();
 
+        private int baseSteppedSeed;
+
         public int Seed
         {
             get {
@@ -33,14 +35,18 @@ namespace BML.Scripts.CaveV2 {
 
         public void UpdateRandomSeed(bool logSeedHist = true)
         {
-            bool seedUpdated = _seedHistory.UpdateRandomSeed(logSeedHist);
-            if(seedUpdated) steppedSeeds.Clear();
+            _seedHistory.UpdateRandomSeed(logSeedHist);
         }
 
         private void InitSteppedSeed(string key) {
+            if(baseSteppedSeed != Seed) {
+                steppedSeeds.Clear();
+                baseSteppedSeed = Seed;
+            }
+
             if(!steppedSeeds.ContainsKey(key)) {
                 int step = key.Select((c, i) => ((int) c) * i).Sum();
-                steppedSeeds.Add(key, Seed + step);
+                steppedSeeds.Add(key, baseSteppedSeed + step);
             }
         }
 
