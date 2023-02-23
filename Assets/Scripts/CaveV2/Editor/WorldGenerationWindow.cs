@@ -108,5 +108,8 @@ namespace BML.Scripts.CaveV2.Editor
         {
             _levelObjectSpawner.DestroyLevelObjects();
         }
+
+        [InlineEditor]
+        public SeedHistory seedHistory;
     }
 }

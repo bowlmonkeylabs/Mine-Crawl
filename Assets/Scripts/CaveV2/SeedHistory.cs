@@ -46,8 +46,8 @@ namespace BML.Scripts.CaveV2 {
         }
 
         [PropertyOrder(-1)]
-        [ButtonGroup("Seed")]
-        [Button("Random Seed")]
+        [ButtonGroup("Buttons")]
+        [Button("Generate Random Seed")]
         public bool UpdateRandomSeed(bool logSeedHist = true)
         {
             if (LockSeed) return false;
