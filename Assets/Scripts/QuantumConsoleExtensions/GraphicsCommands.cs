@@ -11,10 +11,10 @@ using UnityEngine.PlayerLoop;
 namespace BML.Scripts.QuantumConsoleExtensions
 {
     [CommandPrefix("graphics.")]
-    public static class GraphicsCommands
+    public class GraphicsCommands : MonoBehaviour
     {   
         [Command("targetFrameRate", "Sets the Unity Application.targetFrameRate")]
-        private static void SetTargetFrameRate(int target)
+        private void SetTargetFrameRate(int target)
         {
             Application.targetFrameRate = target;
         }

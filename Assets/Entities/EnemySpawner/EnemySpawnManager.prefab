@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9182727736491517635}
   - component: {fileID: 9182727736491517644}
   - component: {fileID: 3977774948287924783}
+  - component: {fileID: 4668978062262992813}
   m_Layer: 0
   m_Name: EnemySpawnManager
   m_TagString: Untagged
@@ -122,3 +123,18 @@ MonoBehaviour:
   _isSpawningPaused: {fileID: 11400000, guid: b4e7a4ec09d24a747b1a8f247eee964d, type: 2}
   _hasPlayerExitedStartRoom: {fileID: 11400000, guid: 7e64dee33977c4244bc70a927d83e4f2, type: 2}
   _enableLogs: 0
+--- !u!114 &4668978062262992813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9182727736491517645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0740b3e7ccb84bc2bbb562ae7f1e8170, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enemySpawnManager: {fileID: 9182727736491517644}
+  _currentPercentToMaxSpawn: {fileID: 11400000, guid: 88289707eab0e224fa8a2607ca189c06, type: 2}
+  _playerTransformSceneReference: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
