@@ -75,9 +75,10 @@ namespace BML.Scripts.CaveV2
         private CurveVariable _playerInfluenceAccumulationFalloff;
         [SerializeField] private GameEvent _onAfterUpdatePlayerDistance;
 
-        [TitleGroup("Torches")] 
+        [TitleGroup("Torches")]
         [SerializeField] private DynamicGameEvent _onTorchPlaced;
         [SerializeField] private float _torchInfluenceUpdatePeriod = 1f;
+        [SerializeField] private FloatVariable _torchAreaCoverage;
         [Button]
         private void RecalculateTorchRequirementDebug()
         {
@@ -270,7 +271,7 @@ namespace BML.Scripts.CaveV2
                 poissonBoundsWithPadding.extents / 2);
             var startPosition = RandomUtils.RandomInBounds(startBounds) + startBounds.center;
             startPosition = poissonBoundsWithPadding.max - poissonBoundsWithPadding.extents / 4;
-            var startNode = new CaveNodeData(startPosition, 1f);
+            var startNode = new CaveNodeData(startPosition, 1f, _torchAreaCoverage);
             caveGraph.AddVertex(startNode);
             caveGraph.StartNode = startNode;
             
@@ -280,7 +281,7 @@ namespace BML.Scripts.CaveV2
                 poissonBoundsWithPadding.extents / 2);
             var endPosition = RandomUtils.RandomInBounds(endBounds) + endBounds.center;
             endPosition = poissonBoundsWithPadding.min + poissonBoundsWithPadding.extents / 4;
-            var endNode = new CaveNodeData(endPosition, 1f);
+            var endNode = new CaveNodeData(endPosition, 1f, _torchAreaCoverage);
             caveGraph.AddVertex(endNode);
             caveGraph.EndNode = endNode;
 
@@ -298,7 +299,7 @@ namespace BML.Scripts.CaveV2
                 var pointRelativeToBoundsCenter = point;
                 // var size = Random.Range(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y);
                 var size = caveGenParams.RoomScaling.x;
-                var node = new CaveNodeData(pointRelativeToBoundsCenter, size);
+                var node = new CaveNodeData(pointRelativeToBoundsCenter, size, _torchAreaCoverage);
                 return node;
             });
             caveGraph.AddVertexRange(vertices);

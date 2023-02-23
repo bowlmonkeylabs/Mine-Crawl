@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.CaveV2.SpawnObjects;
 using Sirenix.OdinInspector;
@@ -64,7 +65,9 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public HashSet<SpawnPoint> SpawnPoints { get; set; }
         [ShowInInspector] public HashSet<Torch> Torches { get; set; }
 
-        public CaveNodeData(Vector3 localPosition, float scale)
+        [ShowInInspector] public FloatVariable TorchAreaCoverage { get; set; }
+
+        public CaveNodeData(Vector3 localPosition, float scale, FloatVariable torchAreaCoverage)
         {
             LocalPosition = localPosition;
             Scale = scale;
@@ -82,6 +85,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             BoundsColliders = new HashSet<Collider>();
             SpawnPoints = new HashSet<SpawnPoint>();
             Torches = new HashSet<Torch>();
+
+            TorchAreaCoverage = torchAreaCoverage;
         }
 
         private void OnPlayerVisited()
