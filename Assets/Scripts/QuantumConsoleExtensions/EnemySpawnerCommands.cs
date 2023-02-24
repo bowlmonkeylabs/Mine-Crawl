@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using QFSW.QC;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace BML.Scripts.QuantumConsoleExtensions
 {
