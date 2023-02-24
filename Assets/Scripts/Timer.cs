@@ -1,5 +1,6 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,7 +12,7 @@ namespace BML.Scripts
     {
 
         [SerializeField] private bool _activateOnStart;
-        [SerializeField] private FloatVariable _duration;
+        [SerializeField] private SafeFloatValueReference _duration;
         [SerializeField] private UnityEvent _onFinished;
 
         public float RemainingTime => remainingTime;
