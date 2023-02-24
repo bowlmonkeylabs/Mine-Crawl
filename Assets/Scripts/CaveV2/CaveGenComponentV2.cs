@@ -697,6 +697,12 @@ namespace BML.Scripts.CaveV2
                     }
                     continue;
                 }
+
+                bool isStart = nodeA.StartDistance == 0;
+                if (isStart)
+                {
+                    continue;
+                }
                 
                 bool isMainPath = nodeA.MainPathDistance == 0;
                 if (isMainPath)
