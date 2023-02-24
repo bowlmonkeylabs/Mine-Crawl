@@ -11,6 +11,9 @@
    - Multiple viable ways to optimize resources to maximize benefit
 3. Give the player a good sense of progression within runs
 
+## Settings/Saves Location Windows
+- C:\Users\{User}\AppData\LocalLow\Bowl Monkey Labs\Mine-Crawl
+
 ## Project links
 - [Google Drive folder](https://drive.google.com/drive/folders/1HFU0kCJsle3A-mLqPEWtKl2cRhlXcuas?usp=share_link)
 - [Planning document](https://docs.google.com/document/d/1z5yLVYS_aeklxNvP_5hjAncdHvgVxLulYlT00dvmlOs/edit#heading=h.b6rhuuqjpfra)
