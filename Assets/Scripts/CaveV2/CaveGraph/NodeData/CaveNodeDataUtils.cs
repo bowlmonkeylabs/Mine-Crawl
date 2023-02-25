@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Utils;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace BML.Scripts.CaveV2.CaveGraph.NodeData
 {
@@ -28,14 +26,6 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         }
 
         public static Vector2Int TorchRequirementMinMax = new Vector2Int(2, 8);
-        private static string _addressTorchAreaCoverage = @"Assets/Entities/CaveGen/Cave_TorchAreaCoverage.asset";
-        
-        public static float GetTorchAreaCoverage()
-        {
-            var asyncHandle = Addressables.LoadAssetAsync<FloatVariable>(_addressTorchAreaCoverage);
-            asyncHandle.WaitForCompletion();
-            return asyncHandle.Result.Value;
-        }
 
         public static int CalculateTorchRequirement(this CaveNodeData caveNodeData)
         {
@@ -49,9 +39,10 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
                 Vector3 boundsWorldSize = Vector3.Scale(collider.bounds.size, collider.transform.lossyScale);
                 return boundsWorldSize.x * boundsWorldSize.z;
             });
+            // TODO instead of the Max, this should really measure the total NON-OVERLAPPING collider area
             float nodeApproxArea = approxBoundsAreas.Max();
             
-            float torchRequirement = nodeApproxArea / GetTorchAreaCoverage();
+            float torchRequirement = nodeApproxArea / caveNodeData.TorchAreaCoverage.Value;
             int rounded = Mathf.Clamp(Mathf.RoundToInt(torchRequirement), TorchRequirementMinMax.x, TorchRequirementMinMax.y);
             return rounded;
         }

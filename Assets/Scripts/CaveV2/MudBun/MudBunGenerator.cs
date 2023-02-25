@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.Utils;
@@ -232,18 +233,33 @@ namespace BML.Scripts.CaveV2.MudBun
             TryGenerateWithCooldown();
         }
 
-        [Button("Generate Mud Bun"), PropertyOrder(-1), EnableIf("IsMudBunGenerationEnabled")]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Generation")]
+        [Button("Generate")]
+        [EnableIf("IsMudBunGenerationEnabled")]
+        public void GenerateMudBunInternalButton()
+        {
+            GenerateMudBunInternal();
+        }
+
+        private Coroutine _coroutine_GenerateMudBunInternalHelper;
+        
         protected virtual void GenerateMudBunInternal()
+        {
+            _coroutine_GenerateMudBunInternalHelper = StartCoroutine(this.GenerateMudBunInternalHelper());
+        }
+        
+        protected virtual IEnumerator GenerateMudBunInternalHelper()
         {
             if (_enableLogs) Debug.Log($"MudBun: Generate MudBun");
             if (_mudRenderer.MeshLocked)
             {
-                if (_requireManualUnlock) return;
-                
-                this.UnlockMesh();
+                if (_requireManualUnlock) yield break;
+
+                yield return this.UnlockMeshCoroutine();
             }
             
-            this.GenerateMudBunInternal(_mudRenderer, _instanceAsPrefabs);
+            yield return this.GenerateMudBunInternal(_mudRenderer, _instanceAsPrefabs);
             
             OnAfterGenerate?.Invoke();
 
@@ -253,20 +269,24 @@ namespace BML.Scripts.CaveV2.MudBun
                     || ApplicationUtils.IsPlaying_EditorSafe)
                 {
                     if (_enableLogs) Debug.Log($"MudBun: Lock after generate");
-                    this.LockMesh();
+                    yield return this.LockMeshCoroutine();
                 }
             }
         }
 
-        protected virtual void GenerateMudBunInternal(
+        protected virtual IEnumerator GenerateMudBunInternal(
             MudRenderer mudRenderer,
             bool instanceAsPrefabs
         )
         {
             this.DestroyMudBun(mudRenderer);
+            yield break;
         }
         
-        [Button, PropertyOrder(-1), EnableIf("IsMudBunGenerationEnabled")]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Generation")]
+        [Button("Destroy")]
+        [EnableIf("IsMudBunGenerationEnabled")]
         public void DestroyMudBun()
         {
             DestroyMudBun(_mudRenderer);
@@ -296,17 +316,60 @@ namespace BML.Scripts.CaveV2.MudBun
             }
         }
 
-        [Button, PropertyOrder(-1), DisableIf("$IsMeshLocked")]
+        private Coroutine _coroutine_LockMesh;
+
+        [PropertyOrder(-1)]
+        [ButtonGroup("Locking")]
+        [Button("Lock")]
+        [DisableIf("$IsMeshLocked")]
         public void LockMesh()
         {
-            DoLockMesh(this.transform, _mudRenderer.RecursiveLockMeshByEditor);
+            _coroutine_LockMesh = StartCoroutine(LockMeshCoroutine());
         }
-
-        [Button, PropertyOrder(-1), EnableIf("$IsMeshLocked")]
+        
+        private IEnumerator LockMeshCoroutine()
+        {
+            DoLockMesh(this.transform, _mudRenderer.RecursiveLockMeshByEditor);
+            // TODO implement batching work
+            yield break;
+        }
+        
+        private Coroutine _coroutine_UnlockMesh;
+        
+        [PropertyOrder(-1)]
+        [ButtonGroup("Locking")]
+        [Button("Unlock")]
+        [EnableIf("$IsMeshLocked")]
         public void UnlockMesh()
+        {
+            _coroutine_UnlockMesh = StartCoroutine(UnlockMeshCoroutine());
+        }
+        
+        private IEnumerator UnlockMeshCoroutine()
         {
             if (_enableLogs) Debug.Log($"MudBun: Unlock mesh");
             _mudRenderer.UnlockMesh();
+            // TODO implement batching work
+            yield break;
+        }
+
+        private Coroutine _coroutine_RelockMesh;
+        
+        [PropertyOrder(-1)]
+        [ButtonGroup("Locking")]
+        [Button("Re-lock")]
+        public void RelockMesh()
+        {
+            if (_coroutine_RelockMesh != null) return;
+            
+            _coroutine_RelockMesh = StartCoroutine(RelockMeshCoroutine());
+        }
+        
+        private IEnumerator RelockMeshCoroutine()
+        {
+            if (_enableLogs) Debug.Log($"MudBun: Relock mesh");
+            if (IsMeshLocked) yield return UnlockMeshCoroutine();
+            yield return LockMeshCoroutine();
         }
         
         protected void DoLockMesh(Transform t, bool recursive, int depth = 0)

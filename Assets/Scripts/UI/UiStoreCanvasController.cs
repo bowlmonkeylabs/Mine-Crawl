@@ -28,13 +28,10 @@ namespace BML.Scripts.UI
 
         private List<Button> buttonList = new List<Button>();
 
-        private int buyCount;
-
         private void Awake()
         {
             #warning Remove this once we're done working on the stores/inventory
             GenerateStoreItems();
-            buyCount = 0;
         }
 
         void OnEnable() {
@@ -57,14 +54,7 @@ namespace BML.Scripts.UI
             }
 
             if(_randomizeStoreOnBuy) {
-                if (!_caveGenerator.SafeIsUnityNull())
-                {
-                    Random.InitState(_caveGenerator.CaveGenParams.Seed + buyCount);
-                }
-                else
-                {
-                    Debug.Log($"Cave generator is not assigned, so random seed is not able to be used.");
-                }
+                Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
                 shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
             }
 
@@ -72,7 +62,7 @@ namespace BML.Scripts.UI
                 shownStoreItems = shownStoreItems.Take(_maxItemsShown).ToList();
             }
 
-            if(shownStoreItems.Count > _listContainerStoreButtons.childCount - 1) {
+            if(shownStoreItems.Count > _listContainerStoreButtons.childCount) {
                 Debug.LogError("Store does not have enough buttons to display options");
                 return;
             }
@@ -83,9 +73,6 @@ namespace BML.Scripts.UI
                 buttonGameObject.SetActive(true);
                 buttonList.Add(buttonGameObject.GetComponent<Button>());
             }
-
-            //Resume button will always be last in list
-            buttonList.Add(_listContainerStoreButtons.GetChild(_listContainerStoreButtons.childCount - 1).GetComponent<Button>());
 
             SetNavigationOrder();
         }
@@ -116,7 +103,7 @@ namespace BML.Scripts.UI
         }
 
         protected void OnBuy(object prevStoreItem, object storeItem) {
-            buyCount++;
+            SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
             if(_randomizeStoreOnBuy) {
                 GenerateStoreItems();
             }

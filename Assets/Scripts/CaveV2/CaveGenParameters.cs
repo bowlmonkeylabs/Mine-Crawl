@@ -12,47 +12,6 @@ namespace BML.Scripts.CaveV2
     {
         #region Inspector
 
-        public int Seed
-        {
-            get => _seed;
-            set
-            {
-                _seed = value;
-            }
-        }
-        
-        [HorizontalGroup("Seed")]
-        [DisableIf("$LockSeed")]
-        [OnValueChanged("LogSeedHist")]
-        // [TitleGroup("Seed")]
-        [SerializeField] private int _seed;
-        
-        [HorizontalGroup("Seed", Width = 0.4f)]
-        [LabelText("Lock")]
-        public bool LockSeed;
-
-        [ValueDropdown("rollbackSeedDropdownValues")]
-        [OnValueChanged("RollbackSeed")]
-        [SerializeField] private int _rollbackSeed;
-        private int[] rollbackSeedDropdownValues => _seedValuesHist.ToArray();
-        [SerializeField, HideInInspector]
-        private List<int> _seedValuesHist = new List<int>(_SeedValuesHistCapacity);
-        private static readonly int _SeedValuesHistCapacity = 10;
-        private void LogSeedHist()
-        {
-            if (_seedValuesHist.Count >= _SeedValuesHistCapacity)
-            {
-                var removeCount = Math.Max(0, _seedValuesHist.Count - _SeedValuesHistCapacity) + 1;
-                _seedValuesHist.RemoveRange(0, removeCount);
-            }
-            _seedValuesHist.Add(_seed);
-        }
-        private void RollbackSeed()
-        {
-            // Purposefully avoid the public setter, so that rolling back to a seed does not log it to hist again.
-            _seed = _rollbackSeed;
-        }
-
         [TitleGroup("Poisson")]
         [LabelText("Sample Radius")]
         [Range(2f, 50f)]
@@ -94,11 +53,21 @@ namespace BML.Scripts.CaveV2
         
         [TitleGroup("Graph processing"), PropertySpace(10f, 10f)]
         public List<SteepnessRange> SteepnessRanges = new List<SteepnessRange>();
+
+        [TitleGroup("Graph processing")]
+        [UnityEngine.Tooltip("If true, cave node scaling is calculated based on the closeness of adjacent nodes.")]
+        public bool CalculateRoomSize = false;
         
         [TitleGroup("Graph processing")]
+        [ShowIf("$CalculateRoomSize")] [Indent]
         [UnityEngine.Tooltip("If true, cave node scaling is calculated based adjacency before nodes are filtered to the resulting level path.")]
         public bool CalculateRoomSizeBasedOnRawAdjacency = false;
         
+        [TitleGroup("Graph processing")]
+        [MinMaxSlider(0.1f, 10f, true)]
+        [ShowIf("$CalculateRoomSize")] [Indent]
+        public Vector2 RoomScaling = Vector2.one;
+
         [TitleGroup("Graph processing")]
         public bool OnlyShortestPathBetweenStartAndEnd = true;
         
@@ -106,23 +75,22 @@ namespace BML.Scripts.CaveV2
         public bool UseOffshootsFromMainPath = true;
         
         [TitleGroup("Graph processing")]
+        [ShowIf("$UseOffshootsFromMainPath")] [Indent]
         public int NumOffshoots = 2;
 
         [TitleGroup("Graph processing")] [MinMaxSlider(1, 50, true)]
+        [ShowIf("$UseOffshootsFromMainPath")] [Indent]
         public Vector2Int MinMaxOffshootLength = new Vector2Int(1, 3);
 
         [TitleGroup("Graph processing")]
         public bool MinimumSpanningTree = true;
         
         [TitleGroup("Graph processing")]
+        [ShowIf("$MinimumSpanningTree")] [Indent]
         public int MinimumSpanningNodes = 3;
         
         [TitleGroup("Graph processing")]
         public bool RemoveOrphanNodes = true;
-        
-        [TitleGroup("Mesh generation")]
-        [MinMaxSlider(0.1f, 10f, true)]
-        public Vector2 RoomScaling = Vector2.one;
 
         #endregion
 
@@ -148,15 +116,6 @@ namespace BML.Scripts.CaveV2
         #endregion
 
         #region Utils
-
-        public void UpdateRandomSeed(bool logSeedHist = true)
-        {
-            if (LockSeed) return;
-            
-            if (logSeedHist) LogSeedHist();
-            
-            Seed = Random.Range(Int32.MinValue, Int32.MaxValue);
-        }
 
         public Bounds GetBoundsWithPadding(Bounds bounds, PaddingType paddingType)
         {

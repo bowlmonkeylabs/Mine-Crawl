@@ -100,7 +100,7 @@ namespace BML.Scripts
             _onExplosion.Invoke();
         }
         
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
             //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.

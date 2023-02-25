@@ -176,7 +176,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
             foreach (var caveNodeData in Vertices)
             {
                 var worldPosition = localOrigin + caveNodeData.LocalPosition;
-                var size = caveNodeData.Size;
+                var size = caveNodeData.Scale;
                 Color gizmoColor = color;
                 if (this.IsAdjacentEdgesEmpty(caveNodeData))
                 {

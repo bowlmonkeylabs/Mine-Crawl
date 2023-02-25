@@ -1,83 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BML.ScriptableObjectCore.Scripts.SceneReferences;
-using BML.ScriptableObjectCore.Scripts.Variables;
-using BML.Scripts.Player;
+﻿using BML.Scripts.Player;
 using QFSW.QC;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.PlayerLoop;
 
 namespace BML.Scripts.QuantumConsoleExtensions
 {
     [CommandPrefix("player.")]
-    public static class PlayerCommands
+    public class PlayerCommands : MonoBehaviour
     {
-        private static string _playerControllerTransformSceneReferenceAddress = "Assets/Entities/Player/ScriptableObjects/PlayerTransformSceneReference.asset";
+        [SerializeField] private PlayerController _playerController;
 
         #region Commands
 
         [Command("health", "Sets player health.")]
-        private static async void SetHealth(int health)
+        private void SetHealth(int health)
         {
-            var playerController = await GetActivePlayerController();
-
-            playerController.SetHealth(health);
+            _playerController.SetHealth(health);
         }
         
         [Command("revive", "Sets player health back to the starting value.")]
-        private static async void Revive()
+        private void Revive()
         {
-            var playerController = await GetActivePlayerController();
-
-            playerController.Revive();
+            _playerController.Revive();
         }
         
         [Command("pickaxe_distance", "Sets player pickaxe interact range.")]
-        private static async void SetPickaxeDistance(float dist)
+        private void SetPickaxeDistance(float dist)
         {
-            var playerController = await GetActivePlayerController();
-
-            playerController.SetPickaxeDistance(dist);
-        }
-        
-        #endregion
-        
-        #region Asset access
-        
-        public static async Task<PlayerController> GetActivePlayerController()
-        {
-            var asyncHandle =
-                Addressables.LoadAssetAsync<TransformSceneReference>(_playerControllerTransformSceneReferenceAddress);
-            
-            await asyncHandle.Task;
-            if (asyncHandle.Result.Value == null)
-            {
-                throw new Exception($"Player controller scene instance is not assigned.");
-            }
-
-            var playerController = asyncHandle.Result.Value.GetComponent<PlayerController>();
-            if (playerController == null)
-            {
-                throw new Exception($"Player controller component not found on referenced scene object.");
-            }
-
-            return playerController;
-        }
-        
-        public static async Task<Transform> GetActivePlayerTransform()
-        {
-            var asyncHandle =
-                Addressables.LoadAssetAsync<TransformSceneReference>(_playerControllerTransformSceneReferenceAddress);
-            
-            await asyncHandle.Task;
-            if (asyncHandle.Result.Value == null)
-            {
-                throw new Exception($"Player controller scene instance is not assigned.");
-            }
-
-            return asyncHandle.Result.Value;
+            _playerController.SetPickaxeDistance(dist);
         }
         
         #endregion

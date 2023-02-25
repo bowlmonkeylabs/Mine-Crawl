@@ -27,7 +27,6 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             [PropertySpace(10,0)]
             public string Tag;
             public GameObject Prefab;
-            [FoldoutGroup("Parameters")] public Vector3 RaycastDirection = Vector3.down;
             [FoldoutGroup("Parameters")] public float SpawnPosOffset = 0f;
             [FoldoutGroup("Parameters")] public bool RequireStableSurface;
             [FoldoutGroup("Parameters")] public bool InstanceAsPrefab;
@@ -41,11 +40,6 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         }
         public List<SpawnAtTagParameters> SpawnAtTags;
 
-        public LayerMask TerrainLayerMask;
-        
-        [Range(0f,100f)]
-        public float MaxRaycastLength = 10f;
-        
         #endregion
         
         #region Unity lifecycle

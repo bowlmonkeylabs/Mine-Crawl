@@ -57,6 +57,11 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             }
         }
 
+        public T DefaultValue
+        {
+            get => defaultValue;
+        }
+
         [Button]
         public void BroadcastUpdate()
         {

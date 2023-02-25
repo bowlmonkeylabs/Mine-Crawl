@@ -39,10 +39,7 @@ namespace Intensity
         
         [TitleGroup("Intensity Response")]
         [SerializeField] private IntensityResponseStateData _intensityResponse;
-        [SerializeField] private SafeFloatValueReference _maxIntensityScore;
-        [SerializeField] private SafeFloatValueReference _minIntensityScore;
-        [SerializeField] private IntVariable _currentDifficulty;
-        [SerializeField] private AnimationCurve _maxIntensityCurve;
+        [SerializeField] private EnemySpawnerParams _currentParams;
         [SerializeField] private float _timeLimitAtMaxIntensity = 5f;
         [SerializeField] private float _timeLimitAtMinIntensity = 5f;
         [Tooltip("If true, all idle enemies X nodes away from player when intensity response becomes decreasing will be despawned")]
@@ -80,7 +77,6 @@ namespace Intensity
 
         private void OnEnable()
         {
-            _currentDifficulty.Subscribe(UpdateMaxIntensity);
             _onEnemyKilled.Subscribe(OnEnemyKilledDynamic);
             if (!playerHealthController.SafeIsUnityNull())
             {
@@ -94,7 +90,6 @@ namespace Intensity
 
         private void OnDisable()
         {
-            _currentDifficulty.Unsubscribe(UpdateMaxIntensity);
             _onEnemyKilled.Unsubscribe(OnEnemyKilledDynamic);
             if (!playerHealthController.SafeIsUnityNull())
             {
@@ -131,7 +126,7 @@ namespace Intensity
                 case IntensityResponse.Increasing:
                     
                     // Just reached max intensity threshold
-                    if (_intensityScore.Value >= _maxIntensityScore.Value)
+                    if (_intensityScore.Value >= _currentParams.MaxIntensity)
                     {
                         _intensityResponse.Value = IntensityResponse.AboveMax;
                     }
@@ -141,13 +136,13 @@ namespace Intensity
                 case IntensityResponse.AboveMax:
                     
                     // Accumulating time at max intensity
-                    if (_intensityScore.Value >= _maxIntensityScore.Value)
+                    if (_intensityScore.Value >= _currentParams.MaxIntensity)
                     {
                         timeAtMaxIntensity += _intensityScoreUpdatePeriod;
                     }
             
                     // Stop accumulating and reset if drop below threshold
-                    if (_intensityScore.Value < _maxIntensityScore.Value)
+                    if (_intensityScore.Value < _currentParams.MaxIntensity)
                     {
                         _intensityResponse.Value = IntensityResponse.Increasing;
                         timeAtMaxIntensity = 0f;
@@ -174,7 +169,7 @@ namespace Intensity
                 case IntensityResponse.Decreasing:
                     
                     // Just reached min intensity threshold
-                    if (_intensityScore.Value <= _minIntensityScore.Value)
+                    if (_intensityScore.Value <= _currentParams.MinIntesity)
                     {
                         _intensityResponse.Value = IntensityResponse.BelowMin;
                     }
@@ -183,13 +178,13 @@ namespace Intensity
                 case IntensityResponse.BelowMin:
                     
                     // Accumulating time at min intensity
-                    if (_intensityScore.Value <= _minIntensityScore.Value)
+                    if (_intensityScore.Value <= _currentParams.MinIntesity)
                     {
                         timeAtMinIntensity += _intensityScoreUpdatePeriod;
                     }
             
                     // Stop accumulating and reset if go above threshold
-                    if (_intensityScore.Value > _minIntensityScore.Value)
+                    if (_intensityScore.Value > _currentParams.MinIntesity)
                     {
                         _intensityResponse.Value = IntensityResponse.Decreasing;
                         timeAtMinIntensity = 0f;
@@ -209,11 +204,6 @@ namespace Intensity
             }
         }
 
-        private void UpdateMaxIntensity()
-        {
-            _maxIntensityScore.Value = _maxIntensityCurve.Evaluate(_currentDifficulty.Value);
-        }
-
         private void TryDecayIntensityScore()
         {
             bool doDecay = !_anyEnemiesEngaged.Value || _intensityResponse.Value == IntensityResponse.Decreasing;
@@ -229,7 +219,7 @@ namespace Intensity
             else
                 decayFactor = 1f;
 
-            float decay = (_intensityScoreDecayPercent/100f * _maxIntensityScore.Value * _intensityScoreUpdatePeriod);
+            float decay = (_intensityScoreDecayPercent/100f * _currentParams.MaxIntensity * _intensityScoreUpdatePeriod);
             decay *= decayFactor;
 
             float newIntensityScore = (_intensityScore.Value - decay);

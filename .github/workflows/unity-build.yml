@@ -65,6 +65,8 @@ jobs:
           git config user.email "bowlmonkeylabs@gmail.com"
           git config user.name bowlmonkeylabs
           git annex init ${{ runner.os }}
+          git annex enableremote cloud-s3
+          git annex enableremote cloud
           git annex sync --content
           git annex unlock
           cd ../..

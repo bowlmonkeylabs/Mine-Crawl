@@ -26,7 +26,7 @@ namespace BML.Scripts
 
             if (distanceMoved > _distanceToStep)
             {
-                distanceMoved -= _distanceToStep;
+                distanceMoved = 0f;
                 _onFootstep.Invoke();
             }
 

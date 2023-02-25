@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph;
@@ -24,9 +25,6 @@ namespace BML.Scripts.CaveV2.MudBun
         
         [Required, InlineEditor, SerializeField]
         private CaveGraphMudBunRendererParameters _caveGraphRenderParams;
-        
-        [Required, InlineEditor, SerializeField]
-        private DifficultyColorParams _difficultyColorParams;
 
         #endregion
         
@@ -50,31 +48,27 @@ namespace BML.Scripts.CaveV2.MudBun
 
         #region MudBun
 
-        private const int STEP_ID = 2;
-
-        protected override void GenerateMudBunInternal(
+        protected override IEnumerator GenerateMudBunInternal(
             MudRenderer mudRenderer,
             bool instanceAsPrefabs
         )
         {
             int totalBrushCount = _caveGraph.VertexCount + _caveGraph.EdgeCount; 
-            if (totalBrushCount > 100)
+            if (totalBrushCount > 200)
             {
                 throw new Exception($"MudBun will not be generated with such a large cave graph (Vertices:{_caveGraph.VertexCount}, Edge:{_caveGraph.EdgeCount})");
             }
             
             base.GenerateMudBunInternal(mudRenderer, instanceAsPrefabs);
             
-            Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("MudBunRenderer"));
 
             var localOrigin = mudRenderer.transform.position;
-
             
-
             // Spawn "rooms" at each cave node
             foreach (var caveNodeData in _caveGraph.Vertices)
             {
-                bool changeDifficultyColor = true;
+                bool changeNodeColor = true;
                 
                 // Select room to spawn
                 GameObject roomPrefab;
@@ -84,7 +78,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     roomPrefab = _caveGraphRenderParams.StartRoomPrefab;
                     roomScale = Vector3.one;
-                    changeDifficultyColor = false;
+                    changeNodeColor = false;
                 }
                 else if (caveNodeData == _caveGraph.EndNode &&
                          !_caveGraphRenderParams.EndRoomPrefab.SafeIsUnityNull())
@@ -97,13 +91,13 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     roomPrefab = _caveGraphRenderParams.MerchantRoomPrefab;
                     roomScale = Vector3.one;
-                    changeDifficultyColor = false;
+                    changeNodeColor = false;
                 }
                 else
                 {
                     // TODO systematically choose which rooms to spawn
-                    roomPrefab = _caveGraphRenderParams.GetRandomRoom();
-                    roomScale = Vector3.one * caveNodeData.Size;
+                    roomPrefab = _caveGraphRenderParams.GetRandomRoom(caveNodeData.NodeType);
+                    roomScale = Vector3.one * caveNodeData.Scale;
                 }
 
                 // Spawn room
@@ -117,38 +111,72 @@ namespace BML.Scripts.CaveV2.MudBun
                 if (caveNodeDataDebugComponent != null)
                 {
                     caveNodeDataDebugComponent.CaveNodeData = caveNodeData;
-                    if (changeDifficultyColor)
+                    if (changeNodeColor)
                     {
-                        var difficultyColorList = _difficultyColorParams.DifficultyColorList;
-                        var colorIndex = Mathf.Min(caveNodeData.Difficulty, _difficultyColorParams.DifficultyColorList.Count - 1);
-                        var difficultyColor = difficultyColorList[colorIndex];
-
                         List<MudMaterial> materials = caveNodeData.GameObject.GetComponentsInChildren<MudMaterial>()?.ToList();
                         materials?.ForEach(m =>
                         {
-                            m.Color *= difficultyColor;
+                            m.Color *= _caveGraphRenderParams.CaveColor;
                         });
                     }
                 }
             }
+
+            // Doing some of this work across multiple frames actually seems to be pretty important;
+            // For one, the colliders which are placed with the rooms seem to need to do some initialization before their bounds correctly reflect their world position.
+            yield return null;
             
             // Spawn "tunnel" on each edge to ensure nodes are connected
+            bool first = true;
             foreach (var caveNodeConnectionData in _caveGraph.Edges)
             {
+                
                 var source = caveNodeConnectionData.Source;
                 var target = caveNodeConnectionData.Target;
+                var sourceWorldPosition = _caveGenerator.LocalToWorld(source.LocalPosition);
+                var targetWorldPosition = _caveGenerator.LocalToWorld(target.LocalPosition);
                 
                 // Calculate tunnel position
-                var sourceTargetDiff = (target.LocalPosition - source.LocalPosition);
-                var sourceTargetDiffProjectedToGroundNormalized = Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
-                var sourceEdgePosition = source.LocalPosition +
-                                         (source.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * sourceTargetDiffProjectedToGroundNormalized);
-                var targetEdgePosition = target.LocalPosition +
-                                         (target.Size / 2 * _caveGraphRenderParams.BaseRoomRadius * -1 * sourceTargetDiffProjectedToGroundNormalized);
-                
-                var edgeDiff = (targetEdgePosition - sourceEdgePosition);
-                var edgeMidPosition = source.LocalPosition + edgeDiff / 2;
+                var edgeDiff = (targetWorldPosition - sourceWorldPosition);
+                var edgeDirFlattened = Vector3.ProjectOnPlane(edgeDiff, Vector3.up).normalized * 1f;
+                var edgeMidPosition = sourceWorldPosition + edgeDiff / 2;
                 var edgeRotation = Quaternion.LookRotation(edgeDiff);
+                var edgeFlattenedRotation = Quaternion.LookRotation(edgeDirFlattened, Vector3.up);
+
+                if (first)
+                {
+                    // first = false;
+
+                    var sourceTestPosition = sourceWorldPosition + edgeDiff / 4;
+                    var targetTestPosition = targetWorldPosition - edgeDiff / 4;
+                    // TODO prevent tunnels from cutting into rooms
+                    // var sourceEdgePosition = source.LocalPosition;
+                    // var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(edgeMidPosition);
+                    var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(sourceTestPosition, edgeRotation);
+                    var sourceColliderCenter = source.BoundsColliders.Select(coll => coll.bounds.center).Average();
+                    sourceEdgePosition.y = sourceColliderCenter.y;
+                    // sourceEdgePosition -= edgeDirFlattened;
+                    sourceEdgePosition -= (edgeFlattenedRotation * _caveGraphRenderParams.TunnelConnectionOffset);
+                    
+                    // var targetEdgePosition = target.LocalPosition;
+                    // var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(edgeMidPosition);
+                    var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(targetTestPosition, edgeRotation);
+                    var targetColliderCenter = target.BoundsColliders.Select(coll => coll.bounds.center).Average();
+                    targetEdgePosition.y = targetColliderCenter.y;
+                    // targetEdgePosition += edgeDirFlattened;
+                    targetEdgePosition += (edgeFlattenedRotation * _caveGraphRenderParams.TunnelConnectionOffset);
+                    // var targetColl = target.BoundsColliders.First();
+                    // Debug.Log(
+                    //     $"Collider Pos Target (Transform {targetColl.transform.position}) (Collider {targetColl.bounds.center}) (Node {target.LocalPosition})");
+                    // var targetEdgePosition = target.BoundsColliders.First().transform.position;
+                    // Debug.Log($"Local Position (Source {source.LocalPosition}) (Target {target.LocalPosition})");
+                    // Debug.Log($"Closest Point (Source {sourceEdgePosition}) (Target {targetEdgePosition}) (Edge Mid {edgeMidPosition})");
+
+                    edgeDiff = (targetEdgePosition - sourceEdgePosition);
+                    edgeMidPosition = sourceEdgePosition + edgeDiff / 2;
+                    edgeRotation = Quaternion.LookRotation(edgeDiff);
+                }
+
                 var edgeLength = edgeDiff.magnitude;
                 var localScale = new Vector3(caveNodeConnectionData.Radius, caveNodeConnectionData.Radius, edgeLength);
                 // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
@@ -175,18 +203,16 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     caveNodeConnectionDataDebugComponent.CaveNodeConnectionData = caveNodeConnectionData;
 
-                    var difficultyColorList = _difficultyColorParams.DifficultyColorList;
-                    var colorIndex = Mathf.Min(caveNodeConnectionData.Difficulty, _difficultyColorParams.DifficultyColorList.Count - 1);
-                    var difficultyColor = difficultyColorList[colorIndex];
-
                     List<MudMaterial> materials = caveNodeConnectionData.GameObject.GetComponentsInChildren<MudMaterial>()?.ToList();
                     materials?.ForEach(m =>
                     {
-                        m.Color *= difficultyColor;
+                        m.Color *= _caveGraphRenderParams.CaveColor;
                     });
                     
                 }
             }
+
+            yield break;
         }
 
         protected override void GenerateMudBunInternal()

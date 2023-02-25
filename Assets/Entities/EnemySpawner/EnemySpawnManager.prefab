@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9182727736491517635}
   - component: {fileID: 9182727736491517644}
   - component: {fileID: 3977774948287924783}
-  - component: {fileID: 3292769644130016812}
+  - component: {fileID: 4668978062262992813}
   m_Layer: 0
   m_Name: EnemySpawnManager
   m_TagString: Untagged
@@ -55,16 +55,14 @@ MonoBehaviour:
   _maxRaycastLength: 10
   _despawnNodeDistance: 4
   _isSpawningPaused: {fileID: 11400000, guid: b4e7a4ec09d24a747b1a8f247eee964d, type: 2}
-  _currentSpawnDelay: {fileID: 11400000, guid: 352b10b7d534eae4d821308690c1fbfb, type: 2}
-  _currentSpawnCap: {fileID: 11400000, guid: f57160f80ef0ba046ac7c6bf4b3f0228, type: 2}
   _currentEnemyCount: {fileID: 11400000, guid: 6fdcc6ab717b88f4fa6f8ecf81b9db82, type: 2}
-  _currentDifficulty: {fileID: 11400000, guid: 1c2caa5f2dbacd347ac45e327d3a1fa6, type: 2}
+  _currentDifficulty: {fileID: 11400000, guid: 0830305a053404448bcd7a413e453b06, type: 2}
+  _currentParams: {fileID: 11400000, guid: c671f77f8ce47ad4e809a4b432bd8e52, type: 2}
   _hasPlayerExitedStartRoom: {fileID: 11400000, guid: 7e64dee33977c4244bc70a927d83e4f2, type: 2}
   _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
+  _onAfterGenerateLevelObjects: {fileID: 11400000, guid: 6b14c457b3e8a0446918006e4929ed06, type: 2}
   _enemySpawnerParamList:
-  - {fileID: 11400000, guid: b77fad53ac29c2a4d8f695ee6eccc2b4, type: 2}
-  - {fileID: 11400000, guid: c00a9dff10eed6e4e8f2dead8903ba9d, type: 2}
-  - {fileID: 11400000, guid: 07b8683ea15bc7949be0c095ac7d4de3, type: 2}
+  - {fileID: 11400000, guid: 610add04d36c99744b8634adbf223abc, type: 2}
   _minMaxSpawnPlayerDistance: {x: 1, y: 2}
   _weightSpawningInUnexplored: 0.5
   _weightSpawningTowardsObjective: 0.6
@@ -117,52 +115,7 @@ MonoBehaviour:
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 93e2d79ad44ed104a9eb3c022677d8a3, type: 2}
   _intensityResponse: {fileID: 11400000, guid: 396eba2aa7a981c42837f02430859dfa, type: 2}
-  _maxIntensityScore:
-    ReferenceTypeSelector: 1
-    ConstantValue: 0
-    ReferenceValue_FloatVariable: {fileID: 11400000, guid: 2dd49ff9ee93e7d4eb6e2d2b71b73382, type: 2}
-    ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-  _minIntensityScore:
-    ReferenceTypeSelector: 0
-    ConstantValue: 0
-    ReferenceValue_FloatVariable: {fileID: 0}
-    ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-  _currentDifficulty: {fileID: 11400000, guid: 1c2caa5f2dbacd347ac45e327d3a1fa6, type: 2}
-  _maxIntensityCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 8
-      inSlope: 4
-      outSlope: 4
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 12
-      inSlope: 3.5
-      outSlope: 3.5
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 2
-      value: 15
-      inSlope: 3
-      outSlope: 3
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  _currentParams: {fileID: 11400000, guid: c671f77f8ce47ad4e809a4b432bd8e52, type: 2}
   _timeLimitAtMaxIntensity: 5
   _timeLimitAtMinIntensity: 3
   _despawnIdleEnemies: 1
@@ -170,7 +123,7 @@ MonoBehaviour:
   _isSpawningPaused: {fileID: 11400000, guid: b4e7a4ec09d24a747b1a8f247eee964d, type: 2}
   _hasPlayerExitedStartRoom: {fileID: 11400000, guid: 7e64dee33977c4244bc70a927d83e4f2, type: 2}
   _enableLogs: 0
---- !u!114 &3292769644130016812
+--- !u!114 &4668978062262992813
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -179,9 +132,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 9182727736491517645}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea8c8033b99544c0b1949459600276d4, type: 3}
+  m_Script: {fileID: 11500000, guid: 0740b3e7ccb84bc2bbb562ae7f1e8170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentDifficulty: {fileID: 11400000, guid: 1c2caa5f2dbacd347ac45e327d3a1fa6, type: 2}
-  _playerInfluenceState: {fileID: 11400000, guid: 04bcdf30c05b96b4c9453f14061e3591, type: 2}
-  _updateInterval: 1
+  _enemySpawnManager: {fileID: 9182727736491517644}
+  _currentPercentToMaxSpawn: {fileID: 11400000, guid: 88289707eab0e224fa8a2607ca189c06, type: 2}
+  _playerTransformSceneReference: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}

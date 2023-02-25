@@ -37,12 +37,12 @@ namespace BML.Scripts
         [Range(0f,100f), SerializeField] private float _maxRaycastLength = 10f;
         [SerializeField, Range(1, 10)] private int _despawnNodeDistance = 5;
         [SerializeField] private BoolVariable _isSpawningPaused;
-        [SerializeField] private FloatVariable _currentSpawnDelay;
-        [SerializeField] private FloatVariable _currentSpawnCap;
         [SerializeField] private IntVariable _currentEnemyCount;
         [SerializeField] private IntVariable _currentDifficulty;
+        [SerializeField] private EnemySpawnerParams _currentParams;
         [SerializeField] private BoolVariable _hasPlayerExitedStartRoom;
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
+        [SerializeField] private GameEvent _onAfterGenerateLevelObjects;
         [Required, SerializeField] [InlineEditor()] private List<EnemySpawnerParams> _enemySpawnerParamList = new List<EnemySpawnerParams>();
 
         [UnityEngine.Tooltip(
@@ -72,43 +72,38 @@ namespace BML.Scripts
         [ReadOnly, ShowInInspector] private Dictionary<string, List<SpawnPoint>> _allSpawnPointsByTag;
         [ReadOnly, ShowInInspector] private Dictionary<string, List<SpawnPoint>> _activeSpawnPointsByTag;
 
-        private EnemySpawnerParams currentParams;
         private float lastSpawnTime = Mathf.NegativeInfinity;
         private float lastDespawnTime = Mathf.NegativeInfinity;
-        private int totalEnemySpawnCount;
-        private int retryCount;
         
         #region Unity lifecycle
 
         private void Awake()
         {
             InitSpawnCosts();
-            totalEnemySpawnCount = 0;
-            retryCount = 0;
         }
 
         private void OnEnable()
         {
-            
-            _caveGenerator.OnAfterGenerate += InitSpawnPoints;
             _caveGenerator.OnAfterUpdatePlayerDistance += CacheActiveSpawnPoints;
             _onEnemyKilled.Subscribe(OnEnemyKilled);
+            _currentDifficulty.Subscribe(UpdateDifficultyParams);
             
             _isSpawningPaused.Value = true;
             _hasPlayerExitedStartRoom.Subscribe(EnableSpawning);
+            _onAfterGenerateLevelObjects.Subscribe(InitSpawnPoints);
         }
 
         private void OnDisable()
         {
-            _caveGenerator.OnAfterGenerate -= InitSpawnPoints;
             _caveGenerator.OnAfterUpdatePlayerDistance -= CacheActiveSpawnPoints;
             _onEnemyKilled.Unsubscribe(OnEnemyKilled);
+            _currentDifficulty.Unsubscribe(UpdateDifficultyParams);
             _hasPlayerExitedStartRoom.Unsubscribe(EnableSpawning);
+            _onAfterGenerateLevelObjects.Unsubscribe(InitSpawnPoints);
         }
 
         private void Update()
         {
-            UpdateDifficultyParams();
             if (!IsDespawningPaused) HandleDespawning();
             if (!IsSpawningPaused && !_isSpawningPaused.Value) HandleSpawning();
         }
@@ -151,8 +146,6 @@ namespace BML.Scripts
         #endregion
         
         #region Spawn points
-
-        private int StepID = 4;
 
         [Button("Debug Init Spawn Costs")]
         private void InitSpawnCosts()
@@ -263,6 +256,9 @@ namespace BML.Scripts
                     weightModifierAhead = (playerDistanceDelta * _weightSpawningAheadOfPlayer);                 // [-1, 0]
 
                     weightModifierPlayerInfluence = (0 - caveNodeData.PlayerInfluence) * _weightSpawningByPlayerInfluence;                         // [-1, 0]
+
+                    if (_enableLogs)
+                        Debug.Log($"baseWeight({baseWeight}) + weightModifierUnexplored({weightModifierUnexplored}) + weightModifierObjective({weightModifierObjective}) + weightModifierAhead({weightModifierAhead}) + weightModifierPlayerInfluence({weightModifierPlayerInfluence})");
                 }
                     
                 float modifiedWeight = Mathf.Clamp01(baseWeight + weightModifierUnexplored + weightModifierObjective + weightModifierAhead + weightModifierPlayerInfluence);
@@ -289,17 +285,8 @@ namespace BML.Scripts
 
         private void UpdateDifficultyParams()
         {
-            if (_enemySpawnerParamList.Count != _caveGenerator.DifficultySegmentCount)
-            {
-                Debug.LogError("Enemy spawn param list should have number of elements equal to the number" +
-                               " of difficulty segments set on cave generator!");
-                return;
-            }
-
             //Use calculated difficulty to decide which parameters to use
-            currentParams = _enemySpawnerParamList[_currentDifficulty.Value];
-            _currentSpawnDelay.Value = currentParams.SpawnDelay;
-            _currentSpawnCap.Value = currentParams.SpawnCap;
+            _currentParams = _enemySpawnerParamList[_currentDifficulty.Value];
         }
 
         public void DespawnAll()
@@ -348,7 +335,7 @@ namespace BML.Scripts
 
         private void HandleSpawning()
         {
-            if (Time.time < lastSpawnTime + _currentSpawnDelay.Value)
+            if (Time.time < lastSpawnTime + _currentParams.SpawnDelay)
                 return;
             
             bool noActiveSpawnPoints = _activeSpawnPointsByTag == null
@@ -362,7 +349,7 @@ namespace BML.Scripts
 
             // Check against current enemy cap
             UpdateEnemyCount();
-            if (_currentEnemyCount.Value >= _currentSpawnCap.Value)
+            if (_currentEnemyCount.Value >=  _currentParams.SpawnCap)
             {
                 if (_enableLogs) Debug.Log($"HandleSpawning Spawn cap full");
                 return;
@@ -370,11 +357,11 @@ namespace BML.Scripts
             
             //TODO: Here use the right spawn params based on difficulty of room enemy is being spawned in
             
-            var weightPairs =  currentParams.SpawnAtTags.Select(e => 
+            var weightPairs =  _currentParams.SpawnAtTags.Select(e => 
                 new RandomUtils.WeightPair<EnemySpawnParams>(e, e.NormalizedSpawnWeight)).ToList();
 
-            Random.InitState(_caveGenerator.CaveGenParams.Seed + StepID + totalEnemySpawnCount + retryCount);
-            retryCount++;
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("EnemySpawerCount") + SeedManager.Instance.GetSteppedSeed("EnemySpawerRetry"));
+            SeedManager.Instance.UpdateSteppedSeed("EnemySpawerRetry");
             
             EnemySpawnParams randomEnemyParams = RandomUtils.RandomWithWeights(weightPairs);
             
@@ -443,12 +430,12 @@ namespace BML.Scripts
             // Spawn chosen enemy at chosen spawn point
             var newEnemy = SpawnEnemy(spawnPos, randomEnemyParams, randomSpawnPoint, randomSpawnPoint.ParentNode,
                 true);
-            totalEnemySpawnCount++;
+            SeedManager.Instance.UpdateSteppedSeed("EnemySpawerCount");
 
             if (randomEnemyParams.OccupySpawnPoint)
                 randomSpawnPoint.Occupied = true;
 
-            retryCount = 0;
+            SeedManager.Instance.UpdateSteppedSeed("EnemySpawerRetry", SeedManager.Instance.Seed);
             lastSpawnTime = Time.time;
         }
         

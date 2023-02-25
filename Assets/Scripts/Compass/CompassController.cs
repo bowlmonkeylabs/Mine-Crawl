@@ -3,7 +3,7 @@ using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using Random = UnityEngine.Random;
@@ -12,7 +12,7 @@ namespace BML.Scripts.Compass
 {
     public class CompassController : MonoBehaviour
     {
-        [SerializeField] private GameObject _target = null;
+        [SerializeField] private TransformSceneReference _target = null;
         [SerializeField] private float _maxAngularVelocity = 20;
 
         [SerializeField] [Range(-100f, 100f)] private float _footstepNoiseInfluence = 1f;
@@ -101,7 +101,7 @@ namespace BML.Scripts.Compass
 
             //Get the required rotation based on the target position - we can do this by getting the direction
             //from the current position to the target. Then use rotate towards and look rotation, to get a quaternion thingy.
-            var targetDirection = transform.position - _target.transform.position;
+            var targetDirection = transform.position - _target.Value.transform.position;
             Vector3 rotationDirection = Vector3.RotateTowards(transform.forward, targetDirection, 360, 0.00f);
             Quaternion targetRotation = Quaternion.LookRotation(rotationDirection);
 

@@ -10,6 +10,8 @@ namespace BML.Scripts
     {
         public float SpawnDelay = 5f;
         public float SpawnCap = 5f;
+        public float MaxIntensity = 5;
+        public float MinIntesity = 1;
         public List<EnemySpawnParams> SpawnAtTags;
     }
     
