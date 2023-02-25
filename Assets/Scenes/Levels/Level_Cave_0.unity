@@ -598,20 +598,8 @@ MonoBehaviour:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 15, y: 10, z: 15}
   _overrideBounds: 0
-  _retrySameSeed:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: '{I} '
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 405d358d90f733e4eb82aa4e6f47a83a, type: 2}
-  _seedDebugReference:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: '{I} '
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: c857b0d81cdcf3c46a02132ca1a0cfd4, type: 2}
+  _playerSceneReference: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
+  _greenRoomSceneReference: {fileID: 11400000, guid: cbcd2f5fac878f349b8e0f07ca61e56b, type: 2}
   _caveGenParams: {fileID: 11400000, guid: d8637812e38f8cb449d5497d7332cce7, type: 2}
   _caveGraphMudBunRenderer: {fileID: 1231575172}
   _levelObjectSpawner: {fileID: 1496774518}
@@ -623,6 +611,7 @@ MonoBehaviour:
   _onAfterUpdatePlayerDistance: {fileID: 11400000, guid: 496effc107f1db1489fa660bbddac939, type: 2}
   _onTorchPlaced: {fileID: 11400000, guid: 5f3acfc7d5f8c7e4bbd007a4fb248052, type: 2}
   _torchInfluenceUpdatePeriod: 1
+  _torchAreaCoverage: {fileID: 11400000, guid: 8cb0b9817bf06404eb8a1e77430a59e7, type: 2}
   _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
   _enemyKilledAddInfluence: 0.5
   _enableLogs: 0
@@ -957,7 +946,7 @@ MonoBehaviour:
   RayMarchNoiseBaseOctaveSize: {x: 1, y: 1, z: 1}
   RayMarchNoiseNumOctaves: 2
   RayMarchNoiseOctaveOffsetFactor: 0.5
-  ClickSelection: 2
+  ClickSelection: 1
   AlwaysDrawGizmos: 0
   DrawRawBrushBounds: 0
   DrawComputeBrushBounds: 0
@@ -1714,10 +1703,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3977774948287924783, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _currentParams
-      value: 
-      objectReference: {fileID: 11400000, guid: c671f77f8ce47ad4e809a4b432bd8e52, type: 2}
     - target: {fileID: 9182727736491517635, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
       propertyPath: m_RootOrder
       value: 11
@@ -1763,41 +1748,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _enableLogs
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
       propertyPath: _caveGenerator
       value: 
       objectReference: {fileID: 771419349}
     - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _currentParams
-      value: 
-      objectReference: {fileID: 11400000, guid: c671f77f8ce47ad4e809a4b432bd8e52, type: 2}
-    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
       propertyPath: _enemyContainer
       value: 
       objectReference: {fileID: 1751489072}
-    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _currentDifficulty
-      value: 
-      objectReference: {fileID: 11400000, guid: 0830305a053404448bcd7a413e453b06, type: 2}
-    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _enemySpawnerParams
-      value: 
-      objectReference: {fileID: 11400000, guid: 610add04d36c99744b8634adbf223abc, type: 2}
-    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _enemySpawnerParamList.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _enemySpawnerParamList.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 610add04d36c99744b8634adbf223abc, type: 2}
-    - target: {fileID: 9182727736491517644, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
-      propertyPath: _enemySpawnerParamList.Array.data[1]
-      value: 
-      objectReference: {fileID: 11400000, guid: 07b8683ea15bc7949be0c095ac7d4de3, type: 2}
     - target: {fileID: 9182727736491517645, guid: 7d8a8568ed9a50a44ac2cf45a282bc24, type: 3}
       propertyPath: m_Name
       value: EnemySpawnManager

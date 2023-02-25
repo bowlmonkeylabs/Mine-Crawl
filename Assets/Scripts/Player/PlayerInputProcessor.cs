@@ -41,6 +41,8 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolReference _isUpgradeStoreOpen;
 		[SerializeField] private GameEvent _onStoreFailOpen;
 		[SerializeField] private BoolReference _isPlayerInCombat;
+        [SerializeField] private IntReference _rareResourceCount;
+        [SerializeField] private IntReference _minRareResouceCount;
 		[SerializeField] private BoolReference _isDebugConsoleOpen;
 		[SerializeField] private BoolReference _settingDoFreezeOnDebugConsole;
 		[SerializeField] private BoolReference _isDebugOverlayOpen; // This is specifically excluded from _containerUiMenuStates, so this acts as an overlay rather than an interactable menu.
@@ -249,6 +251,10 @@ namespace BML.Scripts.Player
 				_onStoreFailOpen.Raise();
 				return;
 			}
+
+            if(_isUpgradeStoreOpen.Value && _rareResourceCount.Value >= _minRareResouceCount.Value) {
+                return;
+            }
 
 			_isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}

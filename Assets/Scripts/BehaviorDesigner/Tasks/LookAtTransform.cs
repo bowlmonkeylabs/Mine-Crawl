@@ -3,6 +3,7 @@ using BehaviorDesigner.Runtime.Tasks;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.Scripts.Utils;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.Tasks
 {
@@ -10,38 +11,51 @@ namespace BML.Scripts.Tasks
     [TaskDescription("Rotates the transform so the forward vector points at worldPosition. Returns Success.")]
     public class LookAtTransform : Action
     {
-        [BehaviorDesigner.Runtime.Tasks.Tooltip("The Transform that the task operates on. If null the task Transform is used.")]
-        public SharedTransform _targetTransform;
-        [BehaviorDesigner.Runtime.Tasks.Tooltip("The Transform to look at. If null, will try to use target")]
-        public TransformSceneReference _targetRef;
+        [BehaviorDesigner.Runtime.Tasks.Tooltip("The Transform that the task operates on. If null the task Transform is used.")] [FormerlySerializedAs("_targetTransform")]
+        public SharedTransform _targetRotateTransform;
+        [BehaviorDesigner.Runtime.Tasks.Tooltip("The Transform to look at. If null, will try to use target")] [FormerlySerializedAs("_targetRef")]
+        public TransformSceneReference _targetLookRef;
         [BehaviorDesigner.Runtime.Tasks.Tooltip("The Transform to look at.")]
-        public SharedTransform _target;
-        [BehaviorDesigner.Runtime.Tasks.Tooltip("If true, will only rotate about the world up axis")]
+        public SharedTransform _targetLook;
+        [BehaviorDesigner.Runtime.Tasks.Tooltip("If true, will only rotate about the local up axis")]
         public bool _horizontalOnly = true;
         [BehaviorDesigner.Runtime.Tasks.Tooltip("If true, will keep running task each frame")]
         public bool _keepRunning = true;
 
-        private Transform currentTarget;
+        private Transform currentRotateTarget;
+        private Transform currentLookAtTarget;
+        private Vector3 originalUpDirection;
+        private Vector3 dir;
         
         public override void OnStart()
         {
-            if (_targetTransform.Value == null)
-                _targetTransform.Value = transform;
+            currentRotateTarget = (_targetRotateTransform != null && _targetRotateTransform.Value != null) ?
+                _targetRotateTransform.Value : transform;
                 
-            currentTarget = (_targetRef != null && _targetRef.Value != null) ? _targetRef.Value : _target.Value;
+            currentLookAtTarget = (_targetLookRef != null && _targetLookRef.Value != null) ?
+                _targetLookRef.Value : _targetLook.Value;
+            
+            originalUpDirection = currentRotateTarget.up;
+        }
+
+        public override void OnEnd()
+        {
+            base.OnEnd();
         }
 
         public override TaskStatus OnUpdate()
         {
-            Vector3 delta = currentTarget.position - _targetTransform.Value.position;
-            Vector3 dir;
+            Vector3 delta = currentLookAtTarget.position - currentRotateTarget.position;
             if (_horizontalOnly)
-                dir = delta.xoz().normalized;
+            {
+                dir = delta.normalized;
+                dir = Vector3.ProjectOnPlane(dir, originalUpDirection).normalized;
+            }
             else
                 dir = delta.normalized;
 
-            Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
-            _targetTransform.Value.rotation = rot;
+            Quaternion rot = Quaternion.LookRotation(dir, originalUpDirection);
+            currentRotateTarget.rotation = rot;
 
             if (_keepRunning)
                 return TaskStatus.Running;

@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AdvancedSceneManager;
-using AdvancedSceneManager.Core;
-using AdvancedSceneManager.Models;
+﻿using AdvancedSceneManager.Models;
 using AdvancedSceneManager.Utility;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
-using MoreMountains.Feedbacks;
-using Sirenix.OdinInspector;
+using BML.Scripts.CaveV2;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace BML.Scripts
 {
@@ -73,6 +66,7 @@ namespace BML.Scripts
             int nextLevelIndex = _currentLevel.Value + 1;
             if(nextLevelIndex < _levels.Levels.Count) {
                 _currentLevel.Value = nextLevelIndex;
+                SeedManager.Instance.UpdateSteppedSeed("CaveGraph");
                 _levels.Levels[nextLevelIndex].Open();
                 _levelChange.Raise();
             } else {

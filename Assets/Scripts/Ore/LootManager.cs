@@ -30,15 +30,12 @@ namespace BML.Scripts
         }
 
         #endregion
-        
-        [ShowInInspector] private const int _uniqueStepId = 337;
 
         [Button]
         private void InitLootRandomizers()
         {
             // Init seed for random generator
-            var seed = _caveGenerator.CaveGenParams.Seed + _uniqueStepId;
-            Random.InitState(seed);
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("LootTable"));
             
             // Roll all loot randomizers
             var lootRandomizers = _caveGenerator.GetComponentsInChildren<LootRandomizer>();

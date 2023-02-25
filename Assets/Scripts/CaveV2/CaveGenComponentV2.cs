@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
@@ -11,11 +12,13 @@ using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.CaveV2.Util;
 using BML.Scripts.CaveV2.SpawnObjects;
+using BML.Scripts.Player.Utils;
 using BML.Scripts.Utils;
 using GK;
 using QuikGraph.Algorithms;
 using Shapes;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEditor;
 using Random = UnityEngine.Random;
 
@@ -46,10 +49,9 @@ namespace BML.Scripts.CaveV2
         private bool _notOverrideBounds => !_overrideBounds;
         public Bounds CaveGenBounds => (_overrideBounds ? _caveGenBounds : _caveGenParams.PoissonBounds);
 
-        [SerializeField] private BoolReference _retrySameSeed;
+        [SerializeField] private TransformSceneReference _playerSceneReference;
+        [SerializeField] private TransformSceneReference _greenRoomSceneReference;
 
-        [SerializeField] private IntReference _seedDebugReference;
-        
         [Required] [InlineEditor, Space(10f)]
         [SerializeField] private CaveGenParameters _caveGenParams;
 
@@ -73,9 +75,10 @@ namespace BML.Scripts.CaveV2
         private CurveVariable _playerInfluenceAccumulationFalloff;
         [SerializeField] private GameEvent _onAfterUpdatePlayerDistance;
 
-        [TitleGroup("Torches")] 
+        [TitleGroup("Torches")]
         [SerializeField] private DynamicGameEvent _onTorchPlaced;
         [SerializeField] private float _torchInfluenceUpdatePeriod = 1f;
+        [SerializeField] private FloatVariable _torchAreaCoverage;
         [Button]
         private void RecalculateTorchRequirementDebug()
         {
@@ -124,6 +127,7 @@ namespace BML.Scripts.CaveV2
         [FoldoutGroup("Gizmo colors")] [SerializeField] public Gradient DebugNodeColor_Gradient;
 
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxMainPathDistance { get; private set; }
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxStartDistance { get; private set; }
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxObjectiveDistance { get; private set; }
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int MaxPlayerDistance { get; private set; }
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly] public int CurrentMaxPlayerObjectiveDistance { get; private set; }
@@ -156,24 +160,31 @@ namespace BML.Scripts.CaveV2
         private int _retryDepth = 0;
         
         [PropertyOrder(-1)]
-        [Button, LabelText("Generate Cave Graph")]
+        [ButtonGroup("Generation")]
+        [Button("Generate")]
         //[EnableIf("$IsGenerationEnabled")]
-        private void GenerateCaveGraphButton()
+        public void GenerateCaveGraphButton()
         {
             _retryDepth = 0;
+            SeedManager.Instance.UpdateRandomSeed();
             GenerateCaveGraph();
         }
         
-        private void GenerateCaveGraph(bool useRandomSeed = true)
+        private void GenerateCaveGraph()
         {
             // if (!IsGenerationEnabled)
             //     return;
             
             DestroyCaveGraph();
-
-            if (useRandomSeed)
+            
+            if (!_playerSceneReference.SafeIsUnityNull() && !_playerSceneReference.Value.SafeIsUnityNull())
             {
-                _caveGenParams.UpdateRandomSeed();
+                // Move player to a holding area outside the level generation bounds. (we didn't want them interacting with level objects during the generation process)
+                PlayerUtils.MovePlayer(_playerSceneReference.Value.gameObject, _greenRoomSceneReference.Value.position);
+            }
+            else
+            {
+                if (EnableLogs) Debug.Log($"Level Object Spawner: No player assigned");
             }
             
             _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
@@ -192,14 +203,14 @@ namespace BML.Scripts.CaveV2
                 throw new Exception($"Exceeded cave generation max retries ({_maxRetryDepth})");
             }
             
-            if (_caveGenParams.LockSeed || !RetryOnFailure)
+            if (SeedManager.Instance.LockSeed || !RetryOnFailure)
             {
                 throw new Exception("Cave generation failed. To automatically resolve, ensure 'Retry on failure' is checked and 'Lock seed' is unchecked.");
             }
             else
             {
-                _caveGenParams.UpdateRandomSeed(false);
-                GenerateCaveGraph(false);
+                SeedManager.Instance.UpdateRandomSeed(false);
+                GenerateCaveGraph();
             }
         }
 
@@ -213,21 +224,22 @@ namespace BML.Scripts.CaveV2
                 }
             }
             
-            if (_caveGenParams.LockSeed || !RetryOnFailure)
+            if (SeedManager.Instance.LockSeed || !RetryOnFailure)
             {
                 throw new Exception("Cave generation failed; level is not traversable. To automatically resolve, ensure 'Retry on failure' is checked and 'Lock seed' is unchecked.");
             }
             else
             {
-                _caveGenParams.UpdateRandomSeed(false);
+                SeedManager.Instance.UpdateRandomSeed(false);
                 return GenerateCaveGraph(_caveGenParams, CaveGenBounds);
             }
         }
 
         [PropertyOrder(-1)]
-        [Button] 
+        [ButtonGroup("Generation")]
+        [Button("Destroy")] 
         //[EnableIf("$IsGenerationEnabled")]
-        private void DestroyCaveGraph()
+        public void DestroyCaveGraph()
         {
             // if (!IsGenerationEnabled) 
             //     return;
@@ -245,9 +257,9 @@ namespace BML.Scripts.CaveV2
         
         private CaveGraphV2 GenerateCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)
         {
-            Random.InitState(caveGenParams.Seed);
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("CaveGraph"));
             
-            if (_enableLogs) Debug.Log($"Generating level ({_caveGenParams.Seed})");
+            if (_enableLogs) Debug.Log($"Generating level ({SeedManager.Instance.GetSteppedSeed("CaveGraph")})");
             
             var caveGraph = new CaveGraphV2();
             
@@ -259,7 +271,7 @@ namespace BML.Scripts.CaveV2
                 poissonBoundsWithPadding.extents / 2);
             var startPosition = RandomUtils.RandomInBounds(startBounds) + startBounds.center;
             startPosition = poissonBoundsWithPadding.max - poissonBoundsWithPadding.extents / 4;
-            var startNode = new CaveNodeData(startPosition, 1f);
+            var startNode = new CaveNodeData(startPosition, 1f, _torchAreaCoverage);
             caveGraph.AddVertex(startNode);
             caveGraph.StartNode = startNode;
             
@@ -269,7 +281,7 @@ namespace BML.Scripts.CaveV2
                 poissonBoundsWithPadding.extents / 2);
             var endPosition = RandomUtils.RandomInBounds(endBounds) + endBounds.center;
             endPosition = poissonBoundsWithPadding.min + poissonBoundsWithPadding.extents / 4;
-            var endNode = new CaveNodeData(endPosition, 1f);
+            var endNode = new CaveNodeData(endPosition, 1f, _torchAreaCoverage);
             caveGraph.AddVertex(endNode);
             caveGraph.EndNode = endNode;
 
@@ -287,7 +299,7 @@ namespace BML.Scripts.CaveV2
                 var pointRelativeToBoundsCenter = point;
                 // var size = Random.Range(caveGenParams.RoomScaling.x, caveGenParams.RoomScaling.y);
                 var size = caveGenParams.RoomScaling.x;
-                var node = new CaveNodeData(pointRelativeToBoundsCenter, size);
+                var node = new CaveNodeData(pointRelativeToBoundsCenter, size, _torchAreaCoverage);
                 return node;
             });
             caveGraph.AddVertexRange(vertices);
@@ -377,6 +389,34 @@ namespace BML.Scripts.CaveV2
                 shortestPathFromStartFunc(endNode, out var shortestPathFromStartToEnd);
                 var shortestPathFromStartToEndList = shortestPathFromStartToEnd?.ToList();
                 
+                if (shortestPathFromStartToEnd == null)
+                {
+                    // Not traversable
+                    if (_showTraversabilityCheck)
+                    {
+                        Debug.LogWarning($"Seed {SeedManager.Instance.GetSteppedSeed("CaveGraph")} failed traversability check, retrying cave generation.");
+                    }
+                    
+                    _retryDepth++;
+                    if (_retryDepth >= _maxRetryDepth)
+                    {
+                        Debug.LogError($"Exceeded cave generation max retries ({_maxRetryDepth})");
+                        return caveGraph;
+                    }
+                    return RetryGenerateCaveGraph(false);
+                }
+                
+                // Calculate distance from main path
+                // This is intentionally done twice; the second run is the "real" result, this first run is just for the generation algorithm to reference. 
+                {
+                    var mainPathVertices = shortestPathFromStartToEndList
+                        .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target })
+                        .Distinct();
+                    caveGraph.FloodFillDistance(mainPathVertices, (node, dist) => node.MainPathDistance = dist);
+
+                    this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
+                }
+                
                 if (shortestPathFromStartToEndList != null)
                 {
                     var keepEdges = new List<CaveNodeConnectionData>();
@@ -440,9 +480,17 @@ namespace BML.Scripts.CaveV2
                                     }
                                     break;
                                 }
-                            
-                                int randomEdgeIndex = Random.Range(0, adjacentEdges.Count);
-                                var randomEdge = adjacentEdges[randomEdgeIndex];
+
+                                var sortedAdjacentEdges = adjacentEdges
+                                    .OrderByDescending(e =>
+                                    {
+                                        CaveNodeData other = e.OtherEnd(offshootStart);
+                                        if (other == null) return -1;
+                                        return other.MainPathDistance;
+                                    })
+                                    .ToList();
+                                int randomEdgeIndex = Mathf.RoundToInt(RandomUtils.RandomGaussian(0, adjacentEdges.Count - 1));
+                                var randomEdge = sortedAdjacentEdges[randomEdgeIndex];
                                 offshootPath.Add(randomEdge);
 
                                 if (offshootStart == randomEdge.Source) offshootStart = randomEdge.Target;
@@ -521,7 +569,7 @@ namespace BML.Scripts.CaveV2
                         edge => edge.Length).ToList();
                 minimumGraph.RemoveEdgeIf(edge => !minimumSpanningTree.Contains(edge));
                 _minimumSpanningTreeGraphTEMP = minimumGraph;
-                // TODO
+                // TODO use or remove minimum spanning tree
             }
             
             // Remove orphaned nodes
@@ -544,7 +592,7 @@ namespace BML.Scripts.CaveV2
                     // Not traversable
                     if (_showTraversabilityCheck)
                     {
-                        Debug.LogWarning($"Seed {caveGenParams.Seed} failed traversability check, retrying cave generation.");
+                        Debug.LogWarning($"Seed {SeedManager.Instance.GetSteppedSeed("CaveGraph")} failed traversability check, retrying cave generation.");
                     }
                     
                     _retryDepth++;
@@ -575,6 +623,14 @@ namespace BML.Scripts.CaveV2
                     }
                 }
                 
+                // Calculate distance from level start
+                {
+                    var objectiveVertices = new List<CaveNodeData> { caveGraph.StartNode };
+                    caveGraph.FloodFillDistance(objectiveVertices, (node, dist) => node.StartDistance = dist);
+
+                    this.MaxStartDistance = caveGraph.Vertices.Max(e => e.StartDistance);
+                }
+                
                 // Calculate distance from objective
                 {
                     var objectiveVertices = new List<CaveNodeData> { caveGraph.EndNode };
@@ -584,6 +640,7 @@ namespace BML.Scripts.CaveV2
                 }
 
                 // Calculate distance from main path
+                // This is intentionally done twice; the second run is the "real" result, the first run is just for the generation algorithm to reference. 
                 {
                     var mainPathVertices = caveGraph.MainPath
                         .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target})
@@ -609,7 +666,74 @@ namespace BML.Scripts.CaveV2
             // TODO more intelligent logic
             foreach (var caveGraphVertex in caveGraph.Vertices)
             {
-                caveGraphVertex.NodeType = (CaveNodeType)RandomUtils.Range((int)CaveNodeType.Small, (int)CaveNodeType.Large);
+                // Rooms with only one connection (dead ends) are large rooms
+                int numEdges = caveGraph.AdjacentEdges(caveGraphVertex).Count();
+                if (numEdges == 1)
+                {
+                    caveGraphVertex.NodeType = CaveNodeType.Large;
+                    continue;
+                } 
+                else if (numEdges >= 4)
+                {
+                    caveGraphVertex.NodeType = CaveNodeType.Small;
+                    continue;
+                }
+                else
+                {
+                    caveGraphVertex.NodeType = (CaveNodeType)Random.Range((int)CaveNodeType.Small, (int)CaveNodeType.Medium + 1);
+                }
+            }
+                
+            // Decide which tunnels should be blocked
+            foreach (var nodeA in caveGraph.Vertices)
+            {
+                // Block any tunnels connected to exit to make it slightly more difficult to find
+                bool isObjective = nodeA.ObjectiveDistance == 0;
+                if (isObjective)
+                {
+                    foreach (var caveNodeConnectionData in caveGraph.AdjacentEdges(nodeA))
+                    {
+                        caveNodeConnectionData.IsBlocked = true;
+                    }
+                    continue;
+                }
+
+                bool isStart = nodeA.StartDistance == 0;
+                if (isStart)
+                {
+                    continue;
+                }
+                
+                bool isMainPath = nodeA.MainPathDistance == 0;
+                if (isMainPath)
+                {
+                    bool hasBranch = caveGraph.AdjacentVertices(nodeA)
+                        .Any(nodeB =>
+                            nodeB.MainPathDistance != 0 &&
+                            caveGraph.AdjacentVertices(nodeB)
+                                .Any(v => v != nodeA && v.MainPathDistance != 0)
+                        );
+                    if (!hasBranch) continue;
+                    
+                    foreach (var nodeB in caveGraph.AdjacentVertices(nodeA))
+                    {
+                        bool nodeBIsTowardsStart = (nodeB.StartDistance <= nodeA.StartDistance);
+                        bool nodeBIsMainPath = (nodeB.MainPathDistance == 0);
+                        if (nodeBIsMainPath && !nodeBIsTowardsStart)
+                        {
+                            bool nodeBHasBranch = caveGraph.AdjacentVertices(nodeB)
+                                .Any(v => v != nodeA && v.MainPathDistance != 0);
+
+                            if (nodeBHasBranch) continue;
+                        }
+
+                        caveGraph.TryGetEdge(nodeA, nodeB, out var edge);
+                        if (edge != null)
+                        {
+                            edge.IsBlocked = !nodeBIsTowardsStart;
+                        }
+                    }
+                }
             }
             
             if (_enableLogs) Debug.Log($"Cave graph generated");
@@ -862,11 +986,6 @@ namespace BML.Scripts.CaveV2
         #endregion
 
         #region Unity lifecycle
-        
-        private void Awake()
-        {
-            _seedDebugReference.Value = _caveGenParams.Seed;
-        }
 
         private void Start()
         {
@@ -877,8 +996,7 @@ namespace BML.Scripts.CaveV2
             {
                 if (_enableLogs) Debug.Log($"CaveGraph: Generate random on start");
                 _retryDepth = 0;
-                bool randomSeed = !_keepEditModeLevel && !_retrySameSeed.Value;
-                GenerateCaveGraph(randomSeed);
+                GenerateCaveGraph();
             }
         }
 
@@ -913,7 +1031,7 @@ namespace BML.Scripts.CaveV2
             {
                 if (_enableLogs) Debug.Log($"CaveGraph: Generate on change {_isGenerateOnChangeEnabled}");
                 _retryDepth = 0;
-                GenerateCaveGraph(false);
+                GenerateCaveGraph();
             } 
         }
 
@@ -959,7 +1077,7 @@ namespace BML.Scripts.CaveV2
             
             #if UNITY_EDITOR
             // Draw seed label
-            Handles.Label(transform.position, _caveGenParams.Seed.ToString());
+            Handles.Label(transform.position, SeedManager.Instance.GetSteppedSeed("CaveGraph").ToString());
             #endif
 
         }

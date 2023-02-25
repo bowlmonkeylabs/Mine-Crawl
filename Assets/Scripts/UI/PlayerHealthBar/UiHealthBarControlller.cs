@@ -70,7 +70,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
         {
             _heartChildren.Clear();
             _heartChildren.AddRange(
-                this.GetComponentsInChildren<UiHealthHeartController>()
+                this.GetComponentsInChildren<UiHealthHeartController>(true)
             );
             foreach (var heartController in _heartChildren)
             {

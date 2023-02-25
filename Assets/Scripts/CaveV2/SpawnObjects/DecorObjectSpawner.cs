@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
-using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
@@ -115,13 +114,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         #endregion
 
         #region Show/Remove Points
-        
-        private const int STEP_ID = 3;
 
         [Button, FoldoutGroup("Debug")]
         public void GeneratePoints()
         {
-            Random.InitState(_caveGen.CaveGenParams.Seed + STEP_ID);
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("DecorObjectSpawer"));
             RemovePoints();
             InitMeshData(out var triangles, out var vertices, out var normals);
             triangles = FilterTrianglesNormal(triangles, normals);
@@ -227,7 +224,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     removePoint = true;
                 }
                 
-                Random.InitState(_caveGen.CaveGenParams.Seed + STEP_ID);
+                Random.InitState(SeedManager.Instance.GetSteppedSeed("DecorObjectSpawer"));
                 removePoint |= FilterPointDistanceToMainPath(containingRoom.nodeData.MainPathDistance);
                 removePoint |= FilterPointStartEndRoom(containingRoom.nodeData);
 

@@ -6,6 +6,7 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.CaveV2.MudBun;
+using BML.Scripts.Player.Utils;
 using BML.Scripts.Utils;
 using KinematicCharacterController;
 using Mono.CSharp;
@@ -87,10 +88,10 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 }
             }
         }
-        
-        private const int STEP_ID = 2;
 
-        [Button, PropertyOrder(-1), LabelText("Spawn Level Objects")]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Generation")]
+        [Button("Generate")]
         //[EnableIf("$_isGenerationEnabled")]
         public void SpawnLevelObjectsButton()
         {
@@ -101,7 +102,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         {
             // if (!_caveGenerator.IsGenerationEnabled) return;
             
-            Random.InitState(_caveGenerator.CaveGenParams.Seed + STEP_ID);
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("LevelObjectSpawer"));
             
             DestroyLevelObjects();
             
@@ -118,12 +119,20 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
             ResetSpawnPoints();
             CatalogSpawnPoints(_caveGenerator);
-            SpawnObjectsAtTags(this.transform, retryOnFailure);
+            bool success = SpawnObjectsAtTags(this.transform, retryOnFailure);
+            if (!success)
+            {
+                Debug.LogError("LevelObjectSpawner failed.");
+                _caveGenerator.RetryGenerateCaveGraph();
+                return;
+            }
             
             _onAfterGenerateLevelObjects.Raise();
         }
 
-        [Button, PropertyOrder(-1)]
+        [PropertyOrder(-1)]
+        [ButtonGroup("Generation")]
+        [Button("Destroy")]
         //[EnableIf("$_isGenerationEnabled")]
         public void DestroyLevelObjects()
         {
@@ -207,7 +216,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
         }
 
-        private void SpawnObjectsAtTags(Transform parent, bool retryOnFailure)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="retryOnFailure"></param>
+        /// <returns>False if spawning failed or the spawning parameters are not satisfied.</returns>
+        private bool SpawnObjectsAtTags(Transform parent, bool retryOnFailure)
         {
             foreach (var spawnAtTagParameters in _levelObjectSpawnerParams.SpawnAtTags)
             {
@@ -234,7 +249,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     if (_caveGenerator.EnableLogs) Debug.Log($"Try spawn {spawnAtTagParameters.Prefab?.name}: (Spawn point {spawnPoint.SpawnChance}) (Main path {mainPathProbability}) (Spawn chance {spawnChance}) (Random {rand}) (Do Spawn {doSpawn})");
                     if (doSpawn)
                     {
-                        var spawnAt = spawnPoint.Project(spawnAtTagParameters.SpawnPosOffset, _caveGenerator.CaveGenParams.Seed);
+                        var spawnAt = spawnPoint.Project(spawnAtTagParameters.SpawnPosOffset, SeedManager.Instance.Seed);
                         bool hitStableSurface = spawnAt.position.HasValue;
                         var cachedTransform = spawnPoint.transform;
                         spawnAt.position = spawnAt.position ?? cachedTransform.position;
@@ -275,13 +290,14 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     && spawnCount < spawnAtTagParameters.MinMaxGlobalAmount.ValueMin)
                 {
                     if (_caveGenerator.EnableLogs) Debug.LogWarning($"Level Object Spawner: Minimum not met for object {spawnAtTagParameters.Prefab?.name} on tag {spawnAtTagParameters.Tag} ({spawnCount}/{spawnAtTagParameters.MinMaxGlobalAmount.ValueMin})");
-                    _caveGenerator.RetryGenerateCaveGraph();
-                    return;
+                    return false;
                 }
                 
                 //Debug.Log($"Remaining Spawn Points After: {tagged.Count - pointsToRemove.Count}");
 
             }
+
+            return true;
         }
 
         private static void SpawnPlayer(CaveGenComponentV2 caveGenerator, Transform parent, GameObject player)
@@ -295,7 +311,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 // Debug.Log($"Call SpawnPlayer: Position {startWorldPosition} | Player in scene {playerInThisScene}");
                 if (player.scene.isLoaded)
                 {
-                    MovePlayer(player, startWorldPosition);
+                    PlayerUtils.MovePlayer(player, startWorldPosition);
                 }
                 else
                 {
@@ -305,7 +321,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     var isPrefab = false;
 #endif
                     player = GameObjectUtils.SafeInstantiate(isPrefab, player, parent);
-                    MovePlayer(player, startWorldPosition);
+                    PlayerUtils.MovePlayer(player, startWorldPosition);
                 }
                 
                 // Stop velocity
@@ -317,29 +333,6 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
         }
 
-        private static void MovePlayer(GameObject player, Vector3 destination)
-        {
-            // If in play mode, move player using kinematicCharController motor to avoid race condition
-            if (ApplicationUtils.IsPlaying_EditorSafe)
-            {
-                KinematicCharacterMotor motor = player.GetComponent<KinematicCharacterMotor>();
-                if (motor != null)
-                {
-                    motor.SetPosition(destination);
-                }
-                else
-                {
-                    player.transform.position = destination;
-                    Debug.LogWarning("Could not find KinematicCharacterMotor on player! " +
-                                     "Moving player position directly via Transform.");
-                }
-            }
-            else
-            {
-                player.transform.position = destination;
-            }
-        }
-        
         #endregion
 
         #region Spawn objects utility

@@ -11,6 +11,7 @@ namespace BML.Scripts
         [SerializeField] private int _damage = 1;
         [SerializeField] private LayerMask _damageMask;
         [SerializeField] private float _damageCooldown = 2;
+        [SerializeField] private bool _dealDamageToTriggers = false;
         [SerializeField] private DamageType _damageType;
         [SerializeField] private UnityEvent _onTriggerEnter;
 
@@ -34,6 +35,8 @@ namespace BML.Scripts
             
             GameObject otherObj = other.gameObject;
             if (!otherObj.IsInLayerMask(_damageMask)) return;
+
+            if (!_dealDamageToTriggers && other.isTrigger) return;
 
             Damageable damageable = otherObj.GetComponent<Damageable>();
 

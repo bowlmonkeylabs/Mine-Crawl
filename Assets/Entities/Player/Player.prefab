@@ -7882,11 +7882,11 @@ MonoBehaviour:
         DebugActive: 0
         m_ImpulseDefinition:
           m_ImpulseChannel: 1
-          m_RawSignal: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+          m_RawSignal: {fileID: 11400000, guid: 20a705aea2d80e0478fb89b6f43d8530, type: 2}
           m_AmplitudeGain: 0.2
-          m_FrequencyGain: 0.1
+          m_FrequencyGain: 0.05
           m_RepeatMode: 0
-          m_Randomize: 1
+          m_Randomize: 0
           m_TimeEnvelope:
             m_AttackShape:
               serializedVersion: 2
@@ -9451,6 +9451,7 @@ GameObject:
   - component: {fileID: 3069818814161535491}
   - component: {fileID: 4143845634214050399}
   - component: {fileID: 4099872004446103226}
+  - component: {fileID: 6251470525896779641}
   m_Layer: 7
   m_Name: PlayerCapsule
   m_TagString: Player
@@ -9671,6 +9672,20 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: d14b9ee14bf2cde49a3a03f3e19ba4b3, type: 2}
+  _rareResourceCount:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 4aeaf25be48b2b544a06b963e7101d44, type: 2}
+  _minRareResouceCount:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 627d4a541b0d63a439cd1f6179f8dc97, type: 2}
   _isDebugConsoleOpen:
     UseConstant: 0
     EnableInstanceOptions: 0
@@ -9839,7 +9854,7 @@ MonoBehaviour:
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
   DashTime:
     ReferenceTypeSelector: 0
-    ConstantValue: 0.1
+    ConstantValue: 0.2
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
@@ -9880,7 +9895,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca4d6e2609884fb4a191b404d5a30bf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _caveGeneratorGameObjectSceneReference: {fileID: 11400000, guid: 70c332354ecbb9c46bf117bd4c575bab, type: 2}
   _mainCamera: {fileID: 7265003986444444711}
   _uiAimReticle: {fileID: 0}
   _hoverUpdatesPerSecond: 20
@@ -9989,6 +10003,12 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 0cfe6ddbe3de93e45ac2c79fcbe0f181, type: 2}
+  _postDashInvincibilityTime:
+    ReferenceTypeSelector: 0
+    ConstantValue: 0.05
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
   _healthController: {fileID: 1905872712608776435}
   _tryHeal: {fileID: 11400000, guid: 53271449bb8603c47888fac4bcdcd7e2, type: 2}
   _inCombat: {fileID: 11400000, guid: d14b9ee14bf2cde49a3a03f3e19ba4b3, type: 2}
@@ -10003,14 +10023,6 @@ MonoBehaviour:
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 2c6a9ec7ffcec724b83f7abc212de507, type: 2}
   _onPurchaseEvent: {fileID: 11400000, guid: 55866cc2117789d43af4b6db2f26f0ef, type: 2}
-  _onStoreFailOpen: {fileID: 11400000, guid: b8058230da80a7343b642a2bafd0f19e, type: 2}
-  _isUpgradeStoreOpen:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: b097147d192343940aca02f32a439f21, type: 2}
   _isGodModeEnabled: {fileID: 11400000, guid: c3845ac29ad76214893f2b304a42dcef, type: 2}
   _enableLogs: {fileID: 0}
 --- !u!136 &936822692517190024
@@ -10400,6 +10412,19 @@ MonoBehaviour:
     m_RotationOrder: 4
   _fallDamageFeedback: {fileID: 2754442154770889696}
   _enableLogs: 0
+--- !u!114 &6251470525896779641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2719825288227953952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ca52ec1781f4f9c86be8971d49c57c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerController: {fileID: 4112429824577967131}
 --- !u!1 &2835735834022315347
 GameObject:
   m_ObjectHideFlags: 0

@@ -101,25 +101,40 @@ namespace BML.Scripts.Utils
             int randomIndex = Random.Range(0, list.Count);
             return list[randomIndex];
         }
-
+        
         /// <summary>
-        /// 
+        /// Credit:  http://answers.unity.com/answers/1734538/view.html
         /// </summary>
-        /// <param name="min">Inclusive min.</param>
-        /// <param name="max">Inclusive max.</param>
+        /// <param name="minValue"></param>
+        /// <param name="maxValue"></param>
         /// <returns></returns>
-        public static int Range(int min, int max)
+        public static float RandomGaussian(float minValue = 0.0f, float maxValue = 1.0f)
         {
-            int length = max - min + 1;
-            float stepSize = 1f / (float)length;
-            float rand = Random.value;
-            float acc = 0;
-            for (int i = 0; i < length; i++)
+            float u, v, S;
+ 
+            do
             {
-                acc += stepSize;
-                if (rand <= acc) return i + min;
+                u = 2.0f * UnityEngine.Random.value - 1.0f;
+                v = 2.0f * UnityEngine.Random.value - 1.0f;
+                S = u * u + v * v;
             }
-            return -1;
+            while (S >= 1.0f);
+ 
+            // Standard Normal Distribution
+            float std = u * Mathf.Sqrt(-2.0f * Mathf.Log(S) / S);
+ 
+            // Normal Distribution centered between the min and max value
+            // and clamped following the "three-sigma rule"
+            float mean = (minValue + maxValue) / 2.0f;
+            float sigma = (maxValue - mean) / 3.0f;
+            return Mathf.Clamp(std * sigma + mean, minValue, maxValue);
+        }
+        
+        public static int RandomGaussian(int minValue = 0, int maxValue = 1)
+        {
+            float random = RandomGaussian((float)minValue, (float)maxValue);
+            int rounded = Mathf.Clamp(Mathf.RoundToInt(random), minValue, maxValue);
+            return rounded;
         }
         
     }
