@@ -57,7 +57,7 @@ namespace BML.Scripts.Player
                 ResetFall();
         }
 
-        private void ResetFall()
+        public void ResetFall()
         {
             fallStartHeight = transform.position.y;
         }

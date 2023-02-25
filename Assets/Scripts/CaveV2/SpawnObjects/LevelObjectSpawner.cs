@@ -6,7 +6,6 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.CaveV2.MudBun;
-using BML.Scripts.Player.Utils;
 using BML.Scripts.Utils;
 using KinematicCharacterController;
 using Mono.CSharp;
@@ -307,11 +306,18 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             // Place player at the level start
             if (caveGenerator.CaveGraph.StartNode != null)
             {
+                var playerController = player.GetComponent<IPlayerController>();
+                if (playerController == null)
+                {
+                    if (caveGenerator.EnableLogs) Debug.LogError("Player controller not found.");
+                    return;
+                }
+                
                 var startWorldPosition = caveGenerator.LocalToWorld(caveGenerator.CaveGraph.StartNode.LocalPosition);
                 // Debug.Log($"Call SpawnPlayer: Position {startWorldPosition} | Player in scene {playerInThisScene}");
                 if (player.scene.isLoaded)
                 {
-                    PlayerUtils.MovePlayer(player, startWorldPosition);
+                    playerController.SetPosition(startWorldPosition, true);
                 }
                 else
                 {
@@ -321,7 +327,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     var isPrefab = false;
 #endif
                     player = GameObjectUtils.SafeInstantiate(isPrefab, player, parent);
-                    PlayerUtils.MovePlayer(player, startWorldPosition);
+                    playerController.SetPosition(startWorldPosition, true);
                 }
                 
                 // Stop velocity

@@ -12,7 +12,6 @@ using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.CaveV2.Util;
 using BML.Scripts.CaveV2.SpawnObjects;
-using BML.Scripts.Player.Utils;
 using BML.Scripts.Utils;
 using GK;
 using QuikGraph.Algorithms;
@@ -180,7 +179,15 @@ namespace BML.Scripts.CaveV2
             if (!_playerSceneReference.SafeIsUnityNull() && !_playerSceneReference.Value.SafeIsUnityNull())
             {
                 // Move player to a holding area outside the level generation bounds. (we didn't want them interacting with level objects during the generation process)
-                PlayerUtils.MovePlayer(_playerSceneReference.Value.gameObject, _greenRoomSceneReference.Value.position);
+                var playerController = _playerSceneReference.Value.gameObject.GetComponent<IPlayerController>();
+                if (playerController != null)
+                {
+                    playerController.SetPosition(_greenRoomSceneReference.Value.transform.position, true);
+                }
+                else
+                {
+                    if (EnableLogs) Debug.Log($"Level Object Spawner: Player controller not found.");
+                }
             }
             else
             {

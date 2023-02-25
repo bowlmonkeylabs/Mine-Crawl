@@ -13,6 +13,7 @@ using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using BML.Scripts.Store;
+using KinematicCharacterController;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine.Serialization;
@@ -20,9 +21,13 @@ using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Player
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, IPlayerController
     {
         #region Inspector
+
+        [SerializeField, FoldoutGroup("Player components")] private KinematicCharacterMotor _kinematicCharacterMotor;
+        [SerializeField, FoldoutGroup("Player components")] private FallDamageController _fallDamageController;
+        
         [SerializeField, FoldoutGroup("Interactable hover")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Interactable hover")] private UiAimReticle _uiAimReticle;
         [SerializeField, FoldoutGroup("Interactable hover")] private int _hoverUpdatesPerSecond = 20;
@@ -463,6 +468,33 @@ namespace BML.Scripts.Player
         private void SetGodMode()
         {
             SetInvincible(_isGodModeEnabled.Value);
+        }
+
+        #endregion
+
+        #region Set position
+
+        public void SetPosition(Vector3 destination, bool resetFallDamage = true)
+        {
+            // If in play mode, move player using kinematicCharController motor to avoid race condition
+            if (ApplicationUtils.IsPlaying_EditorSafe)
+            {
+                if (_kinematicCharacterMotor != null)
+                {
+                    _kinematicCharacterMotor.SetPosition(destination);
+                    _fallDamageController.ResetFall();
+                }
+                else
+                {
+                    this.transform.position = destination;
+                    Debug.LogWarning("Could not find KinematicCharacterMotor on player! " +
+                                     "Moving player position directly via Transform.");
+                }
+            }
+            else
+            {
+                this.transform.position = destination;
+            }
         }
 
         #endregion
