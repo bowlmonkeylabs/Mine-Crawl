@@ -429,11 +429,13 @@ namespace BML.Scripts.Player
         private void OnDashSetActive(bool prevValue, bool dashActive)
         {
             if (dashActive)
-                _healthController.SetInvincible(true);
+            {
+                SetInvincible(dashActive);
+            }
             else
             {
                 LeanTween.value(0f, 1f, _postDashInvincibilityTime.Value)
-                    .setOnComplete(_ => _healthController.SetInvincible(false));
+                    .setOnComplete(_ => SetInvincible(dashActive));
             }
         }
         
@@ -460,7 +462,7 @@ namespace BML.Scripts.Player
 
         private void SetGodMode()
         {
-            _healthController.SetInvincible(_isGodModeEnabled.Value);
+            SetInvincible(_isGodModeEnabled.Value);
         }
 
         #endregion
@@ -518,6 +520,11 @@ namespace BML.Scripts.Player
         public void Heal(object p, object amount)
         {
             this.Heal((int) amount);
+        }
+
+        private void SetInvincible(bool invincible) {
+            invincible = invincible || _isGodModeEnabled.Value;
+            _healthController.SetInvincible(invincible);
         }
         
         #endregion
