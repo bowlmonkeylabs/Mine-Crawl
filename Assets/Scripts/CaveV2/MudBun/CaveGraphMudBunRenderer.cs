@@ -22,6 +22,14 @@ namespace BML.Scripts.CaveV2.MudBun
         [Required, SerializeField]
         private CaveGenComponentV2 _caveGenerator;
         private CaveGraphV2 _caveGraph => _caveGenerator.CaveGraph;
+
+        /// <summary>
+        /// Renders MudBun as an interior by covering the entire cave area with a base brush for rooms to be "carved" out of.
+        /// The outside faces of the area are culled for performance as they will never be seen.
+        /// NOTE: when using this option, placed brushes must be set to SUBTRACT instead of union.
+        /// </summary>
+        [SerializeField] private bool _renderAsInterior = true;
+        [SerializeField] private GameObject _interiorAreaFill;
         
         [Required, InlineEditor, SerializeField]
         private CaveGraphMudBunRendererParameters _caveGraphRenderParams;
@@ -64,6 +72,14 @@ namespace BML.Scripts.CaveV2.MudBun
             Random.InitState(SeedManager.Instance.GetSteppedSeed("MudBunRenderer"));
 
             var localOrigin = mudRenderer.transform.position;
+
+            // Render as interior
+            if (_renderAsInterior)
+            {
+                GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _interiorAreaFill, mudRenderer.transform);
+                newGameObject.transform.position = localOrigin;
+                newGameObject.transform.localScale = _caveGenerator.CaveGenBounds.size;
+            }
             
             // Spawn "rooms" at each cave node
             foreach (var caveNodeData in _caveGraph.Vertices)

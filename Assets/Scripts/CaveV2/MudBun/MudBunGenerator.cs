@@ -9,6 +9,7 @@ using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.CaveV2.MudBun
 {
@@ -30,7 +31,7 @@ namespace BML.Scripts.CaveV2.MudBun
         
         [Required, SerializeField] private MudRenderer _mudRenderer;
 
-        [SerializeField] private bool _invertNormals = false;
+        [SerializeField] private bool _invertLockedMeshNormals = false;
 
 #if UNITY_EDITOR
         [SerializeField] private bool _instanceAsPrefabs = true;
@@ -121,7 +122,7 @@ namespace BML.Scripts.CaveV2.MudBun
         {
             // Debug.Log($"On After Lock Mesh: Invert normals {_invertNormals}");
             // Invert mesh normals
-            if (_invertNormals)
+            if (_invertLockedMeshNormals)
             {
                 var meshFilter = _mudRenderer.GetComponent<MeshFilter>();
                 var meshCollider = _mudRenderer.GetComponent<MeshCollider>();
@@ -170,7 +171,7 @@ namespace BML.Scripts.CaveV2.MudBun
         {
             // Debug.Log($"On After Add Collider: Invert normals {_invertNormals}");
             // Invert mesh normals
-            if (_invertNormals)
+            if (_invertLockedMeshNormals)
             {
                 var meshFilter = _mudRenderer.GetComponent<MeshFilter>();
                 var meshCollider = _mudRenderer.GetComponent<MeshCollider>();
