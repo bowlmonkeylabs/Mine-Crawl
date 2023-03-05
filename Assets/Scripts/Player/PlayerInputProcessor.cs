@@ -72,6 +72,12 @@ namespace BML.Scripts.Player
 		[SerializeField] private VariableContainer _containerUiMenuStates_HidePlayerHUD;
 		// Hiding is handled the each respective UI element by referencing the value assigned to _isUsingUi_Out_HidePlayerHUD.
 
+        [Tooltip("Include UI INTERACTABLE states which can be closed by other menus opening")]
+		[SerializeField] private VariableContainer _containerUiMenuStates_NonBlocking;
+
+        [Tooltip("Include UI INTERACTABLE states which can NOT be closed by other menus opening")]
+		[SerializeField] private VariableContainer _containerUiMenuStates_Blocking;
+
 		[SerializeField] private PlayerInput playerInput;
 
 		[SerializeField] private BoolVariable _isUsingUi_Out_Any;
@@ -126,6 +132,17 @@ namespace BML.Scripts.Player
 			}
 		}
 
+        private bool IsUsingUi_Blocking
+		{
+			get
+			{
+				return (_isUpgradeStoreOpen.Value && _rareResourceCount.Value >= _minRareResouceCount.Value) ||
+                    _containerUiMenuStates_Blocking
+					.GetBoolVariables()
+					.Any(b => (b != null && b.Value));
+			}
+		}
+
 		private bool IsUsingUi
 		{
 			get
@@ -162,6 +179,8 @@ namespace BML.Scripts.Player
 			jumpAction.canceled += SetJumpHeld;
 			crouchAction.performed += SetCrouchHeld;
 			crouchAction.canceled += SetCrouchHeld;
+
+            _rareResourceCount.Subscribe(TryToggleUpgradeStore);
 		}
 
 		private void OnDisable()
@@ -175,6 +194,8 @@ namespace BML.Scripts.Player
 			jumpAction.canceled -= SetJumpHeld;
 			crouchAction.performed -= SetCrouchHeld;
 			crouchAction.canceled -= SetCrouchHeld;
+
+            _rareResourceCount.Unsubscribe(TryToggleUpgradeStore);
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)
@@ -211,7 +232,24 @@ namespace BML.Scripts.Player
 		
 		public void OnPause()
 		{
-			if (_isStoreOpen.Value && !_isPaused.Value) return;
+            // Do nothing if blocking menu is already open
+			if (!_isPaused.Value && IsUsingUi_Blocking)
+			{
+				return;
+			}
+
+			//if going to open menu, close other non blocking menus
+            if(!_isPaused.Value) {
+                _containerUiMenuStates_NonBlocking.GetBoolVariables().ForEach((menuState) => {
+                    if(menuState.Equals(_isUpgradeStoreOpen) && _rareResourceCount.Value >= _minRareResouceCount.Value) {
+                        return;
+                    }
+
+                    if(!menuState.Equals(_isPaused)) {
+                        menuState.Value = false;
+                    }
+                });
+            }
 			
 			_isPaused.Value = true;
 			// The action map switching should now be handled by a subscription to value changes of _isPaused
@@ -221,8 +259,8 @@ namespace BML.Scripts.Player
 
 		public void OnToggleStore()
 		{
-			// Do nothing if any other menu is already open
-			if (!_isStoreOpen.Value && IsUsingUi)
+			// Do nothing if blocking menu is already open
+			if (!_isStoreOpen.Value && IsUsingUi_Blocking)
 			{
 				return;
 			}
@@ -234,13 +272,21 @@ namespace BML.Scripts.Player
 				return;
 			}
 
+            if(!_isStoreOpen.Value) {
+                _containerUiMenuStates_NonBlocking.GetBoolVariables().ForEach((menuState) => {
+                    if(!menuState.Equals(_isStoreOpen)) {
+                        menuState.Value = false;
+                    }
+                });
+            }
+
 			_isStoreOpen.Value = !_isStoreOpen.Value;
 		}
 		
 		public void OnToggleUpgradeStore()
 		{
-			// Do nothing if any other menu is already open
-			if (!_isUpgradeStoreOpen.Value && IsUsingUi)
+			// Do nothing if blocking menu is already open
+			if (!_isUpgradeStoreOpen.Value && IsUsingUi_Blocking)
 			{
 				return;
 			}
@@ -256,8 +302,23 @@ namespace BML.Scripts.Player
                 return;
             }
 
+            //if going to open store, close other menus
+            if(!_isUpgradeStoreOpen.Value) {
+                _containerUiMenuStates_NonBlocking.GetBoolVariables().ForEach((menuState) => {
+                    if(!menuState.Equals(_isUpgradeStoreOpen)) {
+                        menuState.Value = false;
+                    }
+                });
+            }
+
 			_isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}
+
+        public void TryToggleUpgradeStore() {
+            if(_rareResourceCount.Value >= _minRareResouceCount.Value) {
+                OnToggleUpgradeStore();
+            }
+        }
 
 		public void OnToggleGodMode()
 		{

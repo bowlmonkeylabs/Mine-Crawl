@@ -1145,8 +1145,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8649190723781439685}
   - component: {fileID: 8649190723781439674}
-  - component: {fileID: 2168307093723727716}
-  - component: {fileID: 7005711346521840121}
   - component: {fileID: 6086272550581210506}
   m_Layer: 0
   m_Name: StoreCanvasController
@@ -1227,142 +1225,13 @@ MonoBehaviour:
   _onClose:
     m_PersistentCalls:
       m_Calls: []
+  _onOpen:
+    m_PersistentCalls:
+      m_Calls: []
   _onClickBackdrop:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6086272550581210506}
-        m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
-          StateMachine
-        m_MethodName: TryRaise
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &2168307093723727716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8649190723781439684}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07d9de05a2e70424e8718c7cf216b134, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  conditionPreview: '-  Inventory_ Rare Resource Counter  >=   Upgrade_ Rare Resource
-    Min Count
-
-'
-  StateMachines: []
-  ValidStates: []
-  InvalidStates: []
-  BoolConditions: []
-  FloatConditions: []
-  IntConditions:
-  - targetParameter:
-      UseConstant: 0
-      EnableInstanceOptions: 0
-      InstanceName: 
-      InstancePath: IntermediateProperties
-      ConstantValue: 0
-      Variable: {fileID: 11400000, guid: 4aeaf25be48b2b544a06b963e7101d44, type: 2}
-    comparator: 3
-    value:
-      UseConstant: 0
-      EnableInstanceOptions: 0
-      InstanceName: 
-      InstancePath: IntermediateProperties
-      ConstantValue: 0
-      Variable: {fileID: 11400000, guid: 627d4a541b0d63a439cd1f6179f8dc97, type: 2}
-  TimerConditions: []
-  Vector2Conditions: []
-  Vector3Conditions: []
-  GameEventConditions: []
-  DynamicGameEventConditions: []
-  OnSuccess:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: b097147d192343940aca02f32a439f21, type: 2}
-        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.Variable`1[[System.Boolean,
-          mscorlib
-        m_MethodName: SetValue
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  OnFailure:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: b097147d192343940aca02f32a439f21, type: 2}
-        m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.Variable`1[[System.Boolean,
-          mscorlib
-        m_MethodName: SetValue
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &7005711346521840121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8649190723781439684}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b30e1dba8ca5434283cb2b68a1e91bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: FloatValues
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[BML.ScriptableObjectCore.Scripts.Variables.ValueReferences.FloatValueReference,
-        ScriptableObjectSystem]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-  BoolVariables: []
-  TriggerVariables: []
-  FloatVariables: []
-  IntVariables:
-  - {fileID: 11400000, guid: 4aeaf25be48b2b544a06b963e7101d44, type: 2}
-  TimerVariables: []
-  Vector2Variables: []
-  Vector3Variables: []
-  OnUpdate:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2168307093723727716}
         m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
           StateMachine
         m_MethodName: TryRaise
@@ -1619,6 +1488,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
+--- !u!224 &6035593340240042166 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6497956022634779255, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
+  m_PrefabInstance: {fileID: 716033553220569793}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6035593340240042167 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6497956022634779254, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
@@ -1630,11 +1504,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &6035593340240042166 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6497956022634779255, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
-  m_PrefabInstance: {fileID: 716033553220569793}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &805031958587483922
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1874,16 +1743,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9c169efbd426a94ab2542a3e556bedb, type: 3}
---- !u!224 &2645985586924849852 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3025046470139042186, guid: c9c169efbd426a94ab2542a3e556bedb, type: 3}
-  m_PrefabInstance: {fileID: 955733319567954742}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &2645985586924849855 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3025046470139042185, guid: c9c169efbd426a94ab2542a3e556bedb, type: 3}
-  m_PrefabInstance: {fileID: 955733319567954742}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1664931144843447763 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1898395258249191141, guid: c9c169efbd426a94ab2542a3e556bedb, type: 3}
@@ -1895,6 +1754,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &2645985586924849852 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3025046470139042186, guid: c9c169efbd426a94ab2542a3e556bedb, type: 3}
+  m_PrefabInstance: {fileID: 955733319567954742}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2645985586924849855 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3025046470139042185, guid: c9c169efbd426a94ab2542a3e556bedb, type: 3}
+  m_PrefabInstance: {fileID: 955733319567954742}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2010523267026047516
 MonoBehaviour:
   m_ObjectHideFlags: 0
