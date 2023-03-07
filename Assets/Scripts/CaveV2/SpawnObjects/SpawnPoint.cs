@@ -43,6 +43,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField, ShowIf("@this._projectionBehavior == SpawnPointProjectionBehavior.Randomize")] private Vector2 _projectionDirectionRandomnessRangeDegrees = new Vector2(30, 15);
         [SerializeField] private float _projectionDistance = 45f;
 
+        [SerializeField] private bool _doInheritParentRotation = true;
         [SerializeField] private bool _rotateTowardsSurfaceNormal = true;
         [SerializeField] private Vector3 _rotationEulerOffset = Vector3.zero;
         [SerializeField, ReadOnly] private Vector3? _projectedPosition = null; 
@@ -154,6 +155,10 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             int thisSeed = (seed ?? 0) + Mathf.RoundToInt(cachedPosition.x + cachedPosition.y + cachedPosition.z);
             Random.InitState(thisSeed);
             
+            var baseRotation = (_doInheritParentRotation
+                ? parentNode?.GameObject?.transform.rotation ?? Quaternion.identity
+                : Quaternion.identity);
+            
             Vector3 projectDirection;
             Quaternion rotationOffset = Quaternion.Euler(_rotationEulerOffset);
             switch (_projectionBehavior)
@@ -161,7 +166,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 default:
                 case SpawnPointProjectionBehavior.None:
                     _projectedPosition = this.transform.position + (Vector3.up * spawnPosOffset);
-                    _projectedRotation = Quaternion.identity * Quaternion.Euler(_rotationEulerOffset) * rotationOffset;
+                    _projectedRotation = baseRotation * rotationOffset;
                     return (_projectedPosition, _projectedRotation);
                 case SpawnPointProjectionBehavior.Gravity:
                     projectDirection = Vector3.down;
@@ -195,7 +200,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 _projectedRotation = _rotateTowardsSurfaceNormal
                     ? Quaternion.LookRotation(this.transform.position - _projectedPosition.Value) *
                       Quaternion.Euler(90, 0, 0)
-                    : Quaternion.identity;
+                    : baseRotation;
                 _projectedRotation *= rotationOffset;
                 return (_projectedPosition, _projectedRotation);
             }
