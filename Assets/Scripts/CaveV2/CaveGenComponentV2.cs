@@ -5,7 +5,9 @@ using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.CaveV2.CaveGraph;
+using BML.Scripts.CaveV2.CaveGraph.Minimap;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using UnityEngine;
 using BML.Scripts.CaveV2.MudBun;
@@ -19,6 +21,7 @@ using Shapes;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2
@@ -103,6 +106,10 @@ namespace BML.Scripts.CaveV2
         private bool _generateDebugObjects = false;
 #endif
         [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
+        
+        [SerializeField] private bool _generateMinimap = true;
+        [SerializeField, ShowIf("$_generateMinimap")] private SafeTransformValueReference _minimapObjectsContainer;
+        [FormerlySerializedAs("_minimapParameters")] [SerializeField, ShowIf("$_generateMinimap")] public CaveMinimapParameters MinimapParameters;
 
         public enum GizmoColorScheme
         {
@@ -198,6 +205,7 @@ namespace BML.Scripts.CaveV2
             IsGenerated = true;
             
             GenerateCaveGraphDebugObjects();
+            GenerateCaveGraphMinimapObjects();
             
             OnAfterGenerate?.Invoke();
         }
@@ -255,6 +263,7 @@ namespace BML.Scripts.CaveV2
             _minimumSpanningTreeGraphTEMP = null;
             IsGenerated = false;
             DestroyDebugObjects();
+            DestroyMinimapObjects();
             
             _caveGraphMudBunRenderer.DestroyMudBun();
             _levelObjectSpawner.DestroyLevelObjects();
@@ -992,6 +1001,87 @@ namespace BML.Scripts.CaveV2
         
         #endregion
 
+        #region Mini Map
+
+        private void DestroyMinimapObjects()
+        {
+            if (EnableLogs) Debug.Log("Cave Graph: Destroying minimap objects");
+            
+            if (_minimapObjectsContainer == null) return;
+            
+            var minimapObjects = Enumerable.Range(0, _minimapObjectsContainer.Value.childCount)
+                .Select(i => _minimapObjectsContainer.Value.GetChild(i).gameObject)
+                .ToList();
+            foreach (var childObject in minimapObjects)
+            {
+                GameObject.DestroyImmediate(childObject);
+            }
+        }
+
+        private void GenerateCaveGraphMinimapObjects()
+        {
+            if (EnableLogs) Debug.Log("Cave Graph: Generating minimap objects");
+            
+            if (!_generateMinimap || _minimapObjectsContainer?.Value == null || !IsGenerated || _caveGraph == null) return;
+            
+            // Spawn at each cave node
+            foreach (var caveNodeData in _caveGraph.Vertices)
+            {
+                // Spawn new game object
+                GameObject newGameObject = GameObjectUtils.SafeInstantiate(
+                    true, 
+                    MinimapParameters.PrefabCaveNode, 
+                    _minimapObjectsContainer.Value);
+                // newGameObject.transform.position = LocalToWorld(caveNodeData.LocalPosition);
+                newGameObject.transform.localPosition = caveNodeData.LocalPosition;
+                
+                // Get debug component
+                var debugComponent = newGameObject.GetComponent<CaveNodeDataMinimapComponent>();
+                debugComponent.CaveNodeData = caveNodeData;
+                debugComponent.CaveGenerator = this;
+                
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(debugComponent.OuterRenderer, false);
+            }
+            
+            // Spawn at each edge
+            foreach (var caveNodeConnectionData in _caveGraph.Edges)
+            {
+                // Calculate tunnel position
+                var sourceTargetDiff = (caveNodeConnectionData.Target.LocalPosition -
+                                        caveNodeConnectionData.Source.LocalPosition);
+                var sourceTargetDiffProjectedToGroundNormalized = Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
+                
+                var edgeDiff = (caveNodeConnectionData.Target.LocalPosition - caveNodeConnectionData.Source.LocalPosition);
+                var edgeMidPosition = caveNodeConnectionData.Source.LocalPosition + edgeDiff / 2;
+                var edgeRotation = Quaternion.LookRotation(edgeDiff);
+                var edgeLength = edgeDiff.magnitude;
+                var localScale = new Vector3(0.1f, 0.1f, edgeLength);
+                // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
+
+                // Spawn new game object
+                GameObject newGameObject = GameObjectUtils.SafeInstantiate(
+                    true,
+                    MinimapParameters.PrefabCaveNodeConnection,
+                    _minimapObjectsContainer.Value);
+                // newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
+                // newGameObject.transform.position = edgeMidPosition;
+                // newGameObject.transform.localScale = localScale;
+                
+                // Get debug component
+                var debugComponent = newGameObject.GetComponent<CaveNodeConnectionDataMinimapComponent>();
+                debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
+                debugComponent.CaveGenerator = this;
+
+                // Set shape renderer component parameters
+                debugComponent.Line.Start = caveNodeConnectionData.Source.LocalPosition;
+                debugComponent.Line.End = caveNodeConnectionData.Target.LocalPosition;
+                debugComponent.Line.Color = DebugNodeColor_Default;
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(debugComponent.Line, false);
+            }
+        }
+        
+        #endregion
+
         #region Unity lifecycle
 
         private void Start()
@@ -1064,10 +1154,10 @@ namespace BML.Scripts.CaveV2
             // Draw generation bounds
             Gizmos.color = Color.white;
             var outerBounds = _caveGenParams.GetBoundsWithPadding(CaveGenBounds, CaveGenParameters.PaddingType.Outer);
-            Gizmos.DrawWireCube(outerBounds.center, outerBounds.size);
+            Gizmos.DrawWireCube(LocalToWorld(outerBounds.center), outerBounds.size);
             Gizmos.color = Color.gray;
             var poissonBoundsWithPadding = _caveGenParams.GetBoundsWithPadding(CaveGenBounds, CaveGenParameters.PaddingType.Inner);
-            Gizmos.DrawWireCube(poissonBoundsWithPadding.center, poissonBoundsWithPadding.size);
+            Gizmos.DrawWireCube(LocalToWorld(poissonBoundsWithPadding.center), poissonBoundsWithPadding.size);
             
             // Draw cave graph
             // if (_caveGraph != null)
