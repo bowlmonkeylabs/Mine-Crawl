@@ -4,6 +4,7 @@ using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using Random = UnityEngine.Random;
@@ -12,7 +13,14 @@ namespace BML.Scripts.Compass
 {
     public class CompassController : MonoBehaviour
     {
-        [SerializeField] private TransformSceneReference _target = null;
+        private enum TargetMode
+        {
+            Direction,
+            MatchRotation,
+        }
+
+        [SerializeField] private TargetMode _targetMode = TargetMode.Direction;
+        [SerializeField] private SafeTransformValueReference _target = null;
         [SerializeField] private float _maxAngularVelocity = 20;
 
         [SerializeField] [Range(-100f, 100f)] private float _footstepNoiseInfluence = 1f;
@@ -101,9 +109,21 @@ namespace BML.Scripts.Compass
 
             //Get the required rotation based on the target position - we can do this by getting the direction
             //from the current position to the target. Then use rotate towards and look rotation, to get a quaternion thingy.
-            var targetDirection = transform.position - _target.Value.transform.position;
-            Vector3 rotationDirection = Vector3.RotateTowards(transform.forward, targetDirection, 360, 0.00f);
-            Quaternion targetRotation = Quaternion.LookRotation(rotationDirection);
+            Vector3 targetDirection;
+            Quaternion targetRotation;
+            switch (_targetMode)
+            {
+                default:
+                case TargetMode.Direction:
+                    targetDirection = transform.position - _target.Value.transform.position;
+                    Vector3 rotationDirection = Vector3.RotateTowards(transform.forward, targetDirection, 360, 0.00f);
+                    targetRotation = Quaternion.LookRotation(rotationDirection);
+                    break;
+                case TargetMode.MatchRotation:
+                    targetDirection = _target.Value.forward;
+                    targetRotation = _target.Value.rotation;
+                    break;
+            }
 
             float targetAngularDifference = Vector3.Angle(transform.forward, targetDirection);
             bool addRotationNoise = (!Mathf.Approximately(_rotationNoiseInfluence, 0f) &&
