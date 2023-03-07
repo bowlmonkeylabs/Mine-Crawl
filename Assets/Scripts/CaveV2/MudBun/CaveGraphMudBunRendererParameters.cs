@@ -15,11 +15,6 @@ namespace BML.Scripts.CaveV2.MudBun
     {
         #region Inspector
 
-        /// <summary>
-        /// This property is used to control where tunnels attempt to connect between rooms. It should roughly match the scale of the MudBun room prefab base scale.
-        /// </summary>
-        [SerializeField] public float BaseRoomRadius;
-
         [SerializeField] public Color CaveColor;
 
         [SerializeField] public Vector3 TunnelConnectionOffset = Vector3.zero;
