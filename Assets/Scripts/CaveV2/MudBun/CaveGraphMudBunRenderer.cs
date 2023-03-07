@@ -88,12 +88,14 @@ namespace BML.Scripts.CaveV2.MudBun
                 
                 // Select room to spawn
                 GameObject roomPrefab;
+                Quaternion roomRotation;
                 Vector3 roomScale;
                 if (caveNodeData == _caveGraph.StartNode &&
                     !_caveGraphRenderParams.StartRoomPrefab.SafeIsUnityNull())
                 {
                     roomPrefab = _caveGraphRenderParams.StartRoomPrefab;
                     roomScale = Vector3.one;
+                    roomRotation = Quaternion.identity;
                     changeNodeColor = false;
                 }
                 else if (caveNodeData == _caveGraph.EndNode &&
@@ -101,12 +103,14 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     roomPrefab = _caveGraphRenderParams.EndRoomPrefab;
                     roomScale = Vector3.one;
+                    roomRotation = Quaternion.identity;
                 }
                 else if(caveNodeData == _caveGraph.MerchantNode &&
                         !_caveGraphRenderParams.MerchantRoomPrefab.SafeIsUnityNull())
                 {
                     roomPrefab = _caveGraphRenderParams.MerchantRoomPrefab;
                     roomScale = Vector3.one;
+                    roomRotation = Quaternion.identity;
                     changeNodeColor = false;
                 }
                 else
@@ -114,11 +118,21 @@ namespace BML.Scripts.CaveV2.MudBun
                     // TODO systematically choose which rooms to spawn
                     roomPrefab = _caveGraphRenderParams.GetRandomRoom(caveNodeData.NodeType);
                     roomScale = Vector3.one * caveNodeData.Scale;
+                    if (_caveGraphRenderParams.RandomizeRoomRotation)
+                    {
+                        var randomAngle = Random.Range(0, 2 * Mathf.PI);
+                        var randomForward = new Vector3(Mathf.Cos(randomAngle), 0f, Mathf.Sin(randomAngle));
+                        roomRotation = Quaternion.LookRotation(randomForward, Vector3.up);
+                    }
+                    else
+                    {
+                        roomRotation = Quaternion.identity;
+                    }
                 }
 
                 // Spawn room
                 GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, roomPrefab, mudRenderer.transform);
-                newGameObject.transform.position = localOrigin + caveNodeData.LocalPosition;
+                newGameObject.transform.SetPositionAndRotation(localOrigin + caveNodeData.LocalPosition, roomRotation);
                 newGameObject.transform.localScale = roomScale;
                 caveNodeData.GameObject = newGameObject;
 

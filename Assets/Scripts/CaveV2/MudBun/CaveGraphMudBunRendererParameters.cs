@@ -17,6 +17,11 @@ namespace BML.Scripts.CaveV2.MudBun
 
         [SerializeField] public Color CaveColor;
 
+        /// <summary>
+        /// Randomizes room rotation around the transform.up axis.
+        /// </summary>
+        [SerializeField] public bool RandomizeRoomRotation = true;
+
         [SerializeField] public Vector3 TunnelConnectionOffset = Vector3.zero;
         
         [SerializeField] public GameObject StartRoomPrefab;
