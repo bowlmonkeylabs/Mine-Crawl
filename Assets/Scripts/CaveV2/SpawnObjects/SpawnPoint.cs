@@ -124,7 +124,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                         textColor = Color.white,
                     },
                 };
-                Handles.Label(position, this.tag, style);
+                // Handles.Label(position + Vector3.down * 0.3f, this.tag, style);
+                Handles.Label(position + Vector3.up * 0.3f, this.name, style);
             }
             
             #endif
