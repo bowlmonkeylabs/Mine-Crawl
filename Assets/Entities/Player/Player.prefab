@@ -8065,7 +8065,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 162339389660353893}
+  m_Father: {fileID: 4263997310979020706}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &196977129928123002
@@ -8093,7 +8093,7 @@ MonoBehaviour:
     ReferenceValue_TransformSceneReference: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
     ReferenceValue_GameObjectSceneReference: {fileID: 0}
   _translationTarget: {fileID: 6780521088754864702}
-  _scalingTarget: {fileID: 162339389660353893}
+  _scalingTarget: {fileID: 4263997310979020706}
   _cullOutside: {fileID: 8362569841916225692}
   _zoomBaseline: 0.006
 --- !u!1 &1797728375059188022
@@ -9032,6 +9032,65 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 0
   m_Loop: 0
+--- !u!1 &2302739639425751954
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4263997310979020706}
+  - component: {fileID: 439697722256897288}
+  m_Layer: 7
+  m_Name: Minimap (offset replica)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4263997310979020706
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2302739639425751954}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.006, y: 0.006, z: 0.006}
+  m_Children:
+  - {fileID: 6780521088754864702}
+  m_Father: {fileID: 4360969640052789754}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &439697722256897288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2302739639425751954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83a28b539cad4ce0a0107cafc58c739c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _target:
+    ReferenceTypeSelector: 0
+    ReferenceValue_Transform: {fileID: 162339389660353893}
+    ReferenceValue_TransformSceneReference: {fileID: 0}
+    ReferenceValue_GameObjectSceneReference: {fileID: 0}
+  _transform:
+    ReferenceTypeSelector: 0
+    ReferenceValue_Transform: {fileID: 4263997310979020706}
+    ReferenceValue_TransformSceneReference: {fileID: 0}
+    ReferenceValue_GameObjectSceneReference: {fileID: 0}
+  _readLocalRotation: 1
+  _setLocalRotation: 1
+  _remapAngles: 1
+  _remapAnglesMin: {x: 0, y: 0, z: 0}
+  _remapAnglesMax: {x: 10, y: 360, z: 10}
 --- !u!1 &2331793945456284132
 GameObject:
   m_ObjectHideFlags: 0
@@ -9114,6 +9173,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2360800453983378263
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4360969640052789754}
+  m_Layer: 7
+  m_Name: Minimap (constant rotation offset)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4360969640052789754
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2360800453983378263}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4263997310979020706}
+  m_Father: {fileID: 1124496401759698450}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &2432463934219413715
 GameObject:
   m_ObjectHideFlags: 0
@@ -15728,6 +15818,9 @@ MonoBehaviour:
     ReferenceValue_GameObjectSceneReference: {fileID: 0}
   _readLocalRotation: 0
   _setLocalRotation: 0
+  _remapAngles: 0
+  _remapAnglesMin: {x: 0, y: 0, z: 0}
+  _remapAnglesMax: {x: 360, y: 360, z: 360}
 --- !u!1 &4292042580474181362
 GameObject:
   m_ObjectHideFlags: 0
@@ -23178,8 +23271,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.006, y: 0.006, z: 0.006}
-  m_Children:
-  - {fileID: 6780521088754864702}
+  m_Children: []
   m_Father: {fileID: 1124496401759698450}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -23244,7 +23336,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1124496401759698450}
   m_Layer: 7
-  m_Name: Minimap
+  m_Name: Minimap (main)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23257,13 +23349,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6266807033874931565}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.07132119, z: 0.5}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.07132149, z: 0.5000011}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 162339389660353893}
   - {fileID: 8559044050560204755}
   - {fileID: 4944558589552590849}
+  - {fileID: 4360969640052789754}
   m_Father: {fileID: 7265003986444444711}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
