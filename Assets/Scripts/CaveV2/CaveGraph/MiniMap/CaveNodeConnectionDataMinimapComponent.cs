@@ -34,10 +34,10 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
             {
                 color = CaveGenerator.MinimapParameters.CulledColor;
             }
-            // else if (caveNodeConnectionData.PlayerOccupied)
-            // {
-            //     color = MinimapController.MinimapParameters.OccupiedColor;
-            // }
+            else if (caveNodeConnectionData.PlayerOccupied)
+            {
+                color = MinimapController.MinimapParameters.OccupiedColor;
+            }
             else if (caveNodeConnectionData.PlayerVisited)
             {
                 color = MinimapController.MinimapParameters.VisitedColor;
