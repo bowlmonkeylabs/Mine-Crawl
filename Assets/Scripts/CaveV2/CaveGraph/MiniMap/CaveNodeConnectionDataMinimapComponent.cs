@@ -11,36 +11,65 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
     {
         [ReadOnly] public CaveNodeConnectionData CaveNodeConnectionData;
         [ReadOnly] public CaveGenComponentV2 CaveGenerator;
+        [ReadOnly] public MinimapController MinimapController;
 
         [SerializeField] public Line Line;
 
-        private void OnDrawGizmos()
+        #region Unity lifecycle
+
+        private void Update()
         {
-            if (!SelectionUtils.InSelection(this.transform)) return;
+            // UpdatePlayerOccupied();
+        }
+
+        #endregion
+
+        private Color GetNodeColor(CaveNodeConnectionData caveNodeConnectionData)
+        {          
+            Color color;
             
-            Gizmos.color = Color.magenta;
-            var rotationFlattened = Vector3.ProjectOnPlane(this.transform.forward, Vector3.up);
-            var rotation = Quaternion.LookRotation(rotationFlattened, Vector3.up);
-                            
-            if (CaveNodeConnectionData.Source?.BoundsColliders != null)
+            bool isInBounds = MinimapController.IsInBounds(caveNodeConnectionData.Source.DirectPlayerDistance)
+                              || MinimapController.IsInBounds(caveNodeConnectionData.Target.DirectPlayerDistance);
+            if (MinimapController.MinimapParameters.RestrictMapRadius && !isInBounds)
             {
-                foreach (var sourceBoundsCollider in CaveNodeConnectionData.Source.BoundsColliders)
-                {
-                    Gizmos.matrix = Matrix4x4.Translate(sourceBoundsCollider.bounds.center) * Matrix4x4.Rotate(rotation);
-                    Gizmos.DrawWireCube(Vector3.zero, sourceBoundsCollider.bounds.size);
-                }
+                color = CaveGenerator.MinimapParameters.CulledColor;
             }
-            
-            if (CaveNodeConnectionData.Target?.BoundsColliders != null)
+            // else if (caveNodeConnectionData.PlayerOccupied)
+            // {
+            //     color = MinimapController.MinimapParameters.OccupiedColor;
+            // }
+            else if (caveNodeConnectionData.PlayerVisited)
             {
-                foreach (var targetBoundsCollider in CaveNodeConnectionData.Target.BoundsColliders)
-                {
-                    Gizmos.matrix = Matrix4x4.Translate(targetBoundsCollider.bounds.center) * Matrix4x4.Rotate(rotation);
-                    Gizmos.DrawWireCube(Vector3.zero, targetBoundsCollider.bounds.size);
-                }
+                color = MinimapController.MinimapParameters.VisitedColor;
+            }
+            else if (caveNodeConnectionData.PlayerVisitedAdjacent)
+            {
+                color = MinimapController.MinimapParameters.VisibleColor;
+            }
+            else
+            {
+                color = MinimapController.MinimapParameters.CulledColor;
             }
 
-            Gizmos.matrix = Matrix4x4.identity;
+            // int maxViewDistance = 3;
+            // float playerDistanceFac = Mathf.Clamp01((float) caveNodeData.PlayerDistance / (float)maxViewDistance);
+            //
+            // var isInBounds = MinimapController.IsInBounds(this.transform.position);
+            // playerDistanceFac = (isInBounds.inBounds ? 1 : 0);
+            //
+            // float alpha = Mathf.Lerp(0.7f, 1f, 1f - playerDistanceFac);
+            // color.a = alpha;
+
+            return color;
+        }
+
+        public void UpdatePlayerOccupied()
+        {
+            if (Line != null && CaveGenerator?.MinimapParameters != null)
+            {
+                Color color = GetNodeColor(CaveNodeConnectionData);
+                Line.Color = color;
+            }
         }
     }
 }

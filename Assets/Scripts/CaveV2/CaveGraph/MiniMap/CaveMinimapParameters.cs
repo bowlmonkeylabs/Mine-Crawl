@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using UnityEngine;
 
 namespace BML.Scripts.CaveV2.CaveGraph.Minimap
 {
@@ -10,8 +11,15 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         [SerializeField] public GameObject PrefabCaveNode;
         [SerializeField] public GameObject PrefabCaveNodeConnection;
 
-        [SerializeField] public Color DefaultColor;
+        [SerializeField] public Color CulledColor;
+        [SerializeField] public Color VisibleColor;
         [SerializeField] public Color VisitedColor;
+        [SerializeField] public Color OccupiedColor;
+
+        [SerializeField] public SafeFloatValueReference ZoomLevel;
+
+        [SerializeField] public bool RestrictMapRadius = true;
+        [SerializeField] public float MapPlayerRadius = 30f;
 
         #endregion
 

@@ -12,6 +12,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
     {
         [ReadOnly] public CaveNodeData CaveNodeData;
         [ReadOnly] public CaveGenComponentV2 CaveGenerator;
+        [ReadOnly] public MinimapController MinimapController;
 
         [SerializeField] public ShapeRenderer OuterRenderer;
 
@@ -19,7 +20,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
 
         private void Update()
         {
-            UpdatePlayerOccupied();
+            // UpdatePlayerOccupied();
         }
 
         #endregion
@@ -27,20 +28,33 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         private Color GetNodeColor(CaveNodeData caveNodeData)
         {          
             Color color;
-
-            if (caveNodeData.PlayerVisited)
+            
+            bool isInBounds = MinimapController.IsInBounds(caveNodeData.DirectPlayerDistance);
+            if (MinimapController.MinimapParameters.RestrictMapRadius && !isInBounds)
             {
-                color = CaveGenerator.MinimapParameters.VisitedColor;
+                color = MinimapController.MinimapParameters.CulledColor;
+            }
+            else if (caveNodeData.PlayerOccupied)
+            {
+                color = MinimapController.MinimapParameters.OccupiedColor;
+            }
+            else if (caveNodeData.PlayerVisited)
+            {
+                color = MinimapController.MinimapParameters.VisitedColor;
+            }
+            else if (caveNodeData.PlayerVisitedAdjacent)
+            {
+                color = MinimapController.MinimapParameters.VisibleColor;
             }
             else
             {
-                color = CaveGenerator.MinimapParameters.DefaultColor;
+                color = MinimapController.MinimapParameters.CulledColor;
             }
 
             return color;
         }
 
-        private void UpdatePlayerOccupied()
+        public void UpdatePlayerOccupied()
         {
             if (OuterRenderer != null && CaveGenerator?.MinimapParameters != null)
             {

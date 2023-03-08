@@ -783,6 +783,12 @@ namespace BML.Scripts.CaveV2
                 this.CurrentMaxPlayerObjectiveDistance = _caveGraph.Vertices
                     .Where(node => node.PlayerDistance == 0)
                     .Max(node => node.ObjectiveDistance);
+
+                var playerLocalPosition = WorldToLocal(_playerSceneReference.Value.position);
+                foreach (var caveNodeData in _caveGraph.Vertices)
+                {
+                    caveNodeData.DirectPlayerDistance = Vector3.Distance(playerLocalPosition, caveNodeData.LocalPosition);
+                }
             }
             else
             {
@@ -1014,6 +1020,20 @@ namespace BML.Scripts.CaveV2
                 .ToList();
             foreach (var childObject in minimapObjects)
             {
+                var nodeComponent = _minimapObjectsContainer.Value.GetComponent<CaveNodeDataMinimapComponent>();
+                if (nodeComponent != null)
+                {
+                    OnAfterUpdatePlayerDistance -= nodeComponent.UpdatePlayerOccupied;
+                }
+                else
+                {
+                    var nodeConnectionComponent = _minimapObjectsContainer.Value.GetComponent<CaveNodeConnectionDataMinimapComponent>();
+                    if (nodeConnectionComponent != null)
+                    {
+                        OnAfterUpdatePlayerDistance -= nodeComponent.UpdatePlayerOccupied;
+                    }
+                }
+                
                 GameObject.DestroyImmediate(childObject);
             }
         }
@@ -1021,8 +1041,19 @@ namespace BML.Scripts.CaveV2
         private void GenerateCaveGraphMinimapObjects()
         {
             if (EnableLogs) Debug.Log("Cave Graph: Generating minimap objects");
-            
-            if (!_generateMinimap || _minimapObjectsContainer?.Value == null || !IsGenerated || _caveGraph == null) return;
+
+            if (!_generateMinimap || _minimapObjectsContainer?.Value == null || !IsGenerated || _caveGraph == null)
+            {
+                if (EnableLogs) Debug.LogError("Minimap failed to generate!");
+                return;
+            }
+
+            var minimapController = _minimapObjectsContainer.Value.GetComponent<MinimapController>();
+            if (minimapController == null)
+            {
+                if (EnableLogs) Debug.LogError("Minimap failed to generate! Minimap controller not found.");
+                return;
+            }
             
             // Spawn at each cave node
             foreach (var caveNodeData in _caveGraph.Vertices)
@@ -1039,6 +1070,9 @@ namespace BML.Scripts.CaveV2
                 var debugComponent = newGameObject.GetComponent<CaveNodeDataMinimapComponent>();
                 debugComponent.CaveNodeData = caveNodeData;
                 debugComponent.CaveGenerator = this;
+                debugComponent.MinimapController = minimapController;
+                
+                OnAfterUpdatePlayerDistance += debugComponent.UpdatePlayerOccupied;
                 
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(debugComponent.OuterRenderer, false);
             }
@@ -1071,6 +1105,9 @@ namespace BML.Scripts.CaveV2
                 var debugComponent = newGameObject.GetComponent<CaveNodeConnectionDataMinimapComponent>();
                 debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
                 debugComponent.CaveGenerator = this;
+                debugComponent.MinimapController = minimapController;
+                
+                OnAfterUpdatePlayerDistance += debugComponent.UpdatePlayerOccupied;
 
                 // Set shape renderer component parameters
                 debugComponent.Line.Start = caveNodeConnectionData.Source.LocalPosition;
