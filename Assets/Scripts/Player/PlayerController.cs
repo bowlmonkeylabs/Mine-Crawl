@@ -91,7 +91,7 @@ namespace BML.Scripts.Player
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
         
-        [SerializeField, FoldoutGroup("Debug")] private BoolVariable _enableLogs;
+        [SerializeField, FoldoutGroup("Debug")] private bool _enableLogs;
 
         private bool pickaxeInputHeld = false;
         private bool secondaryInputHeld = false;
@@ -479,6 +479,7 @@ namespace BML.Scripts.Player
             // If in play mode, move player using kinematicCharController motor to avoid race condition
             if (ApplicationUtils.IsPlaying_EditorSafe)
             {
+                Debug.Log($"Moving KCC to {destination}");
                 if (_kinematicCharacterMotor != null)
                 {
                     _kinematicCharacterMotor.SetPosition(destination);
@@ -493,6 +494,7 @@ namespace BML.Scripts.Player
             }
             else
             {
+                Debug.Log($"Moving transform to {destination}");
                 this.transform.position = destination;
             }
         }
