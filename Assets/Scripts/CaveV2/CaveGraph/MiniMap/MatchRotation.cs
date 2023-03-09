@@ -1,5 +1,6 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.Scripts.Utils;
 using UnityEngine;
 
 namespace BML.Scripts.CaveV2.CaveGraph.Minimap
@@ -14,8 +15,10 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         [SerializeField] private bool _setLocalRotation = false;
 
         [SerializeField] private bool _remapAngles = false;
-        [SerializeField] private Vector3 _remapAnglesMin = Vector3.zero;
-        [SerializeField] private Vector3 _remapAnglesMax = Vector3.one * 360;
+        [SerializeField] private Vector3 _remapAnglesOldMin = Vector3.zero;
+        [SerializeField] private Vector3 _remapAnglesOldMax = Vector3.one * 360;
+        [SerializeField] private Vector3 _remapAnglesNewMin = Vector3.zero;
+        [SerializeField] private Vector3 _remapAnglesNewMax = Vector3.one * 360;
 
         #endregion
 
@@ -23,21 +26,18 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
 
         private void FixedUpdate()
         {
-            Debug.Log($"Match rotation ({name})");
             if (_target.Value != null && _transform.Value != null)
             {
                 Quaternion rotation = _readLocalRotation ? _target.Value.localRotation : _target.Value.rotation;
                 if (_remapAngles)
                 {
                     var eulerAngles = rotation.eulerAngles;
-                    var prevEulerAngles = eulerAngles;
                     eulerAngles.Set(
-                        Mathf.Lerp(_remapAnglesMin.x, _remapAnglesMax.x, eulerAngles.x / 360f),    
-                        Mathf.Lerp(_remapAnglesMin.y, _remapAnglesMax.y, eulerAngles.y / 360f),    
-                        Mathf.Lerp(_remapAnglesMin.z, _remapAnglesMax.z, eulerAngles.z / 360f)    
+                        FloatUtils.RemapRange(eulerAngles.x, _remapAnglesOldMin.x, _remapAnglesOldMax.x, _remapAnglesNewMin.x, _remapAnglesNewMax.x),    
+                        FloatUtils.RemapRange(eulerAngles.y, _remapAnglesOldMin.y, _remapAnglesOldMax.y, _remapAnglesNewMin.y, _remapAnglesNewMax.y),    
+                        FloatUtils.RemapRange(eulerAngles.z, _remapAnglesOldMin.z, _remapAnglesOldMax.z, _remapAnglesNewMin.z, _remapAnglesNewMax.z)    
                     );
                     rotation.eulerAngles = eulerAngles;
-                    Debug.Log($"(Prev angles {prevEulerAngles}) (Remapped angles {eulerAngles})");
                 }
                 
                 if (_setLocalRotation)
