@@ -479,7 +479,7 @@ namespace BML.Scripts.Player
             // If in play mode, move player using kinematicCharController motor to avoid race condition
             if (ApplicationUtils.IsPlaying_EditorSafe)
             {
-                Debug.Log($"Moving KCC to {destination}");
+                if(_enableLogs) Debug.Log($"Moving KCC to {destination}");
                 if (_kinematicCharacterMotor != null)
                 {
                     _kinematicCharacterMotor.SetPosition(destination);
@@ -494,7 +494,7 @@ namespace BML.Scripts.Player
             }
             else
             {
-                Debug.Log($"Moving transform to {destination}");
+                if(_enableLogs) Debug.Log($"Moving transform to {destination}");
                 this.transform.position = destination;
             }
         }
