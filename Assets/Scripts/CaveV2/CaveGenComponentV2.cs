@@ -1068,51 +1068,28 @@ namespace BML.Scripts.CaveV2
                 
                 // Get debug component
                 var debugComponent = newGameObject.GetComponent<CaveNodeDataMinimapComponent>();
-                debugComponent.CaveNodeData = caveNodeData;
-                debugComponent.CaveGenerator = this;
-                debugComponent.MinimapController = minimapController;
+                debugComponent.Initialize(caveNodeData, this, minimapController);
                 
                 OnAfterUpdatePlayerDistance += debugComponent.UpdatePlayerOccupied;
                 
-                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(debugComponent.OuterRenderer, false);
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(debugComponent.DiscoveredRenderer, false);
             }
             
             // Spawn at each edge
             foreach (var caveNodeConnectionData in _caveGraph.Edges)
             {
-                // Calculate tunnel position
-                var sourceTargetDiff = (caveNodeConnectionData.Target.LocalPosition -
-                                        caveNodeConnectionData.Source.LocalPosition);
-                var sourceTargetDiffProjectedToGroundNormalized = Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
-                
-                var edgeDiff = (caveNodeConnectionData.Target.LocalPosition - caveNodeConnectionData.Source.LocalPosition);
-                var edgeMidPosition = caveNodeConnectionData.Source.LocalPosition + edgeDiff / 2;
-                var edgeRotation = Quaternion.LookRotation(edgeDiff);
-                var edgeLength = edgeDiff.magnitude;
-                var localScale = new Vector3(0.1f, 0.1f, edgeLength);
-                // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
-
                 // Spawn new game object
                 GameObject newGameObject = GameObjectUtils.SafeInstantiate(
                     true,
                     MinimapParameters.PrefabCaveNodeConnection,
                     _minimapObjectsContainer.Value);
-                // newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
-                // newGameObject.transform.position = edgeMidPosition;
-                // newGameObject.transform.localScale = localScale;
                 
                 // Get debug component
                 var debugComponent = newGameObject.GetComponent<CaveNodeConnectionDataMinimapComponent>();
-                debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
-                debugComponent.CaveGenerator = this;
-                debugComponent.MinimapController = minimapController;
+                debugComponent.Initialize(caveNodeConnectionData, this, minimapController);
                 
                 OnAfterUpdatePlayerDistance += debugComponent.UpdatePlayerOccupied;
-
-                // Set shape renderer component parameters
-                debugComponent.Line.Start = caveNodeConnectionData.Source.LocalPosition;
-                debugComponent.Line.End = caveNodeConnectionData.Target.LocalPosition;
-                debugComponent.Line.Color = DebugNodeColor_Default;
+                
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(debugComponent.Line, false);
             }
         }

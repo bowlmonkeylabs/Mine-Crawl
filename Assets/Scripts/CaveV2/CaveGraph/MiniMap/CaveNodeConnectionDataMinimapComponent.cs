@@ -24,15 +24,29 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
 
         #endregion
 
+        public void Initialize(CaveNodeConnectionData caveNodeConnectionData, CaveGenComponentV2 caveGenerator, MinimapController minimapController)
+        {
+            CaveNodeConnectionData = caveNodeConnectionData;
+            CaveGenerator = caveGenerator;
+            MinimapController = minimapController;
+            
+            UpdateLinePosition();
+        }
+
         private Color GetNodeColor(CaveNodeConnectionData caveNodeConnectionData)
         {          
             Color color;
+            float? alphaOverride;
+            
+            float playerDistanceFac = 1f - Mathf.Clamp01((float)caveNodeConnectionData.PlayerDistance / 2f);
+            alphaOverride = (playerDistanceFac * 0.9f) + 0.1f;
             
             bool isInBounds = MinimapController.IsInBounds(caveNodeConnectionData.Source.DirectPlayerDistance)
                               || MinimapController.IsInBounds(caveNodeConnectionData.Target.DirectPlayerDistance);
             if (MinimapController.MinimapParameters.RestrictMapRadius && !isInBounds)
             {
                 color = CaveGenerator.MinimapParameters.CulledColor;
+                alphaOverride = null;
             }
             else if (caveNodeConnectionData.PlayerOccupied)
             {
@@ -49,18 +63,22 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
             else
             {
                 color = MinimapController.MinimapParameters.CulledColor;
+                alphaOverride = null;
             }
-
-            // int maxViewDistance = 3;
-            // float playerDistanceFac = Mathf.Clamp01((float) caveNodeData.PlayerDistance / (float)maxViewDistance);
-            //
-            // var isInBounds = MinimapController.IsInBounds(this.transform.position);
-            // playerDistanceFac = (isInBounds.inBounds ? 1 : 0);
-            //
-            // float alpha = Mathf.Lerp(0.7f, 1f, 1f - playerDistanceFac);
-            // color.a = alpha;
+            
+            color.a = (alphaOverride ?? color.a);
 
             return color;
+        }
+
+        public void UpdateLinePosition()
+        {
+            Vector3 sourceToTargetNormalized = (CaveNodeConnectionData.Target.LocalPosition - CaveNodeConnectionData.Source.LocalPosition).normalized;
+            float sourceRelativeScale = MinimapController.MinimapParameters.GetNodeTypeRelativeScale(CaveNodeConnectionData.Source.NodeType);
+            float targetRelativeScale = MinimapController.MinimapParameters.GetNodeTypeRelativeScale(CaveNodeConnectionData.Target.NodeType);
+            Vector3 baseOffset = sourceToTargetNormalized * MinimapController.MinimapParameters.LineConnectionEndOffset; 
+            Line.Start = CaveNodeConnectionData.Source.LocalPosition + (sourceRelativeScale * baseOffset);
+            Line.End = CaveNodeConnectionData.Target.LocalPosition - (targetRelativeScale * baseOffset);
         }
 
         public void UpdatePlayerOccupied()
@@ -69,6 +87,20 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
             {
                 Color color = GetNodeColor(CaveNodeConnectionData);
                 Line.Color = color;
+
+                // bool visited = CaveNodeConnectionData.PlayerVisited;
+                bool visited = CaveNodeConnectionData.PlayerVisitedAllAdjacent;
+                if (visited)
+                {
+                    Line.Dashed = false;
+                }
+                else
+                {
+                    Line.Dashed = true;
+                }
+                
+                // TODO remove from update
+                UpdateLinePosition();
             }
         }
     }

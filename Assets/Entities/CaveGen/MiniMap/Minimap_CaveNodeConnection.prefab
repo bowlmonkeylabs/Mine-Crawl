@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7167432180987166975}
   - component: {fileID: 7392556096886451848}
   - component: {fileID: 1447459946804770082}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Minimap_CaveNodeConnection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CaveGenerator: {fileID: 0}
+  MinimapController: {fileID: 0}
   Line: {fileID: 7167432180987166975}
 --- !u!114 &7167432180987166975
 MonoBehaviour:
@@ -77,12 +78,12 @@ MonoBehaviour:
   thicknessSpace: 0
   endCaps: 2
   matchDashSpacingToSize: 1
-  dashed: 0
+  dashed: 1
   dashStyle:
     type: 0
-    space: -1
+    space: 0
     snap: 0
-    size: 4
+    size: 2
     offset: 0
     spacing: 4
     shapeModifier: 1
