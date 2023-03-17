@@ -76,7 +76,9 @@ namespace BML.Scripts.CaveV2
                         foreach (var caveNodeConnectionData in _caveGenerator.CaveGraph.AdjacentEdges(caveNodeData))
                         {
                             caveNodeConnectionData.PlayerVisitedAdjacent = true;
+                            UpdatePlayerVisitedAllAdjacent(caveNodeConnectionData);
                         }
+                        UpdatePlayerVisitedAllAdjacent(caveNodeData);
                         caveNodeData.PlayerOccupied = true;
                         _influenceState._currentNodes.Add(other, caveNodeData);
                         _caveGenerator?.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
@@ -104,6 +106,9 @@ namespace BML.Scripts.CaveV2
                         caveNodeConnectionData.Source.PlayerVisitedAdjacent = true;
                         caveNodeConnectionData.Target.PlayerVisitedAdjacent = true;
                         caveNodeConnectionData.PlayerOccupied = true;
+                        UpdatePlayerVisitedAllAdjacent(caveNodeConnectionData);
+                        UpdatePlayerVisitedAllAdjacent(caveNodeConnectionData.Source);
+                        UpdatePlayerVisitedAllAdjacent(caveNodeConnectionData.Target);
                         _influenceState._currentNodeConnections.Add(other, caveNodeConnectionData);
                         // _caveGenerator?.UpdatePlayerDistance(_currentNodes.Values.AsEnumerable());
                         
@@ -152,6 +157,21 @@ namespace BML.Scripts.CaveV2
         private void UpdatePlayerDistanceToCurrent()
         {
             _caveGenerator?.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
+        }
+
+        private bool UpdatePlayerVisitedAllAdjacent(CaveNodeData caveNodeData)
+        {
+            var adjacentEdges = _caveGenerator.CaveGraph.AdjacentEdges(caveNodeData);
+            bool playerVisitedAllAdjacent = adjacentEdges.All(e => e.PlayerVisited);
+            caveNodeData.PlayerVisitedAllAdjacent = playerVisitedAllAdjacent;
+            return playerVisitedAllAdjacent;
+        }
+        
+        private bool UpdatePlayerVisitedAllAdjacent(CaveNodeConnectionData caveNodeConnectionData)
+        {
+            bool playerVisitedAllAdjacent = caveNodeConnectionData.Source.PlayerVisited && caveNodeConnectionData.Target.PlayerVisited;
+            caveNodeConnectionData.PlayerVisitedAllAdjacent = playerVisitedAllAdjacent;
+            return playerVisitedAllAdjacent;
         }
     }
 }
