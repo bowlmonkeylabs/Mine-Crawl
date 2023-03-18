@@ -1021,7 +1021,7 @@ namespace BML.Scripts.CaveV2
         {
             if (EnableLogs) Debug.Log("Cave Graph: Destroying minimap objects");
             
-            if (_minimapObjectsContainer == null) return;
+            if (_minimapObjectsContainer == null || _minimapObjectsContainer.Value == null) return;
             
             var minimapObjects = Enumerable.Range(0, _minimapObjectsContainer.Value.childCount)
                 .Select(i => _minimapObjectsContainer.Value.GetChild(i).gameObject)
