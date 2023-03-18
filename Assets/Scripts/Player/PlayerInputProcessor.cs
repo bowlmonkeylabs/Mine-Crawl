@@ -37,6 +37,7 @@ namespace BML.Scripts.Player
 		[SerializeField] private Vector2Reference _mouseInput;
 		[SerializeField] private Vector2Reference _moveInput;
 		[SerializeField] private BoolReference _isPaused;
+		[SerializeField] private BoolReference _isMinimapOpen;
 		[SerializeField] private BoolReference _isStoreOpen;
 		[SerializeField] private BoolReference _isUpgradeStoreOpen;
 		[SerializeField] private GameEvent _onStoreFailOpen;
@@ -257,6 +258,35 @@ namespace BML.Scripts.Player
 			// SetCursorState(false);
 		}
 
+		public void OnToggleMinimap()
+		{
+			// Do nothing if blocking menu is already open
+			if (!_isMinimapOpen.Value && IsUsingUi_Blocking)
+			{
+				return;
+			}
+			
+			// Play feedback if store fails to open due to combat
+			// if (!_isStoreOpen.Value && _isPlayerInCombat.Value)
+			// {
+			// 	_onStoreFailOpen.Raise();
+			// 	return;
+			// }
+
+			if (!_isMinimapOpen.Value)
+			{
+				foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
+				{
+					if (!menuStateBoolVariable.Equals(_isMinimapOpen))
+					{
+						menuStateBoolVariable.Value = false;
+					}
+				}
+			}
+
+			_isMinimapOpen.Value = !_isMinimapOpen.Value;
+		}
+
 		public void OnToggleStore()
 		{
 			// Do nothing if blocking menu is already open
@@ -272,13 +302,17 @@ namespace BML.Scripts.Player
 				return;
 			}
 
-            if(!_isStoreOpen.Value) {
-                _containerUiMenuStates_NonBlocking.GetBoolVariables().ForEach((menuState) => {
-                    if(!menuState.Equals(_isStoreOpen)) {
-                        menuState.Value = false;
-                    }
-                });
-            }
+			// If opening the store, close other menus
+			if (!_isStoreOpen.Value)
+			{
+				foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
+				{
+					if (!menuStateBoolVariable.Equals(_isStoreOpen))
+					{
+						menuStateBoolVariable.Value = false;
+					}
+				}
+			}
 
 			_isStoreOpen.Value = !_isStoreOpen.Value;
 		}
@@ -302,13 +336,16 @@ namespace BML.Scripts.Player
                 return;
             }
 
-            //if going to open store, close other menus
-            if(!_isUpgradeStoreOpen.Value) {
-                _containerUiMenuStates_NonBlocking.GetBoolVariables().ForEach((menuState) => {
-                    if(!menuState.Equals(_isUpgradeStoreOpen)) {
-                        menuState.Value = false;
-                    }
-                });
+            // If opening the store, close other menus
+            if (!_isUpgradeStoreOpen.Value)
+            {
+	            foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
+	            {
+		            if (!menuStateBoolVariable.Equals(_isUpgradeStoreOpen))
+		            {
+			            menuStateBoolVariable.Value = false;
+		            }
+	            }
             }
 
 			_isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;

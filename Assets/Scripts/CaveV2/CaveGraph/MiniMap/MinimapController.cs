@@ -2,6 +2,8 @@
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.CaveV2.CaveGraph.Minimap
 {
@@ -15,10 +17,15 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         [SerializeField] private SafeTransformValueReference _levelRoot;
         [SerializeField] private SafeTransformValueReference _playerPosition;
 
-        [SerializeField] private Transform _translationTarget;
+        // [SerializeField] private Transform _translationTarget;
+        [SerializeField] private Transform _pivotTranslationTarget;
         [SerializeField] private Transform _scalingTarget;
 
-        [SerializeField] private SphereCollider _cullOutside;
+        [SerializeField] private MatchRotation _cameraRotationCompensation;
+        [SerializeField] private MatchRotation _playerMarkerRotationCompensation;
+
+        [SerializeField] private UnityEvent _onOverlayOpen;
+        [SerializeField] private UnityEvent _onOverlayClose;
 
         #endregion
 
@@ -34,12 +41,22 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
             }
         }
 
+        private void OnEnable()
+        {
+            MinimapParameters.OpenMapOverlay.Subscribe(UpdateMinimapOverlay);
+        }
+
+        private void OnDisable()
+        {
+            MinimapParameters.OpenMapOverlay.Unsubscribe(UpdateMinimapOverlay);
+        }
+
         private void FixedUpdate()
         {
-            if (_doCenterOnPlayer && _translationTarget != null && _levelRoot?.Value != null && _playerPosition?.Value != null)
+            if (_doCenterOnPlayer && _pivotTranslationTarget != null && _levelRoot?.Value != null && _playerPosition?.Value != null)
             {
                 Vector3 relativePosition = (_playerPosition.Value.position - _levelRoot.Value.position);
-                _translationTarget.localPosition = -relativePosition;
+                _pivotTranslationTarget.localPosition = -relativePosition;
             }
 
             if (_scalingTarget != null)
@@ -55,23 +72,35 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
 
         #region Public interface
 
-        public (bool inBounds, Vector3 closestPoint) IsInBounds(Vector3 v)
-        {
-            if (_cullOutside == null) return (true, v);
-                
-            Vector3 closestPoint = _cullOutside.ClosestPoint(v);
-            bool inBounds = (v == closestPoint);
-            return (inBounds, closestPoint);
-        }
-        
         public bool IsInBounds(float directPlayerDistance)
         {
-            if (_cullOutside == null) return true;
-
             bool inBounds = (directPlayerDistance <= MinimapParameters.MapPlayerRadius);
             return inBounds;
         }
 
         #endregion
+
+        private void UpdateMinimapOverlay()
+        {
+            if (MinimapParameters.OpenMapOverlay != null)
+            {
+                _cameraRotationCompensation.enabled = !MinimapParameters.OpenMapOverlay.Value;
+                _playerMarkerRotationCompensation.enabled = MinimapParameters.OpenMapOverlay.Value;
+
+                if (MinimapParameters.OpenMapOverlay.Value)
+                {
+                    _onOverlayOpen.Invoke();
+                }
+                else
+                {
+                    _onOverlayClose.Invoke();
+                }
+            }
+            else
+            {
+                _cameraRotationCompensation.enabled = true;
+                _playerMarkerRotationCompensation.enabled = false;
+            }
+        }
     }
 }

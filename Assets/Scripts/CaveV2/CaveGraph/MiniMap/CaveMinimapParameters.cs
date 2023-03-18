@@ -1,6 +1,8 @@
-﻿using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+﻿using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.CaveV2.CaveGraph.Minimap
 {
@@ -29,8 +31,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
 
         [SerializeField] public SafeFloatValueReference ZoomLevel;
 
-        [SerializeField] public bool RestrictMapRadius = true;
-        [SerializeField] public float MapPlayerRadius = 30f;
+        [FormerlySerializedAs("RestrictMapRadius")] [SerializeField] public BoolReference OpenMapOverlay;
+        [SerializeField, Tooltip("Radius to restrict minimap when overlay is NOT open.")] public float MapPlayerRadius = 30f;
 
         #endregion
 

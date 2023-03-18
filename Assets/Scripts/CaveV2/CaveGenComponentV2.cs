@@ -682,6 +682,14 @@ namespace BML.Scripts.CaveV2
             // TODO more intelligent logic
             foreach (var caveGraphVertex in caveGraph.Vertices)
             {
+                if (caveGraphVertex == caveGraph.StartNode
+                    || caveGraphVertex == caveGraph.EndNode
+                    || caveGraphVertex == caveGraph.MerchantNode
+                ) {
+                    caveGraphVertex.NodeType = CaveNodeType.Medium;
+                    continue;
+                }
+                
                 // Rooms with only one connection (dead ends) are large rooms
                 int numEdges = caveGraph.AdjacentEdges(caveGraphVertex).Count();
                 if (numEdges == 1)

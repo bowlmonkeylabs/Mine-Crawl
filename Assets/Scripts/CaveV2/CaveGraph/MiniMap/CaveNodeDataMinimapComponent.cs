@@ -25,6 +25,11 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
             // UpdatePlayerOccupied();
         }
 
+        private void OnDestroy()
+        {
+            MinimapController.MinimapParameters.OpenMapOverlay.Unsubscribe(UpdatePlayerOccupied);
+        }
+
         #endregion
 
         private float initialRadius;
@@ -40,6 +45,9 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
                 initialRadius = DiscoveredRenderer.Radius;
                 UpdateRendererRadius();
             }
+            
+            MinimapController.MinimapParameters.OpenMapOverlay.Unsubscribe(UpdatePlayerOccupied);
+            MinimapController.MinimapParameters.OpenMapOverlay.Subscribe(UpdatePlayerOccupied);
         }
 
         private Color GetNodeColor(CaveNodeData caveNodeData)
@@ -50,9 +58,12 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
             float playerDistanceFac = 1f - Mathf.Clamp01((float)caveNodeData.PlayerDistance / 2f);
             alphaOverride = (playerDistanceFac * 0.9f) + 0.1f;
             
-            bool isInBounds = MinimapController.IsInBounds(caveNodeData.DirectPlayerDistance);
-            if (MinimapController.MinimapParameters.RestrictMapRadius && !isInBounds)
-            {
+            if (!MinimapController.MinimapParameters.OpenMapOverlay.Value 
+                && !(
+                    MinimapController.IsInBounds(caveNodeData.DirectPlayerDistance)
+                )
+            ) {
+                Debug.Log("Outside bounds: CULL");
                 color = MinimapController.MinimapParameters.CulledColor;
                 alphaOverride = null;
             }
@@ -87,8 +98,9 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
             }
 
             Color newColor = new Color(color.r, color.g, color.b, alphaOverride ?? color.a);
-            Debug.Log($"(Player distance fac {playerDistanceFac}) (Alpha {alphaOverride}) (Color {newColor})");
             return newColor;
+            color.a = (alphaOverride ?? color.a);
+            return color;
         }
 
         private void UpdateRendererRadius()
