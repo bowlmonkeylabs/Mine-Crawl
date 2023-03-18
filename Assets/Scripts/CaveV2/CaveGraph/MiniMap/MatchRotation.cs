@@ -35,8 +35,12 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
                 {
                     StopCoroutine(_coroutineResetRotation);
                 }
+
+                if (ApplicationUtils.IsPlaying_EditorSafe)
+                {
+                    _coroutineResetRotation = StartCoroutine(CoroutineResetRotation());
+                }
                 
-                _coroutineResetRotation = StartCoroutine(CoroutineResetRotation());
             }
         }
 
