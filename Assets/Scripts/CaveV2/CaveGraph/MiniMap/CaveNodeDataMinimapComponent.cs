@@ -63,7 +63,6 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
                     MinimapController.IsInBounds(caveNodeData.DirectPlayerDistance)
                 )
             ) {
-                Debug.Log("Outside bounds: CULL");
                 color = MinimapController.MinimapParameters.CulledColor;
                 alphaOverride = null;
             }
