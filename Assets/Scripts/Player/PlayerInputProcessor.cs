@@ -83,6 +83,7 @@ namespace BML.Scripts.Player
 
 		[SerializeField] private BoolVariable _isUsingUi_Out_Any;
 		[SerializeField] private BoolVariable _isUsingUi_Out_HidePlayerHUD;
+		[SerializeField] private BoolVariable _isUsingUi_Out_InteractableOverlay;
 		
 		private InputAction jumpAction;
 		private InputAction crouchAction;
@@ -494,7 +495,7 @@ namespace BML.Scripts.Player
 			else if (IsUsingUi_InteractableOverlay)
 			{
 				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "UI", "UI_Player");
-				SetCursorState(false);
+				SetCursorState(false, !_isMinimapOpen.Value);
 			}
 			else
 			{
@@ -504,13 +505,20 @@ namespace BML.Scripts.Player
 
 			_isUsingUi_Out_Any.Value = IsUsingUi;
 			_isUsingUi_Out_HidePlayerHUD.Value = IsUsingUi_HidePlayerHUD;
+			_isUsingUi_Out_InteractableOverlay.Value = IsUsingUi_InteractableOverlay;
 			
 			if (_enableLogs) Debug.Log($"ApplyInputState Inputs (NoPlayerControl {IsUsingUi_NoPlayerControl}) (InteractableOverlay {IsUsingUi_InteractableOverlay}) => updated input state to: (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
 		}
 		
-		private void SetCursorState(bool newState)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="newState"></param>
+		/// <param name="visible">Even when 'true', the cursor will not be visible when it is locked.</param>
+		private void SetCursorState(bool newState, bool visible = true)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+			Cursor.visible = visible;
 		}
 	}
 	
