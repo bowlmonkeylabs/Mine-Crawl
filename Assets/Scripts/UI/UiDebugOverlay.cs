@@ -28,6 +28,8 @@ namespace BML.Scripts.UI
         [SerializeField] private TimerVariable _playerCombatTimer;
         [SerializeField] private FloatVariable _playerIntensityScore;
         [SerializeField] private IntensityResponseStateData _intensityResponse;
+        [SerializeField] private TimerVariable _wormSpawnTimer;
+        [SerializeField] private TimerVariable _wormMaxStrengthTimer;
 
         private float _peakIntensityScore = 0;
 
@@ -54,6 +56,7 @@ Seed: {SeedManager.Instance.Seed}
 Enemy Spawn Params ----------
 Spawn delay: {_currentParams.SpawnDelay.ToString("0.00")}
 Count: (Current: {_currentEnemyCount.Value}) (Max: {_currentParams.SpawnCap.ToString("0.00")})
+Worm: Spawn Timer: {_wormSpawnTimer.RemainingTime} Max Strength Timer: {_wormMaxStrengthTimer.RemainingTime}
 Combat ----------
 Intensity Score: (Current: {_playerIntensityScore.Value.ToString("0.00")}) (Target: {_currentParams.MaxIntensity.ToString("0.00")})
 Player In Combat: {this.FormatBool(_playerInCombat.Value)}

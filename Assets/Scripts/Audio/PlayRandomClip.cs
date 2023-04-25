@@ -19,14 +19,21 @@ namespace BML.Scripts
         private int playingIndex = 0;
         private void Start()
         {
+            Debug.Log("Init");
             OrderListRandomly();
+            Debug.Log("Init2");
             PlayNextClip();
+            Debug.Log("Init3");
         }
 
         private void Update()
         {
             if (!_audioSource.isPlaying && Time.timeScale != 0f)
+            {
+                Debug.Log("in update");
                 PlayNextClip();
+            }
+                
         }
 
         private void PlayNextClip()

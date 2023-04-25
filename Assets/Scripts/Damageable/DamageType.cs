@@ -14,6 +14,7 @@ namespace BML.Scripts {
         Player_Pickaxe_Secondary = 1024,
         Enemy_Bomb_Explosion = 2048,
         Trap_Spike = 4096,
-        Trap_Stalactite = 8192
+        Trap_Stalactite = 8192,
+        Enemy_Worm = 16384
     }
 }
