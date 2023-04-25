@@ -3,6 +3,7 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Enemy;
+using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -13,15 +14,21 @@ namespace BML.Scripts
 {
     public class CaveWormSpawner : MonoBehaviour
     {
-        [SerializeField] private GameObject _wormPrefab;
-        [SerializeField] private TimerVariable _wormSpawnTimer;
-        [SerializeField] private TimerVariable _wormMaxStrengthTimer;
-        [SerializeField] private TransformSceneReference _playerRef;
-        [SerializeField] private float _spawnRadius = 100f;
-        [SerializeField] private AnimationCurve _speedCurve;
-        [SerializeField] private AnimationCurve _spawnDelayCurve;
+        [SerializeField, TitleGroup("Spawning")] private TimerVariable _wormSpawnTimer;
+        [SerializeField, TitleGroup("Spawning")] private TimerVariable _wormMaxStrengthTimer;
+        [SerializeField, TitleGroup("Spawning")] private float _spawnRadius = 100f;
+        [SerializeField, TitleGroup("Spawning")] private AnimationCurve _speedCurve;
+        [SerializeField, TitleGroup("Spawning")] private AnimationCurve _spawnDelayCurve;
+        
+        [SerializeField, TitleGroup("Feedback")] private TimerVariable _wormWarningTimer;
+        [SerializeField, TitleGroup("Feedback")] private MMF_Player _warningFeedback;
+        [SerializeField, TitleGroup("Feedback")] private MMF_Player _wormActivatedFeedback;
 
-        [SerializeField] [FoldoutGroup("Debug")] private bool _enableDebug;
+        
+        [SerializeField, TitleGroup("References")] private GameObject _wormPrefab;
+        [SerializeField, TitleGroup("References")] private TransformSceneReference _playerRef;
+
+        [SerializeField, FoldoutGroup("Debug")] private bool _enableDebug;
 
         private float lastWormSpawnTime = Mathf.NegativeInfinity;
         private float percentToMaxStrength;
@@ -32,16 +39,19 @@ namespace BML.Scripts
         private void OnEnable()
         {
             _wormSpawnTimer.SubscribeFinished(ActivateWorm);
+            _wormWarningTimer.SubscribeFinished(PlayWarningFeedbacks);
         }
 
         private void OnDisable()
         {
             _wormSpawnTimer.UnsubscribeFinished(ActivateWorm);
+            _wormWarningTimer.UnsubscribeFinished(PlayWarningFeedbacks);
         }
 
         private void Start()
         {
             _wormSpawnTimer.StartTimer();
+            _wormWarningTimer.StartTimer();
             if (_enableDebug) Debug.Log("Starting Worm Spawn Timer");
         }
 
@@ -55,6 +65,7 @@ namespace BML.Scripts
         {
             _wormSpawnTimer.UpdateTime();
             _wormMaxStrengthTimer.UpdateTime();
+            _wormWarningTimer.UpdateTime();
 
             if (!_wormSpawnTimer.IsFinished)
                 return;
@@ -71,16 +82,18 @@ namespace BML.Scripts
 
             if (lastWormSpawnTime + currentSpawnDelay > Time.time)
                 return;
-            
-            if (spawnedWorm != null)
-                GameObject.Destroy(spawnedWorm);
 
             Vector3 spawnPoint = _playerRef.Value.position + Random.onUnitSphere * _spawnRadius;
             Quaternion facePlayerDir = Quaternion.LookRotation((_playerRef.Value.position - spawnPoint).normalized);
-            spawnedWorm = GameObject.Instantiate(_wormPrefab, spawnPoint, facePlayerDir);
+            
+            if (spawnedWorm == null)
+                spawnedWorm = GameObject.Instantiate(_wormPrefab);
+
+            spawnedWorm.transform.position = spawnPoint;
+            spawnedWorm.transform.rotation = facePlayerDir;
             
             WormController wormController = spawnedWorm.GetComponent<WormController>();
-            wormController.SetSpeed(currentSpeed);
+            wormController.Respawn(currentSpeed);
             
             if (_enableDebug) Debug.Log("Spawned Worm");
             lastWormSpawnTime = Time.time;
@@ -89,7 +102,14 @@ namespace BML.Scripts
         private void ActivateWorm()
         {
             _wormMaxStrengthTimer.StartTimer();
+            _wormActivatedFeedback.PlayFeedbacks();
             if (_enableDebug) Debug.Log("Worm Activated");
+        }
+
+        private void PlayWarningFeedbacks()
+        {
+            _warningFeedback.PlayFeedbacks();
+            if (_enableDebug) Debug.Log("Worm is approaching...");
         }
     }
 }

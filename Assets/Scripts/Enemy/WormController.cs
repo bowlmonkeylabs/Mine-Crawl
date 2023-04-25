@@ -34,9 +34,10 @@ namespace BML.Scripts.Enemy
             rb.velocity = moveDirection * speed;
         }
         
-        public void SetSpeed(float newSpeed)
+        public void Respawn(float newSpeed)
         {
             speed = newSpeed;
+            moveDirection = transform.forward;
         }
     }
 }
