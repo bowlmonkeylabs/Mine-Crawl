@@ -40,6 +40,9 @@ namespace BML.Scripts
         {
             _wormSpawnTimer.SubscribeFinished(ActivateWorm);
             _wormWarningTimer.SubscribeFinished(PlayWarningFeedbacks);
+            _wormSpawnTimer.StartTimer();
+            _wormWarningTimer.StartTimer();
+            Debug.Log($"Started Timer: isFinished {_wormSpawnTimer.IsFinished}");
         }
 
         private void OnDisable()
@@ -50,8 +53,6 @@ namespace BML.Scripts
 
         private void Start()
         {
-            _wormSpawnTimer.StartTimer();
-            _wormWarningTimer.StartTimer();
             if (_enableDebug) Debug.Log("Starting Worm Spawn Timer");
         }
 
@@ -77,6 +78,7 @@ namespace BML.Scripts
 
         private void HandleSpawning()
         {
+            Debug.Log($"isFinished {_wormSpawnTimer.IsFinished}");
             if (!_wormSpawnTimer.IsFinished)
                 return;
 
