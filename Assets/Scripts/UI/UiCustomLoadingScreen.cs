@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections;
-using AdvancedSceneManager.Callbacks;
-using AdvancedSceneManager.Core;
-using AdvancedSceneManager.Utility;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace BML.Scripts.UI
 {
-    public class UiCustomLoadingScreen : LoadingScreen
+    public class UiCustomLoadingScreen : MonoBehaviour
     {
         #region Inspector
 
@@ -23,23 +21,11 @@ namespace BML.Scripts.UI
 
         private void Update()
         {
-            if (operation != null)
-            {
-                _sliderProgress.value = operation.totalProgress;
-            }
+ 
         }
 
         #endregion
 
-        public override IEnumerator OnOpen(SceneOperation operation)
-        {
-            yield return _canvasGroup.Fade(1, _fadeOpen);
-        }
-
-        public override IEnumerator OnClose(SceneOperation operation)
-        {
-            yield return _canvasGroup.Fade(0, _fadeClose);
-        }
         
     }
 }
