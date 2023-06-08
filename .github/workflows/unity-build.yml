@@ -118,9 +118,9 @@ jobs:
         id: cache-library
         with:
           path: Library
-          key: ${{ runner.os }}-Library
+          key: ${{ runner.os }}-Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            ${{ runner.os }}-Library
+            ${{ runner.os }}-Library-
 
       # Test
 #       - name: Run tests
