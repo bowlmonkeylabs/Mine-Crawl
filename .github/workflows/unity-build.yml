@@ -131,15 +131,30 @@ jobs:
 #           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       # Build
-      - name: Build project
-        uses: game-ci/unity-builder@v2
+#       - name: Build project
+#         uses: game-ci/unity-builder@v2
+#         env:
+#           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+#           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+#           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+#         with:
+#           targetPlatform: StandaloneWindows64
+#           customParameters: -Development
+          
+      # Build with Retry  
+      - name: Build project with Retry
+        uses: Wandalen/wretry.action@master
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: StandaloneWindows64
-          customParameters: -Development
+          action: game-ci/unity-builder@v2
+          with: |
+            targetPlatform: StandaloneWindows64
+            customParameters: -Development
+          attempt_limit: 2
+          attempt_delay: 1800000
           
       - name: Own project directory
         run: |
