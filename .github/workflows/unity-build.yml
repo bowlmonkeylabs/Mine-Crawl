@@ -140,6 +140,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: StandaloneWindows64
+          allowDirtyBuild: true
           customParameters: -Development
           
           # Build
@@ -152,6 +153,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: StandaloneWindows64
+          allowDirtyBuild: true
           customParameters: -Development
           
       # Build with Retry  
