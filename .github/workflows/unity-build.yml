@@ -111,6 +111,7 @@ jobs:
           cd Assets/Unversioned
           git annex sync --content
           git annex unlock
+          cd ../..
 
       # Unity cache
       - name: Cache library
@@ -132,6 +133,7 @@ jobs:
 
       # Build
       - name: Build project
+        id: unityBuild
         uses: game-ci/unity-builder@v2
         timeout-minutes: 30
         env:
@@ -143,10 +145,18 @@ jobs:
           allowDirtyBuild: true
           customParameters: -Development
           
+      - name: Try delete Unity lock file
+        if: success() || failure() && (steps.unityBuild.outcome == 'failure')
+        continue-on-error: true
+        run: |
+          ls Temp
+          rm Temp/UnityLockfile
+          
           # Build
       - name: Build project retry
         uses: game-ci/unity-builder@v2
-        if: ${{ failure() }}
+        #if: ${{ failure() }}
+        if: success() || failure() && (steps.unityBuild.outcome == 'failure')
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
