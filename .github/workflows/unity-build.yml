@@ -110,7 +110,7 @@ jobs:
       - name: Sync unversioned annex
         run: |
           cd Assets/Unversioned
-          git annex sync --content
+          git annex pull --content
           git annex unlock
           cd ../..
 
