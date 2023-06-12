@@ -70,14 +70,14 @@ jobs:
           find . -type f | cut -d/ -f2 | sort | uniq -c
           cd ../..
           
-#       - name: Cache unversioned
-#         uses: pat-s/always-upload-cache@v3.0.11
-#         id: cache-unversioned
-#         with:
-#           path: Assets/Unversioned
-#           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
-#           restore-keys: |
-#             ${{ runner.os }}-UnversionedAssets-
+      - name: Cache unversioned
+        uses: pat-s/always-upload-cache@v3.0.11
+        id: cache-unversioned
+        with:
+          path: Assets/Unversioned
+          key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
+          restore-keys: |
+            ${{ runner.os }}-UnversionedAssets-
           
       - name: Configure git credentials
         run: |
@@ -152,7 +152,7 @@ jobs:
           ls Temp
           rm Temp/UnityLockfile
           
-          # Build
+      # Build
       - name: Build project retry
         uses: game-ci/unity-builder@v2
         #if: ${{ failure() }}
