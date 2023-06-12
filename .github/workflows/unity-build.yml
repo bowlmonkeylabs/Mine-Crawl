@@ -70,15 +70,6 @@ jobs:
           find . -type f | cut -d/ -f2 | sort | uniq -c
           cd ../..
           
-      - name: Cache unversioned
-        uses: pat-s/always-upload-cache@v3.0.11
-        id: cache-unversioned
-        with:
-          path: Assets/Unversioned
-          key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
-          restore-keys: |
-            ${{ runner.os }}-UnversionedAssets-
-          
       - name: Configure git credentials
         run: |
           git config --global user.email "bowlmonkeylabs@gmail.com"
@@ -105,6 +96,16 @@ jobs:
           git annex enableremote cloud-s3
           git annex enableremote cloud
           echo ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          
+      - name: Cache unversioned
+        uses: pat-s/always-upload-cache@v3.0.11
+        id: cache-unversioned
+        with:
+          path: Assets/Unversioned
+          # key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
+          key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
+          restore-keys: |
+            ${{ runner.os }}-UnversionedAssets-
           
       - name: Sync unversioned annex
         run: |
@@ -146,17 +147,17 @@ jobs:
           customParameters: -Development
           
       - name: Try delete Unity lock file
-        if: success() || failure() && (steps.unityBuild.outcome == 'failure')
+        if: (success() || failure()) && (steps.unityBuild.outcome == 'failure')
         continue-on-error: true
         run: |
-          ls Temp
-          rm Temp/UnityLockfile
+          ls ./Temp
+          rm ./Temp/UnityLockfile
           
       # Build
       - name: Build project retry
         uses: game-ci/unity-builder@v2
         #if: ${{ failure() }}
-        if: success() || failure() && (steps.unityBuild.outcome == 'failure')
+        if: (success() || failure()) && (steps.unityBuild.outcome == 'failure')
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
