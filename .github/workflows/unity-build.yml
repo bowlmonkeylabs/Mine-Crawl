@@ -281,9 +281,9 @@ jobs:
         if: (success() || failure()) && (steps.unityBuild.outcome == 'failure')
         continue-on-error: true
         run: |
-          export executing_user=$(whoami)
-          sudo chown "$executing_user" ./Temp/UnityLockfile
-          rm -f ./Temp/UnityLockfile
+          EXECUTING_USER=$(whoami)
+          sudo chown "${EXECUTING_USER}" ./Temp/UnityLockfile
+          sudo rm -f ./Temp/UnityLockfile
           
       # Build
       - name: Build project retry
