@@ -54,7 +54,8 @@ jobs:
         continue-on-error: true
         name: check latest commit is less than a day
         if: ${{ github.event_name == 'schedule' }}
-        run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
+#         run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
+        run: test -z $(git rev-list latest..${{ github.sha }}) && echo "::set-output name=should_run::false"
         
   prepare_matrix:
     name: Prepare target platform matrix
@@ -265,8 +266,8 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Build
-          path: build
+          name: Build-${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
           
       - name: Release latest
         if: (needs.check_prod.result == 'success' || needs.check_prod.result == 'skipped')
