@@ -90,7 +90,8 @@ jobs:
       contents: write
     strategy:
       fail-fast: false
-      matrix: ${{fromJson('${needs.prepare_matrix.outputs.matrix}')}}
+#       matrix: ${{fromJson(needs.prepare_matrix.outputs.matrix)}}
+      matrix: ${{needs.prepare_matrix.outputs.matrix}}
     steps:
       # Checkout (without LFS content, just pointers)
       - name: Checkout repository
