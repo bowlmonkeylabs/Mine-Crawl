@@ -64,7 +64,7 @@ jobs:
       - id: set-matrix
         run: |
           if [ github.event_name == 'workflow_dispatch' ]; then
-            case github.event.inputs.targetPlatform in
+            case ${{github.event.inputs.targetPlatform}} in
               All)
                 #matrix='{"targetPlatform":["StandaloneOSX","StandaloneWindows64","StandaloneLinux64"]}'
                 matrix='{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}'
