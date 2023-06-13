@@ -198,6 +198,18 @@ jobs:
           key: ${{ runner.os }}-Library
           restore-keys: |
             ${{ runner.os }}-Library
+            
+      - name: Test aggressive caches
+        uses: pat-s/always-upload-cache@v3.0.11
+        id: cache-everything-else
+        with:
+          path: |
+            Temp
+            Packages
+            *.csproj
+          key: ${{ runner.os }}-EverythingElse
+          restore-keys: |
+            ${{ runner.os }}-EverythingElse
 
       # Test
 #       - name: Run tests
