@@ -56,6 +56,7 @@ jobs:
         run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
         
   prepare_matrix:
+    name: Prepare target platform matrix
     runs-on: ubuntu latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -71,6 +72,7 @@ jobs:
               *)
                 matrix='{"targetPlatform":["${github.event.inputs.targetPlatform}"]}'
                 ;;
+            esac
           else
             #matrix='{"targetPlatform":["StandaloneOSX","StandaloneWindows64","StandaloneLinux64"]}'
             matrix='{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}'
