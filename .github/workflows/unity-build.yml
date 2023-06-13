@@ -65,8 +65,8 @@ jobs:
     steps:
       - id: set-matrix
         run: |
-          echo ${{ github.event.name }}
-          if [ ${{ github.event.name }} == 'workflow_dispatch' ]; then
+          echo ${{ github.event_name }}
+          if [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
             case ${{ github.event.inputs.targetPlatform }} in
               All)
                 #matrix=$(echo '[{"targetPlatform":"StandaloneOSX"},{"targetPlatform":"StandaloneWindows"},{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"}]' | jq '.')
