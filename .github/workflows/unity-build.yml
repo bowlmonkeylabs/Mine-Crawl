@@ -34,6 +34,15 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
+  log_event:
+    name: Log run parameters
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log run parameters
+        run: |
+          echo "${{ github.event }}"
+
   check_prod:
     name: Check if main branch
     if: ${{ github.ref == 'refs/heads/main' }}
