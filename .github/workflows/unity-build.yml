@@ -151,7 +151,7 @@ jobs:
           git config --global user.email "bowlmonkeylabs@gmail.com"
           git config --global user.name bowlmonkeylabs
 
-      - name: Configure unversioned annex
+      - name: Configure Unversioned annex
         run: |
           cd Assets/Unversioned
           git annex init
@@ -159,12 +159,13 @@ jobs:
 #           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
 #           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           
-      - name: Test unversioned annex
+      - name: Test Unversioned annex
         run: |
           cd Assets/Unversioned
           find . -type f | cut -d/ -f2 | sort | uniq -c
           git annex list "Epic Toon FX/Materials/Basics/glow5_ADD.mat"
           git annex info
+          cat ./.git/annex/index
           
       - name: Enable annex special remotes
         run: |
@@ -173,36 +174,73 @@ jobs:
           git annex enableremote cloud
           echo ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           
-      - name: Cache unversioned
-        uses: pat-s/always-upload-cache@v3.0.11
-        id: cache-unversioned
+#       - name: Cache unversioned
+#         uses: pat-s/always-upload-cache@v3.0.11
+#         id: cache-unversioned
+#         with:
+#           path: Assets/Unversioned
+#           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
+#           restore-keys: |
+#             ${{ runner.os }}-UnversionedAssets-
+            
+      - name: Restore Unversioned cache
+        uses: actions/cache/restore@v3
+        id: cache-restore-unversioned
         with:
           path: Assets/Unversioned
-          # key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
-          key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
-          restore-keys: |
-            ${{ runner.os }}-UnversionedAssets-
+#           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
+          key: ${{ runner.os }}-UnversionedAssets
           
-      - name: Sync unversioned annex
+      - name: Sync Unversioned annex
         run: |
           cd Assets/Unversioned
           git annex sync --content
           git annex unlock
           cd ../..
+          
+      - name: Save Unversioned cache
+        uses: actions/cache/save@v3
+        id: cache-save-unversioned
+        with:
+          path: Assets/Unversioned
+#           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
+          key: ${{ runner.os }}-UnversionedAssets
 
       # Unity cache
-      - name: Cache library
-        uses: pat-s/always-upload-cache@v3.0.11
-        id: cache-library
+#       - name: Cache library
+#         uses: pat-s/always-upload-cache@v3.0.11
+#         id: cache-library
+#         with:
+#           path: Library
+#           key: ${{ runner.os }}-Library
+#           restore-keys: |
+#             ${{ runner.os }}-Library
+
+      # Unity cache
+      - name: Restore Library cache
+        uses: actions/cache/restore@v3
+        id: cache-restore-library
         with:
           path: Library
           key: ${{ runner.os }}-Library
-          restore-keys: |
-            ${{ runner.os }}-Library
             
+#       - name: Test aggressive caches
+#         uses: pat-s/always-upload-cache@v3.0.11
+#         id: cache-everything-else
+#         with:
+#           path: |
+#             Temp
+#             Builds
+#             build
+#             obj
+#             *.csproj
+#           key: ${{ runner.os }}-EverythingElse
+#           restore-keys: |
+#             ${{ runner.os }}-EverythingElse
+
       - name: Test aggressive caches
-        uses: pat-s/always-upload-cache@v3.0.11
-        id: cache-everything-else
+        uses: actions/cache/restore@v3
+        id: cache-restore-everything-else
         with:
           path: |
             Temp
@@ -211,8 +249,6 @@ jobs:
             obj
             *.csproj
           key: ${{ runner.os }}-EverythingElse
-          restore-keys: |
-            ${{ runner.os }}-EverythingElse
 
       # Test
 #       - name: Run tests
@@ -287,9 +323,9 @@ jobs:
         id: zip_build
         run: |
           REPO_NAME=$(basename ${{ github.repository }})
-          BUILD_NAME="${ REPO_NAME }_${{ matrix.targetPlatform }}_latest"
-          ZIP_FILE_NAME="${ BUILD_NAME }.zip"
-          zip -r "./build/${ ZIP_FILE_NAME }" ./build/${{ matrix.targetPlatform }}
+          BUILD_NAME="${REPO_NAME}_${{ matrix.targetPlatform }}_latest"
+          ZIP_FILE_NAME="${BUILD_NAME}.zip"
+          zip -r "./build/${ZIP_FILE_NAME}" ./build/${{ matrix.targetPlatform }}
           echo "BUILD_NAME=${BUILD_NAME}" >> $GITHUB_OUTPUT
           echo "ZIP_FILE_NAME=${ZIP_FILE_NAME}" >> $GITHUB_OUTPUT
           
@@ -303,3 +339,22 @@ jobs:
           generate_release_notes: true
           files: |
             ./build/${{ steps.zip_build.outputs.ZIP_FILE_NAME }}
+            
+      - name: Save Library cache
+        uses: actions/cache/save@v3
+        id: cache-save-library
+        with:
+          path: Library
+          key: ${{ runner.os }}-Library
+          
+      - name: Test aggressive caches
+        uses: actions/cache/save@v3
+        id: cache-save-everything-else
+        with:
+          path: |
+            Temp
+            Builds
+            build
+            obj
+            *.csproj
+          key: ${{ runner.os }}-EverythingElse
