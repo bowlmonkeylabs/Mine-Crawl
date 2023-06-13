@@ -17,6 +17,7 @@ env:
 
 jobs:
   check_prod:
+    name: Check if main branch
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
@@ -26,8 +27,8 @@ jobs:
         run: echo "Building to production on branch $GITHUB_REF"
 
   check_date:
+    name: Check if recent commits
     runs-on: ubuntu-latest
-    name: Check latest commit
     outputs:
       should_run: ${{ steps.should_run.outputs.should_run }}
     steps:
