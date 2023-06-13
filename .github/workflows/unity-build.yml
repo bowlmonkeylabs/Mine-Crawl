@@ -8,6 +8,19 @@ on:
 #     branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      targetPlatform:
+        type: choice
+        description: Target Platform
+        options: 
+        - All
+        - StandaloneWindows
+        - StandaloneWindows64
+        - StandaloneLinux64
+        - StandaloneOSX
+        - WebGL
+        #- iOS
+        #- Android
   schedule:
     - cron: '0 0 * * *' # runs daily at 00:00
 
@@ -41,16 +54,50 @@ jobs:
         name: check latest commit is less than a day
         if: ${{ github.event_name == 'schedule' }}
         run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
-
+        
+  prepare_matrix:
+    runs-on: ubuntu latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          if [ github.event_name == 'workflow_dispatch' ]; then
+            case github.event.inputs.targetPlatform in
+              All)
+                #matrix='{"targetPlatform":["StandaloneOSX","StandaloneWindows64","StandaloneLinux64"]}'
+                matrix='{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}'
+                ;;
+              *)
+                matrix='{"targetPlatform":["${github.event.inputs.targetPlatform}"]}'
+                ;;
+          else
+            #matrix='{"targetPlatform":["StandaloneOSX","StandaloneWindows64","StandaloneLinux64"]}'
+            matrix='{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}'
+          fi
+          echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
+      
   build:
-    needs: [check_prod,check_date]
-    permissions:
-      contents: write
+    name: Build my project ✨
+    runs-on: ubuntu-latest
+    needs: [check_prod,check_date,prepare_matrix]
     if: |
       (success() || failure()) &&
       (needs.check_date.result == 'success' || needs.check_date.result == 'success')
-    name: Build my project ✨
-    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.prepare_matrix.outputs.matrix)}}
+#       matrix:
+#         targetPlatform:
+#           #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
+#           #- StandaloneWindows # Build a Windows standalone.
+#           - StandaloneWindows64 # Build a Windows 64-bit standalone.
+#           - StandaloneLinux64 # Build a Linux 64-bit standalone.
+#           #- iOS # Build an iOS player.
+#           #- Android # Build an Android .apk standalone app.
+#           #- WebGL # WebGL.
     steps:
       # Checkout (without LFS content, just pointers)
       - name: Checkout repository
@@ -175,7 +222,7 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: StandaloneWindows64
+          targetPlatform: ${{ matrix.targetPlatform }}
           allowDirtyBuild: true
           customParameters: -Development
           
