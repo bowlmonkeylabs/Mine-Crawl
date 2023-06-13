@@ -282,9 +282,14 @@ jobs:
           path: build/${{ matrix.targetPlatform }}
           
       - name: Zip build
+        id: zip_build
         run: |
           REPO_NAME=$(basename ${{ github.repository }})
-          zip -r "./build/${ REPO_NAME }_${{ matrix.targetPlatform }}_latest.zip" ./build/${{ matrix.targetPlatform }}
+          BUILD_NAME="${ REPO_NAME }_${{ matrix.targetPlatform }}_latest"
+          ZIP_FILE_NAME="${ BUILD_NAME }.zip"
+          zip -r "./build/${ ZIP_FILE_NAME }" ./build/${{ matrix.targetPlatform }}
+          echo "BUILD_NAME=${BUILD_NAME}" >> $GITHUB_OUTPUT
+          echo "ZIP_FILE_NAME=${ZIP_FILE_NAME}" >> $GITHUB_OUTPUT
           
       - name: Release latest
         if: (needs.check_prod.result == 'success' || needs.check_prod.result == 'skipped')
@@ -295,5 +300,4 @@ jobs:
           prerelease: true
           generate_release_notes: true
           files: |
-            ./build/${{ github.repository }}_${{ matrix.targetPlatform }}_latest.zip
-          
+            ./build/${{ steps.zip_build.outputs.ZIP_FILE_NAME }}
