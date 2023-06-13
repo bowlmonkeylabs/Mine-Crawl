@@ -75,6 +75,7 @@ jobs:
             case ${{ github.event.inputs.targetPlatform }} in
               Default)
                 matrix=$(echo '[{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"}]' | jq '.')
+                ;;
               All)
                 # matrix=$(echo '[{"targetPlatform":"StandaloneWindows"},{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"},{"targetPlatform":"StandaloneOSX"},{"targetPlatform":"WebGL"},{"targetPlatform":"iOS"},{"targetPlatform":"Android"}]' | jq '.')
                 matrix=$(echo '[{"targetPlatform":"StandaloneWindows"},{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"},{"targetPlatform":"StandaloneOSX"},{"targetPlatform":"WebGL"},{"targetPlatform":"iOS"},{"targetPlatform":"Android"}]' | jq '.')
