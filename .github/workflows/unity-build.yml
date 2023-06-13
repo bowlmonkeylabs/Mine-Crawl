@@ -239,12 +239,11 @@ jobs:
         continue-on-error: true
         run: |
           ls ./Temp
-          rm ./Temp/UnityLockfile
+          rm -f ./Temp/UnityLockfile
           
       # Build
       - name: Build project retry
         uses: game-ci/unity-builder@v2
-        #if: ${{ failure() }}
         if: (success() || failure()) && (steps.unityBuild.outcome == 'failure')
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -284,7 +283,8 @@ jobs:
           
       - name: Zip build
         run: |
-          zip -r ./build/${{ github.repository }}_${{ matrix.targetPlatform }}_latest.zip ./build/${{ matrix.targetPlatform }}
+          REPO_NAME=$(basename ${{ github.repository }})
+          zip -r "./build/${ REPO_NAME }_${{ matrix.targetPlatform }}_latest.zip" ./build/${{ matrix.targetPlatform }}
           
       - name: Release latest
         if: (needs.check_prod.result == 'success' || needs.check_prod.result == 'skipped')
