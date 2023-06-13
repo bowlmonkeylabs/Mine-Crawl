@@ -76,6 +76,7 @@ jobs:
           else
             matrix=$(echo '{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}' | jq '.')
           fi
+          echo $matrix
           echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
       
   build:
