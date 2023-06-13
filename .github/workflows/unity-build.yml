@@ -267,6 +267,7 @@ jobs:
       - name: Build project
         id: unityBuild
         uses: game-ci/unity-builder@v2
+        continue-on-error: true
         timeout-minutes: 30
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -274,11 +275,12 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
+#           versioning: Semantic
           allowDirtyBuild: true
           customParameters: -Development
           
       - name: Try delete Unity lock file
-        if: (success() || failure()) && (steps.unityBuild.outcome == 'failure')
+        if: (steps.unityBuild.outcome == 'failure')
         continue-on-error: true
         run: |
           EXECUTING_USER=$(whoami)
@@ -289,13 +291,14 @@ jobs:
       # Build
       - name: Build project retry
         uses: game-ci/unity-builder@v2
-        if: (success() || failure()) && (steps.unityBuild.outcome == 'failure')
+        if: (steps.unityBuild.outcome == 'failure')
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: StandaloneWindows64
+          targetPlatform: ${{ matrix.targetPlatform }}
+#           versioning: Semantic
           allowDirtyBuild: true
           customParameters: -Development
           
