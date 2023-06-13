@@ -67,14 +67,14 @@ jobs:
           if [ github.event_name == 'workflow_dispatch' ]; then
             case ${{github.event.inputs.targetPlatform}} in
               All)
-                matrix='{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}'
+                matrix=$(echo '{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}' | jq '.')
                 ;;
               *)
-                matrix='{"targetPlatform":["${github.event.inputs.targetPlatform}"]}'
+                matrix=$(echo '{"targetPlatform":["${github.event.inputs.targetPlatform}"]}' | jq '.')
                 ;;
             esac
           else
-            matrix='{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}'
+            matrix=$(echo '{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}' | jq '.')
           fi
           echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
       
