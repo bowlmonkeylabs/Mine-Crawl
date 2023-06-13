@@ -78,7 +78,7 @@ namespace BML.Scripts
 
         private void HandleSpawning()
         {
-            Debug.Log($"isFinished {_wormSpawnTimer.IsFinished}");
+            if (_enableDebug) Debug.Log($"isFinished {_wormSpawnTimer.IsFinished}");
             if (!_wormSpawnTimer.IsFinished)
                 return;
 
