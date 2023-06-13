@@ -21,6 +21,10 @@ on:
         - WebGL
         #- iOS
         #- Android
+      alwaysSaveCaches:
+        type: boolean
+        description: "Save caches even if the build fails."
+        default: false
   schedule:
     - cron: '0 0 * * *' # runs daily at 00:00
 
@@ -88,7 +92,7 @@ jobs:
     needs: [check_prod,check_date,prepare_matrix]
     if: |
       (success() || failure()) &&
-      (needs.check_date.result == 'success' || needs.check_date.result == 'success')
+      (needs.check_date.result == 'success' || needs.check_date.result == 'skipped')
     permissions:
       contents: write
     strategy:
@@ -199,8 +203,9 @@ jobs:
           cd ../..
           
       - name: Save Unversioned cache
-        uses: actions/cache/save@v3
         id: cache-save-unversioned
+        if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
+        uses: actions/cache/save@v3
         with:
           path: Assets/Unversioned
 #           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
@@ -218,8 +223,8 @@ jobs:
 
       # Unity cache
       - name: Restore Library cache
-        uses: actions/cache/restore@v3
         id: cache-restore-library
+        uses: actions/cache/restore@v3
         with:
           path: Library
           key: ${{ runner.os }}-Library
@@ -239,8 +244,8 @@ jobs:
 #             ${{ runner.os }}-EverythingElse
 
       - name: Test aggressive caches
-        uses: actions/cache/restore@v3
         id: cache-restore-everything-else
+        uses: actions/cache/restore@v3
         with:
           path: |
             Temp
@@ -276,7 +281,8 @@ jobs:
         if: (success() || failure()) && (steps.unityBuild.outcome == 'failure')
         continue-on-error: true
         run: |
-          ls ./Temp
+          export executing_user=$(whoami)
+          sudo chown "$executing_user" ./Temp/UnityLockfile
           rm -f ./Temp/UnityLockfile
           
       # Build
@@ -341,15 +347,17 @@ jobs:
             ./build/${{ steps.zip_build.outputs.ZIP_FILE_NAME }}
             
       - name: Save Library cache
-        uses: actions/cache/save@v3
         id: cache-save-library
+        if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
+        uses: actions/cache/save@v3
         with:
           path: Library
           key: ${{ runner.os }}-Library
           
       - name: Test aggressive caches
-        uses: actions/cache/save@v3
         id: cache-save-everything-else
+        if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
+        uses: actions/cache/save@v3
         with:
           path: |
             Temp
