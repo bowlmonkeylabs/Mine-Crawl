@@ -47,7 +47,7 @@ jobs:
       contents: write
     if: |
       (success() || failure()) &&
-      (needs.check_date.result == "success" || needs.check_date.result == "success")
+      (needs.check_date.result == 'success' || needs.check_date.result == 'success')
     name: Build my project ✨
     runs-on: ubuntu-latest
     steps:
@@ -227,7 +227,7 @@ jobs:
           path: build
           
       - name: Release latest
-        if: (needs.check_prod.result == "success" || needs.check_prod.result == "skipped")
+        if: (needs.check_prod.result == 'success' || needs.check_prod.result == 'skipped')
         uses: softprops/action-gh-release@v1
         with:
           tag_name: latest
