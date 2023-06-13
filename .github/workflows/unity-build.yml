@@ -92,10 +92,8 @@ jobs:
   build:
     name: Build ✨
     runs-on: ubuntu-latest
-    needs: [check_prod,check_date,prepare_matrix]
-    if: |
-      (success() || failure()) &&
-      (needs.check_date.result == 'success' || needs.check_date.result == 'skipped')
+    needs: [check_date,prepare_matrix]
+    if: (needs.check_date.result == 'success' || needs.check_date.result == 'skipped')
     permissions:
       contents: write
     strategy:
@@ -331,27 +329,6 @@ jobs:
         with:
           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
-          
-      - name: Zip build
-        id: zip_build
-        run: |
-          REPO_NAME=$(basename ${{ github.repository }})
-          BUILD_NAME="${REPO_NAME}_${{ matrix.targetPlatform }}_latest"
-          ZIP_FILE_NAME="${BUILD_NAME}.zip"
-          zip -r "./build/${ZIP_FILE_NAME}" ./build/${{ matrix.targetPlatform }}
-          echo "BUILD_NAME=${BUILD_NAME}" >> $GITHUB_OUTPUT
-          echo "ZIP_FILE_NAME=${ZIP_FILE_NAME}" >> $GITHUB_OUTPUT
-          
-      - name: Release latest
-        if: (needs.check_prod.result == 'success' || needs.check_prod.result == 'skipped')
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: latest
-          name: latest (unstable)
-          prerelease: true
-          generate_release_notes: true
-          files: |
-            ./build/${{ steps.zip_build.outputs.ZIP_FILE_NAME }}
             
       - name: Save Library cache
         id: cache-save-library
@@ -373,3 +350,26 @@ jobs:
             obj
             *.csproj
           key: ${{ runner.os }}-EverythingElse
+
+  release:
+    name: Release
+    needs: [check_prod,build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Display structure of downloaded files
+        run: |
+          pwd
+          ls -R
+        
+      - name: Release latest
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest
+          name: latest (unstable)
+          prerelease: true
+          generate_release_notes: true
+          files: |
+            ./build/${{ steps.zip_build.outputs.ZIP_FILE_NAME }}
