@@ -16,6 +16,15 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
+  check_prod:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: should_run
+        continue-on-error: true
+        name: Check if we''re running on the main branch
+        run: echo "Building to production on branch $GITHUB_REF"
+
   check_date:
     runs-on: ubuntu-latest
     name: Check latest commit
@@ -33,7 +42,12 @@ jobs:
         run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
 
   build:
-    needs: [check_date]
+    needs: [check_prod,check_date]
+    permissions:
+      contents: write
+    if: |
+      (success() || failure()) &&
+      (needs.check_date.result == "success" || needs.check_date.result == "success")
     name: Build my project ✨
     runs-on: ubuntu-latest
     steps:
@@ -206,7 +220,19 @@ jobs:
           sudo chown "$executing_user" ./
 
       # Output
-      - uses: actions/upload-artifact@v3
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
         with:
           name: Build
           path: build
+          
+      - name: Release latest
+        if: (needs.check_prod.result == "success" || needs.check_prod.result == "skipped")
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest
+          prerelease: true
+          generate_release_notes: true
+          files: |
+            build/
+          
