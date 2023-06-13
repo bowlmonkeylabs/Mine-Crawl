@@ -281,6 +281,10 @@ jobs:
           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
           
+      - name: Zip build
+        run: |
+          zip -r ./build/${{ github.repository }}_${{ matrix.targetPlatform }}_latest.zip ./build/${{ matrix.targetPlatform }}
+          
       - name: Release latest
         if: (needs.check_prod.result == 'success' || needs.check_prod.result == 'skipped')
         uses: softprops/action-gh-release@v1
@@ -290,5 +294,5 @@ jobs:
           prerelease: true
           generate_release_notes: true
           files: |
-            ./build/**
+            ./build/${{ github.repository }}_${{ matrix.targetPlatform }}_latest.zip
           
