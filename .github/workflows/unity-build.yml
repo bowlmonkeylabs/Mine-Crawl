@@ -13,14 +13,15 @@ on:
         type: choice
         description: Target Platform
         options: 
-        - All
+        - Default
         - StandaloneWindows
         - StandaloneWindows64
         - StandaloneLinux64
         - StandaloneOSX
         - WebGL
-        #- iOS
-        #- Android
+        - iOS
+        - Android
+        - All
       alwaysSaveCaches:
         type: boolean
         description: "Save caches even if the build fails."
@@ -72,9 +73,11 @@ jobs:
           echo ${{ github.event_name }}
           if [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
             case ${{ github.event.inputs.targetPlatform }} in
-              All)
-                #matrix=$(echo '[{"targetPlatform":"StandaloneOSX"},{"targetPlatform":"StandaloneWindows"},{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"}]' | jq '.')
+              Default)
                 matrix=$(echo '[{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"}]' | jq '.')
+              All)
+                # matrix=$(echo '[{"targetPlatform":"StandaloneWindows"},{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"},{"targetPlatform":"StandaloneOSX"},{"targetPlatform":"WebGL"},{"targetPlatform":"iOS"},{"targetPlatform":"Android"}]' | jq '.')
+                matrix=$(echo '[{"targetPlatform":"StandaloneWindows"},{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"},{"targetPlatform":"StandaloneOSX"},{"targetPlatform":"WebGL"},{"targetPlatform":"iOS"},{"targetPlatform":"Android"}]' | jq '.')
                 ;;
               *)
                 matrix=$(echo '[{"targetPlatform":"${{github.event.inputs.targetPlatform}}"}]' | jq '.')
