@@ -204,7 +204,7 @@ jobs:
           
       - name: Save Unversioned cache
         id: cache-save-unversioned
-        if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
+        if: always() && (success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true'))
         uses: actions/cache/save@v3
         with:
           path: Assets/Unversioned
@@ -348,7 +348,7 @@ jobs:
             
       - name: Save Library cache
         id: cache-save-library
-        if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
+        if: always() && (success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true'))
         uses: actions/cache/save@v3
         with:
           path: Library
@@ -356,7 +356,7 @@ jobs:
           
       - name: Test aggressive caches
         id: cache-save-everything-else
-        if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
+        if: always() && (success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true'))
         uses: actions/cache/save@v3
         with:
           path: |
