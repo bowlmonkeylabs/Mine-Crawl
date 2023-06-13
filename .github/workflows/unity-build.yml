@@ -73,7 +73,7 @@ jobs:
                 matrix=$(echo '[{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"}]' | jq '.')
                 ;;
               *)
-                matrix=$(echo '[{"targetPlatform":"${github.event.inputs.targetPlatform}"}]' | jq '.')
+                matrix=$(echo '[{"targetPlatform":"${{github.event.inputs.targetPlatform}}"}]' | jq '.')
                 ;;
             esac
           else
