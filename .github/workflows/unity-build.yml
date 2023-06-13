@@ -282,8 +282,9 @@ jobs:
         continue-on-error: true
         run: |
           EXECUTING_USER=$(whoami)
-          sudo chown "${EXECUTING_USER}" ./Temp/UnityLockfile
           sudo rm -f ./Temp/UnityLockfile
+          sudo rm -f ./Library/ArtifactDB-lock
+          sudo rm -f ./Library/SourceAssetDB-lock
           
       # Build
       - name: Build project retry
