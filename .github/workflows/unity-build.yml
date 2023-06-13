@@ -46,6 +46,7 @@ jobs:
       should_run: ${{ steps.should_run.outputs.should_run }}
     steps:
       - uses: actions/checkout@v2
+      
       - name: print latest_commit
         run: echo ${{ github.sha }}
 
@@ -66,7 +67,6 @@ jobs:
           if [ github.event_name == 'workflow_dispatch' ]; then
             case ${{github.event.inputs.targetPlatform}} in
               All)
-                #matrix='{"targetPlatform":["StandaloneOSX","StandaloneWindows64","StandaloneLinux64"]}'
                 matrix='{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}'
                 ;;
               *)
@@ -74,7 +74,6 @@ jobs:
                 ;;
             esac
           else
-            #matrix='{"targetPlatform":["StandaloneOSX","StandaloneWindows64","StandaloneLinux64"]}'
             matrix='{"targetPlatform":["StandaloneWindows64","StandaloneLinux64"]}'
           fi
           echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
@@ -91,15 +90,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.prepare_matrix.outputs.matrix)}}
-#       matrix:
-#         targetPlatform:
-#           #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
-#           #- StandaloneWindows # Build a Windows standalone.
-#           - StandaloneWindows64 # Build a Windows 64-bit standalone.
-#           - StandaloneLinux64 # Build a Linux 64-bit standalone.
-#           #- iOS # Build an iOS player.
-#           #- Android # Build an Android .apk standalone app.
-#           #- WebGL # WebGL.
     steps:
       # Checkout (without LFS content, just pointers)
       - name: Checkout repository
