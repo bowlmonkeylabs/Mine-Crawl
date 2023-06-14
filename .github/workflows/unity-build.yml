@@ -289,7 +289,7 @@ jobs:
         id: zip-build
         run: |
           ZIP_PATH="./build/${{ matrix.targetPlatform }}"
-          ZIP_NAME="${{ steps.set-params.outputs.build-name }}.zip"
+          ZIP_NAME="${{ steps.set-params.outputs.BUILD_NAME }}.zip"
           zip "$ZIP_NAME" "$ZIP_PATH"
           ls
           echo "ZIP_NAME=$ZIPNAME" >> $GITHUB_OUTPUT
