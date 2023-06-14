@@ -292,7 +292,7 @@ jobs:
           ZIP_NAME="${{ steps.set-params.outputs.BUILD_NAME }}.zip"
           zip "$ZIP_NAME" "$ZIP_PATH"
           ls
-          echo "ZIP_NAME=$ZIPNAME" >> $GITHUB_OUTPUT
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_OUTPUT
           echo $ZIP_PATH
           echo $ZIP_NAME
 
