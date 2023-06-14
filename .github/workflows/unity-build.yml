@@ -69,8 +69,6 @@ jobs:
     name: Prepare build params 📝
     runs-on: ubuntu-latest
     outputs:
-      repo-name: ${{ steps.set-params.outputs.REPO_NAME }}
-      build-name: ${{ steps.set-params.outputs.BUILD_NAME }}
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Prepare target platform matrix 💽
@@ -288,19 +286,20 @@ jobs:
       - name: Zip build
         id: zip-build
         run: |
-          ZIP_PATH="./build/${{ matrix.targetPlatform }}"
-          ZIP_NAME="${{ steps.set-params.outputs.BUILD_NAME }}.zip"
-          zip "$ZIP_NAME" "$ZIP_PATH"
+          ZIP_CONTENT_PATH="./build/${{ matrix.targetPlatform }}/*"
+          ZIP_FILE_PATH="${{ steps.set-params.outputs.BUILD_NAME }}.zip"
+          zip "$ZIP_FILE_PATH" "$ZIP_CONTENT_PATH"
           ls
-          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_OUTPUT
-          echo $ZIP_PATH
-          echo $ZIP_NAME
+          ls $ZIP_CONTENT_PATH
+          echo "ZIP_FILE_PATH=$ZIP_FILE_PATH" >> $GITHUB_OUTPUT
+          echo $ZIP_CONTENT_PATH
+          echo $ZIP_FILE_PATH
 
       - name: Upload build artifact 📦
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.set-params.outputs.BUILD_NAME }}
-          path: ${{ steps.zip-build.outputs.ZIP_NAME }}
+          path: ${{ steps.zip-build.outputs.ZIP_FILE_PATH }}
 #           name: Build-${{ matrix.targetPlatform }}
 #           path: build/${{ matrix.targetPlatform }}
           
@@ -350,4 +349,4 @@ jobs:
           prerelease: true
           generate_release_notes: true
           files: |
-            *.zip
+            **.zip
