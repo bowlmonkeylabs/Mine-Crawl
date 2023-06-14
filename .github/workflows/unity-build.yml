@@ -299,7 +299,7 @@ jobs:
       - name: Upload build artifact 📦
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.set-params.outputs.build-name }}
+          name: ${{ steps.set-params.outputs.BUILD_NAME }}
           path: ${{ steps.zip-build.outputs.ZIP_NAME }}
 #           name: Build-${{ matrix.targetPlatform }}
 #           path: build/${{ matrix.targetPlatform }}
