@@ -350,7 +350,9 @@ jobs:
             if [ -d "$f" ]; then
               # Will not run if no directories are available
               echo "$f"
-              zip -r "${f}.zip" $f/*
+              cd $f
+              zip -r "../${f}.zip" .
+              cd ..
             fi
           done
         
