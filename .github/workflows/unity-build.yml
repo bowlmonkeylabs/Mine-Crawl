@@ -239,6 +239,10 @@ jobs:
       # ^ Restore Unity caches ^ -------------------------------
 
       # v Game CI v -------------------------------
+      - name: Test bundle version
+        run: |
+          echo $(.scripts/lib/get-unity-bundle-version.sh)
+
       - name: Build project ⚙
         id: unityBuild
         uses: game-ci/unity-builder@v2
@@ -276,6 +280,10 @@ jobs:
   #           versioning: Semantic
           allowDirtyBuild: true
           customParameters: -Development
+          
+      - name: Test bundle version
+        run: |
+          echo $(.scripts/lib/get-unity-bundle-version.sh)
       # ^ Game CI ^ -------------------------------
           
       # v Upload build artifacts v -------------------------------
