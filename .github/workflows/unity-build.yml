@@ -220,6 +220,7 @@ jobs:
           path: Library
           key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-Library-${{ matrix.targetPlatform }}
             ${{ runner.os }}-Library
 
       - name: Test aggressive caches 💾
@@ -234,6 +235,7 @@ jobs:
             *.csproj
           key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}
             ${{ runner.os }}-EverythingElse
       # ^ Restore Unity caches ^ -------------------------------
 
@@ -324,6 +326,7 @@ jobs:
           path: Library
           key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-Library-${{ matrix.targetPlatform }}
             ${{ runner.os }}-Library
           
       - name: Test aggressive caches 💾
@@ -339,6 +342,7 @@ jobs:
             *.csproj
           key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}
             ${{ runner.os }}-EverythingElse
       # ^ Save Unity caches ^ -------------------------------
 
