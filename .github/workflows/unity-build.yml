@@ -222,7 +222,7 @@ jobs:
             ${{ runner.os }}-Library-${{ matrix.targetPlatform }}
             ${{ runner.os }}-Library
 
-      - name: Restore "everything else" caches 📂
+      - name: Restore "everything else" cache 📂
         id: cache-restore-everything-else
         uses: actions/cache/restore@v3
         with:
