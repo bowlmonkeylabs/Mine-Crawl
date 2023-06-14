@@ -115,7 +115,7 @@ jobs:
       matrix: ${{fromJson(needs.build_params.outputs.matrix)}}
     steps:
       # v Checkout (without LFS content, just pointers) v -------------------------------
-      - name: Checkout repository
+      - name: Checkout repository ⬇
         uses: actions/checkout@v3
         with:
           submodules: 'recursive'
@@ -127,7 +127,7 @@ jobs:
       - name: Create LFS file list
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
 
-      - name: Restore LFS cache
+      - name: Restore LFS cache 💾
         uses: pat-s/always-upload-cache@v3.0.11
         id: cache-lfs
         with:
@@ -136,7 +136,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-lfs-
 
-      - name: Git LFS Pull
+      - name: Git LFS Pull ⬇
         run: |
           git lfs pull
           git add .
@@ -153,7 +153,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install git-annex
           
-      - name: Clone unversioned repo
+      - name: Clone unversioned repo ⬇
         uses: actions/checkout@v3
         with:
           repository: ${{ github.repository }}-Unversioned
@@ -192,7 +192,7 @@ jobs:
           git annex enableremote cloud
           echo ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             
-      - name: Restore Unversioned cache
+      - name: Restore Unversioned cache 💾
         uses: actions/cache/restore@v3
         id: cache-restore-unversioned
         with:
@@ -200,14 +200,14 @@ jobs:
 #           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
           key: ${{ runner.os }}-UnversionedAssets
           
-      - name: Sync Unversioned annex
+      - name: Sync Unversioned annex 🔁
         run: |
           cd Assets/Unversioned
           git annex sync --content
           git annex unlock
           cd ../..
           
-      - name: Save Unversioned cache
+      - name: Save Unversioned cache 💾
         id: cache-save-unversioned
         if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
         uses: actions/cache/save@v3
@@ -218,14 +218,14 @@ jobs:
       # ^ Git annex ^ -------------------------------
 
       # v Restore Unity caches v -------------------------------
-      - name: Restore Library cache
+      - name: Restore Library cache 💾
         id: cache-restore-library
         uses: actions/cache/restore@v3
         with:
           path: Library
           key: ${{ runner.os }}-Library
 
-      - name: Test aggressive caches
+      - name: Test aggressive caches 💾
         id: cache-restore-everything-else
         uses: actions/cache/restore@v3
         with:
@@ -302,7 +302,7 @@ jobs:
       # ^ Upload build artifacts ^ -------------------------------
         
       # v Save Unity caches v -------------------------------
-      - name: Save Library cache
+      - name: Save Library cache 💾
         id: cache-save-library
         if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
         uses: actions/cache/save@v3
@@ -310,7 +310,7 @@ jobs:
           path: Library
           key: ${{ runner.os }}-Library
           
-      - name: Test aggressive caches
+      - name: Test aggressive caches 💾
         id: cache-save-everything-else
         if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
         uses: actions/cache/save@v3
@@ -329,7 +329,7 @@ jobs:
     needs: [check_prod,build]
     runs-on: ubuntu-latest
     steps:
-      - name: Download build artifacts
+      - name: Download build artifacts ⬇
         uses: actions/download-artifact@v3
 
       - name: Display structure of downloaded files
@@ -337,7 +337,7 @@ jobs:
           pwd
           ls -R
         
-      - name: Release latest
+      - name: Release latest 📦
         uses: softprops/action-gh-release@v1
         with:
           tag_name: latest
