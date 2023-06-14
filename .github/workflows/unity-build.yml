@@ -65,27 +65,6 @@ jobs:
 #         run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
         run: test -z $(git rev-list latest..${{ github.sha }}) && echo "::set-output name=should_run::false"
   
-  build_params:
-    name: Prepare build params 📝
-    runs-on: ubuntu-latest
-    outputs:
-      buildVersion: ${{ steps.set-build-version.outputs.buildVersion }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Determine build version number
-        id: set-build-version
-        run: |
-          VERSION_REGEX="v[0-9]*\.[0-9]*"
-          LAST_VERSION_TAG=$(git describe --tags --match="$VERSION_REGEX" --abbrev=0)
-          echo $LAST_VERSION_TAG
-          MAJOR_MINOR_VERSION=$(echo $LAST_VERSION_TAG | grep -oP "$VERSION_REGEX")
-          echo $MAJOR_MINOR_VERSION
-          REVISION=$(git rev-list --count "$LAST_VERSION_TAG..HEAD")
-          echo $REVISION
-          BUILD_VERSION="$MAJOR_MINOR_VERSION.$REVISION"
-          echo $BUILD_VERSION
-          echo "buildVersion=$BUILD_VERSION" >> $GITHUB_OUTPUT
-  
   prepare_matrix:
     name: Prepare target platform matrix 💽
     runs-on: ubuntu-latest
@@ -117,7 +96,7 @@ jobs:
   build:
     name: Build 🏗✨
     runs-on: ubuntu-latest
-    needs: [check_date,build_params,prepare_matrix]
+    needs: [check_date,prepare_matrix]
     if: (needs.check_date.result == 'success' || needs.check_date.result == 'skipped')
     permissions:
       contents: write
@@ -133,6 +112,20 @@ jobs:
           lfs: true
           token: ${{ secrets.REPOS_ACCESS_TOKEN }}
       # ^ Checkout  ^ -------------------------------
+      
+      - name: Determine build version number
+        id: set-build-version
+        run: |
+          VERSION_REGEX="v[0-9]*\.[0-9]*"
+          LAST_VERSION_TAG=$(git describe --tags --match="$VERSION_REGEX" --abbrev=0)
+          echo $LAST_VERSION_TAG
+          MAJOR_MINOR_VERSION=$(echo $LAST_VERSION_TAG | grep -oP "$VERSION_REGEX")
+          echo $MAJOR_MINOR_VERSION
+          REVISION=$(git rev-list --count "$LAST_VERSION_TAG..HEAD")
+          echo $REVISION
+          BUILD_VERSION="$MAJOR_MINOR_VERSION.$REVISION"
+          echo $BUILD_VERSION
+          echo "buildVersion=$BUILD_VERSION" >> $GITHUB_OUTPUT
 
       # v Git LFS v -------------------------------
       - name: Create LFS file list
@@ -237,7 +230,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: Library
-          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ needs.build_params.outputs.buildVersion }}-${{ github.sha }}
+          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-Library-${{ matrix.targetPlatform }}
             ${{ runner.os }}-Library
@@ -252,7 +245,7 @@ jobs:
             build
             obj
             *.csproj
-          key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ needs.build_params.outputs.buildVersion }}-${{ github.sha }}
+          key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}
             ${{ runner.os }}-EverythingElse
@@ -277,7 +270,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
 #           versioning: Semantic
           versioning: Custom
-          version: ${{ needs.build_params.outputs.buildVersion }}
+          version: ${{ steps.set-build-version.outputs.buildVersion }}
           allowDirtyBuild: true
           customParameters: -Development
           
@@ -303,7 +296,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
 #           versioning: Semantic
           versioning: Custom
-          version: ${{ needs.build_params.outputs.buildVersion }}
+          version: ${{ steps.set-build-version.outputs.buildVersion }}
           allowDirtyBuild: true
           customParameters: -Development
           
@@ -330,7 +323,7 @@ jobs:
           #elif [ ${{ steps.unity-build-retry.outcome }} == 'success' ]; then
           #  BUILD_VERSION=${{ steps.unity-build-retry.outputs.buildVersion }}
           #fi
-          BUILD_VERSION=${{ needs.build_params.outputs.buildVersion }}
+          BUILD_VERSION=${{ steps.set-build-version.outputs.buildVersion }}
           echo $BUILD_VERSION
           BUILD_NAME="${REPO_NAME}_${BUILD_VERSION}_${{matrix.targetPlatform}}"
           echo $BUILD_NAME
@@ -369,7 +362,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: Library
-          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ needs.build_params.outputs.buildVersion }}-${{ github.sha }}
+          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-Library-${{ matrix.targetPlatform }}
             ${{ runner.os }}-Library
@@ -385,7 +378,7 @@ jobs:
             build
             obj
             *.csproj
-          key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ needs.build_params.outputs.buildVersion }}-${{ github.sha }}
+          key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}
             ${{ runner.os }}-EverythingElse
