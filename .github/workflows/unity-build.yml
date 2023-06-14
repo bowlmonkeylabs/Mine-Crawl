@@ -288,12 +288,13 @@ jobs:
         run: |
           ZIP_CONTENT_PATH="./build/${{ matrix.targetPlatform }}/*"
           ZIP_FILE_PATH="${{ steps.set-params.outputs.BUILD_NAME }}.zip"
-          zip "$ZIP_FILE_PATH" "$ZIP_CONTENT_PATH"
-          ls
-          ls $ZIP_CONTENT_PATH
-          echo "ZIP_FILE_PATH=$ZIP_FILE_PATH" >> $GITHUB_OUTPUT
           echo $ZIP_CONTENT_PATH
           echo $ZIP_FILE_PATH
+          ls
+          ls build
+          ls $ZIP_CONTENT_PATH
+          zip "$ZIP_FILE_PATH" "$ZIP_CONTENT_PATH"
+          echo "ZIP_FILE_PATH=$ZIP_FILE_PATH" >> $GITHUB_OUTPUT
 
       - name: Upload build artifact 📦
         uses: actions/upload-artifact@v3
