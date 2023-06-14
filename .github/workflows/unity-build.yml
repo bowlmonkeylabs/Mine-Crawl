@@ -283,26 +283,27 @@ jobs:
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
           echo "BUILD_NAME=$BUILD_NAME" >> $GITHUB_OUTPUT
           
-      - name: Zip build
-        id: zip-build
-        run: |
-          ZIP_CONTENT_PATH="./build/${{ matrix.targetPlatform }}"
-          ZIP_FILE_PATH="${{ steps.set-params.outputs.BUILD_NAME }}.zip"
-          echo $ZIP_CONTENT_PATH
-          echo $ZIP_FILE_PATH
-          ls
-          ls build
-          ls $ZIP_CONTENT_PATH
-          zip -r "$ZIP_FILE_PATH" "$ZIP_CONTENT_PATH"
-          echo "ZIP_FILE_PATH=$ZIP_FILE_PATH" >> $GITHUB_OUTPUT
+#       - name: Zip build
+#         id: zip-build
+#         run: |
+#           pwd
+#           cd ./build/${{ matrix.targetPlatform }}
+#           #ZIP_CONTENT_PATH="./build/${{ matrix.targetPlatform }}"
+#           ZIP_FILE_PATH="../${{ steps.set-params.outputs.BUILD_NAME }}.zip"
+#           #echo $ZIP_CONTENT_PATH
+#           echo $ZIP_FILE_PATH
+#           ls
+#           zip -r "$ZIP_FILE_PATH" .
+#           echo "ZIP_FILE_PATH=$ZIP_FILE_PATH" >> $GITHUB_OUTPUT
+#           cd ../..
 
       - name: Upload build artifact 📦
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.set-params.outputs.BUILD_NAME }}
-          path: ${{ steps.zip-build.outputs.ZIP_FILE_PATH }}
+#           path: ${{ steps.zip-build.outputs.ZIP_FILE_PATH }}
 #           name: Build-${{ matrix.targetPlatform }}
-#           path: build/${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
           
       # ^ Upload build artifacts ^ -------------------------------
         
@@ -341,6 +342,17 @@ jobs:
         run: |
           pwd
           ls -R
+          
+      - name: Zip builds
+        id: zip-builds
+        run: |
+          for f in *; do
+            if [ -d "$f" ]; then
+              # Will not run if no directories are available
+              echo "$f"
+              zip -r "${f}.zip" $f/*
+            fi
+          done
         
       - name: Release latest 📦
         uses: softprops/action-gh-release@v1
@@ -350,4 +362,4 @@ jobs:
           prerelease: true
           generate_release_notes: true
           files: |
-            **.zip
+            *.zip
