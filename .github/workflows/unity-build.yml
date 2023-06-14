@@ -113,12 +113,6 @@ jobs:
           lfs: true
           token: ${{ secrets.REPOS_ACCESS_TOKEN }}
       # ^ Checkout  ^ -------------------------------
-      
-      - name: Test bundle version
-        run: |
-          chmod +x ./.scripts/lib/get-unity-bundle-version.sh
-          # sudo chmod +x ./.scripts/lib/get-unity-bundle-version.sh
-          echo $(./.scripts/lib/get-unity-bundle-version.sh)
 
       # v Git LFS v -------------------------------
       - name: Create LFS file list
@@ -251,7 +245,7 @@ jobs:
           echo $(./.scripts/lib/get-unity-bundle-version.sh)
 
       - name: Build project ⚙
-        id: unityBuild
+        id: unity-build
         uses: game-ci/unity-builder@v2
         continue-on-error: true
         timeout-minutes: 30
@@ -261,12 +255,12 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
-#           versioning: Semantic
+          versioning: Semantic
           allowDirtyBuild: true
           customParameters: -Development
           
       - name: Try delete Unity lock file 🔨
-        if: (steps.unityBuild.outcome == 'failure')
+        if: (steps.unity-build.outcome == 'failure')
         continue-on-error: true
         run: |
           EXECUTING_USER=$(whoami)
@@ -275,8 +269,9 @@ jobs:
           sudo rm -f ./Library/SourceAssetDB-lock
 
       - name: Build project retry 🎲
+        id: unity-build-retry
         uses: game-ci/unity-builder@v2
-        if: (steps.unityBuild.outcome == 'failure')
+        if: (steps.unity-build.outcome == 'failure')
         timeout-minutes: 120
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -284,7 +279,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
-  #           versioning: Semantic
+          versioning: Semantic
           allowDirtyBuild: true
           customParameters: -Development
           
@@ -292,6 +287,7 @@ jobs:
         run: |
           chmod +x ./.scripts/lib/get-unity-bundle-version.sh
           echo $(./.scripts/lib/get-unity-bundle-version.sh)
+          echo $BUILD_VERSION
       # ^ Game CI ^ -------------------------------
           
       # v Upload build artifacts v -------------------------------
@@ -304,9 +300,17 @@ jobs:
         id: set-params
         run: |
           REPO_NAME=$(basename ${{ github.repository }})
-          BUILD_NAME="${REPO_NAME}_${{matrix.targetPlatform}}"
+          echo $REPO_NAME
+          if [ ${{ steps.unity-build.outcome }} == 'success' ]; then
+            BUILD_VERSION=${{ steps.unity-build.outputs.buildVersion }}
+          elif [ ${{ steps.unity-build-retry.outcome }} == 'success' ]; then
+            BUILD_VERSION=${{ steps.unity-build-retry.outputs.buildVersion }}
+          fi
+          echo $BUILD_VERSION
+          BUILD_NAME="${REPO_NAME}_${BUILD_VERSION}_${{matrix.targetPlatform}}"
           echo $BUILD_NAME
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
+          ECHO "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_OUTPUT
           echo "BUILD_NAME=$BUILD_NAME" >> $GITHUB_OUTPUT
           
 #       - name: Zip build
