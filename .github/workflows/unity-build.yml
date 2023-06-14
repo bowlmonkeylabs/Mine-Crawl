@@ -116,9 +116,7 @@ jobs:
       
       - name: Test bundle version
         run: |
-          ls
-          ls .scripts
-          ls .scripts/lib
+          chmod +x ./.scripts/lib/get-unity-bundle-version.sh
           sudo chmod +x ./.scripts/lib/get-unity-bundle-version.sh
           echo $(./.scripts/lib/get-unity-bundle-version.sh)
 
@@ -291,7 +289,7 @@ jobs:
           
       - name: Test bundle version
         run: |
-          echo $(.scripts/lib/get-unity-bundle-version.sh)
+          echo $(./.scripts/lib/get-unity-bundle-version.sh)
       # ^ Game CI ^ -------------------------------
           
       # v Upload build artifacts v -------------------------------
