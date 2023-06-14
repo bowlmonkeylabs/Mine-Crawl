@@ -310,7 +310,7 @@ jobs:
           BUILD_NAME="${REPO_NAME}_${BUILD_VERSION}_${{matrix.targetPlatform}}"
           echo $BUILD_NAME
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
-          ECHO "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_OUTPUT
+          echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_OUTPUT
           echo "BUILD_NAME=$BUILD_NAME" >> $GITHUB_OUTPUT
           
 #       - name: Zip build
