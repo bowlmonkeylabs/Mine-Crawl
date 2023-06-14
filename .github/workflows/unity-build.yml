@@ -113,6 +113,10 @@ jobs:
           lfs: true
           token: ${{ secrets.REPOS_ACCESS_TOKEN }}
       # ^ Checkout  ^ -------------------------------
+      
+      - name: Test bundle version
+        run: |
+          echo $(./.scripts/lib/get-unity-bundle-version.sh)
 
       # v Git LFS v -------------------------------
       - name: Create LFS file list
@@ -241,7 +245,7 @@ jobs:
       # v Game CI v -------------------------------
       - name: Test bundle version
         run: |
-          echo $(.scripts/lib/get-unity-bundle-version.sh)
+          echo $(./.scripts/lib/get-unity-bundle-version.sh)
 
       - name: Build project ⚙
         id: unityBuild
