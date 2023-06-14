@@ -116,6 +116,9 @@ jobs:
       
       - name: Test bundle version
         run: |
+          ls
+          ls .scripts
+          ls .scripts/lib
           echo $(./.scripts/lib/get-unity-bundle-version.sh)
 
       # v Git LFS v -------------------------------
