@@ -60,7 +60,7 @@ jobs:
 
       - id: should_run
         continue-on-error: true
-        name: check latest commit is less than a day
+        name: Check for commits since last release of "latest" tag
         if: ${{ github.event_name == 'schedule' }}
 #         run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
         run: test -z $(git rev-list latest..${{ github.sha }}) && echo "::set-output name=should_run::false"
@@ -118,7 +118,7 @@ jobs:
       - name: Create LFS file list
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
 
-      - name: Restore LFS cache 💾
+      - name: Restore LFS cache 📂💾
         uses: pat-s/always-upload-cache@v3.0.11
         id: cache-lfs
         with:
@@ -183,13 +183,12 @@ jobs:
           git annex enableremote cloud
           echo ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             
-      - name: Restore Unversioned cache 💾
+      - name: Restore Unversioned cache 📂
         uses: actions/cache/restore@v3
         id: cache-restore-unversioned
         with:
           path: Assets/Unversioned
           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
-#           key: ${{ runner.os }}-UnversionedAssets
           restore-keys: |
             ${{ runner.os }}-UnversionedAssets
           
@@ -213,7 +212,7 @@ jobs:
       # ^ Git annex ^ -------------------------------
 
       # v Restore Unity caches v -------------------------------
-      - name: Restore Library cache 💾
+      - name: Restore Library cache 📂
         id: cache-restore-library
         uses: actions/cache/restore@v3
         with:
@@ -223,7 +222,7 @@ jobs:
             ${{ runner.os }}-Library-${{ matrix.targetPlatform }}
             ${{ runner.os }}-Library
 
-      - name: Test aggressive caches 💾
+      - name: Restore "everything else" caches 📂
         id: cache-restore-everything-else
         uses: actions/cache/restore@v3
         with:
@@ -290,6 +289,7 @@ jobs:
         run: |
           REPO_NAME=$(basename ${{ github.repository }})
           BUILD_NAME="${REPO_NAME}_${{matrix.targetPlatform}}"
+          echo $BUILD_NAME
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
           echo "BUILD_NAME=$BUILD_NAME" >> $GITHUB_OUTPUT
           
@@ -329,7 +329,7 @@ jobs:
             ${{ runner.os }}-Library-${{ matrix.targetPlatform }}
             ${{ runner.os }}-Library
           
-      - name: Test aggressive caches 💾
+      - name: Save "everything else" cache 💾
         id: cache-save-everything-else
         if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
         uses: actions/cache/save@v3
