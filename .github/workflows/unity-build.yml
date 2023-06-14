@@ -188,8 +188,10 @@ jobs:
         id: cache-restore-unversioned
         with:
           path: Assets/Unversioned
-#           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
-          key: ${{ runner.os }}-UnversionedAssets
+          key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
+#           key: ${{ runner.os }}-UnversionedAssets
+          restore-keys: |
+            ${{ runner.os }}-UnversionedAssets
           
       - name: Sync Unversioned annex 🔁
         run: |
@@ -204,8 +206,10 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: Assets/Unversioned
-#           key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
-          key: ${{ runner.os }}-UnversionedAssets
+          key: ${{ runner.os }}-UnversionedAssets-${{ hashFiles('Assets/Unversioned/.git/annex/index') }}
+#           key: ${{ runner.os }}-UnversionedAssets
+          restore-keys: |
+            ${{ runner.os }}-UnversionedAssets
       # ^ Git annex ^ -------------------------------
 
       # v Restore Unity caches v -------------------------------
@@ -214,7 +218,9 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: Library
-          key: ${{ runner.os }}-Library
+          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-Library
 
       - name: Test aggressive caches 💾
         id: cache-restore-everything-else
@@ -226,7 +232,9 @@ jobs:
             build
             obj
             *.csproj
-          key: ${{ runner.os }}-EverythingElse
+          key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-EverythingElse
       # ^ Restore Unity caches ^ -------------------------------
 
       # v Game CI v -------------------------------
@@ -314,7 +322,9 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: Library
-          key: ${{ runner.os }}-Library
+          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-Library
           
       - name: Test aggressive caches 💾
         id: cache-save-everything-else
@@ -327,7 +337,9 @@ jobs:
             build
             obj
             *.csproj
-          key: ${{ runner.os }}-EverythingElse
+          key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-EverythingElse
       # ^ Save Unity caches ^ -------------------------------
 
   release:
