@@ -30,7 +30,6 @@ env:
 jobs:
   log_params:
     name: Log parameters 👣
-    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Dump GitHub context
@@ -44,7 +43,7 @@ jobs:
     steps:
       - id: should_run
         continue-on-error: true
-        name: Check if we''re running on the main branch
+        name: "Check if we're running on the main branch"
         run: echo "Building to production on branch $GITHUB_REF"
 
   check_date:
@@ -54,10 +53,6 @@ jobs:
       should_run: ${{ steps.should_run.outputs.should_run }}
     steps:
       - uses: actions/checkout@v3
-      
-      - name: print latest_commit
-        run: echo ${{ github.sha }}
-
       - id: should_run
         continue-on-error: true
         name: Check for commits since last release of "latest" tag
@@ -265,7 +260,6 @@ jobs:
         if: (steps.unity-build.outcome == 'failure')
         continue-on-error: true
         run: |
-          EXECUTING_USER=$(whoami)
           sudo rm -f ./Temp/UnityLockfile
           sudo rm -f ./Library/ArtifactDB-lock
           sudo rm -f ./Library/SourceAssetDB-lock
@@ -333,8 +327,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.set-params.outputs.BUILD_NAME }}
-#           path: ${{ steps.zip-build.outputs.ZIP_FILE_PATH }}
-#           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
           
       # ^ Upload build artifacts ^ -------------------------------
