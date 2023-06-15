@@ -110,10 +110,24 @@ jobs:
       - name: Checkout repository ⬇
         uses: actions/checkout@v3
         with:
+          fetch_depth: 200
           submodules: 'recursive'
           lfs: true
           token: ${{ secrets.REPOS_ACCESS_TOKEN }}
       # ^ Checkout  ^ -------------------------------
+      
+      - name: Determine build version number
+        id: set-build-version
+        run: |
+          LAST_VERSION_TAG=$(git describe --tags --match="v[0-9]*\.[0-9]*" --abbrev=0)
+          echo $LAST_VERSION_TAG
+          MAJOR_MINOR_VERSION=$(echo $LAST_VERSION_TAG | grep -oP "[0-9]+\.[0-9]+")
+          echo $MAJOR_MINOR_VERSION
+          REVISION=$(git rev-list --count "$LAST_VERSION_TAG..HEAD")
+          echo $REVISION
+          BUILD_VERSION="$MAJOR_MINOR_VERSION.$REVISION"
+          echo $BUILD_VERSION
+          echo "buildVersion=$BUILD_VERSION" >> $GITHUB_OUTPUT
 
       # v Git LFS v -------------------------------
       - name: Create LFS file list
@@ -218,7 +232,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: Library
-          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ github.sha }}
+          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-Library-${{ matrix.targetPlatform }}
             ${{ runner.os }}-Library
@@ -233,7 +247,7 @@ jobs:
             build
             obj
             *.csproj
-          key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ github.sha }}
+          key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}
             ${{ runner.os }}-EverythingElse
@@ -256,7 +270,9 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
-          versioning: Semantic
+#           versioning: Semantic
+          versioning: Custom
+          version: ${{ steps.set-build-version.outputs.buildVersion }}
           allowDirtyBuild: true
           customParameters: -Development
           
@@ -279,7 +295,9 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
-          versioning: Semantic
+#           versioning: Semantic
+          versioning: Custom
+          version: ${{ steps.set-build-version.outputs.buildVersion }}
           allowDirtyBuild: true
           customParameters: -Development
           
@@ -342,7 +360,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: Library
-          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ github.sha }}
+          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-Library-${{ matrix.targetPlatform }}
             ${{ runner.os }}-Library
@@ -358,7 +376,7 @@ jobs:
             build
             obj
             *.csproj
-          key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ github.sha }}
+          key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}
             ${{ runner.os }}-EverythingElse
@@ -396,7 +414,8 @@ jobs:
           VERSION_REGEX="^[0-9]+\.[0-9]+"
           MAJOR_MINOR_VERSION=$(echo ${{ needs.build.outputs.buildVersion }} | grep -oP "$VERSION_REGEX")
           echo "$MAJOR_MINOR_VERSION"
-          TAG="v$MAJOR_MINOR_VERSION-Latest"
+          # TAG="v$MAJOR_MINOR_VERSION-Latest"
+          TAG="latest"
           echo "$TAG"
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "majorMinorVersion=$MAJOR_MINOR_VERSION" >> $GITHUB_OUTPUT
