@@ -68,7 +68,7 @@ jobs:
       - name: Prepare target platform matrix 💽
         id: set-matrix
         run: |
-          if if [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
+          if [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
             TARGET_PLATFORM_INPUT="${{ github.event.inputs.targetPlatform }}"
           else
             TARGET_PLATFORM_INPUT="Default"
