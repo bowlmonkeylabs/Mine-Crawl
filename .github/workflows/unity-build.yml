@@ -398,7 +398,7 @@ jobs:
       - name: Determine release tag
         id: set-tag
         run: |
-          VERSION_REGEX="[0-9]*\.[0-9]*"
+          VERSION_REGEX="^[0-9]+\.[0-9]+"
           MAJOR_MINOR_VERSION=$(echo ${{ needs.build.outputs.buildVersion }} | grep -oP "$VERSION_REGEX")
           echo "$MAJOR_MINOR_VERSION"
           TAG="v$MAJOR_MINOR_VERSION.Latest"
