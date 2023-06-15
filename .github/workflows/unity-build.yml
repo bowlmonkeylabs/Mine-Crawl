@@ -2,7 +2,7 @@ name: Build actions 😎
 
 on:
   schedule:
-    - cron: '0 6 * * *' # Runs daily at 00:00
+    - cron: '40 9 * * *' # Runs daily at 00:00
   workflow_dispatch:    # Allows you to run this workflow manually from the Actions tab
     inputs:
       targetPlatform:
@@ -69,7 +69,7 @@ jobs:
         id: set-matrix
         run: |
           if [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-            case ${{ github.event.inputs.targetPlatform }} in
+            case ${${{ github.event.inputs.targetPlatform }}:-Default} in
               Default)
                 matrix=$(echo '[{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"}]' | jq '.')
                 ;;
