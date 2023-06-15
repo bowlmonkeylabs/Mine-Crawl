@@ -2,7 +2,7 @@ name: Build actions 😎
 
 on:
   schedule:
-    - cron: '5 15 * * *' # Runs daily at 00:00
+    - cron: '0 10 * * *' # Runs daily at 10:00 UTC (6:00 EDT)
   workflow_dispatch:    # Allows you to run this workflow manually from the Actions tab
     inputs:
       targetPlatform:
