@@ -391,7 +391,7 @@ jobs:
           VERSION_REGEX="^[0-9]+\.[0-9]+"
           MAJOR_MINOR_VERSION=$(echo ${{ needs.build.outputs.buildVersion }} | grep -oP "$VERSION_REGEX")
           echo "$MAJOR_MINOR_VERSION"
-          TAG="v$MAJOR_MINOR_VERSION.Latest"
+          TAG="v$MAJOR_MINOR_VERSION-Latest"
           echo "$TAG"
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "majorMinorVersion=$MAJOR_MINOR_VERSION" >> $GITHUB_OUTPUT
