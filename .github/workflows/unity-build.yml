@@ -68,8 +68,13 @@ jobs:
       - name: Prepare target platform matrix 💽
         id: set-matrix
         run: |
+          if if [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
+            TARGET_PLATFORM_INPUT="${{ github.event.inputs.targetPlatform }}"
+          else
+            TARGET_PLATFORM_INPUT="Default"
+          fi
           if [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-            case ${${{ github.event.inputs.targetPlatform }}:-Default} in
+            case $TARGET_PLATFORM_INPUT in
               Default)
                 matrix=$(echo '[{"targetPlatform":"StandaloneWindows64"},{"targetPlatform":"StandaloneLinux64"}]' | jq '.')
                 ;;
