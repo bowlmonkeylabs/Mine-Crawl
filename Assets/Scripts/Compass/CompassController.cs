@@ -120,8 +120,8 @@ namespace BML.Scripts.Compass
                     targetRotation = Quaternion.LookRotation(rotationDirection);
                     break;
                 case TargetMode.MatchRotation:
-                    targetDirection = _target.Value.forward;
-                    targetRotation = _target.Value.rotation;
+                    targetDirection = _target?.Value?.forward ?? transform.forward;
+                    targetRotation = _target?.Value?.rotation ?? transform.rotation;
                     break;
             }
 
