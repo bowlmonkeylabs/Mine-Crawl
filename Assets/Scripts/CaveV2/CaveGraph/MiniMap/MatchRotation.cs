@@ -31,16 +31,16 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         {
             if (_clearLocalRotationOnDisable)
             {
-                if (_coroutineResetRotation != null)
-                {
-                    StopCoroutine(_coroutineResetRotation);
-                }
-
-                if (ApplicationUtils.IsPlaying_EditorSafe)
-                {
-                    _coroutineResetRotation = StartCoroutine(CoroutineResetRotation());
-                }
-                
+                // if (_coroutineResetRotation != null)
+                // {
+                //     StopCoroutine(_coroutineResetRotation);
+                // }
+                //
+                // if (ApplicationUtils.IsPlaying_EditorSafe)
+                // {
+                //     _coroutineResetRotation = StartCoroutine(CoroutineResetRotation());
+                // }
+                transform.localRotation = Quaternion.identity;
             }
         }
 
