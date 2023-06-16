@@ -1079,8 +1079,10 @@ namespace BML.Scripts.CaveV2
                 debugComponent.Initialize(caveNodeData, this, minimapController);
                 
                 OnAfterUpdatePlayerDistance += debugComponent.UpdatePlayerOccupied;
-                
+
+#if UNITY_EDITOR
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(debugComponent.DiscoveredRenderer, false);
+#endif
             }
             
             // Spawn at each edge
@@ -1097,8 +1099,10 @@ namespace BML.Scripts.CaveV2
                 debugComponent.Initialize(caveNodeConnectionData, this, minimapController);
                 
                 OnAfterUpdatePlayerDistance += debugComponent.UpdatePlayerOccupied;
-                
+
+#if UNITY_EDITOR
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(debugComponent.Line, false);
+#endif
             }
         }
         
