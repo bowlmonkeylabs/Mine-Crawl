@@ -32,6 +32,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             => Mathf.Min(Source.PlayerDistance, Target.PlayerDistance);
         [ShowInInspector] public int PlayerDistanceDelta
             => Mathf.RoundToInt((Source.PlayerDistanceDelta + Target.PlayerDistanceDelta) / 2f);
+        [ShowInInspector] public float DirectPlayerDistance
+            => Mathf.Min(Source.DirectPlayerDistance, Target.DirectPlayerDistance);
         
         [ShowInInspector] 
         public bool PlayerVisited
@@ -45,6 +47,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
                 playerVisited = value;
             }
         }
+        [ShowInInspector] public bool PlayerVisitedAdjacent { get; set; }
+        [ShowInInspector] public bool PlayerVisitedAllAdjacent { get; set; }
         [ShowInInspector] public bool PlayerOccupied { get; set; }
         [ShowInInspector] public int TorchRequirement { get; set; }
         [ShowInInspector] public float TorchInfluence { get; set; }
@@ -91,6 +95,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             SteepnessAngle = Mathf.Rad2Deg * Mathf.Atan2(verticalComponent, horizontalComponent);
 
             PlayerVisited = false;
+            PlayerVisitedAdjacent = false;
+            PlayerVisitedAllAdjacent = false;
             PlayerOccupied = false;
             TorchRequirement = CaveNodeDataUtils.TorchRequirementMinMax.x;
             TorchInfluence = -1f;

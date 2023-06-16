@@ -11,6 +11,13 @@ namespace BML.Scripts.Level
     {
         #region Inspector
 
+        private enum TargetMode
+        {
+            Direction,
+            MatchRotation,
+        }
+
+        [SerializeField] private TargetMode _targetMode = TargetMode.Direction;
         [SerializeField] private TransformSceneReference _target;
         [SerializeField] private bool _doAlignToTargetOnEnable;
         
@@ -43,10 +50,21 @@ namespace BML.Scripts.Level
         {
             if (_doAlignToTargetOnEnable)
             {
-                var targetPosition = _target.Value.transform.position;
-                var targetDirection = targetPosition - transform.position;
-                Vector3 rotationDirection = Vector3.RotateTowards(transform.forward, targetDirection, 360, 0.00f);
-                Quaternion targetRotation = Quaternion.LookRotation(rotationDirection);
+                Quaternion targetRotation;
+                switch (_targetMode)
+                {
+                    default:
+                    case TargetMode.Direction:
+                        var targetPosition = _target.Value.transform.position;
+                        var targetDirection = targetPosition - transform.position;
+                        Vector3 rotationDirection = Vector3.RotateTowards(transform.forward, targetDirection, 360, 0.00f);
+                        targetRotation = Quaternion.LookRotation(rotationDirection);
+                        break;
+                    case TargetMode.MatchRotation:
+                        targetRotation = _target.Value.rotation;
+                        break;
+                }
+                
 
                 transform.rotation = targetRotation;
             }
@@ -96,12 +114,24 @@ namespace BML.Scripts.Level
             
             //Get the required rotation based on the target position - we can do this by getting the direction
             //from the current position to the target. Then use rotate towards and look rotation, to get a quaternion thingy.
-            var targetPosition = _target.Value.transform.position;
+            var targetPosition = _target.Value.position;
             var rotation = transform.rotation;
-            var targetDirection = targetPosition - transform.position;
-            Vector3 rotationDirection = Vector3.RotateTowards(transform.forward, targetDirection, 360, 0.00f);
-            Quaternion targetRotation = Quaternion.LookRotation(rotationDirection);
-
+            Vector3 targetDirection;
+            Quaternion targetRotation;
+            switch (_targetMode)
+            {
+                default:
+                case TargetMode.Direction:
+                    targetDirection = targetPosition - transform.position;
+                    Vector3 rotationDirection = Vector3.RotateTowards(transform.forward, targetDirection, 360, 0.00f);
+                    targetRotation = Quaternion.LookRotation(rotationDirection);
+                    break;
+                case TargetMode.MatchRotation:
+                    targetDirection = _target.Value.forward;
+                    targetRotation = _target.Value.rotation;
+                    break;
+            }
+            
             //Figure out the error for each axis
             var thrustAlignment = 
                 Vector3.Project(_rb.velocity, targetDirection).magnitude / _rb.velocity.magnitude;

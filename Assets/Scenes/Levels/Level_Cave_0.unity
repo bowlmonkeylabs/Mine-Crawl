@@ -123,6 +123,36 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &48310055
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 48310056}
+  m_Layer: 0
+  m_Name: Minimap (Debug only)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &48310056
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 48310055}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_Children: []
+  m_Father: {fileID: 771419350}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &119103842
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,6 +648,13 @@ MonoBehaviour:
   _showTraversabilityCheck: 1
   _generateDebugObjects: 1
   _debugObjectsContainer: {fileID: 1191531237}
+  _generateMinimap: 1
+  _minimapObjectsContainer:
+    ReferenceTypeSelector: 1
+    ReferenceValue_Transform: {fileID: 0}
+    ReferenceValue_TransformSceneReference: {fileID: 11400000, guid: 38c36189f686df949aa9c03df030f995, type: 2}
+    ReferenceValue_GameObjectSceneReference: {fileID: 0}
+  MinimapParameters: {fileID: 11400000, guid: fb356ad72f43032459506de3aafa682e, type: 2}
   GizmoColorScheme_Inner: 6
   GizmoColorScheme_Outer: 5
   DebugNodeColor_Default: {r: 1, g: 1, b: 1, a: 0.29803923}
@@ -668,6 +705,7 @@ Transform:
   m_Children:
   - {fileID: 1297833593}
   - {fileID: 1191531237}
+  - {fileID: 48310056}
   - {fileID: 1231575174}
   - {fileID: 1496774519}
   - {fileID: 820661969}
@@ -720,7 +758,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 771419350}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1164083038
 PrefabInstance:
@@ -1010,7 +1048,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 771419350}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1255605503
 GameObject:
@@ -1437,7 +1475,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 771419350}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!850595691 &1498019911
 LightingSettings:

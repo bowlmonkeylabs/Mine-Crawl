@@ -5,7 +5,9 @@ using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.CaveV2.CaveGraph;
+using BML.Scripts.CaveV2.CaveGraph.Minimap;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using UnityEngine;
 using BML.Scripts.CaveV2.MudBun;
@@ -19,6 +21,7 @@ using Shapes;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2
@@ -103,6 +106,10 @@ namespace BML.Scripts.CaveV2
         private bool _generateDebugObjects = false;
 #endif
         [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
+        
+        [SerializeField] private bool _generateMinimap = true;
+        [SerializeField, ShowIf("$_generateMinimap")] private SafeTransformValueReference _minimapObjectsContainer;
+        [FormerlySerializedAs("_minimapParameters")] [SerializeField, ShowIf("$_generateMinimap")] public CaveMinimapParameters MinimapParameters;
 
         public enum GizmoColorScheme
         {
@@ -198,6 +205,7 @@ namespace BML.Scripts.CaveV2
             IsGenerated = true;
             
             GenerateCaveGraphDebugObjects();
+            GenerateCaveGraphMinimapObjects();
             
             OnAfterGenerate?.Invoke();
         }
@@ -255,6 +263,7 @@ namespace BML.Scripts.CaveV2
             _minimumSpanningTreeGraphTEMP = null;
             IsGenerated = false;
             DestroyDebugObjects();
+            DestroyMinimapObjects();
             
             _caveGraphMudBunRenderer.DestroyMudBun();
             _levelObjectSpawner.DestroyLevelObjects();
@@ -673,6 +682,14 @@ namespace BML.Scripts.CaveV2
             // TODO more intelligent logic
             foreach (var caveGraphVertex in caveGraph.Vertices)
             {
+                if (caveGraphVertex == caveGraph.StartNode
+                    || caveGraphVertex == caveGraph.EndNode
+                    || caveGraphVertex == caveGraph.MerchantNode
+                ) {
+                    caveGraphVertex.NodeType = CaveNodeType.Medium;
+                    continue;
+                }
+                
                 // Rooms with only one connection (dead ends) are large rooms
                 int numEdges = caveGraph.AdjacentEdges(caveGraphVertex).Count();
                 if (numEdges == 1)
@@ -774,6 +791,12 @@ namespace BML.Scripts.CaveV2
                 this.CurrentMaxPlayerObjectiveDistance = _caveGraph.Vertices
                     .Where(node => node.PlayerDistance == 0)
                     .Max(node => node.ObjectiveDistance);
+
+                var playerLocalPosition = WorldToLocal(_playerSceneReference.Value.position);
+                foreach (var caveNodeData in _caveGraph.Vertices)
+                {
+                    caveNodeData.DirectPlayerDistance = Vector3.Distance(playerLocalPosition, caveNodeData.LocalPosition);
+                }
             }
             else
             {
@@ -992,6 +1015,95 @@ namespace BML.Scripts.CaveV2
         
         #endregion
 
+        #region Mini Map
+
+        private void DestroyMinimapObjects()
+        {
+            if (EnableLogs) Debug.Log("Cave Graph: Destroying minimap objects");
+            
+            if (_minimapObjectsContainer == null || _minimapObjectsContainer.Value == null) return;
+            
+            var minimapObjects = Enumerable.Range(0, _minimapObjectsContainer.Value.childCount)
+                .Select(i => _minimapObjectsContainer.Value.GetChild(i).gameObject)
+                .ToList();
+            foreach (var childObject in minimapObjects)
+            {
+                var nodeComponent = _minimapObjectsContainer.Value.GetComponent<CaveNodeDataMinimapComponent>();
+                if (nodeComponent != null)
+                {
+                    OnAfterUpdatePlayerDistance -= nodeComponent.UpdatePlayerOccupied;
+                }
+                else
+                {
+                    var nodeConnectionComponent = _minimapObjectsContainer.Value.GetComponent<CaveNodeConnectionDataMinimapComponent>();
+                    if (nodeConnectionComponent != null)
+                    {
+                        OnAfterUpdatePlayerDistance -= nodeComponent.UpdatePlayerOccupied;
+                    }
+                }
+                
+                GameObject.DestroyImmediate(childObject);
+            }
+        }
+
+        private void GenerateCaveGraphMinimapObjects()
+        {
+            if (EnableLogs) Debug.Log("Cave Graph: Generating minimap objects");
+
+            if (!_generateMinimap || _minimapObjectsContainer?.Value == null || !IsGenerated || _caveGraph == null)
+            {
+                if (EnableLogs) Debug.LogError("Minimap failed to generate!");
+                return;
+            }
+
+            var minimapController = _minimapObjectsContainer.Value.GetComponent<MinimapController>();
+            if (minimapController == null)
+            {
+                if (EnableLogs) Debug.LogError("Minimap failed to generate! Minimap controller not found.");
+                return;
+            }
+            
+            // Spawn at each cave node
+            foreach (var caveNodeData in _caveGraph.Vertices)
+            {
+                // Spawn new game object
+                GameObject newGameObject = GameObjectUtils.SafeInstantiate(
+                    true, 
+                    MinimapParameters.PrefabCaveNode, 
+                    _minimapObjectsContainer.Value);
+                // newGameObject.transform.position = LocalToWorld(caveNodeData.LocalPosition);
+                newGameObject.transform.localPosition = caveNodeData.LocalPosition;
+                
+                // Get debug component
+                var debugComponent = newGameObject.GetComponent<CaveNodeDataMinimapComponent>();
+                debugComponent.Initialize(caveNodeData, this, minimapController);
+                
+                OnAfterUpdatePlayerDistance += debugComponent.UpdatePlayerOccupied;
+                
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(debugComponent.DiscoveredRenderer, false);
+            }
+            
+            // Spawn at each edge
+            foreach (var caveNodeConnectionData in _caveGraph.Edges)
+            {
+                // Spawn new game object
+                GameObject newGameObject = GameObjectUtils.SafeInstantiate(
+                    true,
+                    MinimapParameters.PrefabCaveNodeConnection,
+                    _minimapObjectsContainer.Value);
+                
+                // Get debug component
+                var debugComponent = newGameObject.GetComponent<CaveNodeConnectionDataMinimapComponent>();
+                debugComponent.Initialize(caveNodeConnectionData, this, minimapController);
+                
+                OnAfterUpdatePlayerDistance += debugComponent.UpdatePlayerOccupied;
+                
+                UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(debugComponent.Line, false);
+            }
+        }
+        
+        #endregion
+
         #region Unity lifecycle
 
         private void Start()
@@ -1064,10 +1176,10 @@ namespace BML.Scripts.CaveV2
             // Draw generation bounds
             Gizmos.color = Color.white;
             var outerBounds = _caveGenParams.GetBoundsWithPadding(CaveGenBounds, CaveGenParameters.PaddingType.Outer);
-            Gizmos.DrawWireCube(outerBounds.center, outerBounds.size);
+            Gizmos.DrawWireCube(LocalToWorld(outerBounds.center), outerBounds.size);
             Gizmos.color = Color.gray;
             var poissonBoundsWithPadding = _caveGenParams.GetBoundsWithPadding(CaveGenBounds, CaveGenParameters.PaddingType.Inner);
-            Gizmos.DrawWireCube(poissonBoundsWithPadding.center, poissonBoundsWithPadding.size);
+            Gizmos.DrawWireCube(LocalToWorld(poissonBoundsWithPadding.center), poissonBoundsWithPadding.size);
             
             // Draw cave graph
             // if (_caveGraph != null)

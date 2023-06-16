@@ -37,6 +37,7 @@ namespace BML.Scripts.Player
 		[SerializeField] private Vector2Reference _mouseInput;
 		[SerializeField] private Vector2Reference _moveInput;
 		[SerializeField] private BoolReference _isPaused;
+		[SerializeField] private BoolReference _isMinimapOpen;
 		[SerializeField] private BoolReference _isStoreOpen;
 		[SerializeField] private BoolReference _isUpgradeStoreOpen;
 		[SerializeField] private GameEvent _onStoreFailOpen;
@@ -82,6 +83,7 @@ namespace BML.Scripts.Player
 
 		[SerializeField] private BoolVariable _isUsingUi_Out_Any;
 		[SerializeField] private BoolVariable _isUsingUi_Out_HidePlayerHUD;
+		[SerializeField] private BoolVariable _isUsingUi_Out_InteractableOverlay;
 		
 		private InputAction jumpAction;
 		private InputAction crouchAction;
@@ -257,6 +259,35 @@ namespace BML.Scripts.Player
 			// SetCursorState(false);
 		}
 
+		public void OnToggleMinimap()
+		{
+			// Do nothing if blocking menu is already open
+			if (!_isMinimapOpen.Value && IsUsingUi_Blocking)
+			{
+				return;
+			}
+			
+			// Play feedback if store fails to open due to combat
+			// if (!_isStoreOpen.Value && _isPlayerInCombat.Value)
+			// {
+			// 	_onStoreFailOpen.Raise();
+			// 	return;
+			// }
+
+			if (!_isMinimapOpen.Value)
+			{
+				foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
+				{
+					if (!menuStateBoolVariable.Equals(_isMinimapOpen))
+					{
+						menuStateBoolVariable.Value = false;
+					}
+				}
+			}
+
+			_isMinimapOpen.Value = !_isMinimapOpen.Value;
+		}
+
 		public void OnToggleStore()
 		{
 			// Do nothing if blocking menu is already open
@@ -272,13 +303,17 @@ namespace BML.Scripts.Player
 				return;
 			}
 
-            if(!_isStoreOpen.Value) {
-                _containerUiMenuStates_NonBlocking.GetBoolVariables().ForEach((menuState) => {
-                    if(!menuState.Equals(_isStoreOpen)) {
-                        menuState.Value = false;
-                    }
-                });
-            }
+			// If opening the store, close other menus
+			if (!_isStoreOpen.Value)
+			{
+				foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
+				{
+					if (!menuStateBoolVariable.Equals(_isStoreOpen))
+					{
+						menuStateBoolVariable.Value = false;
+					}
+				}
+			}
 
 			_isStoreOpen.Value = !_isStoreOpen.Value;
 		}
@@ -302,13 +337,16 @@ namespace BML.Scripts.Player
                 return;
             }
 
-            //if going to open store, close other menus
-            if(!_isUpgradeStoreOpen.Value) {
-                _containerUiMenuStates_NonBlocking.GetBoolVariables().ForEach((menuState) => {
-                    if(!menuState.Equals(_isUpgradeStoreOpen)) {
-                        menuState.Value = false;
-                    }
-                });
+            // If opening the store, close other menus
+            if (!_isUpgradeStoreOpen.Value)
+            {
+	            foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
+	            {
+		            if (!menuStateBoolVariable.Equals(_isUpgradeStoreOpen))
+		            {
+			            menuStateBoolVariable.Value = false;
+		            }
+	            }
             }
 
 			_isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
@@ -457,7 +495,7 @@ namespace BML.Scripts.Player
 			else if (IsUsingUi_InteractableOverlay)
 			{
 				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "UI", "UI_Player");
-				SetCursorState(false);
+				SetCursorState(false, !_isMinimapOpen.Value);
 			}
 			else
 			{
@@ -467,13 +505,20 @@ namespace BML.Scripts.Player
 
 			_isUsingUi_Out_Any.Value = IsUsingUi;
 			_isUsingUi_Out_HidePlayerHUD.Value = IsUsingUi_HidePlayerHUD;
+			_isUsingUi_Out_InteractableOverlay.Value = IsUsingUi_InteractableOverlay;
 			
 			if (_enableLogs) Debug.Log($"ApplyInputState Inputs (NoPlayerControl {IsUsingUi_NoPlayerControl}) (InteractableOverlay {IsUsingUi_InteractableOverlay}) => updated input state to: (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
 		}
 		
-		private void SetCursorState(bool newState)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="newState"></param>
+		/// <param name="visible">Even when 'true', the cursor will not be visible when it is locked.</param>
+		private void SetCursorState(bool newState, bool visible = true)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+			Cursor.visible = visible;
 		}
 	}
 	

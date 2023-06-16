@@ -23,7 +23,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public int ObjectiveDistance { get; set; }
         [ShowInInspector] public int PlayerDistance { get; set; }
         [ShowInInspector] public int PlayerDistanceDelta { get; set; }
-
+        [ShowInInspector] public float DirectPlayerDistance { get; set; }
+        
         [ShowInInspector]
         public bool PlayerVisited
         {
@@ -36,6 +37,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
                 playerVisited = value;
             }
         }
+        [ShowInInspector] public bool PlayerVisitedAdjacent { get; set; }
+        [ShowInInspector] public bool PlayerVisitedAllAdjacent { get; set; }
         [ShowInInspector] public bool PlayerOccupied { get; set; }
         [ShowInInspector] public int TorchRequirement { get; set; }
         [ShowInInspector] public float TorchInfluence { get; set; }
@@ -76,7 +79,10 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             ObjectiveDistance = -1;
             PlayerDistance = -1;
             PlayerDistanceDelta = 0;
+            DirectPlayerDistance = -1;
             PlayerVisited = false;
+            PlayerVisitedAdjacent = false;
+            PlayerVisitedAllAdjacent = false;
             PlayerOccupied = false;
             TorchRequirement = CaveNodeDataUtils.TorchRequirementMinMax.x;
             TorchInfluence = -1f;
