@@ -88,7 +88,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                     case TransformReferenceTypes.TransformSceneReference:
                         return ReferenceValue_TransformSceneReference?.Value;
                     case TransformReferenceTypes.GameObjectSceneReference:
-                        return ReferenceValue_GameObjectSceneReference?.Value.transform;
+                        return ReferenceValue_GameObjectSceneReference?.Value?.transform;
                     default:
                         Debug.LogError($"Trying to access Transform but none set in inspector!");
                         return default(Transform);
