@@ -11,7 +11,6 @@ namespace BML.Scripts
     public class PlayRandomClip : MonoBehaviour
     {
         [SerializeField] private AudioSource _audioSource;
-        [SerializeField] private CaveGenComponentV2 _caveGenComponent;
         [SerializeField] private List<AudioClip> _clips = new List<AudioClip>();
 
         [ShowInInspector, ReadOnly] private List<AudioClip> randomizedList = new List<AudioClip>();
@@ -19,21 +18,16 @@ namespace BML.Scripts
         private int playingIndex = 0;
         private void Start()
         {
-            Debug.Log("Init");
             OrderListRandomly();
-            Debug.Log("Init2");
             PlayNextClip();
-            Debug.Log("Init3");
         }
 
         private void Update()
         {
             if (!_audioSource.isPlaying && Time.timeScale != 0f)
             {
-                Debug.Log("in update");
                 PlayNextClip();
             }
-                
         }
 
         private void PlayNextClip()
