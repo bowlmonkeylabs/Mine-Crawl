@@ -62,7 +62,8 @@ jobs:
 #           test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) \
 #             && echo "should_run=false" >> $GITHUB_OUTPUT
         run: |
-          git rev-list latest..${{ github.sha }}
+          echo "$(git rev-list latest..${{ github.sha }})"
+          test -z "$(git rev-list latest..${{ github.sha }})"
           test -z "$(git rev-list latest..${{ github.sha }})"\
             && (echo "should_run=false" >> $GITHUB_OUTPUT)
   
