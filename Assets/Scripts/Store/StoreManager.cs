@@ -14,7 +14,7 @@ namespace BML.Scripts
     {
         [SerializeField] private IntVariable _resourceCount;
         [SerializeField] private IntVariable _rareResourceCount;
-        [SerializeField] private IntVariable _enemyResourceCount;
+        [SerializeField] private IntVariable _upgradesAvailable;
         [SerializeField] private BoolVariable _isGodModeEnabled;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private GameEvent _onStoreFailOpenEvent;
@@ -40,7 +40,7 @@ namespace BML.Scripts
 
             if (!_isGodModeEnabled.Value)
             {
-                var canAffordItem = storeItem.CheckIfCanAfford(_resourceCount.Value, _rareResourceCount.Value, _enemyResourceCount.Value);
+                var canAffordItem = storeItem.CheckIfCanAfford(_resourceCount.Value, _rareResourceCount.Value, _upgradesAvailable.Value);
                 if (!canAffordItem.Overall)
                 {
                     _onStoreFailOpenEvent.Raise();
@@ -50,7 +50,7 @@ namespace BML.Scripts
             
                 _resourceCount.Value -= storeItem._resourceCost;
                 _rareResourceCount.Value -= storeItem._rareResourceCost;
-                _enemyResourceCount.Value -= storeItem._enemyResourceCost;
+                _upgradesAvailable.Value -= storeItem._upgradeCost;
             }
 
             DoPurchase(storeItem);

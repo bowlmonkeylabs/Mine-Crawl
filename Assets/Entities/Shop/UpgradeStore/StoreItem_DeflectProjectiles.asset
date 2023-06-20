@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: StoreItem_DeflectProjectiles
   m_EditorClassIdentifier: 
   _resourceCost: 0
-  _rareResourceCost: 2
-  _enemyResourceCost: 0
+  _rareResourceCost: 0
+  _upgradeCost: 1
   _buyAmount: 1
   _hasMaxAmount: 1
   _maxAmount:
@@ -28,10 +28,13 @@ MonoBehaviour:
     ReferenceTypeSelector: 3
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 0}
+    RoundingBehavior_FloatVariable: 0
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_BoolVariable: {fileID: 11400000, guid: f00d0caa0c04b95448db19d7dde9c078, type: 2}
   _itemLabel: Deflect
   _itemIcon: {fileID: 21300000, guid: 16fa855ca98c8ed4b87d2ace1e16db34, type: 3}
+  _useItemIconColor: 0
+  _itemIconColor: {r: 0, g: 0, b: 0, a: 0}
   _itemEffectDescription: +1 Pickaxe Hit Deflect
   _itemStoreDescription: Ever wanted to bat lasers with your pickaxe? Now you can!
   _onPurchased:
@@ -66,21 +69,3 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  PurchaseItems:
-  - _storeText: Deflect projectiles with pickaxe
-    OnPurchase:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 11400000, guid: f00d0caa0c04b95448db19d7dde9c078, type: 2}
-          m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Variables.Variable`1[[System.Boolean,
-            mscorlib
-          m_MethodName: SetValue
-          m_Mode: 6
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2

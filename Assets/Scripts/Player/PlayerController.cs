@@ -89,6 +89,11 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
         [SerializeField, FoldoutGroup("Store")] private DynamicGameEvent _onPurchaseEvent;
 
+        [SerializeField, FoldoutGroup("Experience")] private IntReference _playerExperience;
+        [SerializeField, FoldoutGroup("Experience")] private EvaluateCurveVariable _levelExperienceMap;
+        [SerializeField, FoldoutGroup("Experience")] private IntReference _playerCurrentLevel;
+        [SerializeField, FoldoutGroup("Experience")] private IntReference _availableUpdateCount;
+
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
         
         [SerializeField, FoldoutGroup("Debug")] private bool _enableLogs;
@@ -107,6 +112,7 @@ namespace BML.Scripts.Player
             _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
             _tryHeal.Subscribe(Heal);
             _isDashActive.Subscribe(OnDashSetActive);
+            _playerExperience.Subscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
             
             SetGodMode();
         }
@@ -118,6 +124,7 @@ namespace BML.Scripts.Player
             _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
             _tryHeal.Unsubscribe(Heal);
             _isDashActive.Unsubscribe(OnDashSetActive);
+            _playerExperience.Unsubscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
         }
 
         private void Update()
@@ -468,6 +475,21 @@ namespace BML.Scripts.Player
         private void SetGodMode()
         {
             SetInvincible(_isGodModeEnabled.Value);
+        }
+
+        #endregion
+
+        #region Upgrades
+
+        public void TryIncrementCurrentLevelAndAvailableUpdateCount() {
+            //maximum check of going up 10 levels at once (they should never gain that much xp at once)
+            int levelChecks = 0;
+
+            while(_playerExperience.Value >= _levelExperienceMap.Value && levelChecks < 10) {
+                _playerCurrentLevel.Value += 1;
+                _availableUpdateCount.Value += 1;
+                levelChecks++;
+            }
         }
 
         #endregion

@@ -42,8 +42,7 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolReference _isUpgradeStoreOpen;
 		[SerializeField] private GameEvent _onStoreFailOpen;
 		[SerializeField] private BoolReference _isPlayerInCombat;
-        [SerializeField] private IntReference _rareResourceCount;
-        [SerializeField] private IntReference _minRareResouceCount;
+        [SerializeField] private IntReference _upgradesAvailable;
 		[SerializeField] private BoolReference _isDebugConsoleOpen;
 		[SerializeField] private BoolReference _settingDoFreezeOnDebugConsole;
 		[SerializeField] private BoolReference _isDebugOverlayOpen; // This is specifically excluded from _containerUiMenuStates, so this acts as an overlay rather than an interactable menu.
@@ -138,7 +137,7 @@ namespace BML.Scripts.Player
 		{
 			get
 			{
-				return (_isUpgradeStoreOpen.Value && _rareResourceCount.Value >= _minRareResouceCount.Value) ||
+				return (_isUpgradeStoreOpen.Value && _upgradesAvailable.Value > 0) ||
                     _containerUiMenuStates_Blocking
 					.GetBoolVariables()
 					.Any(b => (b != null && b.Value));
@@ -182,7 +181,7 @@ namespace BML.Scripts.Player
 			crouchAction.performed += SetCrouchHeld;
 			crouchAction.canceled += SetCrouchHeld;
 
-            _rareResourceCount.Subscribe(TryToggleUpgradeStore);
+            _upgradesAvailable.Subscribe(TryToggleUpgradeStore);
 		}
 
 		private void OnDisable()
@@ -197,7 +196,7 @@ namespace BML.Scripts.Player
 			crouchAction.performed -= SetCrouchHeld;
 			crouchAction.canceled -= SetCrouchHeld;
 
-            _rareResourceCount.Unsubscribe(TryToggleUpgradeStore);
+            _upgradesAvailable.Unsubscribe(TryToggleUpgradeStore);
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)
@@ -243,7 +242,7 @@ namespace BML.Scripts.Player
 			//if going to open menu, close other non blocking menus
             if(!_isPaused.Value) {
                 _containerUiMenuStates_NonBlocking.GetBoolVariables().ForEach((menuState) => {
-                    if(menuState.Equals(_isUpgradeStoreOpen) && _rareResourceCount.Value >= _minRareResouceCount.Value) {
+                    if(menuState.Equals(_isUpgradeStoreOpen) && _upgradesAvailable.Value > 0) {
                         return;
                     }
 
@@ -327,13 +326,14 @@ namespace BML.Scripts.Player
 			}
 
 			// Play feedback if store fails to open due to combat
-			if (!_isUpgradeStoreOpen.Value && _isPlayerInCombat.Value)
-			{
-				_onStoreFailOpen.Raise();
-				return;
-			}
+			// if (!_isUpgradeStoreOpen.Value && _isPlayerInCombat.Value)
+			// {
+			// 	_onStoreFailOpen.Raise();
+            //     Debug.Log("player combat");
+			// 	return;
+			// }
 
-            if(_isUpgradeStoreOpen.Value && _rareResourceCount.Value >= _minRareResouceCount.Value) {
+            if(_isUpgradeStoreOpen.Value && _upgradesAvailable.Value > 0) {
                 return;
             }
 
@@ -353,7 +353,8 @@ namespace BML.Scripts.Player
 		}
 
         public void TryToggleUpgradeStore() {
-            if(_rareResourceCount.Value >= _minRareResouceCount.Value) {
+            Debug.Log(_upgradesAvailable.Value);
+            if(_upgradesAvailable.Value > 0) {
                 OnToggleUpgradeStore();
             }
         }

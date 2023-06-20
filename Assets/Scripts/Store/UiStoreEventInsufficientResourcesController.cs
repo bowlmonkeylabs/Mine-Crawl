@@ -17,7 +17,7 @@ namespace BML.Scripts.Store
         {
             Resource = 1,
             RareResource = 2,
-            EnemyResource = 3,
+            UpgradeResource = 3,
         } 
 
         #endregion
@@ -52,8 +52,8 @@ namespace BML.Scripts.Store
                 case ResourceType.RareResource:
                     canAfford = storeItem.CanAfford.RareResource;
                     break;
-                case ResourceType.EnemyResource:
-                    canAfford = storeItem.CanAfford.EnemyResource;
+                case ResourceType.UpgradeResource:
+                    canAfford = storeItem.CanAfford.UpgradeResource;
                     break;
             }
 

@@ -18,10 +18,9 @@ namespace BML.Scripts.UI
         
         [SerializeField] private string _resourceIconText;
         [SerializeField] private string _rareResourceIconText;
-        [SerializeField] private string _enemyResourceIconText;
         [SerializeField] private IntVariable _resourceCount;
         [SerializeField] private IntVariable _rareResourceCount;
-        [SerializeField] private IntVariable _enemyResourceCount;
+        [SerializeField] private IntVariable _upgradesAvailableCount;
         [SerializeField] private BoolVariable _isGodModeEnabled;
 
         [SerializeField] private StoreItem _itemToPurchase;
@@ -57,7 +56,7 @@ namespace BML.Scripts.UI
 
             _button.interactable = _itemToPurchase._resourceCost <= _resourceCount.Value &&
                 _itemToPurchase._rareResourceCost <= _rareResourceCount.Value &&
-                _itemToPurchase._enemyResourceCost <= _enemyResourceCount.Value &&
+                _itemToPurchase._upgradeCost <= _upgradesAvailableCount.Value &&
                 (!_itemToPurchase._hasMaxAmount || (_itemToPurchase._playerInventoryAmount.Value < _itemToPurchase._maxAmount.Value));
         }
 
@@ -71,8 +70,8 @@ namespace BML.Scripts.UI
             if (_itemToPurchase._rareResourceCost > 0)
                 costText += $" + {_itemToPurchase._rareResourceCost}{_rareResourceIconText}";
                 
-            if (_itemToPurchase._enemyResourceCost > 0)
-                costText += $" + {_itemToPurchase._enemyResourceCost}{_enemyResourceIconText}";
+            if (_itemToPurchase._upgradeCost > 0)
+                costText += $" + {_itemToPurchase._upgradeCost}U";
 
             //Remove leading +
             if (costText != "") costText = costText.Substring(3);

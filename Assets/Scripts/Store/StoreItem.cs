@@ -24,8 +24,8 @@ namespace BML.Scripts.Store
         public int _rareResourceCost;
         
         [BoxGroup("Cost")] [HorizontalGroup("Cost/H", 10f)]
-        [LabelText("ER")] [LabelWidth(25f)]
-        public int _enemyResourceCost;
+        [LabelText("U")] [LabelWidth(25f)]
+        public int _upgradeCost;
 
         [FoldoutGroup("Store Options"), Tooltip("How much of this item is the player buying?")]
         public int _buyAmount = 1;
@@ -71,12 +71,12 @@ namespace BML.Scripts.Store
         [NonSerialized]
         public CanAffordItem CanAfford;
         
-        public CanAffordItem CheckIfCanAfford(int resource, int rareResource, int enemyResource)
+        public CanAffordItem CheckIfCanAfford(int resource, int rareResource, int upgradeResource)
         {
             var canAfford = new CanAffordItem(
                 resource >= this._resourceCost,
                 rareResource >= this._rareResourceCost,
-                enemyResource >= this._enemyResourceCost
+                upgradeResource >= this._upgradeCost
             );
             CanAfford = canAfford;
             return CanAfford;
@@ -87,14 +87,14 @@ namespace BML.Scripts.Store
             public bool Overall;
             public bool Resource;
             public bool RareResource;
-            public bool EnemyResource;
+            public bool UpgradeResource;
 
-            public CanAffordItem(bool resource, bool rareResource, bool enemyResource)
+            public CanAffordItem(bool resource, bool rareResource, bool upgradeResource)
             {
-                Overall = (resource && rareResource && enemyResource);
+                Overall = (resource && rareResource && upgradeResource);
                 Resource = resource;
                 RareResource = rareResource;
-                EnemyResource = enemyResource;
+                UpgradeResource = upgradeResource;
             }
         }
     }
