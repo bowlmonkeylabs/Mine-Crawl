@@ -63,7 +63,7 @@ jobs:
 #             && echo "should_run=false" >> $GITHUB_OUTPUT
         run: |
           git rev-list latest..${{ github.sha }}
-          test -z $(git rev-list latest..${{ github.sha }})\
+          test -z "$(git rev-list latest..${{ github.sha }})"\
             && (echo "should_run=false" >> $GITHUB_OUTPUT)
   
   prepare_matrix:
