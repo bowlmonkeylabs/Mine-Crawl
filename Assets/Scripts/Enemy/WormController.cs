@@ -11,6 +11,7 @@ namespace BML.Scripts.Enemy
         [SerializeField] private Transform _burrowParticlePivot;
         [SerializeField] private LayerMask _terrainMask;
         [SerializeField] private TransformSceneReference _playerRef;
+        [SerializeField] private TransformSceneReference _mainCameraRef;
 
         private float speed;
         private Vector3 moveDirection, wormToPlayerDir;
@@ -41,7 +42,7 @@ namespace BML.Scripts.Enemy
         private void HandleBurrowParticles()
         {
             RaycastHit hit;
-            if (Physics.Raycast(_playerRef.Value.position, -wormToPlayerDir, out hit,
+            if (Physics.Raycast(_mainCameraRef.Value.position, -wormToPlayerDir, out hit,
                 Mathf.Infinity, _terrainMask))
             {
                 _burrowParticlePivot.gameObject.SetActive(true);
