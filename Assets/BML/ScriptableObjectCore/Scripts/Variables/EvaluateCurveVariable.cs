@@ -32,9 +32,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [Button]
         private void Recalculate()
         {
-            _value = _evaluateAsPercent
-                ? _curve.EvaluateFactor(_x.Value, _useZeroBaseline)
-                : _curve.Value.Evaluate(_x.Value);
+            _value = this.EvaluateCurve(_x.Value);
             OnUpdate?.Invoke();
         }
 
@@ -57,6 +55,16 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         public bool Save(string folderPath, string name = "")
         { 
             return this.SaveInstance(folderPath, name);
+        }
+
+        public float EvaluateCurve(float time) {
+            return _evaluateAsPercent
+                ? _curve.EvaluateFactor(time, _useZeroBaseline)
+                : _curve.Value.Evaluate(time);
+        }
+
+        public float GetTimeValue() {
+            return _x.Value;
         }
 
         #endregion

@@ -353,7 +353,6 @@ namespace BML.Scripts.Player
 		}
 
         public void TryToggleUpgradeStore() {
-            Debug.Log(_upgradesAvailable.Value);
             if(_upgradesAvailable.Value > 0) {
                 OnToggleUpgradeStore();
             }
