@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
@@ -19,12 +21,10 @@ namespace BML.Scripts
         [SerializeField, TitleGroup("Spawning")] private float _spawnRadius = 100f;
         [SerializeField, TitleGroup("Spawning")] private AnimationCurve _speedCurve;
         [SerializeField, TitleGroup("Spawning")] private AnimationCurve _spawnDelayCurve;
-        
-        [SerializeField, TitleGroup("Feedback")] private TimerVariable _wormWarningTimer;
-        [SerializeField, TitleGroup("Feedback")] private MMF_Player _warningFeedback;
+
+        [SerializeField, TitleGroup("Feedback")] private List<WormWarningData> _warningData;
         [SerializeField, TitleGroup("Feedback")] private MMF_Player _wormActivatedFeedback;
 
-        
         [SerializeField, TitleGroup("References")] private GameObject _wormPrefab;
         [SerializeField, TitleGroup("References")] private TransformSceneReference _playerRef;
 
@@ -36,19 +36,25 @@ namespace BML.Scripts
         private float currentSpeed;
         private GameObject spawnedWorm;
 
+        [System.Serializable]
+        public class WormWarningData
+        {
+            [HideInInspector] public bool Activated;
+            public float TimeOffsetFromSpawn;
+            public MMF_Player Feedback;
+        }
+
         private void OnEnable()
         {
             _wormSpawnTimer.SubscribeFinished(ActivateWorm);
-            _wormWarningTimer.SubscribeFinished(PlayWarningFeedbacks);
             _wormSpawnTimer.StartTimer();
-            _wormWarningTimer.StartTimer();
-            Debug.Log($"Started Timer: isFinished {_wormSpawnTimer.IsFinished}");
+            
+            if (_enableDebug) Debug.Log($"Started Timer: isFinished {_wormSpawnTimer.IsFinished}");
         }
 
         private void OnDisable()
         {
             _wormSpawnTimer.UnsubscribeFinished(ActivateWorm);
-            _wormWarningTimer.UnsubscribeFinished(PlayWarningFeedbacks);
         }
 
         private void Start()
@@ -59,6 +65,7 @@ namespace BML.Scripts
         private void Update()
         {
             UpdateParameters();
+            HandleWarnings();
             HandleSpawning();
         }
 
@@ -66,7 +73,6 @@ namespace BML.Scripts
         {
             _wormSpawnTimer.UpdateTime();
             _wormMaxStrengthTimer.UpdateTime();
-            _wormWarningTimer.UpdateTime();
 
             if (!_wormSpawnTimer.IsFinished)
                 return;
@@ -74,6 +80,19 @@ namespace BML.Scripts
             percentToMaxStrength = _wormMaxStrengthTimer.ElapsedTime / _wormMaxStrengthTimer.Duration;
             currentSpawnDelay = _spawnDelayCurve.Evaluate(percentToMaxStrength);
             currentSpeed = _speedCurve.Evaluate(percentToMaxStrength);
+        }
+
+        private void HandleWarnings()
+        {
+            foreach (var warning in _warningData)
+            {
+                if (!warning.Activated && _wormSpawnTimer.RemainingTime < warning.TimeOffsetFromSpawn)
+                {
+                    warning.Feedback.PlayFeedbacks();
+                    warning.Activated = true;
+                    if (_enableDebug) Debug.Log($"Warning with offset {warning.TimeOffsetFromSpawn} Played");
+                }
+            }
         }
 
         private void HandleSpawning()
@@ -107,11 +126,6 @@ namespace BML.Scripts
             _wormActivatedFeedback.PlayFeedbacks();
             if (_enableDebug) Debug.Log("Worm Activated");
         }
-
-        private void PlayWarningFeedbacks()
-        {
-            _warningFeedback.PlayFeedbacks();
-            if (_enableDebug) Debug.Log("Worm is approaching...");
-        }
+        
     }
 }

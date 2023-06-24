@@ -1,4 +1,5 @@
 ﻿using System;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts;
 using Sirenix.OdinInspector;
@@ -8,17 +9,23 @@ namespace Audio
 {
     public class MusicManager : MonoBehaviour
     {
-        [SerializeField] private TimerVariable _wormWarningTimer;
+        [SerializeField] private GameEvent _wormWarningEvent;
         [SerializeField] private TimerVariable _wormSpawnTimer;
         [SerializeField] private AudioClip _wormWarningMusic;
         [SerializeField] private AudioClip _wormSpawnMusic;
         [SerializeField] private PlayRandomClip _levelMusicPlayer;
         [SerializeField] private AudioSource _audioSource;
 
-        private void Awake()
+        private void OnEnable()
         {
-            _wormWarningTimer.SubscribeFinished(PlayWormWarningMusic);
+            _wormWarningEvent.Subscribe(PlayWormWarningMusic);
             _wormSpawnTimer.SubscribeFinished(PlayWormSpawnMusic);
+        }
+
+        private void OnDisable()
+        {
+            _wormWarningEvent.Unsubscribe(PlayWormWarningMusic);
+            _wormSpawnTimer.Unsubscribe(PlayWormSpawnMusic);
         }
 
         private void PlayWormWarningMusic()
