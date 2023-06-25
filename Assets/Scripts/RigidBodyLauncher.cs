@@ -24,6 +24,8 @@ namespace BML.Scripts
 
         [SerializeField] private Vector3Reference _torque;
         [SerializeField] private Vector3Reference _torqueVariance;
+
+        [SerializeField] private bool _instantiateAsPrefab = true;
         
         #endregion
 
@@ -36,8 +38,9 @@ namespace BML.Scripts
             var position = (!_firePoint.SafeIsUnityNull() ? _firePoint.position : this.transform.position);
             var parent = (_container.Value != null ? _container.Value : this.transform);
             
-            var newGameObject = GameObjectUtils.SafeInstantiate(true, prefab, parent);
+            var newGameObject = GameObjectUtils.SafeInstantiate(_instantiateAsPrefab, prefab, parent);
             newGameObject.transform.SetPositionAndRotation(position, Quaternion.identity);
+            newGameObject.SetActive(true);
             
             var newRigidBody = newGameObject.GetComponent<Rigidbody>();
             if (newRigidBody != null)
