@@ -61,8 +61,9 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Torch")] private GameObject _torchPrefab;
         [SerializeField, FoldoutGroup("Torch")] private float _torchThrowForce;
         [SerializeField, FoldoutGroup("Torch")] private TransformSceneReference _torchInstanceContainer;
-        [SerializeField, FoldoutGroup("Torch")] private IntReference _inventoryTorchCount;
-        [SerializeField, FoldoutGroup("Torch")] private StoreItem _torchStoreItem;
+        [SerializeField, FoldoutGroup("Torch")] private TimerReference _torchCooldownTimer;
+        [SerializeField, FoldoutGroup("Torch")] private IntReference _torchCount;
+        [SerializeField, FoldoutGroup("Torch")] private IntReference _maxTorchCount;
         
         [SerializeField, FoldoutGroup("Bomb")] private GameObject _bombPrefab;
         [SerializeField, FoldoutGroup("Bomb")] private float _bombThrowForce;
@@ -113,6 +114,7 @@ namespace BML.Scripts.Player
             _tryHeal.Subscribe(Heal);
             _isDashActive.Subscribe(OnDashSetActive);
             _playerExperience.Subscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
+            _torchCooldownTimer.SubscribeFinished(TryIncrementTorchCount);
             
             SetGodMode();
         }
@@ -125,6 +127,7 @@ namespace BML.Scripts.Player
             _tryHeal.Unsubscribe(Heal);
             _isDashActive.Unsubscribe(OnDashSetActive);
             _playerExperience.Unsubscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
+            _torchCooldownTimer.UnsubscribeFinished(TryIncrementTorchCount);
         }
 
         private void Update()
@@ -135,6 +138,7 @@ namespace BML.Scripts.Player
             _combatTimer.UpdateTime(!_anyEnemiesEngaged.Value ? _safeCombatTimerDecayMultiplier : 1f);
             _pickaxeSwingCooldown.UpdateTime();
             _pickaxeSweepCooldown.UpdateTime();
+            _torchCooldownTimer.UpdateTime();
         }
 
         #endregion
@@ -169,7 +173,10 @@ namespace BML.Scripts.Player
         
         private void OnThrowTorch(InputValue value)
         {
-            TryPlaceTorch();
+            if (value.isPressed)
+            {
+                TryThrowTorch();
+            }
         }
 
         private void OnThrowBomb(InputValue value)
@@ -382,20 +389,24 @@ namespace BML.Scripts.Player
         
         #region Torch
 
-        private void TryPlaceTorch()
+        private void TryThrowTorch()
         {
-            // Check torch count
-            if (_inventoryTorchCount.Value <= 0)
-            {
-                _onPurchaseEvent.Raise(_torchStoreItem);
-                if (_inventoryTorchCount.Value <= 0)
-                {
-                    return;
+            if(_torchCount.Value > 0) {
+                this.Throw(_torchThrowForce, _torchPrefab, _torchInstanceContainer.Value);
+                _torchCount.Value--;
+
+                if(!_torchCooldownTimer.IsStarted) {
+                    _torchCooldownTimer.RestartTimer();
                 }
             }
-            _inventoryTorchCount.Value -= 1;
+        }
 
-            this.Throw(_torchThrowForce, _torchPrefab, _torchInstanceContainer.Value);
+        private void TryIncrementTorchCount() {
+            if(_torchCount.Value < _maxTorchCount.Value) {
+                _torchCount.Value += 1;
+            }
+
+            _torchCooldownTimer.RestartTimer();
         }
         
         #endregion
