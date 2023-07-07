@@ -121,7 +121,7 @@ jobs:
           fetch-depth: 0
           submodules: 'recursive'
           lfs: true
-          token: ${{ secrets.REPOS_ACCESS_TOKEN }}
+          token: ${{ github.token }}
       # ^ Checkout  ^ -------------------------------
       
       - name: Determine build version number
@@ -172,7 +172,7 @@ jobs:
         with:
           repository: ${{ github.repository }}-Unversioned
           path: Assets/Unversioned
-          token: ${{ secrets.REPOS_ACCESS_TOKEN }}
+          token: ${{ github.token }}
           fetch-depth: 0
       
       - name: Test unversioned
