@@ -566,8 +566,8 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-        RemapIntensityZero: 0
-        RemapIntensityOne: 0.55
+        RemapIntensityZero: 0.1
+        RemapIntensityOne: 0.7
         InstantIntensity: 0
         ToDestinationIntensity: 1
         ModifyRange: 1
@@ -595,7 +595,7 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-        RemapRangeZero: 1
+        RemapRangeZero: 2
         RemapRangeOne: 20
         InstantRange: 0
         ToDestinationRange: 10
@@ -2185,7 +2185,7 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.7581801, b: 0.6179246, a: 1}
   m_Intensity: 0.5
   m_Range: 20
   m_SpotAngle: 30
@@ -4882,6 +4882,10 @@ PrefabInstance:
     - target: {fileID: 2321691052871791337, guid: 8debf1c5c331fbb48940ca56bc672b7d, type: 3}
       propertyPath: m_Intensity
       value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7277398886588163508, guid: 8debf1c5c331fbb48940ca56bc672b7d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8992567599540175565, guid: 8debf1c5c331fbb48940ca56bc672b7d, type: 3}
       propertyPath: animatedLights.Array.data[0].intensityEnd
