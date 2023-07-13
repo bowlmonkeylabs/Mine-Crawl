@@ -73,8 +73,9 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Rope")] private GameObject _ropePrefab;
         [SerializeField, FoldoutGroup("Rope")] private float _ropeThrowForce;
         [SerializeField, FoldoutGroup("Rope")] private TransformSceneReference _ropeInstanceContainer;
-        [SerializeField, FoldoutGroup("Rope")] private IntReference _inventoryRopeCount;
-        [SerializeField, FoldoutGroup("Rope")] private StoreItem _ropeStoreItem;
+        [SerializeField, FoldoutGroup("Rope")] private TimerReference _ropeCooldownTimer;
+        [SerializeField, FoldoutGroup("Rope")] private IntReference _ropeCount;
+        [SerializeField, FoldoutGroup("Rope")] private IntReference _maxRopeCount;
 
         [SerializeField, FoldoutGroup("Dash")] private BoolReference _isDashActive;
         [SerializeField, FoldoutGroup("Dash")] private SafeFloatValueReference _postDashInvincibilityTime;
@@ -115,6 +116,7 @@ namespace BML.Scripts.Player
             _isDashActive.Subscribe(OnDashSetActive);
             _playerExperience.Subscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
             _torchCooldownTimer.SubscribeFinished(TryIncrementTorchCount);
+            _ropeCooldownTimer.SubscribeFinished(TryIncrementRopeCount);
             
             SetGodMode();
         }
@@ -128,6 +130,7 @@ namespace BML.Scripts.Player
             _isDashActive.Unsubscribe(OnDashSetActive);
             _playerExperience.Unsubscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
             _torchCooldownTimer.UnsubscribeFinished(TryIncrementTorchCount);
+            _ropeCooldownTimer.UnsubscribeFinished(TryIncrementRopeCount);
         }
 
         private void Update()
@@ -139,6 +142,7 @@ namespace BML.Scripts.Player
             _pickaxeSwingCooldown.UpdateTime();
             _pickaxeSweepCooldown.UpdateTime();
             _torchCooldownTimer.UpdateTime();
+            _ropeCooldownTimer.UpdateTime();
         }
 
         #endregion
@@ -431,18 +435,22 @@ namespace BML.Scripts.Player
 
         private void TryThrowRope()
         {
-            // Check torch count
-            if (_inventoryRopeCount.Value <= 0)
-            {
-                _onPurchaseEvent.Raise(_ropeStoreItem);
-                if (_inventoryRopeCount.Value <= 0)
-                {
-                    return;
+            if(_ropeCount.Value > 0) {
+                this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer.Value);
+                _ropeCount.Value--;
+
+                if(!_ropeCooldownTimer.IsStarted) {
+                    _ropeCooldownTimer.RestartTimer();
                 }
             }
-            _inventoryRopeCount.Value -= 1;
-            
-            this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer.Value);
+        }
+        
+        private void TryIncrementRopeCount() {
+            if(_ropeCount.Value < _maxRopeCount.Value) {
+                _ropeCount.Value += 1;
+            }
+
+            _ropeCooldownTimer.RestartTimer();
         }
         
         #endregion
