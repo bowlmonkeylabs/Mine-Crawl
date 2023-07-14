@@ -14,6 +14,7 @@ namespace BML.Scripts
         [SerializeField] private Transform _firePoint;
         [SerializeField] private TransformSceneReference _container;
         
+        [SerializeField] private int _quantity = 1;
         [SerializeField] private ForceMode _forceMode;
         
         [SerializeField] private Vector3Reference _direction;
@@ -34,6 +35,14 @@ namespace BML.Scripts
         #endregion
 
         public void Launch(GameObject prefab)
+        {
+            for (int i = 0; i < _quantity; i++)
+            {
+                LaunchObject(prefab);
+            }
+        }
+
+        private void LaunchObject(GameObject prefab)
         {
             var position = (!_firePoint.SafeIsUnityNull() ? _firePoint.position : this.transform.position);
             var parent = (_container.Value != null ? _container.Value : this.transform);
