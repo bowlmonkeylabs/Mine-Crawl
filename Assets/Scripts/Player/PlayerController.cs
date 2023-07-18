@@ -399,7 +399,7 @@ namespace BML.Scripts.Player
                 this.Throw(_torchThrowForce, _torchPrefab, _torchInstanceContainer.Value);
                 _torchCount.Value--;
 
-                if(!_torchCooldownTimer.IsStarted) {
+                if(!_torchCooldownTimer.IsStarted || _torchCooldownTimer.IsFinished) {
                     _torchCooldownTimer.RestartTimer();
                 }
             }
@@ -408,9 +408,10 @@ namespace BML.Scripts.Player
         private void TryIncrementTorchCount() {
             if(_torchCount.Value < _maxTorchCount.Value) {
                 _torchCount.Value += 1;
+                if(_torchCount.Value < _maxTorchCount.Value) {
+                    _torchCooldownTimer.RestartTimer();
+                }
             }
-
-            _torchCooldownTimer.RestartTimer();
         }
         
         #endregion
@@ -439,7 +440,7 @@ namespace BML.Scripts.Player
                 this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer.Value);
                 _ropeCount.Value--;
 
-                if(!_ropeCooldownTimer.IsStarted) {
+                if(!_ropeCooldownTimer.IsStarted || _ropeCooldownTimer.IsFinished) {
                     _ropeCooldownTimer.RestartTimer();
                 }
             }
@@ -448,9 +449,10 @@ namespace BML.Scripts.Player
         private void TryIncrementRopeCount() {
             if(_ropeCount.Value < _maxRopeCount.Value) {
                 _ropeCount.Value += 1;
+                if(_ropeCount.Value < _maxRopeCount.Value) {
+                    _ropeCooldownTimer.RestartTimer();
+                }
             }
-
-            _ropeCooldownTimer.RestartTimer();
         }
         
         #endregion
