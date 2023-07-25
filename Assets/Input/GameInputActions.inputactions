@@ -689,6 +689,15 @@
                     "processors": "",
                     "interactions": "Press",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CloseMinimap",
+                    "type": "Button",
+                    "id": "d450ebb4-002c-4ef5-b5c7-a84f395e2352",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1156,23 +1165,45 @@
                 },
                 {
                     "name": "",
-                    "id": "48b8de3e-3ac6-439c-862c-8c0b36c965dc",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "ToggleMinimap",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "8629e772-430c-44ed-ab02-e36309d4643b",
                     "path": "<Gamepad>/select",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "ToggleMinimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3134af02-f838-4f5a-9185-c437dd44d822",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CloseMinimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "71e359bc-3ea8-4515-8321-b94d61a11ae4",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CloseMinimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "26e4a492-9fbe-4e58-a859-8cf4ffb294e2",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "CloseMinimap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -1231,6 +1262,15 @@
                     "name": "ToggleMinimap",
                     "type": "Button",
                     "id": "81a75306-a8bc-4ef2-ad4c-77f4f5216088",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CloseMinimap",
+                    "type": "Button",
+                    "id": "8b3a6279-53c6-4905-9165-7e80f1742ae2",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press",
@@ -1438,51 +1478,7 @@
                 },
                 {
                     "name": "",
-                    "id": "5b80c24c-5ad8-4000-9f85-86f944df0af4",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "ToggleMinimap",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "279fd9f5-3747-4fa1-a840-3f4a33c465dd",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "ToggleMinimap",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "911aa92f-211b-49de-8603-f04d6e02c300",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "ToggleMinimap",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "98877f89-2ab7-44b3-a3d7-dd92c121e111",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "ToggleMinimap",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b18b4c8d-a3a0-4bd3-b426-eb048d217580",
+                    "id": "781415be-aba8-409f-9705-4f5b890f9acd",
                     "path": "<Gamepad>/select",
                     "interactions": "",
                     "processors": "",
@@ -1493,45 +1489,111 @@
                 },
                 {
                     "name": "",
-                    "id": "cde0d2b9-8e82-4318-9bd1-14b731e584b6",
+                    "id": "5210b5a9-a5a9-444c-8706-b3e8d114bb1a",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CloseMinimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f5cd756d-55fb-4b37-b61b-91d02466fdf6",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CloseMinimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "385ed73b-be97-4f84-8a39-5f4696968e05",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CloseMinimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cee5f907-0bcb-4d5f-b43a-49fef289fa0c",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CloseMinimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b2d12c5a-0777-42f6-a0a1-4709577622f7",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CloseMinimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fc7d2ee1-9d5a-4ad3-8687-a8eae740630b",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "CloseMinimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e069382d-1728-46ca-a419-a271bf68e4e4",
                     "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "ToggleMinimap",
+                    "action": "CloseMinimap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "196507ff-b9e8-4a97-b489-8cee68c8d3e2",
+                    "id": "e4fea602-8286-4d1d-a40d-0beb21a0564a",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "ToggleMinimap",
+                    "action": "CloseMinimap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "66a69197-9556-4aa3-b3a6-a28d4bb73c95",
+                    "id": "346d2a74-820d-4af4-9010-234dc590e0c9",
                     "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "ToggleMinimap",
+                    "action": "CloseMinimap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "b400e8dc-f492-42e0-b75b-bde17a923548",
+                    "id": "4033853d-d1fa-4e8b-8415-d63db3154d1c",
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "ToggleMinimap",
+                    "action": "CloseMinimap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

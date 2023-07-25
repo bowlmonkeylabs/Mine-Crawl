@@ -287,6 +287,17 @@ namespace BML.Scripts.Player
 			_isMinimapOpen.Value = !_isMinimapOpen.Value;
 		}
 
+		public void OnCloseMinimap()
+		{
+			// Do nothing if minimap is not open
+			if (!_isMinimapOpen.Value)
+			{
+				return;
+			}
+			
+			_isMinimapOpen.Value = !_isMinimapOpen.Value;
+		}
+
 		public void OnToggleStore()
 		{
 			// Do nothing if blocking menu is already open
