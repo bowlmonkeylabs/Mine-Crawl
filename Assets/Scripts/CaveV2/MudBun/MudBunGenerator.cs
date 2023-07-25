@@ -304,17 +304,29 @@ namespace BML.Scripts.CaveV2.MudBun
                 this.UnlockMesh();
             }
 
-            // mudRenderer.DestroyAllBrushesImmediate();
-            mudRenderer.RescanBrushesImmediate();
-            var allBrushes = mudRenderer.Brushes.ToList();
-            foreach (var mudRendererBrush in allBrushes)
+            if (_enableLogs) Debug.Log($"MudBun: {mudRenderer.Brushes.Count} brushes");
+            if (_enableLogs) Debug.Log("MudBun: MudRenderer.DestroyAllBrushesImmediate()...");
+            mudRenderer.DestroyAllBrushesImmediate();
+            
+            // if (_enableLogs) Debug.Log("MudBun: RescanBrushesImmediate()...");
+            // mudRenderer.RescanBrushesImmediate();
+            // if (_enableLogs) Debug.Log($"MudBun: {mudRenderer.Brushes.Count} brushes");
+            
+            if (_enableLogs) Debug.Log($"MudBun: {mudRenderer.transform.childCount} children");
+            if (_enableLogs) Debug.Log("MudBun: Destroy all remaining children...");
+            var mudRendererChildren = Enumerable.Range(0, mudRenderer.transform.childCount)
+                .Select(i => mudRenderer.transform.GetChild(i)).ToList();
+            foreach (var mudRendererChild in mudRendererChildren)
             {
-                if (!mudRendererBrush.SafeIsUnityNull() &&
-                    !mudRendererBrush.gameObject.SafeIsUnityNull())
+                if (!mudRendererChild.SafeIsUnityNull() &&
+                    !mudRendererChild.gameObject.SafeIsUnityNull())
                 {
-                    GameObject.DestroyImmediate(mudRendererBrush.gameObject);
+                    GameObject.DestroyImmediate(mudRendererChild.gameObject);
                 }
             }
+            
+            if (_enableLogs) Debug.Log($"MudBun: {mudRenderer.Brushes.Count} brushes");
+            if (_enableLogs) Debug.Log($"MudBun: {mudRenderer.transform.childCount} children");
         }
 
         private Coroutine _coroutine_LockMesh;
