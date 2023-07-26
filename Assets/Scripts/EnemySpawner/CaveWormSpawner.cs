@@ -17,6 +17,7 @@ namespace BML.Scripts
     public class CaveWormSpawner : MonoBehaviour
     {
         [SerializeField, TitleGroup("Spawning")] private TimerVariable _wormSpawnTimer;
+        [SerializeField, TitleGroup("Spawning")] private BoolVariable _playerHasExitedStartRoom;
         [SerializeField, TitleGroup("Spawning")] private TimerVariable _wormMaxStrengthTimer;
         [SerializeField, TitleGroup("Spawning")] private float _spawnRadius = 100f;
         [SerializeField, TitleGroup("Spawning")] private AnimationCurve _speedCurve;
@@ -46,15 +47,16 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
+            _wormSpawnTimer.ResetTimer();
             _wormSpawnTimer.SubscribeFinished(ActivateWorm);
-            _wormSpawnTimer.StartTimer();
-            
-            if (_enableDebug) Debug.Log($"Started Timer: isFinished {_wormSpawnTimer.IsFinished}");
+            _playerHasExitedStartRoom.Subscribe(StartWormTimer);
         }
 
         private void OnDisable()
         {
             _wormSpawnTimer.UnsubscribeFinished(ActivateWorm);
+            _playerHasExitedStartRoom.Unsubscribe(StartWormTimer);
+            Destroy(spawnedWorm);
         }
 
         private void Start()
@@ -125,6 +127,12 @@ namespace BML.Scripts
             _wormMaxStrengthTimer.StartTimer();
             _wormActivatedFeedback.PlayFeedbacks();
             if (_enableDebug) Debug.Log("Worm Activated");
+        }
+
+        private void StartWormTimer(bool dummy, bool hasExitedStartRoom)
+        {
+            if (hasExitedStartRoom)
+                _wormSpawnTimer.StartTimer();
         }
         
     }
