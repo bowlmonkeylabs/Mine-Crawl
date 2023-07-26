@@ -81,6 +81,8 @@ namespace BML.Scripts.Player
 		[SerializeField, FoldoutGroup("No Clip Mode")] private float noClipSprintMultiplier = 3f;
 		[SerializeField, FoldoutGroup("No Clip Mode")] private LayerMask noClipCollisionMask;
 
+        [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
+
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
 		[SerializeField, FoldoutGroup("Cinemachine")] GameObject CinemachineCameraTarget;
 		[Tooltip("How far in degrees can you move the camera up")]
@@ -499,7 +501,7 @@ namespace BML.Scripts.Player
 
         private void CheckDashCooldown() {
             DashCooldownTimer.UpdateTime();
-            if(DashInCooldown.Value && DashCooldownTimer.IsFinished) {
+            if((DashInCooldown.Value && DashCooldownTimer.IsFinished) || _isGodModeEnabled.Value) {
                 DashInCooldown.Value = false;
                 DashCooldownTimer.ResetTimer();
             }
