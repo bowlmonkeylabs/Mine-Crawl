@@ -9,12 +9,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.UI
 {
     public class UiStoreCanvasController : MonoBehaviour
     {
+        #region Inspector
+        
         [SerializeField, FoldoutGroup("CaveGen")] private GameObjectSceneReference _caveGeneratorGameObjectSceneReference;
         private CaveGenComponentV2 _caveGenerator => _caveGeneratorGameObjectSceneReference?.CachedComponent as CaveGenComponentV2;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
@@ -25,22 +28,53 @@ namespace BML.Scripts.UI
         [SerializeField] private Button _buttonNavLeft;
         [SerializeField] private Button _buttonNavRight;
         [SerializeField] private StoreInventory _storeInventory;
+        [SerializeField] private IntVariable _resourceCount;
+        [SerializeField] private IntVariable _rareResourceCount;
+        [SerializeField] private IntVariable _upgradesAvailableCount;
+        
+        #endregion
+        
+        private List<UiStoreButtonController> buttonList = new List<UiStoreButtonController>();
 
-        private List<Button> buttonList = new List<Button>();
-
+        #region Unity lifecycle
+        
         private void Awake()
         {
+            // Debug.Log("Awake");
+            
             #warning Remove this once we're done working on the stores/inventory
             GenerateStoreItems();
+            
+            // SetNavigationOrder();
         }
 
-        void OnEnable() {
+        void OnEnable()
+        {
+            // Debug.Log("OnEnable");
+            
+            _resourceCount.Subscribe(UpdateButtons);
+            _rareResourceCount.Subscribe(UpdateButtons);
+            _upgradesAvailableCount.Subscribe(UpdateButtons);
+            
             _onPurchaseEvent.Subscribe(OnBuy);
+            
+            SetNavigationOrder();
         }
 
-        void OnDisable() {
+        void OnDisable()
+        {
+            // Debug.Log("OnDisable");
+            
+            _resourceCount.Unsubscribe(UpdateButtons);
+            _rareResourceCount.Unsubscribe(UpdateButtons);
+            _upgradesAvailableCount.Unsubscribe(UpdateButtons);
+            
             _onPurchaseEvent.Unsubscribe(OnBuy);
         }
+        
+        #endregion
+        
+        #region Public interface
 
         [Button("Generate Store Items")]
         public void GenerateStoreItems()
@@ -69,9 +103,10 @@ namespace BML.Scripts.UI
 
             for(int i = 0; i < shownStoreItems.Count; i++) {
                 GameObject buttonGameObject = _listContainerStoreButtons.GetChild(i).gameObject;
-                buttonGameObject.GetComponent<UiStoreButtonController>().Init(shownStoreItems[i]);
+                var uiStoreButtonControllerComponent = buttonGameObject.GetComponent<UiStoreButtonController>();
+                uiStoreButtonControllerComponent.Init(shownStoreItems[i]);
                 buttonGameObject.SetActive(true);
-                buttonList.Add(buttonGameObject.GetComponent<Button>());
+                buttonList.Add(uiStoreButtonControllerComponent);
             }
 
             SetNavigationOrder();
@@ -86,27 +121,73 @@ namespace BML.Scripts.UI
                 _listContainerStoreButtons.GetChild(i).gameObject.SetActive(false);
             }
         }
-
-        private void SetNavigationOrder()
+        
+        public void SelectDefault()
         {
-            for(int i = 0; i < buttonList.Count; i++) {
-                Button prevButton = i > 0 ? buttonList[i - 1] : buttonList[buttonList.Count - 1];
-                Button nextButton = i < buttonList.Count - 1 ? buttonList[i + 1] : buttonList[0];
+            var firstUsableButton = buttonList.FirstOrDefault(button => button.Button.gameObject.activeSelf && button.Button.IsInteractable());
+            if (firstUsableButton != null)
+            {
+                firstUsableButton.Button.Select();
+            }
+        }
+        
+        #endregion
+        
+        #region UI control
+
+        private void UpdateButtons()
+        {
+            foreach (var button in buttonList)
+            {
+                button.UpdateInteractable();
+            }
+            
+            SetNavigationOrder();
+        }
+
+        private void SetNavigationOrder(bool includeInactive = false, bool includeNonInteractable = false)
+        {
+            var filteredButtons = buttonList
+                .Where(b =>
+                    (includeInactive || b.gameObject.activeSelf) 
+                    && (includeNonInteractable || b.Button.IsInteractable()))
+                .Select(b => b.Button)
+                .ToList();
+            filteredButtons.Add(_listContainerStoreButtons.GetChild(_listContainerStoreButtons.childCount - 1).GetComponent<Button>());
+
+            // Debug.Log($"SetNavigationOrder: ({this.transform.parent.name}) ({filteredButtons.Count} active buttons)");
+            // Debug.Log(string.Join(", ", buttonList.Select(b => $"({b.gameObject.activeSelf}, {b.Button.IsInteractable()})")));
+            
+            for(int i = 0; i < filteredButtons.Count; i++)
+            {
+                int prevIndex = (i == 0 ? filteredButtons.Count - 1 : i - 1);
+                int nextIndex = (i >= filteredButtons.Count - 1 ? 0 : i + 1);
+                
                 Navigation nav = new Navigation();
                 nav.mode = Navigation.Mode.Explicit;
-                nav.selectOnUp = prevButton;
-                nav.selectOnDown = nextButton;
+                nav.selectOnUp = filteredButtons[prevIndex];
+                nav.selectOnDown = filteredButtons[nextIndex];
                 if(_buttonNavLeft != null) nav.selectOnLeft = _buttonNavLeft;
                 if(_buttonNavRight != null) nav.selectOnRight = _buttonNavRight;
-                buttonList[i].navigation = nav;
+                
+                filteredButtons[i].navigation = nav;
+                // Debug.Log(filteredButtons[i].navigation.selectOnUp.name);
+                // Debug.Log(buttonList.FirstOrDefault(b =>
+                //     (includeInactive || b.gameObject.activeSelf) 
+                //     && (includeNonInteractable || b.Button.IsInteractable()))?.Button.navigation.selectOnUp.name);
             }
         }
 
-        protected void OnBuy(object prevStoreItem, object storeItem) {
+        protected void OnBuy(object prevStoreItem, object storeItem)
+        {
             SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
             if(_randomizeStoreOnBuy) {
                 GenerateStoreItems();
             }
         }
+        
+        #endregion
+
+        
     }
 }

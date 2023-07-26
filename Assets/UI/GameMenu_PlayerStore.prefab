@@ -27,8 +27,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 8810058251077120952}
   - {fileID: 8649190723781439685}
+  - {fileID: 8810058251077120952}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -66,7 +66,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8649190723377008977}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -86,7 +86,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _root: {fileID: 8810058251077120953}
-  _defaultSelected: {fileID: 5486809071010331700}
+  _defaultSelected: {fileID: 0}
+  _selectDefault:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8810058251077120948}
+        m_TargetAssemblyTypeName: BML.Scripts.UI.UiStoreCanvasController, BML.Scripts
+        m_MethodName: SelectDefault
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _previousPage: {fileID: 0}
   _defaultPage: {fileID: 0}
   _isOpen: {fileID: 11400000, guid: 2c6a9ec7ffcec724b83f7abc212de507, type: 2}
@@ -252,7 +267,7 @@ RectTransform:
   m_Children:
   - {fileID: 8810058251033957546}
   m_Father: {fileID: 8649190723377008977}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -280,6 +295,9 @@ MonoBehaviour:
   _buttonNavLeft: {fileID: 0}
   _buttonNavRight: {fileID: 0}
   _storeInventory: {fileID: 11400000, guid: 587d6a1db85bc6e439e5ebcd7ef56337, type: 2}
+  _resourceCount: {fileID: 11400000, guid: 0165294fceb10994cb9d1f8669a4d72c, type: 2}
+  _rareResourceCount: {fileID: 11400000, guid: 4aeaf25be48b2b544a06b963e7101d44, type: 2}
+  _upgradesAvailableCount: {fileID: 11400000, guid: 012f4002f86df074f9fe3d0a198510ac, type: 2}
 --- !u!223 &1629099902750225008
 Canvas:
   m_ObjectHideFlags: 0
@@ -462,6 +480,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
+--- !u!224 &6374948636191702691 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6011151041640180004, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
+  m_PrefabInstance: {fileID: 798183886726076295}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6374948636191702690 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6011151041640180005, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
@@ -473,11 +496,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &6374948636191702691 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6011151041640180004, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
-  m_PrefabInstance: {fileID: 798183886726076295}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &909264959292938629
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -604,7 +622,7 @@ PrefabInstance:
     - target: {fileID: 6011151041640180005, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
-      objectReference: {fileID: 1498117452278310581}
+      objectReference: {fileID: 819257282566557831}
     - target: {fileID: 6011151041640180005, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
       propertyPath: m_Navigation.m_SelectOnRight
       value: 
@@ -1023,7 +1041,7 @@ PrefabInstance:
     - target: {fileID: 2513475345245060819, guid: e8f78fb9515fb874f8f013ed4b9b9bb2, type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
-      objectReference: {fileID: 6914641364788654240}
+      objectReference: {fileID: 343964632881664796}
     - target: {fileID: 2513475345245060819, guid: e8f78fb9515fb874f8f013ed4b9b9bb2, type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
@@ -1626,6 +1644,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
+--- !u!224 &343964632881664797 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6011151041640180004, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
+  m_PrefabInstance: {fileID: 6317956562364873273}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &343964632881664796 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6011151041640180005, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
@@ -1637,11 +1660,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &343964632881664797 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6011151041640180004, guid: 0abd9e9d233d93b44920b510dd9cc0ec, type: 3}
-  m_PrefabInstance: {fileID: 6317956562364873273}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6356109793234958754
 PrefabInstance:
   m_ObjectHideFlags: 0

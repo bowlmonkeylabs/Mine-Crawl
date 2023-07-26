@@ -14,7 +14,10 @@ namespace BML.Scripts.UI
     public class UiMenuPageController : MonoBehaviour, ISubmitHandler, ICancelHandler
     {
         [SerializeField] private GameObject _root;
+        
         [SerializeField] private Selectable _defaultSelected;
+        [SerializeField] private UnityEvent _selectDefault;
+        
         [SerializeField] private UiMenuPageController _previousPage;
         [SerializeField] private UiMenuPageController _defaultPage;
         
@@ -52,10 +55,7 @@ namespace BML.Scripts.UI
         {
             eventSystem = FindObjectOfType<EventSystem>();
 
-            if (!_defaultSelected.SafeIsUnityNull())
-            {
-                lastSelected = _defaultSelected.gameObject;
-            }
+            SelectDefault();
 
             // if (_isOpen != null)
             // {
@@ -176,11 +176,14 @@ namespace BML.Scripts.UI
 
         public void SelectDefault()
         {
-            if (_defaultSelected != null)
+            if (_defaultSelected != null && !_defaultSelected.SafeIsUnityNull())
             {
                 _defaultSelected.Select();
-                UpdateLastSelected();
             }
+
+            _selectDefault?.Invoke();
+
+            UpdateLastSelected();
         }
 
         public void SelectLastSelected()

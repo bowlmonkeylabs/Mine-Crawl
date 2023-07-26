@@ -1,16 +1,21 @@
-﻿using BML.ScriptableObjectCore.Scripts.Variables;
+﻿using System;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Events;
 using UnityEngine;
 using UnityEngine.UI;
-using Sirenix.OdinInspector;
 using BML.Scripts.Store;
 
 namespace BML.Scripts.UI
 {
     public class UiStoreButtonController : MonoBehaviour
     {
+        #region Inspector
+        
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
+
+        [HideInInspector] public Button Button => _button;
         [SerializeField] private Button _button;
+        
         [SerializeField] private TMPro.TMP_Text _costText;
         [SerializeField] private TMPro.TMP_Text _buyAmountText;
         [SerializeField] private UiStoreItemIconController _storeItemIcon;
@@ -25,12 +30,16 @@ namespace BML.Scripts.UI
 
         [SerializeField] private StoreItem _itemToPurchase;
         
+        #endregion
+
+        #region Public interface
+        
         public void Init(StoreItem itemToPurchase)
         {
             _itemToPurchase = itemToPurchase;
             _storeItemIcon.Init(_itemToPurchase);
             SetButtonText();
-            SetInteractable();
+            UpdateInteractable();
         }
 
         public void Raise()
@@ -38,26 +47,34 @@ namespace BML.Scripts.UI
             _onPurchaseEvent.Raise(_itemToPurchase);
         }
 
-        void Update() {
-            SetInteractable();
-        }
-
-        public void SetStoreItemToSelected() {
-            if(_uiStoreItemDetailController != null && _itemToPurchase != null) {
+        public void SetStoreItemToSelected()
+        {
+            if(_uiStoreItemDetailController != null && _itemToPurchase != null)
+            {
                 _uiStoreItemDetailController.SetSelectedStoreItem(_itemToPurchase);
             }
         }
+        
+        #endregion
 
-        private void SetInteractable() {
-            if(_isGodModeEnabled.Value) {
+        #region UI control
+        
+        public void UpdateInteractable()
+        {
+            if(_isGodModeEnabled.Value)
+            {
                 _button.interactable = true;
                 return;
             }
 
-            _button.interactable = _itemToPurchase._resourceCost <= _resourceCount.Value &&
-                _itemToPurchase._rareResourceCost <= _rareResourceCount.Value &&
-                _itemToPurchase._upgradeCost <= _upgradesAvailableCount.Value &&
-                (!_itemToPurchase._hasMaxAmount || (_itemToPurchase._playerInventoryAmount.Value < _itemToPurchase._maxAmount.Value));
+            bool canAffordItem = _itemToPurchase
+                .CheckIfCanAfford(_resourceCount.Value, _rareResourceCount.Value, _upgradesAvailableCount.Value)
+                .Overall;
+            bool interactable = canAffordItem && (!_itemToPurchase._hasMaxAmount || (_itemToPurchase._playerInventoryAmount.Value < _itemToPurchase._maxAmount.Value));
+            if (_button.interactable != interactable)
+            {
+                _button.interactable = interactable;
+            }
         }
 
         private void SetButtonText()
@@ -80,5 +97,8 @@ namespace BML.Scripts.UI
 
             _buyAmountText.text = ""+_itemToPurchase._buyAmount;
         }
+        
+        #endregion
+        
     }
 }
