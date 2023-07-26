@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using UnityEngine.PlayerLoop;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.UI
@@ -53,13 +54,13 @@ namespace BML.Scripts.UI
         {
             // Debug.Log("OnEnable");
             
+            UpdateButtons();
+            
             _resourceCount.Subscribe(UpdateButtons);
             _rareResourceCount.Subscribe(UpdateButtons);
             _upgradesAvailableCount.Subscribe(UpdateButtons);
             
             _onPurchaseEvent.Subscribe(OnBuy);
-            
-            SetNavigationOrder();
         }
 
         void OnDisable()
@@ -110,7 +111,7 @@ namespace BML.Scripts.UI
                 buttonList.Add(uiStoreButtonControllerComponent);
             }
 
-            SetNavigationOrder();
+            UpdateButtons();
         }
 
         [Button("Destroy Store Items")]
