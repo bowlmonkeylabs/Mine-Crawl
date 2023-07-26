@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 
 namespace BML.Scripts.UI
 {
-    public class UiEventHandler : MonoBehaviour, ISubmitHandler, ICancelHandler, IPointerEnterHandler
+    public class UiEventHandler : MonoBehaviour, ISubmitHandler, ICancelHandler, IPointerEnterHandler, ISelectHandler
     {
         #region Inspector
         private static string GetGroupHeaderString(string groupTitle, GameObject propagateTarget, UnityEvent fireEvent)
@@ -44,6 +44,8 @@ namespace BML.Scripts.UI
         [FoldoutGroup("$onPointerEnterGroupTitle"), HideLabel]
         [SerializeField] private UnityEvent _onPointerEnter;
         private IPointerEnterHandler pointerEnterHandler;
+        
+        
         #endregion
         
         #region Unity lifecycle
@@ -94,6 +96,12 @@ namespace BML.Scripts.UI
             _onPointerEnter?.Invoke();
             pointerEnterHandler?.OnPointerEnter(eventData);
         }
+        
         #endregion
+
+        public void OnSelect(BaseEventData eventData)
+        {
+            _onPointerEnter?.Invoke();
+        }
     }
 }
