@@ -16,6 +16,7 @@ namespace BML.Scripts.UI
         [SerializeField] private GameObject _root;
         
         [SerializeField] private Selectable _defaultSelected;
+        [SerializeField] private Selectable _defaultSelectedFallback;
         [SerializeField] private UnityEvent _selectDefault;
         
         [SerializeField] private UiMenuPageController _previousPage;
@@ -176,9 +177,11 @@ namespace BML.Scripts.UI
 
         public void SelectDefault()
         {
-            if (_defaultSelected != null && !_defaultSelected.SafeIsUnityNull())
+            bool tryUseFallback = (_defaultSelected == null || _defaultSelected.SafeIsUnityNull() || !_defaultSelected.gameObject.activeInHierarchy);
+            var selectObject = (tryUseFallback ? (_defaultSelectedFallback ?? _defaultSelected) : _defaultSelected);
+            if (selectObject != null && !selectObject.SafeIsUnityNull())
             {
-                _defaultSelected.Select();
+                selectObject.Select();
             }
 
             _selectDefault?.Invoke();

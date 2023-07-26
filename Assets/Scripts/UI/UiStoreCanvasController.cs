@@ -22,6 +22,7 @@ namespace BML.Scripts.UI
         private CaveGenComponentV2 _caveGenerator => _caveGeneratorGameObjectSceneReference?.CachedComponent as CaveGenComponentV2;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private Transform _listContainerStoreButtons;
+        [SerializeField] private Button _cancelButton;
         [SerializeField] private int _maxItemsShown = 0;
         [SerializeField] private bool _randomizeStoreOnBuy;
         [SerializeField] private bool _filterOutMaxedItems;
@@ -124,10 +125,10 @@ namespace BML.Scripts.UI
         
         public void SelectDefault()
         {
-            var firstUsableButton = buttonList.FirstOrDefault(button => button.Button.gameObject.activeSelf && button.Button.IsInteractable());
+            var firstUsableButton = buttonList.FirstOrDefault(button => button.Button.gameObject.activeSelf && button.Button.IsInteractable())?.Button ?? _cancelButton;
             if (firstUsableButton != null)
             {
-                firstUsableButton.Button.Select();
+                firstUsableButton.Select();
             }
         }
         
@@ -153,7 +154,10 @@ namespace BML.Scripts.UI
                     && (includeNonInteractable || b.Button.IsInteractable()))
                 .Select(b => b.Button)
                 .ToList();
-            filteredButtons.Add(_listContainerStoreButtons.GetChild(_listContainerStoreButtons.childCount - 1).GetComponent<Button>());
+            if (_cancelButton != null)
+            {
+                filteredButtons.Add(_cancelButton);
+            }
 
             // Debug.Log($"SetNavigationOrder: ({this.transform.parent.name}) ({filteredButtons.Count} active buttons)");
             // Debug.Log(string.Join(", ", buttonList.Select(b => $"({b.gameObject.activeSelf}, {b.Button.IsInteractable()})")));
