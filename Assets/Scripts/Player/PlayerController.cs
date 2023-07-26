@@ -395,7 +395,12 @@ namespace BML.Scripts.Player
 
         private void TryThrowTorch()
         {
-            if(_torchCount.Value > 0) {
+            if(_isGodModeEnabled.Value) {
+                this.Throw(_torchThrowForce, _torchPrefab, _torchInstanceContainer.Value);
+                return;
+            }
+
+            if(_torchCount.Value > 0 || _isGodModeEnabled.Value) {
                 this.Throw(_torchThrowForce, _torchPrefab, _torchInstanceContainer.Value);
                 _torchCount.Value--;
 
@@ -436,6 +441,11 @@ namespace BML.Scripts.Player
 
         private void TryThrowRope()
         {
+            if(_isGodModeEnabled.Value) {
+                this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer.Value);
+                return;
+            }
+
             if(_ropeCount.Value > 0) {
                 this.Throw(_ropeThrowForce, _ropePrefab, _ropeInstanceContainer.Value);
                 _ropeCount.Value--;
