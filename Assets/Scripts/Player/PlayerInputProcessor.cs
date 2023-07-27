@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.Serialization;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -56,6 +57,8 @@ namespace BML.Scripts.Player
 		[SerializeField] private GameEvent _onIncreaseTimeScale;
 		[SerializeField] private GameEvent _onDecreaseTimeScale;
 		[SerializeField] private GameEvent _onSkipFrame;
+		[SerializeField] private TimerReference _upgradeStoreDelayTimer;
+		[SerializeField] private MMF_Player _upgradeStoreFeedbacks;
 
 		[FormerlySerializedAs("_containerUiMenuStates")]
 		[Tooltip("Include UI INTERACTABLE states which should take FULL CONTROL (meaning they need to DISABLE player control)")]
@@ -182,6 +185,7 @@ namespace BML.Scripts.Player
 			crouchAction.canceled += SetCrouchHeld;
 
             _upgradesAvailable.Subscribe(TryToggleUpgradeStore);
+            _upgradeStoreDelayTimer.SubscribeFinished(OnToggleUpgradeStore);
 		}
 
 		private void OnDisable()
@@ -197,8 +201,14 @@ namespace BML.Scripts.Player
 			crouchAction.canceled -= SetCrouchHeld;
 
             _upgradesAvailable.Unsubscribe(TryToggleUpgradeStore);
+            _upgradeStoreDelayTimer.UnsubscribeFinished(OnToggleUpgradeStore);
 		}
-		
+
+		private void Update()
+		{
+			_upgradeStoreDelayTimer.UpdateTime();
+		}
+
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			// SetCursorState(playerCursorLocked);
@@ -365,7 +375,8 @@ namespace BML.Scripts.Player
 
         public void TryToggleUpgradeStore() {
             if(_upgradesAvailable.Value > 0) {
-                OnToggleUpgradeStore();
+	            if (_upgradeStoreDelayTimer.IsStopped) _upgradeStoreDelayTimer.RestartTimer();
+	            _upgradeStoreFeedbacks.PlayFeedbacks();
             }
         }
 
