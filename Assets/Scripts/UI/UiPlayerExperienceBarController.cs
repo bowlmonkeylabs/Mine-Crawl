@@ -10,17 +10,19 @@ namespace BML.Scripts.UI
     {
         [SerializeField] private Image _barImage;
         [SerializeField] private IntVariable _currentExperience;
-        [SerializeField] private IntVariable _currentLevel;
+        [SerializeField] private FloatReference _requiredExperience;
+        [SerializeField] private FloatReference _previousRequiredExperience;
         [SerializeField] private EvaluateCurveVariable _experienceEvalCurve;
 
-        private void Awake()
+
+        private void OnEnable()
         {
             UpdateBar();
             _currentExperience.Subscribe(UpdateBar);
             _experienceEvalCurve.Subscribe(UpdateBar);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             _currentExperience.Unsubscribe(UpdateBar);
             _experienceEvalCurve.Unsubscribe(UpdateBar);
@@ -28,8 +30,9 @@ namespace BML.Scripts.UI
 
         protected void UpdateBar()
         {
-            float previousExperienceRequirement = _currentLevel.Value > 0 ? _experienceEvalCurve.EvaluateCurve(_experienceEvalCurve.GetTimeValue() - 1) : 0;
-            _barImage.fillAmount = (float)(_currentExperience.Value - previousExperienceRequirement)/(float)(_experienceEvalCurve.Value - previousExperienceRequirement);
+            Debug.Log($"prev: {_previousRequiredExperience.Value} | curr: {_requiredExperience.Value}");
+            _barImage.fillAmount = (float)(_currentExperience.Value - _previousRequiredExperience.Value)/(float)(_requiredExperience.Value - _previousRequiredExperience.Value);
         }
+
     }
 }

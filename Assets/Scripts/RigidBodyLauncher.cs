@@ -14,7 +14,7 @@ namespace BML.Scripts
         [SerializeField] private Transform _firePoint;
         [SerializeField] private TransformSceneReference _container;
         
-        [SerializeField] private int _quantity = 1;
+        [SerializeField] private int _quantity;
         [SerializeField] private ForceMode _forceMode;
         
         [SerializeField] private Vector3Reference _direction;

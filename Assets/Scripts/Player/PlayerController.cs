@@ -13,6 +13,7 @@ using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using BML.Scripts.Store;
+using Codice.Client.BaseCommands;
 using KinematicCharacterController;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -95,6 +96,8 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Experience")] private EvaluateCurveVariable _levelExperienceMap;
         [SerializeField, FoldoutGroup("Experience")] private IntReference _playerCurrentLevel;
         [SerializeField, FoldoutGroup("Experience")] private IntReference _availableUpdateCount;
+        [SerializeField, FoldoutGroup("Experience")] private FloatReference _requiredExperience;
+        [SerializeField, FoldoutGroup("Experience")] private FloatReference _previousRequiredExperience;
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
         
@@ -119,6 +122,8 @@ namespace BML.Scripts.Player
             _ropeCooldownTimer.SubscribeFinished(TryIncrementRopeCount);
             
             SetGodMode();
+            _requiredExperience.Value = _levelExperienceMap.Value;
+            _previousRequiredExperience.Value = 0;
         }
 
         private void OnDisable()
@@ -516,9 +521,11 @@ namespace BML.Scripts.Player
             //maximum check of going up 10 levels at once (they should never gain that much xp at once)
             int levelChecks = 0;
 
-            while(_playerExperience.Value >= _levelExperienceMap.Value && levelChecks < 10) {
+            while(_playerExperience.Value >= _requiredExperience.Value && levelChecks < 10) {
                 _playerCurrentLevel.Value += 1;
                 _availableUpdateCount.Value += 1;
+                _previousRequiredExperience.Value = _requiredExperience.Value;
+                _requiredExperience.Value += _levelExperienceMap.Value;
                 levelChecks++;
             }
         }
