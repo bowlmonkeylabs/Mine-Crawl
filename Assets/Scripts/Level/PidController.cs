@@ -57,8 +57,7 @@ namespace BML.Scripts.Level
                     case TargetMode.Direction:
                         var targetPosition = _target.Value.transform.position;
                         var targetDirection = targetPosition - transform.position;
-                        Vector3 rotationDirection = Vector3.RotateTowards(transform.forward, targetDirection, 360, 0.00f);
-                        targetRotation = Quaternion.LookRotation(rotationDirection);
+                        targetRotation = Quaternion.LookRotation(targetDirection);
                         break;
                     case TargetMode.MatchRotation:
                         targetRotation = _target.Value.rotation;

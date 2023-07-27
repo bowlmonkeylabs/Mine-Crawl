@@ -4,6 +4,7 @@ using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Utils;
 using Sirenix.Utilities;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts
 {
@@ -14,7 +15,7 @@ namespace BML.Scripts
         [SerializeField] private Transform _firePoint;
         [SerializeField] private TransformSceneReference _container;
         
-        [SerializeField] private int _quantity;
+        [FormerlySerializedAs("_quantity2")] [SerializeField] private SafeIntValueReference _quantity;
         [SerializeField] private ForceMode _forceMode;
         
         [SerializeField] private Vector3Reference _direction;
@@ -36,7 +37,7 @@ namespace BML.Scripts
 
         public void Launch(GameObject prefab)
         {
-            for (int i = 0; i < _quantity; i++)
+            for (int i = 0; i < _quantity.Value; i++)
             {
                 LaunchObject(prefab);
             }
