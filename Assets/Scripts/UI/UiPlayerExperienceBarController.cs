@@ -30,7 +30,6 @@ namespace BML.Scripts.UI
 
         protected void UpdateBar()
         {
-            Debug.Log($"prev: {_previousRequiredExperience.Value} | curr: {_requiredExperience.Value}");
             _barImage.fillAmount = (float)(_currentExperience.Value - _previousRequiredExperience.Value)/(float)(_requiredExperience.Value - _previousRequiredExperience.Value);
         }
 
