@@ -17,6 +17,7 @@ namespace BML.Scripts.Player
 	public class PlayerInputProcessor : MonoBehaviour
 	{
 		[SerializeField] private bool _enableLogs = true;
+		[SerializeField] private bool _enableImmediateUpgrade;
 
 		[Header("Character Input Values")]
 		public Vector2 move;
@@ -184,8 +185,9 @@ namespace BML.Scripts.Player
 			crouchAction.performed += SetCrouchHeld;
 			crouchAction.canceled += SetCrouchHeld;
 
-            _upgradesAvailable.Subscribe(TryToggleUpgradeStore);
-            _upgradeStoreDelayTimer.SubscribeFinished(OnToggleUpgradeStore);
+            
+			_upgradesAvailable.Subscribe(TryToggleUpgradeStore);
+			_upgradeStoreDelayTimer.SubscribeFinished(OpenUpgradeStore);
 		}
 
 		private void OnDisable()
@@ -200,8 +202,8 @@ namespace BML.Scripts.Player
 			crouchAction.performed -= SetCrouchHeld;
 			crouchAction.canceled -= SetCrouchHeld;
 
-            _upgradesAvailable.Unsubscribe(TryToggleUpgradeStore);
-            _upgradeStoreDelayTimer.UnsubscribeFinished(OnToggleUpgradeStore);
+			_upgradesAvailable.Unsubscribe(TryToggleUpgradeStore);
+            _upgradeStoreDelayTimer.UnsubscribeFinished(OpenUpgradeStore);
 		}
 
 		private void Update()
@@ -357,25 +359,31 @@ namespace BML.Scripts.Player
             if(_isUpgradeStoreOpen.Value && _upgradesAvailable.Value > 0) {
                 return;
             }
+            
+            if (_upgradeStoreDelayTimer.IsStopped || _upgradeStoreDelayTimer.IsFinished) _upgradeStoreDelayTimer.RestartTimer();
+            _upgradeStoreFeedbacks.PlayFeedbacks();
+		}
 
-            // If opening the store, close other menus
-            if (!_isUpgradeStoreOpen.Value)
-            {
-	            foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
-	            {
-		            if (!menuStateBoolVariable.Equals(_isUpgradeStoreOpen))
-		            {
-			            menuStateBoolVariable.Value = false;
-		            }
-	            }
-            }
+		private void OpenUpgradeStore()
+		{
+			// If opening the store, close other menus
+			if (!_isUpgradeStoreOpen.Value)
+			{
+				foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
+				{
+					if (!menuStateBoolVariable.Equals(_isUpgradeStoreOpen))
+					{
+						menuStateBoolVariable.Value = false;
+					}
+				}
+			}
 
 			_isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}
 
         public void TryToggleUpgradeStore() {
-            if(_upgradesAvailable.Value > 0) {
-	            if (_upgradeStoreDelayTimer.IsStopped) _upgradeStoreDelayTimer.RestartTimer();
+            if(_enableImmediateUpgrade && _upgradesAvailable.Value > 0) {
+	            if (_upgradeStoreDelayTimer.IsStopped || _upgradeStoreDelayTimer.IsFinished) _upgradeStoreDelayTimer.RestartTimer();
 	            _upgradeStoreFeedbacks.PlayFeedbacks();
             }
         }
