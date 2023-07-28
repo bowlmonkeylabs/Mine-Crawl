@@ -11,9 +11,9 @@ namespace MMFFeedbacks
 	/// This feedback will animate the size of the target rectangle over time when played
 	/// </summary>
 	[AddComponentMenu("")]
-	[FeedbackPath("Shapes/RectangleDriver")]
+	[FeedbackPath("UI/RectangleDriver")]
 	[FeedbackHelp("This feedback will animate the size of the target rectangle over time when played")]
-	public class ShapesRectangleDriver : MMF_Feedback
+	public class RectangleDriver : MMF_Feedback
     {
         /// a static bool used to disable all feedbacks of this type at once
         public static bool FeedbackTypeAuthorized = true;
