@@ -432,7 +432,7 @@ jobs:
         uses: liudonghua123/delete-release-action@v1
         continue-on-error: true
         with:
-          release_name: ${{ steps.set-tag-outputs.tag }}
+          release_name: ${{ steps.set-tag.outputs.tag }}
       
       - name: Release latest 📦
         uses: softprops/action-gh-release@v1
