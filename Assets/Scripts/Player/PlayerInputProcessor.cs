@@ -59,7 +59,7 @@ namespace BML.Scripts.Player
 		[SerializeField] private GameEvent _onDecreaseTimeScale;
 		[SerializeField] private GameEvent _onSkipFrame;
 		[SerializeField] private TimerReference _upgradeStoreDelayTimer;
-		[SerializeField] private MMF_Player _upgradeStoreFeedbacks;
+		[SerializeField] private GameEvent _startOpenUpgradeStore;
 
 		[FormerlySerializedAs("_containerUiMenuStates")]
 		[Tooltip("Include UI INTERACTABLE states which should take FULL CONTROL (meaning they need to DISABLE player control)")]
@@ -361,7 +361,7 @@ namespace BML.Scripts.Player
             }
             
             if (_upgradeStoreDelayTimer.IsStopped || _upgradeStoreDelayTimer.IsFinished) _upgradeStoreDelayTimer.RestartTimer();
-            _upgradeStoreFeedbacks.PlayFeedbacks();
+            _startOpenUpgradeStore.Raise();
 		}
 
 		private void OpenUpgradeStore()
@@ -384,7 +384,7 @@ namespace BML.Scripts.Player
         public void TryToggleUpgradeStore() {
             if(_enableImmediateUpgrade && _upgradesAvailable.Value > 0) {
 	            if (_upgradeStoreDelayTimer.IsStopped || _upgradeStoreDelayTimer.IsFinished) _upgradeStoreDelayTimer.RestartTimer();
-	            _upgradeStoreFeedbacks.PlayFeedbacks();
+	            _startOpenUpgradeStore.Raise();
             }
         }
 
