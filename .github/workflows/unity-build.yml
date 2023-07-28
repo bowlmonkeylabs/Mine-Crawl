@@ -75,11 +75,13 @@ jobs:
         run: |
           echo "should_run=true" >> $GITHUB_OUTPUT
           # Check if the release tag already exists
-          if git rev-parse "${{ needs.check_branch.outputs.release_tag }}" >/dev/null 2>&1; then
+          if git show-ref --tags "${{ needs.check_branch.outputs.release_tag }}" --quiet; then
             echo "Tag exists"
             # If it exists, check if there are new commits since the last release
             test -z "$(git rev-list ${{ needs.check_branch.outputs.release_tag }}..${{ github.sha }})"\
               && (echo "should_run=false" >> $GITHUB_OUTPUT);
+          else
+            echo "Tag doesn't exist or error in command"
           fi
   
   prepare_matrix:
