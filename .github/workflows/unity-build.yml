@@ -410,9 +410,10 @@ jobs:
 
   release:
     name: Release 🎁
+    runs-on: ubuntu-latest
 #    needs: [check_prod,build]
     needs: [check_branch,build]
-    runs-on: ubuntu-latest
+    if: (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch' && github.event.inputs.release == 'true')
     steps:
       - name: Download build artifacts ⬇
         uses: actions/download-artifact@v3
@@ -455,7 +456,6 @@ jobs:
       
       - name: Release 📦
         uses: softprops/action-gh-release@v1
-        if: (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch' && github.event.inputs.release == 'true')
         with:
 #          tag_name: ${{ steps.set-tag.outputs.tag }}
           tag_name: ${{ needs.check_branch.outputs.release_tag }}
