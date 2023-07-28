@@ -453,6 +453,17 @@ jobs:
         continue-on-error: true
         with:
           release_name: ${{ needs.check_branch.outputs.release_tag }}
+          
+      - name: Set release params
+        id: set_release_params
+        run: |
+          if [ ${{ github.ref }} == 'refs/heads/main' ]; then
+            GENERATE_RELEASE_NOTES="true"
+          else
+            GENERATE_RELEASE_NOTES="false"
+          fi
+          echo $GENERATE_RELEASE_NOTES
+          echo "generate_release_notes=$GENERATE_RELEASE_NOTES" >> $GITHUB_OUTPUT
       
       - name: Release 📦
         uses: softprops/action-gh-release@v1
@@ -461,6 +472,6 @@ jobs:
           tag_name: ${{ needs.check_branch.outputs.release_tag }}
           name: "${{ needs.check_branch.outputs.release_tag }} (unstable)"
           prerelease: true
-          generate_release_notes: true
+          generate_release_notes: ${{ steps.set_release_params.outputs.generate_release_notes }}
           files: |
             *.zip
