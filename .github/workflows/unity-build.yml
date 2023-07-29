@@ -125,8 +125,9 @@ jobs:
 #     if: (needs.check_new_commits.result == 'success' || needs.check_new_commits.result == 'skipped')
     if: (needs.check_new_commits.outputs.should_run == 'true')
     outputs:
-      buildVersion: ${{ steps.set-params.outputs.BUILD_VERSION }}
-      buildName: ${{ steps.set-params.outputs.BUILD_NAME }}
+      buildVersion: ${{ steps.set-build-version.outputs.buildVersion }}
+      buildName: ${{ steps.set-build-version.outputs.buildName }}
+      executableName: ${{ steps.set-build-version.outputs.executableName }}
     permissions:
       contents: write
     strategy:
@@ -146,6 +147,8 @@ jobs:
       - name: Determine build version number
         id: set-build-version
         run: |
+          REPO_NAME=$(basename ${{ github.repository }})
+          echo "Repo: $REPO_NAME"
           LAST_VERSION_TAG=$(git describe --tags --match="v[0-9]*\.[0-9]*" --abbrev=0)
           echo "Last version tag: $LAST_VERSION_TAG"
           MAJOR_MINOR_VERSION=$(echo $LAST_VERSION_TAG | grep -oP "[0-9]+\.[0-9]+")
@@ -162,8 +165,14 @@ jobs:
           echo "Revision: $REVISION"
           echo "Branch suffix: $BRANCH_SUFFIX"
           BUILD_VERSION="$MAJOR_MINOR_VERSION.$REVISION$BRANCH_SUFFIX"
-          echo $BUILD_VERSION
+          echo "Build version: $BUILD_VERSION"
           echo "buildVersion=$BUILD_VERSION" >> $GITHUB_OUTPUT
+          BUILD_NAME="${REPO_NAME}_${BUILD_VERSION}_${{matrix.targetPlatform}}"
+          echo "Build name: $BUILD_NAME"
+          echo "buildName=$BUILD_NAME" >> $GITHUB_OUTPUT
+          EXECUTABLE_NAME=$REPO_NAME
+          echo "Executable name: $EXECUTABLE_NAME"
+          echo "executableName=$EXECUTABLE_NAME" >> $GITHUB_OUTPUT
 
       # v Git LFS v -------------------------------
       - name: Create LFS file list
@@ -313,6 +322,8 @@ jobs:
 #           versioning: Semantic
           versioning: Custom
           version: ${{ steps.set-build-version.outputs.buildVersion }}
+#          buildName: ${{ steps.set-build-version.outputs.buildName }}
+          buildName: ${{ steps.set-build-version.outputs.executableName }}
           allowDirtyBuild: true
           customParameters: -Development
           
@@ -338,6 +349,8 @@ jobs:
 #           versioning: Semantic
           versioning: Custom
           version: ${{ steps.set-build-version.outputs.buildVersion }}
+#          buildName: ${{ steps.set-build-version.outputs.buildName }}
+          buildName: ${{ steps.set-build-version.outputs.executableName }}
           allowDirtyBuild: true
           customParameters: -Development
           
@@ -354,23 +367,6 @@ jobs:
           export executing_user=$(whoami)
           sudo chown "$executing_user" ./
           
-      - name: Determine build name
-        id: set-params
-        run: |
-          REPO_NAME=$(basename ${{ github.repository }})
-          echo $REPO_NAME
-          if [ ${{ steps.unity-build.outcome }} == 'success' ]; then
-            BUILD_VERSION=${{ steps.unity-build.outputs.buildVersion }}
-          elif [ ${{ steps.unity-build-retry.outcome }} == 'success' ]; then
-            BUILD_VERSION=${{ steps.unity-build-retry.outputs.buildVersion }}
-          fi
-          echo $BUILD_VERSION
-          BUILD_NAME="${REPO_NAME}_${BUILD_VERSION}_${{matrix.targetPlatform}}"
-          echo $BUILD_NAME
-          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
-          echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_OUTPUT
-          echo "BUILD_NAME=$BUILD_NAME" >> $GITHUB_OUTPUT
-          
 #       - name: Zip build
 #         id: zip-build
 #         run: |
@@ -385,10 +381,14 @@ jobs:
 #           echo "ZIP_FILE_PATH=$ZIP_FILE_PATH" >> $GITHUB_OUTPUT
 #           cd ../..
 
+      - name: Test for build results
+        run: |
+          ls ./build
+
       - name: Upload build artifact 📦
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.set-params.outputs.BUILD_NAME }}
+          name: ${{ steps.set-build-version.outputs.buildName }}
           path: build/${{ matrix.targetPlatform }}
           
       # ^ Upload build artifacts ^ -------------------------------
