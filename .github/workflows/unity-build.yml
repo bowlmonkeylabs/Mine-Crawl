@@ -473,7 +473,6 @@ jobs:
         uses: liudonghua123/delete-release-action@v1
         continue-on-error: true
         with:
-          token: ${{ github.token }}
           release_name: ${{ needs.check_branch.outputs.release_tag }}
           
       - name: Set release params
