@@ -277,10 +277,14 @@ jobs:
         id: cache-restore-everything-else
         uses: actions/cache/restore@v3
         with:
+#          path: |
+#                  Temp
+#                  Builds
+#                  build
+#                  obj
+#                  *.csproj
           path: |
             Temp
-            Builds
-            build
             obj
             *.csproj
           key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
@@ -406,10 +410,14 @@ jobs:
         if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
         uses: actions/cache/save@v3
         with:
+#          path: |
+#              Temp
+#              Builds
+#              build
+#              obj
+#              *.csproj
           path: |
             Temp
-            Builds
-            build
             obj
             *.csproj
           key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
