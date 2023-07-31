@@ -491,6 +491,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
 #          tag_name: ${{ steps.set-tag.outputs.tag }}
+          target_commitish: ${{ github.sha }}
           tag_name: ${{ needs.check_branch.outputs.release_tag }}
           name: "${{ needs.check_branch.outputs.release_tag }} (unstable)"
           prerelease: true
