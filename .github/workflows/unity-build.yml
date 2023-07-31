@@ -27,10 +27,6 @@ on:
         description: "Save caches even if the build fails."
         default: false
 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
 jobs:
   log_params:
     name: Log parameters 👣
@@ -124,6 +120,9 @@ jobs:
     needs: [check_branch,check_new_commits,prepare_matrix]
 #     if: (needs.check_new_commits.result == 'success' || needs.check_new_commits.result == 'skipped')
     if: (needs.check_new_commits.outputs.should_run == 'true')
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     outputs:
       buildVersion: ${{ steps.set-build-version.outputs.buildVersion }}
       buildName: ${{ steps.set-build-version.outputs.buildName }}
