@@ -470,10 +470,12 @@ jobs:
 #          echo "majorMinorVersion=$MAJOR_MINOR_VERSION" >> $GITHUB_OUTPUT
       
       - name: Try delete previous release
-        uses: liudonghua123/delete-release-action@v1
+        uses: dev-drprasad/delete-tag-and-release@v1.0
         continue-on-error: true
         with:
-          release_name: ${{ needs.check_branch.outputs.release_tag }}
+          tag_name: ${{ needs.check_branch.outputs.release_tag }} #(required) tag name to delete
+          github_token: ${{ secrets.GITHUB_TOKEN }} # (required) a GitHub token with write access to the repo that needs to be modified
+          delete_release: true #(optional) default: true
           
       - name: Set release params
         id: set_release_params
