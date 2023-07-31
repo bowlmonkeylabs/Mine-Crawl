@@ -488,13 +488,13 @@ jobs:
           echo $GENERATE_RELEASE_NOTES
           echo "generate_release_notes=$GENERATE_RELEASE_NOTES" >> $GITHUB_OUTPUT
       
-      - name: Release 📦
-        uses: softprops/action-gh-release@v1
-        with:
-#          tag_name: ${{ steps.set-tag.outputs.tag }}
-          tag_name: ${{ needs.check_branch.outputs.release_tag }}
-          name: "${{ needs.check_branch.outputs.release_tag }} (unstable)"
-          prerelease: true
-          generate_release_notes: ${{ steps.set_release_params.outputs.generate_release_notes }}
-          files: |
-            *.zip
+#      - name: Release 📦
+#        uses: softprops/action-gh-release@v1
+#        with:
+##          tag_name: ${{ steps.set-tag.outputs.tag }}
+#          tag_name: ${{ needs.check_branch.outputs.release_tag }}
+#          name: "${{ needs.check_branch.outputs.release_tag }} (unstable)"
+#          prerelease: true
+#          generate_release_notes: ${{ steps.set_release_params.outputs.generate_release_notes }}
+#          files: |
+#            *.zip
