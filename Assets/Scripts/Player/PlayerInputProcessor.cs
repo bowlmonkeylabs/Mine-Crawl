@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.Serialization;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -16,6 +17,7 @@ namespace BML.Scripts.Player
 	public class PlayerInputProcessor : MonoBehaviour
 	{
 		[SerializeField] private bool _enableLogs = true;
+		[SerializeField] private bool _enableImmediateUpgrade;
 
 		[Header("Character Input Values")]
 		public Vector2 move;
@@ -56,6 +58,8 @@ namespace BML.Scripts.Player
 		[SerializeField] private GameEvent _onIncreaseTimeScale;
 		[SerializeField] private GameEvent _onDecreaseTimeScale;
 		[SerializeField] private GameEvent _onSkipFrame;
+		[SerializeField] private TimerReference _upgradeStoreDelayTimer;
+		[SerializeField] private GameEvent _startOpenUpgradeStore;
 
 		[FormerlySerializedAs("_containerUiMenuStates")]
 		[Tooltip("Include UI INTERACTABLE states which should take FULL CONTROL (meaning they need to DISABLE player control)")]
@@ -181,7 +185,9 @@ namespace BML.Scripts.Player
 			crouchAction.performed += SetCrouchHeld;
 			crouchAction.canceled += SetCrouchHeld;
 
-            _upgradesAvailable.Subscribe(TryToggleUpgradeStore);
+            
+			_upgradesAvailable.Subscribe(TryToggleUpgradeStore);
+			_upgradeStoreDelayTimer.SubscribeFinished(OpenUpgradeStore);
 		}
 
 		private void OnDisable()
@@ -196,9 +202,15 @@ namespace BML.Scripts.Player
 			crouchAction.performed -= SetCrouchHeld;
 			crouchAction.canceled -= SetCrouchHeld;
 
-            _upgradesAvailable.Unsubscribe(TryToggleUpgradeStore);
+			_upgradesAvailable.Unsubscribe(TryToggleUpgradeStore);
+            _upgradeStoreDelayTimer.UnsubscribeFinished(OpenUpgradeStore);
 		}
-		
+
+		private void Update()
+		{
+			_upgradeStoreDelayTimer.UpdateTime();
+		}
+
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			// SetCursorState(playerCursorLocked);
@@ -347,25 +359,32 @@ namespace BML.Scripts.Player
             if(_isUpgradeStoreOpen.Value && _upgradesAvailable.Value > 0) {
                 return;
             }
+            
+            if (_upgradeStoreDelayTimer.IsStopped || _upgradeStoreDelayTimer.IsFinished) _upgradeStoreDelayTimer.RestartTimer();
+            _startOpenUpgradeStore.Raise();
+		}
 
-            // If opening the store, close other menus
-            if (!_isUpgradeStoreOpen.Value)
-            {
-	            foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
-	            {
-		            if (!menuStateBoolVariable.Equals(_isUpgradeStoreOpen))
-		            {
-			            menuStateBoolVariable.Value = false;
-		            }
-	            }
-            }
+		private void OpenUpgradeStore()
+		{
+			// If opening the store, close other menus
+			if (!_isUpgradeStoreOpen.Value)
+			{
+				foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
+				{
+					if (!menuStateBoolVariable.Equals(_isUpgradeStoreOpen))
+					{
+						menuStateBoolVariable.Value = false;
+					}
+				}
+			}
 
 			_isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}
 
         public void TryToggleUpgradeStore() {
-            if(_upgradesAvailable.Value > 0) {
-                OnToggleUpgradeStore();
+            if(_enableImmediateUpgrade && _upgradesAvailable.Value > 0) {
+	            if (_upgradeStoreDelayTimer.IsStopped || _upgradeStoreDelayTimer.IsFinished) _upgradeStoreDelayTimer.RestartTimer();
+	            _startOpenUpgradeStore.Raise();
             }
         }
 

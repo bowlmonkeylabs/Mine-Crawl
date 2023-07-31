@@ -11,12 +11,15 @@ namespace BML.Scripts
     public class Explosive : MonoBehaviour
     {
         
+        [SerializeField] private bool _setOriginTransform;
+        [SerializeField, ShowIf("_setOriginTransform")] private Transform _origin;
         [SerializeField] private FloatReference _explosionTime;
         [SerializeField] private FloatReference _explosionShortFuseTime;
         [SerializeField] private FloatReference _explosionRadius;
         [SerializeField] private LayerMask _explosionMask;
         [SerializeField] private DamageType _damageType;
         [SerializeField] private IntReference _damage;
+        [SerializeField] private bool _applyKnockback = true;
         [SerializeField] private bool _useExplosiveRadiusFeedback = true;
         [SerializeField, ShowIf("_useExplosiveRadiusFeedback")] private MMF_Player _explosiveRadiusFeedback;
 
@@ -71,7 +74,8 @@ namespace BML.Scripts
             //NOTE: This will damage player and enemies on a per-collider basis.
             //      Does not check if multiple colliders belong to same entity.
 
-            Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius.Value, _explosionMask, QueryTriggerInteraction.Ignore);
+            Vector3 origin = _setOriginTransform ? _origin.position : transform.position;
+            Collider[] colliders = Physics.OverlapSphere(origin, _explosionRadius.Value, _explosionMask, QueryTriggerInteraction.Ignore);
 
             foreach (var col in colliders)
             {
@@ -85,8 +89,24 @@ namespace BML.Scripts
                     damageable = col.attachedRigidbody?.GetComponent<Damageable>();
                 }
 
+                HitInfo hitInfo = new HitInfo(_damageType, _damage.Value,
+                    (col.transform.position - origin).normalized);
+                
                 if(damageable != null) {
-                    damageable.TakeDamage(new HitInfo(_damageType, _damage.Value, (col.transform.position - transform.position).normalized));
+                    damageable.TakeDamage(hitInfo);
+                }
+                
+                if (!_applyKnockback) continue;
+
+                Knockbackable knockbackable = col.GetComponent<Knockbackable>();
+                if (knockbackable == null)
+                {
+                    knockbackable = col.attachedRigidbody?.GetComponent<Knockbackable>();
+                }
+
+                if (knockbackable != null)
+                {
+                    knockbackable.SetKnockback(hitInfo);
                 }
             }
 

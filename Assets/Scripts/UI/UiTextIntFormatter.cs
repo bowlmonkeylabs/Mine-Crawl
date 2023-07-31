@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using TMPro;
 using UnityEngine;
@@ -24,7 +25,25 @@ namespace BML.Scripts.UI
 
         protected string GetFormattedValue()
         {
-            return _variable.Value.ToString(_formatString);
+            // Create two different encodings.
+            Encoding ascii = Encoding.UTF8;
+            Encoding unicode = Encoding.Unicode;
+
+            // Convert the string into a byte[].
+            byte[] unicodeBytes = unicode.GetBytes(_formatString);
+
+            // Perform the conversion from one encoding to the other.
+            byte[] asciiBytes = Encoding.Convert(unicode, ascii, unicodeBytes);
+
+            // Convert the new byte[] into a char[] and then into a string.
+            // This is a slightly different approach to converting to illustrate
+            // the use of GetCharCount/GetChars.
+            char[] asciiChars = new char[ascii.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
+            ascii.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
+            string asciiString = new string(asciiChars);
+            
+            
+            return _variable.Value.ToString(asciiString);
         }
 
         protected void UpdateText()

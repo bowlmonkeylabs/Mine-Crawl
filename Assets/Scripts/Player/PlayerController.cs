@@ -13,6 +13,7 @@ using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using BML.Scripts.Store;
+using Codice.Client.BaseCommands;
 using KinematicCharacterController;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -92,9 +93,11 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Store")] private DynamicGameEvent _onPurchaseEvent;
 
         [SerializeField, FoldoutGroup("Experience")] private IntReference _playerExperience;
-        [SerializeField, FoldoutGroup("Experience")] private EvaluateCurveVariable _levelExperienceMap;
+        [SerializeField, FoldoutGroup("Experience")] private CurveVariable _levelExperienceCurve;
         [SerializeField, FoldoutGroup("Experience")] private IntReference _playerCurrentLevel;
         [SerializeField, FoldoutGroup("Experience")] private IntReference _availableUpdateCount;
+        [SerializeField, FoldoutGroup("Experience")] private FloatReference _requiredExperience;
+        [SerializeField, FoldoutGroup("Experience")] private FloatReference _previousRequiredExperience;
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
         
@@ -119,6 +122,8 @@ namespace BML.Scripts.Player
             _ropeCooldownTimer.SubscribeFinished(TryIncrementRopeCount);
             
             SetGodMode();
+            _requiredExperience.Value = _levelExperienceCurve.Value.Evaluate(_playerCurrentLevel.Value);
+            _previousRequiredExperience.Value = 0;
         }
 
         private void OnDisable()
@@ -516,11 +521,40 @@ namespace BML.Scripts.Player
             //maximum check of going up 10 levels at once (they should never gain that much xp at once)
             int levelChecks = 0;
 
-            while(_playerExperience.Value >= _levelExperienceMap.Value && levelChecks < 10) {
-                _playerCurrentLevel.Value += 1;
-                _availableUpdateCount.Value += 1;
+            while(_playerExperience.Value >= _requiredExperience.Value && levelChecks < 10)
+            {
+                AddLevel(1, false);
                 levelChecks++;
             }
+        }
+
+        public void AddLevel(int amount, bool setXp)
+        {
+            if (amount > 0)
+                _availableUpdateCount.Value += amount;
+
+            if (amount > 0)
+            {
+                for (int i = 0; i < amount; i++)
+                {
+                    _previousRequiredExperience.Value = _requiredExperience.Value;
+                    _requiredExperience.Value += _levelExperienceCurve.Value.Evaluate(_playerCurrentLevel.Value + 1);
+                    _playerCurrentLevel.Value = Mathf.Max(0, _playerCurrentLevel.Value + 1);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Mathf.Abs(amount); i++)
+                {
+                    _requiredExperience.Value -= _levelExperienceCurve.Value.Evaluate(_playerCurrentLevel.Value);
+                    _previousRequiredExperience.Value = _requiredExperience.Value - _levelExperienceCurve.Value.Evaluate(_playerCurrentLevel.Value - 1);
+                    _playerCurrentLevel.Value = Mathf.Max(0, _playerCurrentLevel.Value - 1);
+                }
+            }
+
+            if (setXp)
+                _playerExperience.Value = Mathf.CeilToInt(_previousRequiredExperience.Value);
+
         }
 
         #endregion
