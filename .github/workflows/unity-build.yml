@@ -18,14 +18,14 @@ on:
         - iOS
         - Android
         - All
+      release:
+        type: boolean
+        description: "Upload this build as a release."
+        default: true
       alwaysSaveCaches:
         type: boolean
         description: "Save caches even if the build fails."
         default: false
-
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
   log_params:
@@ -34,20 +34,28 @@ jobs:
     steps:
       - name: Dump GitHub context
         run: echo "${{toJson(github)}}"
-
-  check_prod:
-    name: Check if main branch 🚦
-    if: ${{ github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
+  
+  check_branch:
+    name: Check branch 🌳
+    runs-on: ubuntu-latest        
+    outputs:
+       release_tag: ${{ steps.set_release_tag.outputs.RELEASE_TAG }}
     steps:
-      - id: should_run
-        continue-on-error: true
-        name: "Check if we're running on the main branch"
-        run: echo "Building to production on branch $GITHUB_REF"
+      - id: set_release_tag
+        run: |
+          if [ ${{ github.ref }} == 'refs/heads/main' ]; then
+            RELEASE_TAG="latest"
+          else
+            BRANCH_NAME=${{ github.ref_name }}
+            RELEASE_TAG=${BRANCH_NAME//[\/]/\.}
+          fi
+          echo "Release tag: $RELEASE_TAG"
+          echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_OUTPUT
 
-  check_date:
+  check_new_commits:
     name: Check if new commits 🗞
     runs-on: ubuntu-latest
+    needs: [check_branch]
     outputs:
       should_run: ${{ steps.should_run.outputs.should_run }}
     steps:
@@ -56,15 +64,22 @@ jobs:
           fetch-depth: 0
       - id: should_run
         continue-on-error: true
-        name: Check for commits since last release of "latest" tag
+        name: Check for commits since last release of "${{ needs.check_branch.outputs.release_tag }}" tag
 #         if: ${{ github.event_name == 'schedule' }}
 #         run: |
 #           test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) \
 #             && echo "should_run=false" >> $GITHUB_OUTPUT
         run: |
           echo "should_run=true" >> $GITHUB_OUTPUT
-          test -z "$(git rev-list latest..${{ github.sha }})"\
-            && (echo "should_run=false" >> $GITHUB_OUTPUT)
+          # Check if the release tag already exists
+          if git show-ref --tags "${{ needs.check_branch.outputs.release_tag }}" --quiet; then
+            echo "Tag exists"
+            # If it exists, check if there are new commits since the last release
+            test -z "$(git rev-list ${{ needs.check_branch.outputs.release_tag }}..${{ github.sha }})"\
+              && (echo "should_run=false" >> $GITHUB_OUTPUT);
+          else
+            echo "Tag doesn't exist or error in command"
+          fi
   
   prepare_matrix:
     name: Prepare target platform matrix 💽
@@ -102,12 +117,16 @@ jobs:
   build:
     name: Build 🏗✨
     runs-on: ubuntu-latest
-    needs: [check_date,prepare_matrix]
-#     if: (needs.check_date.result == 'success' || needs.check_date.result == 'skipped')
-    if: (needs.check_date.outputs.should_run == 'true')
+    needs: [check_branch,check_new_commits,prepare_matrix]
+#     if: (needs.check_new_commits.result == 'success' || needs.check_new_commits.result == 'skipped')
+    if: (needs.check_new_commits.outputs.should_run == 'true')
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     outputs:
-      buildVersion: ${{ steps.set-params.outputs.BUILD_VERSION }}
-      buildName: ${{ steps.set-params.outputs.BUILD_NAME }}
+      buildVersion: ${{ steps.set-build-version.outputs.buildVersion }}
+      buildName: ${{ steps.set-build-version.outputs.buildName }}
+      executableName: ${{ steps.set-build-version.outputs.executableName }}
     permissions:
       contents: write
     strategy:
@@ -127,15 +146,32 @@ jobs:
       - name: Determine build version number
         id: set-build-version
         run: |
+          REPO_NAME=$(basename ${{ github.repository }})
+          echo "Repo: $REPO_NAME"
           LAST_VERSION_TAG=$(git describe --tags --match="v[0-9]*\.[0-9]*" --abbrev=0)
-          echo $LAST_VERSION_TAG
+          echo "Last version tag: $LAST_VERSION_TAG"
           MAJOR_MINOR_VERSION=$(echo $LAST_VERSION_TAG | grep -oP "[0-9]+\.[0-9]+")
-          echo $MAJOR_MINOR_VERSION
-          REVISION=$(git rev-list --count "$LAST_VERSION_TAG..HEAD")
-          echo $REVISION
-          BUILD_VERSION="$MAJOR_MINOR_VERSION.$REVISION"
-          echo $BUILD_VERSION
+          echo "Major.Minor version: $MAJOR_MINOR_VERSION"
+          if [ ${{ github.ref }} == 'refs/heads/main' ]; then
+            REVISION=$(git rev-list --count "$LAST_VERSION_TAG..HEAD")
+            BRANCH_SUFFIX=""
+          else
+            REVISION=$(git rev-list --count "$LAST_VERSION_TAG..HEAD")
+            BRANCH_REVISION=$(git rev-list --count "origin/main..HEAD")
+            REVISION=$(($REVISION-$BRANCH_REVISION))
+            BRANCH_SUFFIX="-${{ needs.check_branch.outputs.release_tag }}.$BRANCH_REVISION"
+          fi
+          echo "Revision: $REVISION"
+          echo "Branch suffix: $BRANCH_SUFFIX"
+          BUILD_VERSION="$MAJOR_MINOR_VERSION.$REVISION$BRANCH_SUFFIX"
+          echo "Build version: $BUILD_VERSION"
           echo "buildVersion=$BUILD_VERSION" >> $GITHUB_OUTPUT
+          BUILD_NAME="${REPO_NAME}_${BUILD_VERSION}_${{matrix.targetPlatform}}"
+          echo "Build name: $BUILD_NAME"
+          echo "buildName=$BUILD_NAME" >> $GITHUB_OUTPUT
+          EXECUTABLE_NAME=$REPO_NAME
+          echo "Executable name: $EXECUTABLE_NAME"
+          echo "executableName=$EXECUTABLE_NAME" >> $GITHUB_OUTPUT
 
       # v Git LFS v -------------------------------
       - name: Create LFS file list
@@ -249,10 +285,14 @@ jobs:
         id: cache-restore-everything-else
         uses: actions/cache/restore@v3
         with:
+#          path: |
+#                  Temp
+#                  Builds
+#                  build
+#                  obj
+#                  *.csproj
           path: |
             Temp
-            Builds
-            build
             obj
             *.csproj
           key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
@@ -281,6 +321,8 @@ jobs:
 #           versioning: Semantic
           versioning: Custom
           version: ${{ steps.set-build-version.outputs.buildVersion }}
+#          buildName: ${{ steps.set-build-version.outputs.buildName }}
+          buildName: ${{ steps.set-build-version.outputs.executableName }}
           allowDirtyBuild: true
           customParameters: -Development
           
@@ -306,6 +348,8 @@ jobs:
 #           versioning: Semantic
           versioning: Custom
           version: ${{ steps.set-build-version.outputs.buildVersion }}
+#          buildName: ${{ steps.set-build-version.outputs.buildName }}
+          buildName: ${{ steps.set-build-version.outputs.executableName }}
           allowDirtyBuild: true
           customParameters: -Development
           
@@ -322,23 +366,6 @@ jobs:
           export executing_user=$(whoami)
           sudo chown "$executing_user" ./
           
-      - name: Determine build name
-        id: set-params
-        run: |
-          REPO_NAME=$(basename ${{ github.repository }})
-          echo $REPO_NAME
-          if [ ${{ steps.unity-build.outcome }} == 'success' ]; then
-            BUILD_VERSION=${{ steps.unity-build.outputs.buildVersion }}
-          elif [ ${{ steps.unity-build-retry.outcome }} == 'success' ]; then
-            BUILD_VERSION=${{ steps.unity-build-retry.outputs.buildVersion }}
-          fi
-          echo $BUILD_VERSION
-          BUILD_NAME="${REPO_NAME}_${BUILD_VERSION}_${{matrix.targetPlatform}}"
-          echo $BUILD_NAME
-          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
-          echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_OUTPUT
-          echo "BUILD_NAME=$BUILD_NAME" >> $GITHUB_OUTPUT
-          
 #       - name: Zip build
 #         id: zip-build
 #         run: |
@@ -353,10 +380,14 @@ jobs:
 #           echo "ZIP_FILE_PATH=$ZIP_FILE_PATH" >> $GITHUB_OUTPUT
 #           cd ../..
 
+      - name: Test for build results
+        run: |
+          ls ./build
+
       - name: Upload build artifact 📦
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.set-params.outputs.BUILD_NAME }}
+          name: ${{ steps.set-build-version.outputs.buildName }}
           path: build/${{ matrix.targetPlatform }}
           
       # ^ Upload build artifacts ^ -------------------------------
@@ -378,10 +409,14 @@ jobs:
         if: success() || (github.event_name == 'workflow_dispatch' && github.event.inputs.alwaysSaveCaches == 'true')
         uses: actions/cache/save@v3
         with:
+#          path: |
+#              Temp
+#              Builds
+#              build
+#              obj
+#              *.csproj
           path: |
             Temp
-            Builds
-            build
             obj
             *.csproj
           key: ${{ runner.os }}-EverythingElse-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
@@ -392,8 +427,13 @@ jobs:
 
   release:
     name: Release 🎁
-    needs: [check_prod,build]
     runs-on: ubuntu-latest
+#    needs: [check_prod,build]
+    needs: [check_branch,build]
+    if: (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch' && github.event.inputs.release == 'true')
+#    permissions:
+#      packages: write
+#      deployments: write
     steps:
       - name: Download build artifacts ⬇
         uses: actions/download-artifact@v3
@@ -416,30 +456,46 @@ jobs:
             fi
           done
         
-      - name: Determine release tag
-        id: set-tag
-        run: |
-          VERSION_REGEX="^[0-9]+\.[0-9]+"
-          MAJOR_MINOR_VERSION=$(echo ${{ needs.build.outputs.buildVersion }} | grep -oP "$VERSION_REGEX")
-          echo "$MAJOR_MINOR_VERSION"
-          # TAG="v$MAJOR_MINOR_VERSION-Latest"
-          TAG="latest"
-          echo "$TAG"
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "majorMinorVersion=$MAJOR_MINOR_VERSION" >> $GITHUB_OUTPUT
+#      - name: Determine release tag
+#        id: set-tag
+#        run: |
+#          VERSION_REGEX="^[0-9]+\.[0-9]+"
+#          MAJOR_MINOR_VERSION=$(echo ${{ needs.build.outputs.buildVersion }} | grep -oP "$VERSION_REGEX")
+#          echo "$MAJOR_MINOR_VERSION"
+#          # TAG="v$MAJOR_MINOR_VERSION-Latest"
+#          TAG="latest"
+#          echo "$TAG"
+#          echo "tag=$TAG" >> $GITHUB_OUTPUT
+#          echo "majorMinorVersion=$MAJOR_MINOR_VERSION" >> $GITHUB_OUTPUT
       
       - name: Try delete previous release
-        uses: liudonghua123/delete-release-action@v1
+        uses: dev-drprasad/delete-tag-and-release@v1.0
         continue-on-error: true
         with:
-          release_name: ${{ steps.set-tag-outputs.tag }}
+          tag_name: ${{ needs.check_branch.outputs.release_tag }} #(required) tag name to delete
+          github_token: ${{ secrets.GITHUB_TOKEN }} # (required) a GitHub token with write access to the repo that needs to be modified
+          delete_release: true #(optional) default: true
+          
+      - name: Set release params
+        id: set_release_params
+        run: |
+          if [ ${{ github.ref }} == 'refs/heads/main' ]; then
+            GENERATE_RELEASE_NOTES="true"
+          else
+            GENERATE_RELEASE_NOTES="false"
+          fi
+          echo $GENERATE_RELEASE_NOTES
+          echo "generate_release_notes=$GENERATE_RELEASE_NOTES" >> $GITHUB_OUTPUT
       
-      - name: Release latest 📦
+      - name: Release 📦
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.set-tag.outputs.tag }}
-          name: "${{ steps.set-tag.outputs.tag }} (unstable)"
+#          tag_name: ${{ steps.set-tag.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          tag_name: ${{ needs.check_branch.outputs.release_tag }}
+          name: "${{ needs.check_branch.outputs.release_tag }} (unstable)"
           prerelease: true
-          generate_release_notes: true
+          draft: false
+          generate_release_notes: ${{ steps.set_release_params.outputs.generate_release_notes }}
           files: |
             *.zip
