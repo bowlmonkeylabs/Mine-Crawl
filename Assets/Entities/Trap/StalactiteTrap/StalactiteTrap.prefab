@@ -1009,7 +1009,6 @@ GameObject:
   m_Component:
   - component: {fileID: 528853764840805075}
   - component: {fileID: 472639286291875359}
-  - component: {fileID: 1141863900027362376}
   m_Layer: 0
   m_Name: StalactiteTrap
   m_TagString: Untagged
@@ -1087,65 +1086,6 @@ MonoBehaviour:
   _onRevive:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1141863900027362376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4474856344138851638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 472639286291875359}
-  _damageable:
-  - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Slime_Contact, Enemy_Bat_Contact,
-      Enemy_Sentinel_Projectile, Enemy_Zombie_Contact, Enemy_Mimic_Projectile, Ore_Explosive,
-      Enemy_Snake_Projectile, Player_Pickaxe_Secondary, Enemy_Bomb_Explosion, Trap_Spike,
-      Trap_Stalactite
-    _damageType: 15871
-    _damageModifierType: 3
-    _damageMultiplier: 1
-    _damageResistance: 0
-    _damageOverride: 0
-    _onDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onFailDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onDeath:
-      m_PersistentCalls:
-        m_Calls: []
-  _onDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6578201279297809007}
-        m_TargetAssemblyTypeName: BML.Scripts.MoveToHitPositon, BML.Scripts
-        m_MethodName: Move
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1633981547498171809}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &5507788027060987501
 GameObject:
   m_ObjectHideFlags: 0
@@ -1161,6 +1101,7 @@ GameObject:
   - component: {fileID: 246039119021212294}
   - component: {fileID: 1016363225589030944}
   - component: {fileID: 9113385687671369341}
+  - component: {fileID: 7498217505969064456}
   m_Layer: 6
   m_Name: Cone
   m_TagString: Untagged
@@ -1829,7 +1770,7 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1141863900027362376}
+      - m_Target: {fileID: 7498217505969064456}
         m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
@@ -1844,7 +1785,7 @@ MonoBehaviour:
   _onPickaxeSecondaryInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1141863900027362376}
+      - m_Target: {fileID: 7498217505969064456}
         m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
@@ -1872,6 +1813,64 @@ MonoBehaviour:
   uniqueID: 2168935688390990529
   updateError: 1
   checkTime: 0.2
+--- !u!114 &7498217505969064456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5507788027060987501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 472639286291875359}
+  _damageable:
+  - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Slime_Contact, Enemy_Bat_Contact,
+      Enemy_Sentinel_Projectile, Enemy_Zombie_Contact, Enemy_Mimic_Projectile, Ore_Explosive,
+      Enemy_Snake_Projectile, Player_Pickaxe_Secondary, Enemy_Bomb_Explosion, Trap_Spike
+    _damageType: 7679
+    _damageModifierType: 3
+    _damageMultiplier: 1
+    _damageResistance: 0
+    _damageOverride: 0
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  _onDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6578201279297809007}
+        m_TargetAssemblyTypeName: BML.Scripts.MoveToHitPositon, BML.Scripts
+        m_MethodName: Move
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1633981547498171809}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5637522685672020585
 GameObject:
   m_ObjectHideFlags: 0
@@ -3517,6 +3516,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476d57a1661a4a559138142354d10596, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _setOriginTransform: 0
+  _origin: {fileID: 0}
   _explosionTime:
     UseConstant: 1
     EnableInstanceOptions: 0
@@ -3549,6 +3550,7 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 999
     Variable: {fileID: 0}
+  _applyKnockback: 1
   _useExplosiveRadiusFeedback: 1
   _explosiveRadiusFeedback: {fileID: 5745527008557815035}
   _onActivate:
