@@ -1,7 +1,7 @@
 using System;
 using BML.Scripts.Utils;
 using Shapes;
-using Sirenix.OdinInspector.Editor.Drawers;
+using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using UnityEngine;
 
 namespace BML.Scripts.CaveV2.MudBun
@@ -10,9 +10,16 @@ namespace BML.Scripts.CaveV2.MudBun
     {
         #region Inspector
 
-        [SerializeField, Range(0, 360)] private float _angleRangeHorizontal;
-        [SerializeField, Range(0, 360)] private float _angleRangeVertical;
+        [SerializeField, Range(0, 180)] private float _angleRangeHorizontal = 90;
+        [SerializeField, Range(0, 180)] private float _angleRangeVertical = 90;
         private float _projectionDistance = 2f;
+
+        #endregion
+
+        #region Public Fields
+
+        public float AngleRangeHorizontal { get {return _angleRangeHorizontal;} }
+        public float AngleRangeVertical { get {return _angleRangeVertical;} }
 
         #endregion
 
@@ -67,6 +74,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 
                 DrawAngleRange(new Vector2(_angleRangeHorizontal, _angleRangeVertical), _projectionDistance, thickness);
                 Draw.Matrix = Matrix4x4.identity;
+                
             }
 #endif
         }

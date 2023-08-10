@@ -11,6 +11,7 @@ namespace BML.Scripts.CaveV2.MudBun
         #region Inspector
 
         [ShowInInspector] private List<CaveNodeConnectionPort> _connectionPorts;
+        public List<CaveNodeConnectionPort> ConnectionPorts { get{ return _connectionPorts; } }
 
         #endregion
 
