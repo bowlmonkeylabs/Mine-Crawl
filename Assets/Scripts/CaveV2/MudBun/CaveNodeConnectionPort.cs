@@ -12,7 +12,13 @@ namespace BML.Scripts.CaveV2.MudBun
 
         [SerializeField, Range(0, 180)] private float _angleRangeHorizontal = 90;
         [SerializeField, Range(0, 180)] private float _angleRangeVertical = 90;
+        
         private float _projectionDistance = 2f;
+
+#if UNITY_EDITOR
+        [SerializeField, Range(-180, 180)] private float _degreePositionAroundBounds = 0;
+        public CaveGraphMudBunRoom _caveGraphMudBunRoom;
+#endif
 
         #endregion
 
@@ -24,6 +30,19 @@ namespace BML.Scripts.CaveV2.MudBun
         #endregion
 
         #region Unity lifecycle
+
+                private void OnValidate()
+        {
+#if UNITY_EDITOR
+            if(_caveGraphMudBunRoom == null) {
+                Debug.LogError("Assign the CaveGraphMudBunRoom to the connection port to control the connection ports position");
+                return;
+            }
+            var newConnectionPortDirection = Vector2.up.Rotate(-_degreePositionAroundBounds).xoy();
+            transform.position = _caveGraphMudBunRoom.transform.position + (newConnectionPortDirection * _caveGraphMudBunRoom.ConnectionPortBoundsRadius);
+            transform.forward = newConnectionPortDirection;
+#endif
+        }
 
         private void OnDrawGizmosSelected()
         {
