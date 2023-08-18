@@ -180,6 +180,16 @@ namespace BML.Scripts.Utils
                 vector.x * Mathf.Sin(degrees * Mathf.Deg2Rad) + vector.y * Mathf.Cos(degrees * Mathf.Deg2Rad)
             );
         }
+
+        public static string ToPrint(this Vector2 vector)
+        {
+            return $"({vector.x}, {vector.y})";
+        }
+
+        public static string ToPrint(this Vector3 vector)
+        {
+            return $"({vector.x}, {vector.y}, {vector.z})";
+        }
     }
 
     [Serializable]

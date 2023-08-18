@@ -182,36 +182,39 @@ namespace BML.Scripts.CaveV2.MudBun
                                 }
                                 
                                 //get the connection points location in relation to the center of the room, then relate it to the center of the cave node
-                                var connectionPortInCaveGraphSpace = (edgeConnectionPortPairing.ConnectionPort.transform.localPosition - roomWeightedPair.value.roomPrefab.transform.localPosition) + caveNodeData.LocalPosition;
+                                var connectionPortInCaveGraphSpace = (edgeConnectionPortPairing.ConnectionPort.transform.position - roomWeightedPair.value.roomPrefab.transform.position) + caveNodeData.LocalPosition;
                                  //get the position of this end of the edge in 2d space
                                 var caveNodePosition = caveNodeData.LocalPosition.xz();
                                 //get the position of the other end of the edge in 2d space
                                 var otherEndPosition = edgeConnectionPortPairing.Edge.OtherEnd(caveNodeData).LocalPosition.xz();
                                 //move connection port to cave graph space, and reduce it to two dimensions
-                                var initialConnectionPortPositionInCaveGraphSpace = ((edgeConnectionPortPairing.ConnectionPort.transform.localPosition - roomWeightedPair.value.roomPrefab.transform.localPosition) + caveNodeData.LocalPosition).xz();
+                                var initialConnectionPortPositionInCaveGraphSpace = connectionPortInCaveGraphSpace.xz();
                                 var initialConnectionPortDirection = (initialConnectionPortPositionInCaveGraphSpace - caveNodePosition).normalized;
                                 //could also just do ConnectionPort.position.magnitue but want to keep it in cave graph space
                                 var radiusToConnectionPort = (initialConnectionPortPositionInCaveGraphSpace - caveNodePosition).magnitude;
                                 //align connection port to other end
-                                var initialAlignedConnectionPort = (radiusToConnectionPort * (otherEndPosition - caveNodePosition).normalized) + caveNodePosition;
-                                var initialAlignedConnectionPortDirection = (initialAlignedConnectionPort - caveNodePosition).normalized;
-                                var angleToRotateConnectionPortToAlignWithOtherEnd = -Vector2.SignedAngle(initialConnectionPortDirection, initialAlignedConnectionPortDirection);
+                                var initialAlignedConnectionPortDirection = (otherEndPosition - caveNodePosition).normalized;
+                                var initialAlignedConnectionPort = (radiusToConnectionPort * initialAlignedConnectionPortDirection) + caveNodePosition;
 
+                                var angleToRotateConnectionPortToAlignWithOtherEnd = -Vector2.SignedAngle(initialConnectionPortDirection, initialAlignedConnectionPortDirection);
+                                
                                 //get the max number of degrees the room can be rotated before it breaks the connection points angle range
-                                float angleRange = 0;
+                                
                                 float angleTolerance = edgeConnectionPortPairing.ConnectionPort.AngleRangeHorizontal / 2;
-                                bool isValidAngleToOtherEndFromConnectionPort = true;
-                                while(isValidAngleToOtherEndFromConnectionPort) {
-                                    angleRange += 1;
-                                    var newConnectionPointDirection = initialAlignedConnectionPortDirection.Rotate(angleRange).normalized;
+                                float angleRange = Enumerable.Range(1, 359).FirstOrDefault(degrees => {
+                                    var newConnectionPointDirection = initialAlignedConnectionPortDirection.Rotate(degrees);
                                     var newConnectionPointPosition = caveNodePosition + (radiusToConnectionPort * newConnectionPointDirection);
                                     var directionToOtherEndFromConnectionPoint = (otherEndPosition - newConnectionPointPosition).normalized;
                                     var angleToOtherEndFromConnectionPoint = Vector2.Angle(newConnectionPointDirection, directionToOtherEndFromConnectionPoint);
-                                    isValidAngleToOtherEndFromConnectionPort = angleTolerance >= angleToOtherEndFromConnectionPoint;
-                                    if(angleRange >= 360) {
-                                        isValidAngleToOtherEndFromConnectionPort = false;
-                                    }
+                                    
+                                    return angleToOtherEndFromConnectionPoint > angleTolerance;
+                                });
+                                //if it somehow gets through the whole range of degrees without finding one that breaks the tolerance (should be impossible?)
+                                //it will return default, so check for that and set to final number
+                                if(angleRange == default) {
+                                    angleRange = 360;
                                 }
+                                //the number returned will be the degree past the point of tolerance, so subtract 1
                                 angleRange -= 1;
 
                                 var lowerRotationBound = angleToRotateConnectionPortToAlignWithOtherEnd - angleRange;
@@ -219,12 +222,10 @@ namespace BML.Scripts.CaveV2.MudBun
 
                                 //go thru and determine what the smallest possible range of rotation angles we can do to rotate the room is
                                 if(lowerRotationBound > rotationBounds.Item1) {
-                                    
                                     rotationBounds.Item1 = lowerRotationBound;
                                 }
 
                                 if(upperRotationBound < rotationBounds.Item2) {
-                                    
                                     rotationBounds.Item2 = upperRotationBound;
                                 }
                                 
@@ -248,7 +249,7 @@ namespace BML.Scripts.CaveV2.MudBun
 
                             return minimalValidRotation;
                         });
-
+                        
                         //this room has no valid rotation to make the connection ports work
                         if(float.IsPositiveInfinity(minimalValidRotation)) {
                             return false;

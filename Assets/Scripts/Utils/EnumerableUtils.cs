@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -56,6 +57,14 @@ namespace BML.Scripts.Utils
             }
 
             return ret;
+        }
+
+        public static string ToPrint<T>(this IEnumerable<T> objects, Func<T, string> formatFunc = null) {
+            if(formatFunc == null) {
+                return string.Join(", ", objects);
+            }
+
+            return string.Join(", ", objects.Select(o => formatFunc(o)));
         }
     }
 }
