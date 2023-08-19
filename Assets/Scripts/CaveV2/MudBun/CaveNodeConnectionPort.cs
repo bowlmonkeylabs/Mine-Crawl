@@ -3,6 +3,7 @@ using BML.Scripts.Utils;
 using Shapes;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 namespace BML.Scripts.CaveV2.MudBun
 {
@@ -16,6 +17,7 @@ namespace BML.Scripts.CaveV2.MudBun
         private float _projectionDistance = 2f;
 
 #if UNITY_EDITOR
+        [OnValueChanged("OnDegreesChanged")]
         [SerializeField, Range(-180, 180)] private float _degreePositionAroundBounds = 0;
         public CaveGraphMudBunRoom _caveGraphMudBunRoom;
 #endif
@@ -30,19 +32,6 @@ namespace BML.Scripts.CaveV2.MudBun
         #endregion
 
         #region Unity lifecycle
-
-                private void OnValidate()
-        {
-#if UNITY_EDITOR
-            if(_caveGraphMudBunRoom == null) {
-                Debug.LogError("Assign the CaveGraphMudBunRoom to the connection port to control the connection ports position");
-                return;
-            }
-            var newConnectionPortDirection = Vector2.up.Rotate(-_degreePositionAroundBounds).xoy();
-            transform.position = _caveGraphMudBunRoom.transform.position + (newConnectionPortDirection * _caveGraphMudBunRoom.ConnectionPortBoundsRadius);
-            transform.forward = newConnectionPortDirection;
-#endif
-        }
 
         private void OnDrawGizmosSelected()
         {
@@ -99,5 +88,12 @@ namespace BML.Scripts.CaveV2.MudBun
         }
 
         #endregion
+#if UNITY_EDITOR
+        public void OnDegreesChanged() {
+            var newConnectionPortDirection = Vector2.up.Rotate(-_degreePositionAroundBounds).xoy();
+            transform.position = _caveGraphMudBunRoom.transform.position + (newConnectionPortDirection * _caveGraphMudBunRoom.ConnectionPortBoundsRadius);
+            transform.forward = newConnectionPortDirection;
+        }
+#endif
     }
 }

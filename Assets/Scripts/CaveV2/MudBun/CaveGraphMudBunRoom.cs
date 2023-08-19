@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEngine;
 
 namespace BML.Scripts.CaveV2.MudBun
@@ -12,6 +13,7 @@ namespace BML.Scripts.CaveV2.MudBun
         #region Inspector
 
         [SerializeField] private GameObject _connectionPortPrefab;
+        [OnValueChanged("OnBoundsRadiusChanged")]
         [SerializeField] private float _connectionPortBoundsRadius = 10;
         [ShowInInspector] private List<CaveNodeConnectionPort> _connectionPorts;
         public List<CaveNodeConnectionPort> ConnectionPorts { get{ return _connectionPorts; } }
@@ -46,12 +48,18 @@ namespace BML.Scripts.CaveV2.MudBun
 
         void OnDrawGizmosSelected() {
 #if UNITY_EDITOR
-            Gizmos.color = Color.black;
-            Gizmos.DrawWireSphere(transform.position, _connectionPortBoundsRadius);
+            if(PrefabStageUtility.GetCurrentPrefabStage() != null) {
+                Gizmos.color = Color.black;
+                Gizmos.DrawWireSphere(transform.position, _connectionPortBoundsRadius);
+            }      
 #endif
         }
 
         #endregion
-        
+#if UNITY_EDITOR
+        private void OnBoundsRadiusChanged() {
+            _connectionPorts.ForEach(cp => cp.OnDegreesChanged());
+        }
+#endif
     }
 }
