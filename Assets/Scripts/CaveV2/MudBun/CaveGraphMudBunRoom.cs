@@ -21,8 +21,9 @@ namespace BML.Scripts.CaveV2.MudBun
         [Button]
         private void AddConnectionPort() {
             _connectionPortPrefab.GetComponent<CaveNodeConnectionPort>()._caveGraphMudBunRoom = this;
-            var connectionPort = GameObjectUtils.SafeInstantiate(true, _connectionPortPrefab, this.transform);
-            _connectionPorts.Add(connectionPort.GetComponent<CaveNodeConnectionPort>());
+            var connectionPort = GameObjectUtils.SafeInstantiate(true, _connectionPortPrefab, this.transform).GetComponent<CaveNodeConnectionPort>();
+            _connectionPorts.Add(connectionPort);
+            connectionPort.OnDegreesChanged();
         }
 
         #endregion
