@@ -17,6 +17,7 @@ namespace BML.Scripts
         [SerializeField] private FloatReference _explosionShortFuseTime;
         [SerializeField] private FloatReference _explosionRadius;
         [SerializeField] private LayerMask _explosionMask;
+        [SerializeField] private LayerMask _obstacleMask;
         [SerializeField] private DamageType _damageType;
         [SerializeField] private IntReference _damage;
         [SerializeField] private bool _applyKnockback = true;
@@ -80,6 +81,14 @@ namespace BML.Scripts
             foreach (var col in colliders)
             {
                 if(col.gameObject == gameObject || col.attachedRigidbody?.gameObject == gameObject) {
+                    continue;
+                }
+
+                RaycastHit hit;
+                Vector3 originToTarget = col.transform.position - origin;
+                if (Physics.Raycast(origin, originToTarget.normalized, out hit, originToTarget.magnitude, _obstacleMask))
+                {
+                    // Continue if hit obstacle
                     continue;
                 }
 

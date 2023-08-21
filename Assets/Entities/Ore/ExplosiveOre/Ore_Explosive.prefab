@@ -2523,6 +2523,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476d57a1661a4a559138142354d10596, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _setOriginTransform: 0
+  _origin: {fileID: 0}
   _explosionTime:
     UseConstant: 0
     EnableInstanceOptions: 0
@@ -2547,6 +2549,9 @@ MonoBehaviour:
   _explosionMask:
     serializedVersion: 2
     m_Bits: 33984
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 1048576
   _damageType: 128
   _damage:
     UseConstant: 1
@@ -2555,6 +2560,7 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 999
     Variable: {fileID: 0}
+  _applyKnockback: 1
   _useExplosiveRadiusFeedback: 1
   _explosiveRadiusFeedback: {fileID: 4035673441891397864}
   _onActivate:
