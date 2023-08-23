@@ -29,6 +29,7 @@ namespace BML.Scripts.UI
         [SerializeField] private BoolVariable _isGodModeEnabled;
 
         [SerializeField] private StoreItem _itemToPurchase;
+        public StoreItem ItemToPurchase => _itemToPurchase;
         
         #endregion
 

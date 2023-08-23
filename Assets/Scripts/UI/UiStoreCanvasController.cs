@@ -37,6 +37,7 @@ namespace BML.Scripts.UI
         #endregion
         
         private List<UiStoreButtonController> buttonList = new List<UiStoreButtonController>();
+        private UiStoreButtonController lastSelected = null;
 
         #region Unity lifecycle
         
@@ -126,10 +127,16 @@ namespace BML.Scripts.UI
         
         public void SelectDefault()
         {
-            var firstUsableButton = buttonList.FirstOrDefault(button => button.Button.gameObject.activeSelf && button.Button.IsInteractable())?.Button ?? _cancelButton;
+            var firstUsableButtonController = buttonList
+                .FirstOrDefault(button => button.Button.gameObject.activeSelf && button.Button.IsInteractable());
+            var firstUsableButton = firstUsableButtonController?.Button ?? _cancelButton;
             if (firstUsableButton != null)
             {
                 firstUsableButton.Select();
+                if (firstUsableButtonController != null)
+                {
+                    firstUsableButtonController.SetStoreItemToSelected();
+                }
             }
         }
         
@@ -186,8 +193,16 @@ namespace BML.Scripts.UI
         protected void OnBuy(object prevStoreItem, object storeItem)
         {
             SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
-            if(_randomizeStoreOnBuy) {
+            if (_randomizeStoreOnBuy)
+            {
+                lastSelected =
+                    buttonList.FirstOrDefault(buttonController => buttonController.ItemToPurchase == (StoreItem)storeItem);
                 GenerateStoreItems();
+                if (lastSelected != null)
+                {
+                    lastSelected.SetStoreItemToSelected();
+                    lastSelected.Button.Select();
+                }
             }
         }
         
