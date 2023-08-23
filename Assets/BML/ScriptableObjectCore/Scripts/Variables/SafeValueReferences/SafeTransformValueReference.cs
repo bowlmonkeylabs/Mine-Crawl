@@ -7,6 +7,7 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using Mono.CSharp;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 
@@ -88,10 +89,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                     case TransformReferenceTypes.TransformSceneReference:
                         return ReferenceValue_TransformSceneReference?.Value;
                     case TransformReferenceTypes.GameObjectSceneReference:
-                        return ReferenceValue_GameObjectSceneReference?.Value?.transform;
+                        GameObject gameObjectValue = ReferenceValue_GameObjectSceneReference?.Value;
+                        bool isGameObjectNull = (gameObjectValue == null || gameObjectValue.SafeIsUnityNull());
+                        return isGameObjectNull ? default : gameObjectValue.transform;
                     default:
                         Debug.LogError($"Trying to access Transform but none set in inspector!");
-                        return default(Transform);
+                        return default;
                 }
             }
             set
