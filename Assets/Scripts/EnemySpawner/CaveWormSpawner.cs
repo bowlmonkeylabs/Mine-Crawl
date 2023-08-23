@@ -59,11 +59,6 @@ namespace BML.Scripts
             Destroy(spawnedWorm);
         }
 
-        private void Start()
-        {
-            if (_enableDebug) Debug.Log("Starting Worm Spawn Timer");
-        }
-
         private void Update()
         {
             UpdateParameters();
@@ -99,7 +94,6 @@ namespace BML.Scripts
 
         private void HandleSpawning()
         {
-            if (_enableDebug) Debug.Log($"isFinished {_wormSpawnTimer.IsFinished}");
             if (!_wormSpawnTimer.IsFinished)
                 return;
 
@@ -118,7 +112,6 @@ namespace BML.Scripts
             WormController wormController = spawnedWorm.GetComponent<WormController>();
             wormController.Respawn(currentSpeed);
             
-            if (_enableDebug) Debug.Log("Spawned Worm");
             lastWormSpawnTime = Time.time;
         }
 
@@ -132,7 +125,10 @@ namespace BML.Scripts
         private void StartWormTimer(bool dummy, bool hasExitedStartRoom)
         {
             if (hasExitedStartRoom)
+            {
                 _wormSpawnTimer.StartTimer();
+                if (_enableDebug) Debug.Log("Starting Worm Spawn Timer");
+            }
         }
         
     }

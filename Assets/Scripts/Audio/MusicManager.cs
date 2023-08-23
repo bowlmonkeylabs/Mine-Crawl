@@ -25,7 +25,7 @@ namespace Audio
         private void OnDisable()
         {
             _wormWarningEvent.Unsubscribe(PlayWormWarningMusic);
-            _wormSpawnTimer.Unsubscribe(PlayWormSpawnMusic);
+            _wormSpawnTimer.UnsubscribeFinished(PlayWormSpawnMusic);
         }
 
         private void PlayWormWarningMusic()
