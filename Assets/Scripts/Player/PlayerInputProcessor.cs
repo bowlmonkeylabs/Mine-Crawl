@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using AdvancedSceneManager.Utility;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using MoreMountains.Feedbacks;
@@ -209,6 +210,11 @@ namespace BML.Scripts.Player
 		private void Update()
 		{
 			_upgradeStoreDelayTimer.UpdateTime();
+
+			if (LoadingScreenUtility.IsAnyLoadingScreenOpen && playerInput.enabled)
+				playerInput.enabled = false;
+			else if (!LoadingScreenUtility.IsAnyLoadingScreenOpen && !playerInput.enabled)
+				playerInput.enabled = true;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)
