@@ -63,8 +63,11 @@ namespace BML.Scripts.Player
 		[Tooltip("Include UI INTERACTABLE states which should take FULL CONTROL (meaning they need to DISABLE player control)")]
 		[SerializeField] private VariableContainer _containerUiMenuStates_NoPlayerControl;
 		
-		[Tooltip("Include UI INTERACTABLE states which OVERLAY gameplay (meaning player still has movement, but mouse is unlocked to interact with the overlays)")]
+		[Tooltip("Include UI INTERACTABLE states which OVERLAY gameplay (meaning the player has full UI control AND limited player control, and the mouse is UNLOCKED to interact with the overlays)")]
 		[SerializeField] private VariableContainer _containerUiMenuStates_InteractableOverlay;
+		
+		[Tooltip("Include UI INTERACTABLE states which OVERLAY gameplay (meaning the player has full UI control AND limited player control, but mouse is still LOCKED)")]
+		[SerializeField] private VariableContainer _containerUiMenuStates_InteractableOverlayLockedCursor;
 
 		[Tooltip("Include UI INTERACTABLE states which should FREEZE TIME.")] 
 		[SerializeField] private VariableContainer _containerUiMenuStates_Frozen;
@@ -85,6 +88,7 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolVariable _isUsingUi_Out_Any;
 		[SerializeField] private BoolVariable _isUsingUi_Out_HidePlayerHUD;
 		[SerializeField] private BoolVariable _isUsingUi_Out_InteractableOverlay;
+		[SerializeField] private BoolVariable _isUsingUi_Out_InteractableOverlayLockedCursor;
 		
 		private InputAction jumpAction;
 		private InputAction crouchAction;
@@ -110,6 +114,16 @@ namespace BML.Scripts.Player
 			get
 			{
 				return _containerUiMenuStates_InteractableOverlay
+					.GetBoolVariables()
+					.Any(b => (b != null && b.Value));
+			}
+		}
+		
+		private bool IsUsingUi_InteractableOverlayLockedCursor
+		{
+			get
+			{
+				return _containerUiMenuStates_InteractableOverlayLockedCursor
 					.GetBoolVariables()
 					.Any(b => (b != null && b.Value));
 			}
@@ -151,6 +165,7 @@ namespace BML.Scripts.Player
 			get
 			{
 				return IsUsingUi_InteractableOverlay
+				       || IsUsingUi_InteractableOverlayLockedCursor
 				       || IsUsingUi_NoPlayerControl
 				       || _isDebugConsoleOpen.Value;
 			}
@@ -175,6 +190,7 @@ namespace BML.Scripts.Player
 			ApplyInputState();
 			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
+			_containerUiMenuStates_InteractableOverlayLockedCursor.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
 			_isDebugConsoleOpen.Subscribe(ApplyInputState);
 			_isDebugConsoleOpen.Subscribe(OnIsDebugConsoleOpenUpdated);
 
@@ -188,6 +204,7 @@ namespace BML.Scripts.Player
 		{
 			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
+			_containerUiMenuStates_InteractableOverlayLockedCursor.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_isDebugConsoleOpen.Unsubscribe(ApplyInputState);
 			_isDebugConsoleOpen.Unsubscribe(OnIsDebugConsoleOpenUpdated);
 
@@ -275,13 +292,6 @@ namespace BML.Scripts.Player
 			{
 				return;
 			}
-			
-			// Play feedback if store fails to open due to combat
-			// if (!_isStoreOpen.Value && _isPlayerInCombat.Value)
-			// {
-			// 	_onStoreFailOpen.Raise();
-			// 	return;
-			// }
 
 			if (!_isMinimapOpen.Value)
 			{
@@ -515,7 +525,12 @@ namespace BML.Scripts.Player
 			else if (IsUsingUi_InteractableOverlay)
 			{
 				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "UI", "UI_Player");
-				SetCursorState(false, !_isMinimapOpen.Value);
+				SetCursorState(false);
+			}
+			else if (IsUsingUi_InteractableOverlayLockedCursor)
+			{
+				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "UI", "UI_Player");
+				SetCursorState(playerCursorLocked);
 			}
 			else
 			{
@@ -526,8 +541,9 @@ namespace BML.Scripts.Player
 			_isUsingUi_Out_Any.Value = IsUsingUi;
 			_isUsingUi_Out_HidePlayerHUD.Value = IsUsingUi_HidePlayerHUD;
 			_isUsingUi_Out_InteractableOverlay.Value = IsUsingUi_InteractableOverlay;
+			_isUsingUi_Out_InteractableOverlayLockedCursor.Value = IsUsingUi_InteractableOverlayLockedCursor;
 			
-			if (_enableLogs) Debug.Log($"ApplyInputState Inputs (NoPlayerControl {IsUsingUi_NoPlayerControl}) (InteractableOverlay {IsUsingUi_InteractableOverlay}) => updated input state to: (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
+			if (_enableLogs) Debug.Log($"ApplyInputState Inputs (NoPlayerControl {IsUsingUi_NoPlayerControl}) (InteractableOverlay {IsUsingUi_InteractableOverlay}) (InteractableOverlayLockedCursor {IsUsingUi_InteractableOverlayLockedCursor}) => updated input state to: (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
 		}
 		
 		/// <summary>
@@ -538,7 +554,7 @@ namespace BML.Scripts.Player
 		private void SetCursorState(bool newState, bool visible = true)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
-			Cursor.visible = visible;
+			Cursor.visible = visible && !newState;
 		}
 	}
 	
