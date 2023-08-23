@@ -18,7 +18,6 @@ namespace BML.Scripts.Player
 	public class PlayerInputProcessor : MonoBehaviour
 	{
 		[SerializeField] private bool _enableLogs = true;
-		[SerializeField] private bool _enableImmediateUpgrade;
 
 		[Header("Character Input Values")]
 		public Vector2 move;
@@ -59,8 +58,6 @@ namespace BML.Scripts.Player
 		[SerializeField] private GameEvent _onIncreaseTimeScale;
 		[SerializeField] private GameEvent _onDecreaseTimeScale;
 		[SerializeField] private GameEvent _onSkipFrame;
-		[SerializeField] private TimerReference _upgradeStoreDelayTimer;
-		[SerializeField] private GameEvent _startOpenUpgradeStore;
 
 		[FormerlySerializedAs("_containerUiMenuStates")]
 		[Tooltip("Include UI INTERACTABLE states which should take FULL CONTROL (meaning they need to DISABLE player control)")]
@@ -185,10 +182,6 @@ namespace BML.Scripts.Player
 			jumpAction.canceled += SetJumpHeld;
 			crouchAction.performed += SetCrouchHeld;
 			crouchAction.canceled += SetCrouchHeld;
-
-            
-			_upgradesAvailable.Subscribe(TryToggleUpgradeStore);
-			_upgradeStoreDelayTimer.SubscribeFinished(OpenUpgradeStore);
 		}
 
 		private void OnDisable()
@@ -202,19 +195,18 @@ namespace BML.Scripts.Player
 			jumpAction.canceled -= SetJumpHeld;
 			crouchAction.performed -= SetCrouchHeld;
 			crouchAction.canceled -= SetCrouchHeld;
-
-			_upgradesAvailable.Unsubscribe(TryToggleUpgradeStore);
-            _upgradeStoreDelayTimer.UnsubscribeFinished(OpenUpgradeStore);
 		}
 
 		private void Update()
 		{
-			_upgradeStoreDelayTimer.UpdateTime();
-
 			if (LoadingScreenUtility.IsAnyLoadingScreenOpen && playerInput.enabled)
+			{
 				playerInput.enabled = false;
+			}
 			else if (!LoadingScreenUtility.IsAnyLoadingScreenOpen && !playerInput.enabled)
+			{
 				playerInput.enabled = true;
+			}
 		}
 
 		private void OnApplicationFocus(bool hasFocus)
@@ -365,9 +357,8 @@ namespace BML.Scripts.Player
             if(_isUpgradeStoreOpen.Value && _upgradesAvailable.Value > 0) {
                 return;
             }
-            
-            if (_upgradeStoreDelayTimer.IsStopped || _upgradeStoreDelayTimer.IsFinished) _upgradeStoreDelayTimer.RestartTimer();
-            _startOpenUpgradeStore.Raise();
+
+            _isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}
 
 		private void OpenUpgradeStore()
@@ -386,13 +377,6 @@ namespace BML.Scripts.Player
 
 			_isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}
-
-        public void TryToggleUpgradeStore() {
-            if(_enableImmediateUpgrade && _upgradesAvailable.Value > 0) {
-	            if (_upgradeStoreDelayTimer.IsStopped || _upgradeStoreDelayTimer.IsFinished) _upgradeStoreDelayTimer.RestartTimer();
-	            _startOpenUpgradeStore.Raise();
-            }
-        }
 
 		public void OnToggleGodMode()
 		{
