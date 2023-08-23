@@ -27,6 +27,7 @@ namespace BML.Scripts.Player
 
         [SerializeField, FoldoutGroup("Player components")] private KinematicCharacterMotor _kinematicCharacterMotor;
         [SerializeField, FoldoutGroup("Player components")] private FallDamageController _fallDamageController;
+        [SerializeField, FoldoutGroup("Player components")] private PlayerInput playerInput;
         
         [SerializeField, FoldoutGroup("Interactable hover")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Interactable hover")] private UiAimReticle _uiAimReticle;
@@ -102,7 +103,8 @@ namespace BML.Scripts.Player
         
         [SerializeField, FoldoutGroup("Debug")] private bool _enableLogs;
 
-        private bool pickaxeInputHeld = false;
+        private InputAction primaryAction;
+        private InputAction secondaryAction;
         private bool secondaryInputHeld = false;
 
         #endregion
@@ -123,6 +125,8 @@ namespace BML.Scripts.Player
             SetGodMode();
             _requiredExperience.Value = _levelExperienceCurve.Value.Evaluate(_playerCurrentLevel.Value);
             _previousRequiredExperience.Value = 0;
+            primaryAction = playerInput.actions.FindAction("Primary");
+            secondaryAction = playerInput.actions.FindAction("Secondary");
         }
 
         private void OnDisable()
@@ -139,46 +143,22 @@ namespace BML.Scripts.Player
 
         private void Update()
         {
-            if (pickaxeInputHeld) TrySwingPickaxe();
-            if (secondaryInputHeld) TryUseSweep();
+            if (primaryAction.IsPressed()) TrySwingPickaxe();
+            if (secondaryAction.IsPressed()) TryUseSweep();
             HandleHover();
             _combatTimer.UpdateTime(!_anyEnemiesEngaged.Value ? _safeCombatTimerDecayMultiplier : 1f);
             _pickaxeSwingCooldown.UpdateTime();
             _pickaxeSweepCooldown.UpdateTime();
             _torchCooldownTimer.UpdateTime();
             _ropeCooldownTimer.UpdateTime();
+            
+            
         }
 
         #endregion
 
         #region Input callbacks
-        
-        private void OnPrimary(InputValue value)
-        {
-            if (value.isPressed)
-            {
-                pickaxeInputHeld = true;
-                TrySwingPickaxe();
-            }
-            else
-            {
-                pickaxeInputHeld = false;
-            }
-        }
 
-        private void OnSecondary(InputValue value)
-        {
-            if (value.isPressed)
-            {
-                secondaryInputHeld = true;
-                TryUseSweep();
-            }
-            else
-            {
-                secondaryInputHeld = false;
-            }
-        }
-        
         private void OnThrowTorch(InputValue value)
         {
             if (value.isPressed)
