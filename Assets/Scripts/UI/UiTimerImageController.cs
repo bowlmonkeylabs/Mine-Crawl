@@ -13,6 +13,7 @@ namespace BML.Scripts.UI
         [Required, SerializeField] private TimerReference _timer;
         [Required, SerializeField] private Image _image;
         [SerializeField, Range(0f, 1f)] private float _maxFill = 1f;
+        [SerializeField] private bool _showWhenTimerIsInactive = true;
 
         public enum DisplayMode
         {
@@ -41,17 +42,19 @@ namespace BML.Scripts.UI
         private void UpdateImage()
         {
             float fillPercent = 0;
+            var timerInactive = (!_timer.IsStarted || _timer.IsFinished);
             switch (_displayMode)
             {
                 case DisplayMode.TimeRemaining:
                     fillPercent = (_timer.RemainingTime ?? _timer.Duration) / _timer.Duration;
                     break;
                 case DisplayMode.TimeElapsed:
-                    var timerInactive = (!_timer.IsStarted || _timer.IsFinished);
+                    
                     fillPercent = (timerInactive ? 1 : _timer.ElapsedTime / _timer.Duration);
                     break;
             }
             _image.fillAmount = fillPercent * _maxFill;
+            _image.enabled = !timerInactive || _showWhenTimerIsInactive;
         }
         
     }

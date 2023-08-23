@@ -65,6 +65,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             startTime = Time.time;
             lastUpdateTime = startTime;
             remainingTime = Duration;
+            OnUpdate?.Invoke();
         }
 
         public void ResetTimer()
@@ -75,6 +76,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             startTime = Time.time;
             lastUpdateTime = startTime;
             remainingTime = Duration;
+            OnUpdate?.Invoke();
         }
 
         public void StopTimer()
