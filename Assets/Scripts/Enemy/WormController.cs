@@ -1,5 +1,6 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace BML.Scripts.Enemy
@@ -23,7 +24,10 @@ namespace BML.Scripts.Enemy
 
         private void Update()
         {
-            wormToPlayerDir = (_playerRef.Value.position - transform.position).normalized;
+            if (!_playerRef.SafeIsUnityNull())
+            {
+                wormToPlayerDir = (_playerRef.Value.position - transform.position).normalized;
+            }
             moveDirection = Vector3.RotateTowards(
                 moveDirection,
                 wormToPlayerDir,
