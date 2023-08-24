@@ -2,6 +2,7 @@
 using BehaviorDesigner.Runtime.Tasks;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.Scripts.Utils;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -45,6 +46,11 @@ namespace BML.Scripts.Tasks
 
         public override TaskStatus OnUpdate()
         {
+            if (currentLookAtTarget.SafeIsUnityNull() || currentRotateTarget.SafeIsUnityNull())
+            {
+                return TaskStatus.Failure;
+            }
+            
             Vector3 delta = currentLookAtTarget.position - currentRotateTarget.position;
             if (_horizontalOnly)
             {
@@ -52,13 +58,17 @@ namespace BML.Scripts.Tasks
                 dir = Vector3.ProjectOnPlane(dir, originalUpDirection).normalized;
             }
             else
+            {
                 dir = delta.normalized;
+            }
 
             Quaternion rot = Quaternion.LookRotation(dir, originalUpDirection);
             currentRotateTarget.rotation = rot;
 
             if (_keepRunning)
+            {
                 return TaskStatus.Running;
+            }
             
             return TaskStatus.Success;
         }
