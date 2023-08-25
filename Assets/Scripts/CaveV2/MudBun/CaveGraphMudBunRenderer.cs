@@ -154,38 +154,14 @@ namespace BML.Scripts.CaveV2.MudBun
                             return false;
                         }
 
-                        var edgeConnectionPortPairingsSets = new List<List<ConnectionPortEdge>>();
-
-                        List<ConnectionPortEdge> allPossiblePairings = edges.SelectMany(edge => {
-                            return roomConnectionPorts.Select(connectionPoint => 
-                                new ConnectionPortEdge {
-                                    ConnectionPort = connectionPoint,
-                                    Edge = edge
-                                }
-                            );
-                        }).ToList();
-
-                        var expectedLength = Utils.MathUtils.Factorial(roomConnectionPorts.Count());
-
-                        for(var i = 0; i < expectedLength; i++) {
-                            var pairingCombinationResult = new List<ConnectionPortEdge>();
-                            var find = allPossiblePairings[i];
-
-                            while(find != null) {
-                                pairingCombinationResult.Add(find);
-                                
-                                // Find the next pairing that's not already in the result
-                                find = allPossiblePairings.FirstOrDefault(pairingToCheck =>     
-                                    !pairingCombinationResult.Any(alreadyAddedPairing => (
-                                            pairingToCheck.Edge.Equals(alreadyAddedPairing.Edge) 
-                                            || pairingToCheck.ConnectionPort.Equals(alreadyAddedPairing.ConnectionPort)
-                                        )
-                                    )
-                                );
-                            }
-
-                            edgeConnectionPortPairingsSets.Add(pairingCombinationResult);
-                        }
+                        var edgeConnectionPortPairingsSets = roomConnectionPorts.Select(
+                            (startingConnPort, startingConnPortIndex) => edges.Select(
+                                (edge, edgeIndex) => new ConnectionPortEdge
+                                {
+                                    ConnectionPort = roomConnectionPorts[(startingConnPortIndex + edgeIndex) % roomConnectionPorts.Count],
+                                    Edge = edge,
+                                }).ToList()
+                            ).ToList();
 
                         float minimalValidRotation = edgeConnectionPortPairingsSets.Aggregate(float.PositiveInfinity, (minimalValidRotation, edgeConnectionPortPairingsSet) => {
                             (float LowerRotationBound, float UpperRotationBound) = edgeConnectionPortPairingsSet.Aggregate((-1000f, 1000f), (rotationBounds, edgeConnectionPortPairing) => {
