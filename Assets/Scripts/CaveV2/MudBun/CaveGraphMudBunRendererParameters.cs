@@ -86,34 +86,6 @@ namespace BML.Scripts.CaveV2.MudBun
 
             return _roomTypes[nodeType].roomPrefabs;
         }
-        
-        // public GameObject GetRandomRoom(CaveNodeType nodeType = CaveNodeType.Unassigned)
-        // {
-        //     if (!_roomTypes.ContainsKey(nodeType))
-        //     {
-        //         return null;
-        //     }
-
-        //     var randomRoom = _roomTypes[nodeType].RandomWithWeights();
-        //     return randomRoom.roomPrefab;
-        // }
-
-        // public IEnumerable<GameObject> GetAllRooms()
-        // {
-        //     var allPrefabs = new List<GameObject>();
-
-        //     allPrefabs.Add(this.StartRoomPrefab);
-        //     allPrefabs.Add(this.EndRoomPrefab);
-        //     allPrefabs.Add(this.MerchantRoomPrefab);
-        //     allPrefabs.Add(this.TunnelPrefab);
-        //     var roomTypePrefabs = this._roomTypes
-        //         .Values.SelectMany(v => 
-        //             v.Options.Select(op => op.value.roomPrefab)
-        //         );
-        //     allPrefabs.AddRange(roomTypePrefabs);
-
-        //     return allPrefabs;
-        // }
 
         #endregion
     }
