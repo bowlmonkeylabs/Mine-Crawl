@@ -17,6 +17,13 @@ namespace BML.Scripts.CaveV2.MudBun
         [SerializeField] private float _connectionPortBoundsRadius = 10;
         [ShowInInspector] private List<CaveNodeConnectionPort> _connectionPorts;
         public List<CaveNodeConnectionPort> ConnectionPorts { get{ return _connectionPorts; } }
+        
+#if UNITY_EDITOR
+        private void OnBoundsRadiusChanged() 
+        {
+            _connectionPorts.ForEach(cp => cp.OnDegreesChanged());
+        }
+#endif
 
         [Button]
         private void AddConnectionPort() {
@@ -57,10 +64,6 @@ namespace BML.Scripts.CaveV2.MudBun
         }
 
         #endregion
-#if UNITY_EDITOR
-        private void OnBoundsRadiusChanged() {
-            _connectionPorts.ForEach(cp => cp.OnDegreesChanged());
-        }
-#endif
+
     }
 }

@@ -24,10 +24,19 @@ namespace BML.Scripts.CaveV2.MudBun
 
         #endregion
 
-        #region Public Fields
+        #region Public interface
 
         public float AngleRangeHorizontal { get {return _angleRangeHorizontal;} }
         public float AngleRangeVertical { get {return _angleRangeVertical;} }
+        
+#if UNITY_EDITOR
+        public void OnDegreesChanged() 
+        {
+            var newConnectionPortDirection = Vector2.up.Rotate(-_degreePositionAroundBounds).xoy();
+            transform.position = _caveGraphMudBunRoom.transform.position + (newConnectionPortDirection * _caveGraphMudBunRoom.ConnectionPortBoundsRadius);
+            transform.forward = newConnectionPortDirection;
+        }
+#endif
 
         #endregion
 
@@ -88,12 +97,6 @@ namespace BML.Scripts.CaveV2.MudBun
         }
 
         #endregion
-#if UNITY_EDITOR
-        public void OnDegreesChanged() {
-            var newConnectionPortDirection = Vector2.up.Rotate(-_degreePositionAroundBounds).xoy();
-            transform.position = _caveGraphMudBunRoom.transform.position + (newConnectionPortDirection * _caveGraphMudBunRoom.ConnectionPortBoundsRadius);
-            transform.forward = newConnectionPortDirection;
-        }
-#endif
+
     }
 }
