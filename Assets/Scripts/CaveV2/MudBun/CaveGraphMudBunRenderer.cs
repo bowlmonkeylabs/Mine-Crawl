@@ -95,7 +95,7 @@ namespace BML.Scripts.CaveV2.MudBun
             }
             
             // Spawn "rooms" at each cave node
-            foreach (var caveNodeData in _caveGraph.Vertices)
+            foreach (var caveNodeData in _caveGraph.Vertices.OrderBy(vertex => vertex.StartDistance))
             {
                 bool changeNodeColor = true;
                 
