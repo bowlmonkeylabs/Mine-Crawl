@@ -146,7 +146,8 @@ namespace BML.Scripts.CaveV2.MudBun
                     .Where(roomWeightedPair => {
                         List<CaveNodeConnectionPort> roomConnectionPorts = roomWeightedPair.value.roomPrefab.GetComponent<CaveGraphMudBunRoom>()?.ConnectionPorts;
 
-                        if(roomConnectionPorts == null || roomConnectionPorts.Count() != edges.Count()) {
+                        if (roomConnectionPorts == null || roomConnectionPorts.Count() != edges.Count())
+                        {
                             return false;
                         }
 
@@ -339,13 +340,14 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     // first = false;
 
-                    var sourceTestPosition = sourceWorldPosition + edgeDiff / 4;
-                    var targetTestPosition = targetWorldPosition - edgeDiff / 4;
+                    var sourceTestPosition = sourceWorldPosition + (sourceConnectionPort != null ? Vector3.zero : edgeDiff / 4f);
+                    var targetTestPosition = targetWorldPosition - (targetConnectionPort != null ? Vector3.zero : edgeDiff / 4f);
 
                     // TODO prevent tunnels from cutting into rooms
                     // var sourceEdgePosition = source.LocalPosition;
                     // var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(edgeMidPosition);
-                    var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(sourceTestPosition, edgeRotation);
+                    // var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(sourceTestPosition, edgeRotation);
+                    var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(sourceTestPosition, source.GameObject.transform.rotation);
                     var sourceColliderCenter = source.BoundsColliders.Select(coll => coll.bounds.center).Average();
                     sourceEdgePosition.y = sourceColliderCenter.y;
                     // sourceEdgePosition -= edgeDirFlattened;
@@ -353,7 +355,8 @@ namespace BML.Scripts.CaveV2.MudBun
                     
                     // var targetEdgePosition = target.LocalPosition;
                     // var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(edgeMidPosition);
-                    var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(targetTestPosition, edgeRotation);
+                    // var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(targetTestPosition, edgeRotation);
+                    var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(targetTestPosition, target.GameObject.transform.rotation);
                     var targetColliderCenter = target.BoundsColliders.Select(coll => coll.bounds.center).Average();
                     targetEdgePosition.y = targetColliderCenter.y;
                     // targetEdgePosition += edgeDirFlattened;
