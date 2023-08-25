@@ -57,16 +57,19 @@ namespace BML.Scripts.CaveV2.MudBun
         #endregion
 
         #region MudBun
-        class ConnectionPortEdge {
+        
+        class ConnectionPortEdge 
+        {
             public CaveNodeConnectionPort ConnectionPort;
             public CaveNodeConnectionData Edge;
         }
 
-        class SelectedRoom {
-            public GameObject roomPrefab = null;
-            public Quaternion roomRotation = Quaternion.identity;
-            public Vector3 roomScale;
-            public Dictionary<CaveNodeConnectionData, int> edgeToConnectionPortIndexMap;
+        class SelectedRoom 
+        {
+            public GameObject RoomPrefab = null;
+            public Quaternion RoomRotation = Quaternion.identity;
+            public Vector3 RoomScale;
+            public Dictionary<CaveNodeConnectionData, int> EdgeToConnectionPortIndexMap;
         }
 
         protected override IEnumerator GenerateMudBunInternal(
@@ -105,9 +108,9 @@ namespace BML.Scripts.CaveV2.MudBun
                     !_caveGraphRenderParams.StartRoomPrefab.SafeIsUnityNull())
                 {
                     selectedRoom = new SelectedRoom() {
-                        roomPrefab = _caveGraphRenderParams.StartRoomPrefab,
-                        roomScale = Vector3.one,
-                        roomRotation = Quaternion.identity
+                        RoomPrefab = _caveGraphRenderParams.StartRoomPrefab,
+                        RoomScale = Vector3.one,
+                        RoomRotation = Quaternion.identity
                     };
                     changeNodeColor = false;
                 }
@@ -115,18 +118,18 @@ namespace BML.Scripts.CaveV2.MudBun
                          !_caveGraphRenderParams.EndRoomPrefab.SafeIsUnityNull())
                 {
                     selectedRoom = new SelectedRoom() {
-                        roomPrefab = _caveGraphRenderParams.EndRoomPrefab,
-                        roomScale = Vector3.one,
-                        roomRotation = Quaternion.identity,
+                        RoomPrefab = _caveGraphRenderParams.EndRoomPrefab,
+                        RoomScale = Vector3.one,
+                        RoomRotation = Quaternion.identity,
                     };
                 }
                 else if(caveNodeData == _caveGraph.MerchantNode &&
                         !_caveGraphRenderParams.MerchantRoomPrefab.SafeIsUnityNull())
                 {
                     selectedRoom = new SelectedRoom() {
-                        roomPrefab = _caveGraphRenderParams.MerchantRoomPrefab,
-                        roomScale = Vector3.one,
-                        roomRotation = Quaternion.identity,
+                        RoomPrefab = _caveGraphRenderParams.MerchantRoomPrefab,
+                        RoomScale = Vector3.one,
+                        RoomRotation = Quaternion.identity,
                     };
                     changeNodeColor = false;
                 }
@@ -137,14 +140,14 @@ namespace BML.Scripts.CaveV2.MudBun
                     List<RandomUtils.WeightPair<SelectedRoom>> validWeightedRoomPairs = _caveGraphRenderParams.GetWeightedRoomOptionsForType(caveNodeData.NodeType).Options
                     .Select(roomWeightedPair => {
                         return new RandomUtils.WeightPair<SelectedRoom>(new SelectedRoom() {
-                                roomPrefab = roomWeightedPair.value,
-                                roomScale = Vector3.one * caveNodeData.Scale,
-                                roomRotation = Quaternion.identity,
-                                edgeToConnectionPortIndexMap = new Dictionary<CaveNodeConnectionData, int>()
+                                RoomPrefab = roomWeightedPair.value,
+                                RoomScale = Vector3.one * caveNodeData.Scale,
+                                RoomRotation = Quaternion.identity,
+                                EdgeToConnectionPortIndexMap = new Dictionary<CaveNodeConnectionData, int>()
                             }, roomWeightedPair.weight);
                     })
                     .Where(roomWeightedPair => {
-                        List<CaveNodeConnectionPort> roomConnectionPorts = roomWeightedPair.value.roomPrefab.GetComponent<CaveGraphMudBunRoom>()?.ConnectionPorts;
+                        List<CaveNodeConnectionPort> roomConnectionPorts = roomWeightedPair.value.RoomPrefab.GetComponent<CaveGraphMudBunRoom>()?.ConnectionPorts;
 
                         if (roomConnectionPorts == null || roomConnectionPorts.Count() != edges.Count())
                         {
@@ -165,15 +168,23 @@ namespace BML.Scripts.CaveV2.MudBun
                         var expectedLength = Utils.MathUtils.Factorial(roomConnectionPorts.Count());
 
                         for(var i = 0; i < expectedLength; i++) {
-                            var pairingCombination = new List<ConnectionPortEdge>();
+                            var pairingCombinationResult = new List<ConnectionPortEdge>();
                             var find = allPossiblePairings[i];
 
                             while(find != null) {
-                                pairingCombination.Add(find);
-                                find = allPossiblePairings.FirstOrDefault(pairing => !pairingCombination.Any(p => pairing.Edge.Equals(p.Edge) || pairing.ConnectionPort.Equals(p.ConnectionPort)));
+                                pairingCombinationResult.Add(find);
+                                
+                                // Find the next pairing that's not already in the result
+                                find = allPossiblePairings.FirstOrDefault(pairingToCheck =>     
+                                    !pairingCombinationResult.Any(alreadyAddedPairing => (
+                                            pairingToCheck.Edge.Equals(alreadyAddedPairing.Edge) 
+                                            || pairingToCheck.ConnectionPort.Equals(alreadyAddedPairing.ConnectionPort)
+                                        )
+                                    )
+                                );
                             }
 
-                            edgeConnectionPortPairingsSets.Add(pairingCombination);
+                            edgeConnectionPortPairingsSets.Add(pairingCombinationResult);
                         }
 
                         float minimalValidRotation = edgeConnectionPortPairingsSets.Aggregate(float.PositiveInfinity, (minimalValidRotation, edgeConnectionPortPairingsSet) => {
@@ -183,7 +194,7 @@ namespace BML.Scripts.CaveV2.MudBun
                                 }
                                 
                                 //get the connection points location in relation to the center of the room, then relate it to the center of the cave node
-                                var connectionPortInCaveGraphSpace = (edgeConnectionPortPairing.ConnectionPort.transform.position - roomWeightedPair.value.roomPrefab.transform.position) + caveNodeData.LocalPosition;
+                                var connectionPortInCaveGraphSpace = (edgeConnectionPortPairing.ConnectionPort.transform.position - roomWeightedPair.value.RoomPrefab.transform.position) + caveNodeData.LocalPosition;
                                  //get the position of this end of the edge in 2d space
                                 var caveNodePosition = caveNodeData.LocalPosition.xz();
                                 //get the position of the other end of the edge in 2d space
@@ -242,7 +253,7 @@ namespace BML.Scripts.CaveV2.MudBun
                             float midPointRotation = (LowerRotationBound + UpperRotationBound) / 2f;
                             if(Mathf.Abs(midPointRotation) < Mathf.Abs(minimalValidRotation)) {
                                 edgeConnectionPortPairingsSet.ForEach(edgeConnectionPortPairing => {
-                                    roomWeightedPair.value.edgeToConnectionPortIndexMap[edgeConnectionPortPairing.Edge] = roomConnectionPorts.FindIndex(rcp => rcp == edgeConnectionPortPairing.ConnectionPort);
+                                    roomWeightedPair.value.EdgeToConnectionPortIndexMap[edgeConnectionPortPairing.Edge] = roomConnectionPorts.FindIndex(rcp => rcp == edgeConnectionPortPairing.ConnectionPort);
                                 }); 
                                 
                                 return midPointRotation;
@@ -257,7 +268,7 @@ namespace BML.Scripts.CaveV2.MudBun
                         }
 
                         //set valid rooms rotation
-                        roomWeightedPair.value.roomRotation = Quaternion.AngleAxis(minimalValidRotation, Vector3.up);
+                        roomWeightedPair.value.RoomRotation = Quaternion.AngleAxis(minimalValidRotation, Vector3.up);
                         return true;
                     }).ToList();
 
@@ -269,8 +280,8 @@ namespace BML.Scripts.CaveV2.MudBun
                     if(validWeightedRoomOptions.Options.Count() <= 0) {
                         var roomPrefab = _caveGraphRenderParams.GetRandomDefaultRoomForType(caveNodeData.NodeType);
                         selectedRoom = new SelectedRoom(){
-                            roomPrefab = roomPrefab,
-                            roomScale = Vector3.one * caveNodeData.Scale
+                            RoomPrefab = roomPrefab,
+                            RoomScale = Vector3.one * caveNodeData.Scale
                         };
                     } else {
                         validWeightedRoomOptions.Normalize();
@@ -279,14 +290,14 @@ namespace BML.Scripts.CaveV2.MudBun
                 }
 
                 // Spawn room
-                GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, selectedRoom.roomPrefab, mudRenderer.transform);
-                newGameObject.transform.SetPositionAndRotation(localOrigin + caveNodeData.LocalPosition, selectedRoom.roomRotation);
-                newGameObject.transform.localScale = selectedRoom.roomScale;
+                GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, selectedRoom.RoomPrefab, mudRenderer.transform);
+                newGameObject.transform.SetPositionAndRotation(localOrigin + caveNodeData.LocalPosition, selectedRoom.RoomRotation);
+                newGameObject.transform.localScale = selectedRoom.RoomScale;
                 caveNodeData.GameObject = newGameObject;
                 var instancedRoomConnectionPorts = newGameObject.GetComponent<CaveGraphMudBunRoom>()?.ConnectionPorts;
                 if(instancedRoomConnectionPorts != null && instancedRoomConnectionPorts.Count() > 0) {
-                    selectedRoom.edgeToConnectionPortIndexMap.Keys.ToList().ForEach(edge => {
-                        var connectionPort = instancedRoomConnectionPorts[selectedRoom.edgeToConnectionPortIndexMap[edge]];
+                    selectedRoom.EdgeToConnectionPortIndexMap.Keys.ToList().ForEach(edge => {
+                        var connectionPort = instancedRoomConnectionPorts[selectedRoom.EdgeToConnectionPortIndexMap[edge]];
                         if(caveNodeData == edge.Source) {
                             edge.SourceConnectionPort = connectionPort;
                         } else {
