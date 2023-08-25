@@ -132,7 +132,7 @@ namespace BML.Scripts.CaveV2.MudBun
                 }
                 else
                 {
-                    IEnumerable<CaveNodeConnectionData> edges = _caveGraph.AdjacentEdges(caveNodeData);
+                    List<CaveNodeConnectionData> edges = _caveGraph.AdjacentEdges(caveNodeData).ToList();
                     
                     List<RandomUtils.WeightPair<SelectedRoom>> validWeightedRoomPairs = _caveGraphRenderParams.GetWeightedRoomOptionsForType(caveNodeData.NodeType).Options
                     .Select(roomWeightedPair => {
@@ -153,13 +153,13 @@ namespace BML.Scripts.CaveV2.MudBun
 
                         var edgeConnectionPortPairingsSets = new List<List<ConnectionPortEdge>>();
 
-                        List<ConnectionPortEdge> allPossiblePairings = edges.ToList().SelectMany(edge => {
-                            return roomConnectionPorts.Select(connectionPoint => {
-                                return new ConnectionPortEdge {
+                        List<ConnectionPortEdge> allPossiblePairings = edges.SelectMany(edge => {
+                            return roomConnectionPorts.Select(connectionPoint => 
+                                new ConnectionPortEdge {
                                     ConnectionPort = connectionPoint,
                                     Edge = edge
-                                };
-                            });
+                                }
+                            );
                         }).ToList();
 
                         var expectedLength = Utils.MathUtils.Factorial(roomConnectionPorts.Count());
