@@ -24,7 +24,7 @@ namespace BML.Scripts.Enemy
 
         private void Update()
         {
-            if (!_playerRef.SafeIsUnityNull())
+            if (!_playerRef.SafeIsUnityNull() && !transform.SafeIsUnityNull())
             {
                 wormToPlayerDir = (_playerRef.Value.position - transform.position).normalized;
             }
