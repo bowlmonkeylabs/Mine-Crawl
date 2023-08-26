@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
 using UnityEditor.Experimental.SceneManagement;
+#endif
 using UnityEngine;
 
 namespace BML.Scripts.CaveV2.MudBun
@@ -13,17 +15,18 @@ namespace BML.Scripts.CaveV2.MudBun
         #region Inspector
 
         [SerializeField] private GameObject _connectionPortPrefab;
-        [OnValueChanged("OnBoundsRadiusChanged")]
-        [SerializeField] private float _connectionPortBoundsRadius = 10;
         [ShowInInspector] private List<CaveNodeConnectionPort> _connectionPorts;
         public List<CaveNodeConnectionPort> ConnectionPorts { get{ return _connectionPorts; } }
         
 #if UNITY_EDITOR
+        [OnValueChanged("OnBoundsRadiusChanged")]
+        [SerializeField] private float _connectionPortBoundsRadius = 10;
+
         private void OnBoundsRadiusChanged() 
         {
             _connectionPorts.ForEach(cp => cp.OnDegreesChanged());
         }
-#endif
+
 
         [Button]
         private void AddConnectionPort() {
@@ -32,10 +35,12 @@ namespace BML.Scripts.CaveV2.MudBun
             _connectionPorts.Add(connectionPort);
             connectionPort.OnDegreesChanged();
         }
+#endif
 
         #endregion
-
+#if UNITY_EDITOR
         public float ConnectionPortBoundsRadius { get { return _connectionPortBoundsRadius; } }
+#endif
  
         #region Unity lifecycle
 
