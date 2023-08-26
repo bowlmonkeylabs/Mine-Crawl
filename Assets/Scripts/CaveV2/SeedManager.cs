@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using MoreMountains.Tools;
 using System.Linq;
 
-namespace BML.Scripts.CaveV2 {
+namespace BML.Scripts.CaveV2
+{
     public class SeedManager : MMPersistentSingleton<SeedManager>
     {
         [SerializeField, InlineEditor] private SeedHistory _seedHistory;
@@ -24,7 +25,10 @@ namespace BML.Scripts.CaveV2 {
             }
         }
 
-        protected override void Awake() {
+        protected override void Awake() 
+        {
+            base.Awake();
+            
             InitializeSeed();
         }
 
