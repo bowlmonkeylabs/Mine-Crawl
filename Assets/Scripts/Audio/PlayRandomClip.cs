@@ -32,6 +32,11 @@ namespace BML.Scripts
 
         private void PlayNextClip()
         {
+            if (randomizedList.Count == 0)
+            {
+                Debug.LogWarning($"No clips assigned ({this.gameObject.name}).");
+            }
+            
             _audioSource.clip = randomizedList[playingIndex];
             _audioSource.Play();
             playingIndex++;
