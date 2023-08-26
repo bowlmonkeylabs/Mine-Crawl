@@ -24,7 +24,7 @@ namespace BML.Scripts.Enemy
 
         private void Update()
         {
-            if (!_playerRef.SafeIsUnityNull() && !transform.SafeIsUnityNull())
+            if (!_playerRef.SafeIsUnityNull() && !_playerRef.Value.SafeIsUnityNull() && !transform.SafeIsUnityNull())
             {
                 wormToPlayerDir = (_playerRef.Value.position - transform.position).normalized;
             }
@@ -46,8 +46,8 @@ namespace BML.Scripts.Enemy
         private void HandleBurrowParticles()
         {
             RaycastHit hit;
-            if (Physics.Raycast(_mainCameraRef.Value.position, -wormToPlayerDir, out hit,
-                Mathf.Infinity, _terrainMask))
+            if (!_mainCameraRef.SafeIsUnityNull() && !_mainCameraRef.Value.SafeIsUnityNull() 
+                && Physics.Raycast(_mainCameraRef.Value.position, -wormToPlayerDir, out hit, Mathf.Infinity, _terrainMask))
             {
                 _burrowParticlePivot.gameObject.SetActive(true);
                 _burrowParticlePivot.position = hit.point;
