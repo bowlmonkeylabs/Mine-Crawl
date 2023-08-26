@@ -31,19 +31,19 @@ namespace BML.Scripts.CaveV2.MudBun
         [SerializeField] public GameObject TunnelWithBarrierPrefab;
 
         [Serializable]
-        private class RoomOption
+        private class RoomOptions
         {
             // [PreviewField]
-            public GameObject roomPrefab;
+            public RandomUtils.WeightedOptions<GameObject> defaultPrefabs;
+            public RandomUtils.WeightedOptions<GameObject> roomPrefabs;
             // [Tooltip("Set to -1 to disable limit.")]
             // public int countLimit = -1;
         }
-
-        [DictionaryDrawerSettings(KeyLabel = "Room Type", ValueLabel = "Options",
+        [DictionaryDrawerSettings(KeyLabel = "Room Type", ValueLabel = "Rooms",
             DisplayMode = DictionaryDisplayOptions.ExpandedFoldout)]
         [SerializeField]
-        private Dictionary<CaveNodeType, RandomUtils.WeightedOptions<RoomOption>> _roomTypes =
-            new Dictionary<CaveNodeType, RandomUtils.WeightedOptions<RoomOption>>();
+        private Dictionary<CaveNodeType, RoomOptions> _roomTypes =
+            new Dictionary<CaveNodeType, RoomOptions>();
 
         #endregion
 
@@ -66,33 +66,25 @@ namespace BML.Scripts.CaveV2.MudBun
         #endregion
 
         #region Utils
-        
-        public GameObject GetRandomRoom(CaveNodeType nodeType = CaveNodeType.Unassigned)
+
+        public GameObject GetRandomDefaultRoomForType(CaveNodeType nodeType)
         {
             if (!_roomTypes.ContainsKey(nodeType))
             {
                 return null;
             }
 
-            var randomRoom = _roomTypes[nodeType].RandomWithWeights();
-            return randomRoom.roomPrefab;
+            return _roomTypes[nodeType].defaultPrefabs.RandomWithWeights();
         }
 
-        public IEnumerable<GameObject> GetAllRooms()
+        public RandomUtils.WeightedOptions<GameObject> GetWeightedRoomOptionsForType(CaveNodeType nodeType)
         {
-            var allPrefabs = new List<GameObject>();
+            if (!_roomTypes.ContainsKey(nodeType))
+            {
+                return default;
+            }
 
-            allPrefabs.Add(this.StartRoomPrefab);
-            allPrefabs.Add(this.EndRoomPrefab);
-            allPrefabs.Add(this.MerchantRoomPrefab);
-            allPrefabs.Add(this.TunnelPrefab);
-            var roomTypePrefabs = this._roomTypes
-                .Values.SelectMany(v => 
-                    v.Options.Select(op => op.value.roomPrefab)
-                );
-            allPrefabs.AddRange(roomTypePrefabs);
-
-            return allPrefabs;
+            return _roomTypes[nodeType].roomPrefabs;
         }
 
         #endregion

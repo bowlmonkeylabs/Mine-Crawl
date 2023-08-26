@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.CaveV2.SpawnObjects;
+using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.Utils;
 using QuikGraph;
 using Sirenix.OdinInspector;
@@ -20,6 +21,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public float Length { get; private set; }
         [ShowInInspector] public float SteepnessAngle { get; private set; }
         [ShowInInspector] public bool IsBlocked { get; set; }
+        [ShowInInspector] public CaveNodeConnectionPort SourceConnectionPort { get; set; }
+        [ShowInInspector] public CaveNodeConnectionPort TargetConnectionPort { get; set; }
         
         // Calculated properties
         [ShowInInspector] public int MainPathDistance 

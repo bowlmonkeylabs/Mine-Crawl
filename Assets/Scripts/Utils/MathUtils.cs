@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Linq;
 
 namespace BML.Scripts.Utils
 {
@@ -39,6 +40,10 @@ namespace BML.Scripts.Utils
             float randInRange = Random.Range(min, max);
             float randInReflectedRange = Random.Range(-max, -min);
             return Random.Range(0, 2) == 0 ? randInRange : randInReflectedRange;
+        }
+
+        public static int Factorial(int num) {
+            return Enumerable.Range(1, num).ToList().Aggregate(1, (factorial, x) => factorial * x);
         }
     }
 }

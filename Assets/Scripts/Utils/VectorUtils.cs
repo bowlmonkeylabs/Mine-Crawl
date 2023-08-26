@@ -172,6 +172,24 @@ namespace BML.Scripts.Utils
         {
             return Mathf.Max(v.x, v.y, v.z);
         }
+
+        public static Vector2 Rotate(this Vector2 vector, float degrees)
+        {
+            return new Vector2(
+                vector.x * Mathf.Cos(degrees * Mathf.Deg2Rad) - vector.y * Mathf.Sin(degrees * Mathf.Deg2Rad),
+                vector.x * Mathf.Sin(degrees * Mathf.Deg2Rad) + vector.y * Mathf.Cos(degrees * Mathf.Deg2Rad)
+            );
+        }
+
+        public static string ToPrint(this Vector2 vector)
+        {
+            return $"({vector.x}, {vector.y})";
+        }
+
+        public static string ToPrint(this Vector3 vector)
+        {
+            return $"({vector.x}, {vector.y}, {vector.z})";
+        }
     }
 
     [Serializable]
