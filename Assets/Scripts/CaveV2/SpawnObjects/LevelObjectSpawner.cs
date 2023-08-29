@@ -121,7 +121,10 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             bool success = SpawnObjectsAtTags(this.transform, retryOnFailure);
             if (!success)
             {
-                Debug.LogError("LevelObjectSpawner failed.");
+                if (_caveGenerator.EnableLogs)
+                {
+                    Debug.LogError("LevelObjectSpawner failed.");
+                }
                 _caveGenerator.RetryGenerateCaveGraph();
                 return;
             }
