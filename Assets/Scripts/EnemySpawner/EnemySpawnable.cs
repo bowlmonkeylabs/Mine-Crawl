@@ -21,9 +21,11 @@ namespace BML.Scripts
         public void Despawn()
         {
             _onDespawn?.Invoke();
-            
+
             if (SpawnPoint != null)
-                SpawnPoint.Occupied = false;
+            {
+                SpawnPoint.RecordEnemyDespawned();
+            }
             
             Destroy(this.gameObject);
         }
@@ -31,7 +33,9 @@ namespace BML.Scripts
         public void OnDeath()
         {
             if (SpawnPoint != null)
-                SpawnPoint.Occupied = false;
+            {
+                SpawnPoint.RecordEnemyDied();
+            }
         }
 
         #endregion

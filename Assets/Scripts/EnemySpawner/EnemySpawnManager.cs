@@ -42,6 +42,8 @@ namespace BML.Scripts
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
         [SerializeField] private GameEvent _onAfterGenerateLevelObjects;
         [Required, SerializeField] [InlineEditor()] private EnemySpawnerParams _enemySpawnerParams;
+        [SerializeField] private float _immediateSpawnDelay = 0.5f;
+        private float _lastImmediateSpawnTime = 0f;
 
         [UnityEngine.Tooltip(
             "Controls range within spawn points will be considered for active spawning. 'Player Distance' is defined by the CaveNodeData, in terms of graph distance from the player's current location.")]
@@ -101,6 +103,7 @@ namespace BML.Scripts
         private void Update()
         {
             if (!IsDespawningPaused) HandleDespawning();
+            if (!IsSpawningPaused && !_isSpawningPaused.Value) HandleImmediateSpawning();
             if (!IsSpawningPaused && !_isSpawningPaused.Value) HandleSpawning();
         }
         
@@ -197,10 +200,12 @@ namespace BML.Scripts
         {
             bool inRangeOfPlayer = (spawnPoint.ParentNode.PlayerDistance >= _minMaxSpawnPlayerDistance.x
                 && spawnPoint.ParentNode.PlayerDistance <= _minMaxSpawnPlayerDistance.y);
+            bool spawnImmediate = (spawnPoint.SpawnImmediate && spawnPoint.ParentNode.PlayerDistance <= 1);
             bool isExitChallengeActive = (_isExitChallengeActive.Value);
             bool isCurrentRoom = (spawnPoint.ParentNode.PlayerDistance == 0);
 
             return (inRangeOfPlayer)
+                   || (spawnImmediate)
                    || (isExitChallengeActive && isCurrentRoom);
         }
 
@@ -258,10 +263,10 @@ namespace BML.Scripts
 
                 caveNodeData.SpawnPoints.Where(spawnPoint =>
                     _activeSpawnPointsByTag.ContainsKey(spawnPoint.tag))
-                    .ForEach(spawnPoint =>
-                    {
-                        spawnPoint.EnemySpawnWeight = modifiedWeight;
-                    });
+                        .ForEach(spawnPoint =>
+                        {
+                            spawnPoint.EnemySpawnWeight = modifiedWeight;
+                        });
             }
         }
         
@@ -272,7 +277,9 @@ namespace BML.Scripts
         private void EnableSpawning()
         {
             if (_hasPlayerExitedStartRoom.Value)
+            {
                 _isSpawningPaused.Value = false;
+            }
             
         }
 
@@ -323,8 +330,10 @@ namespace BML.Scripts
         private void HandleSpawning()
         {
             if (Time.time < lastSpawnTime + _enemySpawnerParams.SpawnDelay)
+            {
                 return;
-            
+            }
+
             bool noActiveSpawnPoints = _activeSpawnPointsByTag == null
                                        || _activeSpawnPointsByTag.Count == 0
                                        || _activeSpawnPointsByTag.All(kv => kv.Value.Count == 0);
@@ -335,8 +344,11 @@ namespace BML.Scripts
             }
 
             // Check against current enemy cap
+            bool reachedGlobalSpawnCap = _currentEnemyCount.Value >= _enemySpawnerParams.SpawnCap;
+            bool anySpawnPointsIgnoreGlobalCap =
+                _activeSpawnPointsByTag.Any(kv => kv.Value.Any(spawnPoint => spawnPoint.IgnoreGlobalSpawnCap));
             UpdateEnemyCount();
-            if (_currentEnemyCount.Value >=  _enemySpawnerParams.SpawnCap)
+            if (reachedGlobalSpawnCap && !anySpawnPointsIgnoreGlobalCap)
             {
                 if (_enableLogs) Debug.Log($"HandleSpawning Spawn cap full");
                 return;
@@ -346,14 +358,16 @@ namespace BML.Scripts
             
             var weightPairs =  _enemySpawnerParams.SpawnAtTags.Select(e => 
                 new RandomUtils.WeightPair<EnemySpawnParams>(e, e.NormalizedSpawnWeight)).ToList();
+            
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("EnemySpawnerCount") + SeedManager.Instance.GetSteppedSeed("EnemySpawnerRetry"));
+            SeedManager.Instance.UpdateSteppedSeed("EnemySpawnerRetry");
 
-            Random.InitState(SeedManager.Instance.GetSteppedSeed("EnemySpawerCount") + SeedManager.Instance.GetSteppedSeed("EnemySpawerRetry"));
-            SeedManager.Instance.UpdateSteppedSeed("EnemySpawerRetry");
-            
             EnemySpawnParams randomEnemyParams = RandomUtils.RandomWithWeights(weightPairs);
-            
+
             List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemyParams.Tag]
-                .Where(spawnPoint => spawnPoint.EnemySpawnWeight != 0)
+                .Where(spawnPoint => spawnPoint.EnemySpawnWeight != 0 && !spawnPoint.Occupied
+                    && (!reachedGlobalSpawnCap || spawnPoint.IgnoreGlobalSpawnCap)
+                    && (randomEnemyParams.SpawnInPlayerVistedRooms || !spawnPoint.ParentNode.PlayerVisited)) // TODO what actually uses SpawnInPlayerVisitedRooms?
                 .ToList();
             
             // If no spawn points in range for this tag, return
@@ -378,28 +392,16 @@ namespace BML.Scripts
             // Choose weighted random spawn point
             SpawnPoint randomSpawnPoint = RandomUtils.RandomWithWeights(spawnPointWeights);
 
-            if (randomSpawnPoint.Occupied)
-            {
-                if (_enableLogs) Debug.LogWarning($"HandleSpawning Spawn point occupied for enemy: {randomEnemyParams.Prefab?.name}");
-                return;
-            }
-
-            if (!randomEnemyParams.SpawnInPlayerVistedRooms && randomSpawnPoint.ParentNode.PlayerVisited)
-            {
-                if (_enableLogs) Debug.LogWarning($"HandleSpawning Failed Spawn {randomEnemyParams.Prefab?.name}" +
-                                                  $" : Spawn point's node is visited");
-                return;
-            }
-
             // Calculate random spawn position offset
             var randomOffset = Random.insideUnitCircle;
-            var spawnPoint = randomSpawnPoint.transform.position +
+            var spawnPosition = randomSpawnPoint.transform.position +
                              new Vector3(randomOffset.x, 0f, randomOffset.y) * randomEnemyParams.SpawnRadiusOffset;
             
             // Raycast from spawn position to place new game object along the level surface
+            // TODO why doesn't this use the spawn point projection function?
             Vector3 spawnPos;
             var hitStableSurface = SpawnObjectsUtil.GetPointTowards(
-                (spawnPoint - randomEnemyParams.RaycastDirection * randomEnemyParams.RaycastOffset),
+                (spawnPosition - randomEnemyParams.RaycastDirection * randomEnemyParams.RaycastOffset),
                 randomEnemyParams.RaycastDirection,
                 out spawnPos,
                 _terrainLayerMask,
@@ -416,22 +418,94 @@ namespace BML.Scripts
 
             // Spawn chosen enemy at chosen spawn point
             var newEnemy = SpawnEnemy(spawnPos, randomEnemyParams, randomSpawnPoint, randomSpawnPoint.ParentNode,
-                true);
-            SeedManager.Instance.UpdateSteppedSeed("EnemySpawerCount");
-
-            if (randomEnemyParams.OccupySpawnPoint)
-                randomSpawnPoint.Occupied = true;
-
-            SeedManager.Instance.UpdateSteppedSeed("EnemySpawerRetry", SeedManager.Instance.Seed);
+                !randomSpawnPoint.IgnoreGlobalSpawnCap);
+            SeedManager.Instance.UpdateSteppedSeed("EnemySpawnerCount");
+            SeedManager.Instance.UpdateSteppedSeed("EnemySpawnerRetry", SeedManager.Instance.Seed);
             lastSpawnTime = Time.time;
+        }
+
+        private void HandleImmediateSpawning()
+        {
+            if (Time.time < _lastImmediateSpawnTime + _immediateSpawnDelay)
+                return;
+            
+            bool anyToSpawnImmediate = _activeSpawnPointsByTag.Any(kv => kv.Value
+                .Any(spawnPoint => spawnPoint.SpawnImmediate && !spawnPoint.Occupied && spawnPoint.SpawnChance > 0));
+            if (anyToSpawnImmediate)
+            {
+                Random.InitState(SeedManager.Instance.GetSteppedSeed("EnemySpawnerImmediateCount") + SeedManager.Instance.GetSteppedSeed("EnemySpawnerImmediateRetry"));
+                SeedManager.Instance.UpdateSteppedSeed("EnemySpawnerImmediateRetry");
+                
+                foreach (var kv in _activeSpawnPointsByTag)
+                {
+                    var enemyParamsForTag =
+                        _enemySpawnerParams.SpawnAtTags.FirstOrDefault(enemySpawnerParams => enemySpawnerParams.Tag == kv.Key);
+                    if (enemyParamsForTag == null)
+                    {
+                        continue;
+                    }
+                    
+                    var spawnImmediate = _activeSpawnPointsByTag[kv.Key]
+                        .Where(spawnPoint => spawnPoint.SpawnImmediate && !spawnPoint.Occupied && spawnPoint.SpawnChance > 0)
+                        .OrderBy(spawnPoint => spawnPoint.EnemySpawnWeight);
+
+                    foreach (var spawnPoint in spawnImmediate)
+                    {            
+                        bool reachedGlobalSpawnCap1 = _currentEnemyCount.Value >= _enemySpawnerParams.SpawnCap;
+                        if (reachedGlobalSpawnCap1 && !spawnPoint.IgnoreGlobalSpawnCap)
+                        {
+                            continue;
+                        }
+                        
+                        // Calculate random spawn position offset
+                        var randomOffset1 = Random.insideUnitCircle;
+                        var spawnPosition1 = spawnPoint.transform.position +
+                                            new Vector3(randomOffset1.x, 0f, randomOffset1.y) * enemyParamsForTag.SpawnRadiusOffset;
+                
+                        // Raycast from spawn position to place new game object along the level surface
+                        // TODO why doesn't this use the spawn point projection function?
+                        Vector3 spawnPos1;
+                        var hitStableSurface1 = SpawnObjectsUtil.GetPointTowards(
+                            (spawnPosition1 - enemyParamsForTag.RaycastDirection * enemyParamsForTag.RaycastOffset),
+                            enemyParamsForTag.RaycastDirection,
+                            out spawnPos1,
+                            _terrainLayerMask,
+                            _maxRaycastLength);
+                
+                        // Cancel spawn if did not find surface to spawn
+                        if (enemyParamsForTag.RequireStableSurface && !hitStableSurface1)
+                        {
+                            if (_enableLogs)
+                                Debug.LogWarning($"Failed to spawn {enemyParamsForTag.Prefab?.name}. No stable " +
+                                                 $"surface found!");
+                            continue;
+                        }
+
+                        // Spawn chosen enemy at chosen spawn point
+                        var newEnemy1 = SpawnEnemy(spawnPos1, enemyParamsForTag, spawnPoint, spawnPoint.ParentNode,
+                            !spawnPoint.IgnoreGlobalSpawnCap);
+
+                        if (!spawnPoint.IgnoreGlobalSpawnCap)
+                        {
+                            UpdateEnemyCount();
+                        }
+                    }
+                    
+                }
+                
+                SeedManager.Instance.UpdateSteppedSeed("EnemySpawnerImmediateCount");
+                SeedManager.Instance.UpdateSteppedSeed("EnemySpawnerImmediateRetry", SeedManager.Instance.Seed);
+                _lastImmediateSpawnTime = Time.time;
+            }
         }
         
         private GameObject SpawnEnemy(Vector3 position, EnemySpawnParams enemy, SpawnPoint spawnPoint,
             ICaveNodeData caveNodeData, bool doCountForSpawnCap)
         {
             // Instantiate new enemy game object
-            var newGameObject =
-                GameObjectUtils.SafeInstantiate(true, enemy.Prefab, _enemyContainer);
+            var newGameObject = GameObjectUtils.SafeInstantiate(true, enemy.Prefab, _enemyContainer);
+            
+            spawnPoint.RecordEnemySpawned(enemy.OccupySpawnPoint);
             
             var spawnOffset = -enemy.RaycastDirection * enemy.SpawnPosOffset;
             newGameObject.transform.position = position + spawnOffset;

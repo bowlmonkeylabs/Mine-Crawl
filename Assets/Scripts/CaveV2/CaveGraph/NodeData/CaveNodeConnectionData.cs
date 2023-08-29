@@ -37,7 +37,6 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             => Mathf.RoundToInt((Source.PlayerDistanceDelta + Target.PlayerDistanceDelta) / 2f);
         [ShowInInspector] public float DirectPlayerDistance
             => Mathf.Min(Source.DirectPlayerDistance, Target.DirectPlayerDistance);
-        
         [ShowInInspector] 
         public bool PlayerVisited
         {
@@ -45,8 +44,9 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             set
             {
                 if (!playerVisited && value)
+                {
                     OnPlayerVisited();
-                
+                }
                 playerVisited = value;
             }
         }

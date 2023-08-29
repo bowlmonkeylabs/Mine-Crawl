@@ -33,6 +33,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 parentNode = value;
                 parentNode.onPlayerVisited += OnPlayerVisited;
                 _projectedPosition = null;
+                _projectedRotation = null;
             }
         }
 
@@ -40,7 +41,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private LayerMask _projectionLayerMask;
         [SerializeField, ShowIf("@this._projectionBehavior == SpawnPointProjectionBehavior.Vector || this._projectionBehavior == SpawnPointProjectionBehavior.Randomize")] 
         private Vector3 _projectionVector = Vector3.down;
-        [SerializeField, ShowIf("@this._projectionBehavior == SpawnPointProjectionBehavior.Randomize")] private Vector2 _projectionDirectionRandomnessRangeDegrees = new Vector2(30, 15);
+        [SerializeField, ShowIf("@this._projectionBehavior == SpawnPointProjectionBehavior.Randomize")] 
+        private Vector2 _projectionDirectionRandomnessRangeDegrees = new Vector2(30, 15);
         [SerializeField] private float _projectionDistance = 45f;
 
         [SerializeField] private bool _doInheritParentRotation = true;
@@ -51,8 +53,26 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         
         [SerializeField] [Range(0f, 1f)] private float _startingSpawnChance = 1f;
         [SerializeField] private bool _disableIfPlayerVisited;
-        [SerializeField, ReadOnly] public bool Occupied;
-        [ShowInInspector, ReadOnly] public float SpawnChance { get; set; } = 1f;
+
+        [SerializeField] private bool _persistSpawns = false;
+        [ShowInInspector, ReadOnly] private bool _previousSpawnWasDespawned = false;
+        [SerializeField] private bool _guaranteeSpawnIfInRange = false;
+        [SerializeField] private bool _limitToOneSpawnAtATime = false;
+        [SerializeField] private int _spawnLimit = -1;
+        [ShowInInspector, ReadOnly] private int _spawnCount = 0;
+        [SerializeField] public bool IgnoreGlobalSpawnCap = false;
+        
+        [ShowInInspector, ReadOnly] public bool Occupied;
+
+        [ShowInInspector, ReadOnly]
+        public float SpawnChance
+        {
+            get => _spawnChance * (_spawnLimit > -1 && _spawnCount >= _spawnLimit ? 0 : 1);
+            set => _spawnChance = value;
+        }
+
+        private float _spawnChance = 1f;
+        [ShowInInspector, ReadOnly] public bool SpawnImmediate => (_guaranteeSpawnIfInRange || (_persistSpawns && _previousSpawnWasDespawned));
         [ShowInInspector, ReadOnly] public float EnemySpawnWeight { get; set; } = 1f;
         
         [SerializeField] private bool _showDebugPrefab;
@@ -208,6 +228,31 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             _projectedPosition = null;
             _projectedRotation = null;
             return (_projectedPosition, _projectedRotation);
+        }
+
+        public void RecordEnemySpawned(bool occupySpawnPoint)
+        {
+            _spawnCount++;
+            Occupied = (occupySpawnPoint || _limitToOneSpawnAtATime);
+        }
+
+        public void RecordEnemyDespawned()
+        {
+            if (_persistSpawns)
+            {
+                _previousSpawnWasDespawned = true;
+            }
+            if (_persistSpawns || _spawnLimit > -1)
+            {
+                _spawnCount--;
+            }
+            Occupied = false;
+        }
+
+        public void RecordEnemyDied()
+        {
+            _previousSpawnWasDespawned = false;
+            Occupied = false;
         }
         
         #endregion
