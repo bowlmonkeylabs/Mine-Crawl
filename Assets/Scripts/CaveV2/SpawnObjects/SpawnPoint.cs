@@ -8,6 +8,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.CaveV2.SpawnObjects
@@ -56,10 +57,15 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private bool _limitToOneSpawnAtATime = false;
         [SerializeField, Tooltip("Limit the number of enemies this spawner can produce for it's lifetime.")] 
         private int _spawnLimit = -1;
+        [ShowInInspector, ReadOnly] public bool ReachedSpawnLimit => (_spawnLimit > -1 && _spawnCount >= _spawnLimit);
         [ShowInInspector, ReadOnly] private int _spawnCount = 0;
         [SerializeField, Tooltip("If enabled, the above 'spawn limit' will only be applied to spawns from 'guarantee spawn if in range'; after the limit is reached guaranteed spawns will cease, but the spawn point will still be available for the EnemySpawnManager to repopulate through it's normal spawning routine.")] 
         private bool _applySpawnLimitOnlyToGuaranteedSpawns = false;
-        [SerializeField, Tooltip("Ignore the EnemySpawnManager's global concurrent spawn limit.")] public bool IgnoreGlobalSpawnCap = false;
+        [FormerlySerializedAs("IgnoreGlobalSpawnCap")] [SerializeField, Tooltip("Ignore the EnemySpawnManager's global concurrent spawn limit.")] 
+        private bool _ignoreGlobalSpawnCap = false;
+        [ShowInInspector, ReadOnly] public bool IgnoreGlobalSpawnCap => _ignoreGlobalSpawnCap && (!OnlyIgnoreGlobalSpawnCapForGuaranteedSpawns || (_guaranteeSpawnIfInRange && (_spawnLimit <= -1 || _spawnLimit >= _spawnCount))); 
+        [SerializeField] 
+        public bool OnlyIgnoreGlobalSpawnCapForGuaranteedSpawns = true; 
 
         [FoldoutGroup("Debug"), SerializeField] private bool _showDebugPrefab;
         [FoldoutGroup("Debug"), SerializeField] private GameObject _debugPrefab;
