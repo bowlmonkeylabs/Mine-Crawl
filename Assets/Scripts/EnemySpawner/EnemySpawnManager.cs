@@ -33,8 +33,6 @@ namespace BML.Scripts
         [SerializeField] private Transform _enemyContainer;
 
         [TitleGroup("Spawning Parameters")]
-        [SerializeField] private LayerMask _terrainLayerMask; // TODO remove deprecated
-        [Range(0f,100f), SerializeField] private float _maxRaycastLength = 10f;
         [SerializeField, Range(1, 10)] private int _despawnNodeDistance = 5;
         [SerializeField] private BoolVariable _isSpawningPaused;
         [SerializeField] private IntVariable _currentEnemyCount;
