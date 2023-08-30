@@ -59,6 +59,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private bool _guaranteeSpawnIfInRange = false;
         [SerializeField] private bool _limitToOneSpawnAtATime = false;
         [SerializeField] private int _spawnLimit = -1;
+        [SerializeField] private bool _applySpawnLimitOnlyToGuaranteedSpawns = false;
         [ShowInInspector, ReadOnly] private int _spawnCount = 0;
         [SerializeField] public bool IgnoreGlobalSpawnCap = false;
         
@@ -67,12 +68,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [ShowInInspector, ReadOnly]
         public float SpawnChance
         {
-            get => _spawnChance * (_spawnLimit > -1 && _spawnCount >= _spawnLimit ? 0 : 1);
+            get => _spawnChance * (!_applySpawnLimitOnlyToGuaranteedSpawns && _spawnLimit > -1 && _spawnCount >= _spawnLimit ? 0 : 1);
             set => _spawnChance = value;
         }
 
         private float _spawnChance = 1f;
-        [ShowInInspector, ReadOnly] public bool SpawnImmediate => (_guaranteeSpawnIfInRange || (_persistSpawns && _previousSpawnWasDespawned));
+        [ShowInInspector, ReadOnly] public bool SpawnImmediate => ((_guaranteeSpawnIfInRange && (_spawnLimit <= -1 || _spawnLimit > _spawnCount)) 
+                                                                   || (_persistSpawns && _previousSpawnWasDespawned));
         [ShowInInspector, ReadOnly] public float EnemySpawnWeight { get; set; } = 1f;
         
         [SerializeField] private bool _showDebugPrefab;
