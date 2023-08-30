@@ -434,11 +434,12 @@ namespace BML.Scripts
                 
                 foreach (var kv in _activeSpawnPointsByTag)
                 {
-                    var enemyParamsForTag =
-                        _enemySpawnerParams.SpawnAtTags.FirstOrDefault(enemySpawnerParams => enemySpawnerParams.Tag == kv.Key);
-                    // TODO because there are currently many types of enemies all being spawned with the same tag, this will always spawn the small slime (first enemy in list) even though it could be many others.
-                    if (enemyParamsForTag == null)
+                    var enemyOptionsForTag = _enemySpawnerParams.SpawnAtTags
+                        .Where(enemySpawnerParams => enemySpawnerParams.Tag == kv.Key)
+                        .ToList();
+                    if (!enemyOptionsForTag.Any())
                     {
+                        // TODO handle error
                         continue;
                     }
                     
@@ -454,26 +455,30 @@ namespace BML.Scripts
                             continue;
                         }
                         
+                        // TODO weight the choice more logically
+                        var randomEnemyIndex = Random.Range(0, enemyOptionsForTag.Count - 1);
+                        var enemySpawnParams = enemyOptionsForTag[randomEnemyIndex];
+                        
                         // Calculate random spawn position offset
                         var randomOffset = Random.insideUnitCircle;
                         var spawnPosition = spawnPoint.transform.position +
-                                            new Vector3(randomOffset.x, 0f, randomOffset.y) * enemyParamsForTag.SpawnRadiusOffset;
+                                            new Vector3(randomOffset.x, 0f, randomOffset.y) * enemySpawnParams.SpawnRadiusOffset;
                 
                         // Raycast from spawn position to place new game object along the level surface
-                        var spawnPos = spawnPoint.Project(enemyParamsForTag.SpawnPosOffset, currentUniqueSeedForContext);
+                        var spawnPos = spawnPoint.Project(enemySpawnParams.SpawnPosOffset, currentUniqueSeedForContext);
                         bool hitStableSurface = (spawnPos.position != null);
                 
                         // Cancel spawn if did not find surface to spawn
-                        if (enemyParamsForTag.RequireStableSurface && !hitStableSurface)
+                        if (enemySpawnParams.RequireStableSurface && !hitStableSurface)
                         {
                             if (_enableLogs)
-                                Debug.LogWarning($"Failed to spawn {enemyParamsForTag.Prefab?.name}. No stable " +
+                                Debug.LogWarning($"Failed to spawn {enemySpawnParams.Prefab?.name}. No stable " +
                                                  $"surface found!");
                             continue;
                         }
 
                         // Spawn chosen enemy at chosen spawn point
-                        var newEnemy = SpawnEnemy((Vector3)spawnPos.position, (Quaternion)spawnPos.rotation, enemyParamsForTag, spawnPoint, spawnPoint.ParentNode,
+                        var newEnemy = SpawnEnemy((Vector3)spawnPos.position, (Quaternion)spawnPos.rotation, enemySpawnParams, spawnPoint, spawnPoint.ParentNode,
                             !spawnPoint.IgnoreGlobalSpawnCap);
 
                         if (!spawnPoint.IgnoreGlobalSpawnCap)
