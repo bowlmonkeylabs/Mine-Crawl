@@ -368,6 +368,7 @@ namespace BML.Scripts
             List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemyParams.Tag]
                 .Where(spawnPoint => spawnPoint.EnemySpawnWeight != 0 && !spawnPoint.Occupied
                     && (!reachedGlobalSpawnCap || spawnPoint.IgnoreGlobalSpawnCap)
+                    && !spawnPoint.SpawnImmediate
                 ).ToList();
             
             // If no spawn points in range for this tag, return
@@ -393,6 +394,7 @@ namespace BML.Scripts
             SpawnPoint randomSpawnPoint = RandomUtils.RandomWithWeights(spawnPointWeights);
 
             // Calculate random spawn position offset
+            // TODO refactor to fixed offset?
             var randomOffset = Random.insideUnitCircle;
             var spawnPosition = randomSpawnPoint.transform.position +
                              new Vector3(randomOffset.x, 0f, randomOffset.y) * randomEnemyParams.SpawnRadiusOffset;
@@ -436,6 +438,7 @@ namespace BML.Scripts
                 {
                     var enemyParamsForTag =
                         _enemySpawnerParams.SpawnAtTags.FirstOrDefault(enemySpawnerParams => enemySpawnerParams.Tag == kv.Key);
+                    // TODO because there are currently many types of enemies all being spawned with the same tag, this will always spawn the small slime (first enemy in list) even though it could be many others.
                     if (enemyParamsForTag == null)
                     {
                         continue;
