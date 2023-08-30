@@ -262,7 +262,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private void OnPlayerVisited(object o, EventArgs e)
         {
             if (_disableIfPlayerVisited)
+            {
                 SpawnChance = 0f;
+            }
         }
 
         private void DrawDebugMesh(Vector3 position)

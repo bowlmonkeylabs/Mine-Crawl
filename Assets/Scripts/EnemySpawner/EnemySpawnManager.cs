@@ -367,8 +367,7 @@ namespace BML.Scripts
             List<SpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemyParams.Tag]
                 .Where(spawnPoint => spawnPoint.EnemySpawnWeight != 0 && !spawnPoint.Occupied
                     && (!reachedGlobalSpawnCap || spawnPoint.IgnoreGlobalSpawnCap)
-                    && (randomEnemyParams.SpawnInPlayerVistedRooms || !spawnPoint.ParentNode.PlayerVisited)) // TODO what actually uses SpawnInPlayerVisitedRooms?
-                .ToList();
+                ).ToList();
             
             // If no spawn points in range for this tag, return
             if (potentialSpawnPointsForTag.Count == 0)
