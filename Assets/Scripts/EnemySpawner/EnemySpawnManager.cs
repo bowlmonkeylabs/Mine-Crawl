@@ -445,35 +445,35 @@ namespace BML.Scripts
                         continue;
                     }
                     
-                    var spawnImmediate = _activeSpawnPointsByTag[kv.Key]
+                    var immediateSpawnPoints = _activeSpawnPointsByTag[kv.Key]
                         .Where(spawnPoint => spawnPoint.SpawnImmediate && !spawnPoint.Occupied && spawnPoint.SpawnChance > 0)
                         .OrderBy(spawnPoint => spawnPoint.EnemySpawnWeight);
 
-                    foreach (var spawnPoint in spawnImmediate)
+                    foreach (var spawnPoint in immediateSpawnPoints)
                     {            
-                        bool reachedGlobalSpawnCap1 = _currentEnemyCount.Value >= _enemySpawnerParams.SpawnCap;
-                        if (reachedGlobalSpawnCap1 && !spawnPoint.IgnoreGlobalSpawnCap)
+                        bool reachedGlobalSpawnCap = _currentEnemyCount.Value >= _enemySpawnerParams.SpawnCap;
+                        if (reachedGlobalSpawnCap && !spawnPoint.IgnoreGlobalSpawnCap)
                         {
                             continue;
                         }
                         
                         // Calculate random spawn position offset
-                        var randomOffset1 = Random.insideUnitCircle;
-                        var spawnPosition1 = spawnPoint.transform.position +
-                                            new Vector3(randomOffset1.x, 0f, randomOffset1.y) * enemyParamsForTag.SpawnRadiusOffset;
+                        var randomOffset = Random.insideUnitCircle;
+                        var spawnPosition = spawnPoint.transform.position +
+                                            new Vector3(randomOffset.x, 0f, randomOffset.y) * enemyParamsForTag.SpawnRadiusOffset;
                 
                         // Raycast from spawn position to place new game object along the level surface
                         // TODO why doesn't this use the spawn point projection function?
-                        Vector3 spawnPos1;
-                        var hitStableSurface1 = SpawnObjectsUtil.GetPointTowards(
-                            (spawnPosition1 - enemyParamsForTag.RaycastDirection * enemyParamsForTag.RaycastOffset),
+                        Vector3 spawnPos;
+                        var hitStableSurface = SpawnObjectsUtil.GetPointTowards(
+                            (spawnPosition - enemyParamsForTag.RaycastDirection * enemyParamsForTag.RaycastOffset),
                             enemyParamsForTag.RaycastDirection,
-                            out spawnPos1,
+                            out spawnPos,
                             _terrainLayerMask,
                             _maxRaycastLength);
                 
                         // Cancel spawn if did not find surface to spawn
-                        if (enemyParamsForTag.RequireStableSurface && !hitStableSurface1)
+                        if (enemyParamsForTag.RequireStableSurface && !hitStableSurface)
                         {
                             if (_enableLogs)
                                 Debug.LogWarning($"Failed to spawn {enemyParamsForTag.Prefab?.name}. No stable " +
@@ -482,7 +482,7 @@ namespace BML.Scripts
                         }
 
                         // Spawn chosen enemy at chosen spawn point
-                        var newEnemy1 = SpawnEnemy(spawnPos1, enemyParamsForTag, spawnPoint, spawnPoint.ParentNode,
+                        var newEnemy = SpawnEnemy(spawnPos, enemyParamsForTag, spawnPoint, spawnPoint.ParentNode,
                             !spawnPoint.IgnoreGlobalSpawnCap);
 
                         if (!spawnPoint.IgnoreGlobalSpawnCap)
