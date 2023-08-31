@@ -42,8 +42,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [SerializeField] private bool _rotateTowardsSurfaceNormal = true;
         [SerializeField] private Vector3 _rotationEulerOffset = Vector3.zero;
         
-        [SerializeField, ReadOnly] private Vector3? _projectedPosition = null; 
-        [SerializeField, ReadOnly] private Quaternion? _projectedRotation = null; 
+        [ShowInInspector, ReadOnly] private Vector3? _projectedPosition = null; 
+        [ShowInInspector, ReadOnly] private Quaternion? _projectedRotation = null; 
         
         [TitleGroup("Spawn behavior")]
         [SerializeField] [Range(0f, 1f)] private float _startingSpawnChance = 1f;
@@ -134,6 +134,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     Gizmos.DrawRay(position, this.transform.TransformDirection(_projectionVector));
                 }
                 
+                // Project();
                 Project();
                 if (_projectedPosition != null && _projectedPosition != position)
                 {
