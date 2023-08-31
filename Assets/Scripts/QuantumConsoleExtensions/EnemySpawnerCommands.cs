@@ -11,10 +11,24 @@ namespace BML.Scripts.QuantumConsoleExtensions
     public class EnemySpawnerCommands : MonoBehaviour
     {
         [SerializeField] private EnemySpawnManager _enemySpawnManager;
+        [SerializeField] private FloatVariable _intensityScore;
         [SerializeField] private FloatVariable _currentPercentToMaxSpawn;
         [SerializeField] private TransformSceneReference _playerTransformSceneReference;
 
         #region Commands
+
+        [Command("get-intensity", "Displays the current measurement of intensity with respect to what's currently happening to the player. This value is reactive to gameplay, not a set value.")]
+        private string GetIntensityScore()
+        {
+            return $"Intensity: {_intensityScore.Value}";
+        }
+        
+        [Command("set-intensity", "Displays the current measurement of intensity with respect to what's currently happening to the player. This value is reactive to gameplay, not a set value.")]
+        private string SetIntensityScore(float value)
+        {
+            _intensityScore.Value = value;
+            return "Set Intensity: {_intensityScore.Value} -> {value}";
+        }
         
         [Command("pause-spawning", "Pauses enemy spawning and difficulty curve.")]
         private void SetSpawningPaused(bool paused = true)
