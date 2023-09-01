@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.CaveV2.Objects;
@@ -14,7 +15,9 @@ namespace BML.Scripts.Enemy
     public class EnemyState : MonoBehaviour
     {
         #region Inspector
-        
+
+        [SerializeField] private BehaviorDesigner.Runtime.BehaviorTree _behaviorTree;
+        [SerializeField] private BoolReference _alertOnStart;
         [SerializeField] private AggroState _aggro;
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
         [SerializeField] private DynamicGameEvent _onEnemyAdded;
@@ -61,6 +64,12 @@ namespace BML.Scripts.Enemy
         private void Awake()
         {
             _currentNodes = new Dictionary<Collider, ICaveNodeData>();
+        }
+
+        private void Start()
+        {
+            if (_alertOnStart.Value)
+                _behaviorTree.SendEvent("SetAlerted");
         }
 
         private void OnEnable()
