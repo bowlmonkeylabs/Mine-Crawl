@@ -1,5 +1,6 @@
 ﻿using System;
 using BML.Script.Intensity;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using Intensity;
 using Private.DebugGUI;
@@ -14,13 +15,13 @@ namespace BML.Scripts.UI
         [SerializeField] private int _graphGroup = 0;
         [SerializeField] private float _graphUpdatePeriod = 1f;
         [SerializeField] private FloatVariable _playerIntensityScore;
-        [SerializeField] private EnemySpawnerParams _currentParams;
+        [SerializeField] private GameObjectSceneReference _enemySpawnManager;
         [SerializeField] private IntensityResponseStateData _intensityResponse;
         
         private string _graphCombinedMinMax => $"combinedMinMax{_graphGroup}";
         private string _graphIntensity => $"playerIntensityScore{_graphGroup}";
         private string _graphIntensityTarget => $"playerIntensityScoreTarget{_graphGroup}";
-
+        
         #endregion
 
         #region Unity lifecycle
@@ -100,8 +101,9 @@ namespace BML.Scripts.UI
             {
                 DebugGUI.SetGraphColor(_graphIntensity, intensityResponseColor);
                 DebugGUI.Graph(_graphIntensity, _playerIntensityScore.Value, true);
-                
-                DebugGUI.Graph(_graphIntensityTarget, _currentParams.MaxIntensity, true);
+
+                var enemySpawnerParams = (_enemySpawnManager.CachedComponent as EnemySpawnManager).EnemySpawnerParams;
+                DebugGUI.Graph(_graphIntensityTarget, enemySpawnerParams.MaxIntensity, true);
 
                 var intensityMinMax = DebugGUI.GetGraphMinMax(_graphIntensity);
                 var intensityTargetMinMax = DebugGUI.GetGraphMinMax(_graphIntensityTarget);

@@ -33,13 +33,12 @@ namespace BML.Scripts.UI
         [SerializeField] private TimerVariable _wormMaxStrengthTimer;
 
         private float _peakIntensityScore = 0;
-        private EnemySpawnerParams enemySpawnParams;
+        private EnemySpawnerParams enemySpawnParams => (_enemySpawnerRef.CachedComponent as EnemySpawnManager)?.EnemySpawnerParams;
 
         #region Unity lifecycle
 
         private void OnEnable()
         {
-            InitSpawnParams();
             UpdateText();
         }
 
@@ -50,11 +49,6 @@ namespace BML.Scripts.UI
         }
 
         #endregion
-
-        protected void InitSpawnParams()
-        {
-            enemySpawnParams = _enemySpawnerRef.Value.GetComponent<EnemySpawnManager>()?.EnemySpawnerParams;
-        }
 
         protected void UpdateText()
         {
