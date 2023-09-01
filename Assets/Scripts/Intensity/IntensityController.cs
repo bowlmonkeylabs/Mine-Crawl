@@ -39,7 +39,6 @@ namespace Intensity
         
         [TitleGroup("Intensity Response")]
         [SerializeField] private IntensityResponseStateData _intensityResponse;
-        [SerializeField] private EnemySpawnerParams _currentParams;
         [SerializeField] private float _timeLimitAtMaxIntensity = 5f;
         [SerializeField] private float _timeLimitAtMinIntensity = 5f;
         [Tooltip("If true, all idle enemies X nodes away from player when intensity response becomes decreasing will be despawned")]
@@ -121,12 +120,13 @@ namespace Intensity
 
         private void UpdateIntensityResponse()
         {
+            var spawnParams = _enemySpawnManager.EnemySpawnerParams;
             switch (_intensityResponse.Value)
             {
                 case IntensityResponse.Increasing:
                     
                     // Just reached max intensity threshold
-                    if (_intensityScore.Value >= _currentParams.MaxIntensity)
+                    if (_intensityScore.Value >= spawnParams.MaxIntensity)
                     {
                         _intensityResponse.Value = IntensityResponse.AboveMax;
                     }
@@ -136,13 +136,13 @@ namespace Intensity
                 case IntensityResponse.AboveMax:
                     
                     // Accumulating time at max intensity
-                    if (_intensityScore.Value >= _currentParams.MaxIntensity)
+                    if (_intensityScore.Value >= spawnParams.MaxIntensity)
                     {
                         timeAtMaxIntensity += _intensityScoreUpdatePeriod;
                     }
             
                     // Stop accumulating and reset if drop below threshold
-                    if (_intensityScore.Value < _currentParams.MaxIntensity)
+                    if (_intensityScore.Value < spawnParams.MaxIntensity)
                     {
                         _intensityResponse.Value = IntensityResponse.Increasing;
                         timeAtMaxIntensity = 0f;
@@ -169,7 +169,7 @@ namespace Intensity
                 case IntensityResponse.Decreasing:
                     
                     // Just reached min intensity threshold
-                    if (_intensityScore.Value <= _currentParams.MinIntesity)
+                    if (_intensityScore.Value <= spawnParams.MinIntesity)
                     {
                         _intensityResponse.Value = IntensityResponse.BelowMin;
                     }
@@ -178,13 +178,13 @@ namespace Intensity
                 case IntensityResponse.BelowMin:
                     
                     // Accumulating time at min intensity
-                    if (_intensityScore.Value <= _currentParams.MinIntesity)
+                    if (_intensityScore.Value <= spawnParams.MinIntesity)
                     {
                         timeAtMinIntensity += _intensityScoreUpdatePeriod;
                     }
             
                     // Stop accumulating and reset if go above threshold
-                    if (_intensityScore.Value > _currentParams.MinIntesity)
+                    if (_intensityScore.Value > spawnParams.MinIntesity)
                     {
                         _intensityResponse.Value = IntensityResponse.Decreasing;
                         timeAtMinIntensity = 0f;
@@ -206,6 +206,7 @@ namespace Intensity
 
         private void TryDecayIntensityScore()
         {
+            var spawnParams = _enemySpawnManager.EnemySpawnerParams;
             bool doDecay = !_anyEnemiesEngaged.Value || _intensityResponse.Value == IntensityResponse.Decreasing;
 
             if (!doDecay) return;
@@ -219,7 +220,7 @@ namespace Intensity
             else
                 decayFactor = 1f;
 
-            float decay = (_intensityScoreDecayPercent/100f * _currentParams.MaxIntensity * _intensityScoreUpdatePeriod);
+            float decay = (_intensityScoreDecayPercent/100f * spawnParams.MaxIntensity * _intensityScoreUpdatePeriod);
             decay *= decayFactor;
 
             float newIntensityScore = (_intensityScore.Value - decay);

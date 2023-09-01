@@ -45,9 +45,7 @@ namespace BML.Scripts.QuantumConsoleExtensions
         {
             for (int i = 0; i < count; i++)
             {
-                var enemySpawnerParams = _enemySpawnManager.EnemySpawnerParamsList
-                    .FirstOrDefault(p => p.SpawnAtTags.Any(t => t.Prefab.name.StartsWith(enemyName, StringComparison.OrdinalIgnoreCase)));
-                var newEnemy = _enemySpawnManager.SpawnEnemyByName(enemySpawnerParams, _playerTransformSceneReference.Value.position,
+                var newEnemy = _enemySpawnManager.SpawnEnemyByName(_enemySpawnManager.EnemySpawnerParams, _playerTransformSceneReference.Value.position,
                     enemyName, false, 3);
 
                 if (health >= 0)

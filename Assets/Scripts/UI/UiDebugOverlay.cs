@@ -1,4 +1,6 @@
+using System;
 using BML.Script.Intensity;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2;
@@ -15,9 +17,8 @@ namespace BML.Scripts.UI
         [SerializeField] private TMP_Text _intensityResponseText;
         [SerializeField] private TransformSceneReference _playerTransformSceneReference;
         [SerializeField] private FloatVariable _levelTimeElapsed;
-        [SerializeField] private EnemySpawnerParams _currentParams;
+        [SerializeField] private GameObjectSceneReference _enemySpawnerRef;
         [SerializeField] private IntVariable _currentEnemyCount;
-        [SerializeField] private IntReference _seedDebugReference;
         [SerializeField] private IntVariable _swingDamage;
         [SerializeField] private IntVariable _sweepDamage;
         [SerializeField] private EvaluateCurveVariable _statPickaxeSwingSpeed;
@@ -32,11 +33,13 @@ namespace BML.Scripts.UI
         [SerializeField] private TimerVariable _wormMaxStrengthTimer;
 
         private float _peakIntensityScore = 0;
+        private EnemySpawnerParams enemySpawnParams;
 
         #region Unity lifecycle
 
-        private void Awake()
+        private void OnEnable()
         {
+            InitSpawnParams();
             UpdateText();
         }
 
@@ -48,17 +51,22 @@ namespace BML.Scripts.UI
 
         #endregion
 
+        protected void InitSpawnParams()
+        {
+            enemySpawnParams = _enemySpawnerRef.Value.GetComponent<EnemySpawnManager>()?.EnemySpawnerParams;
+        }
+
         protected void UpdateText()
         {
             _text.text = $@"Player pos: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
 Level Time: {this.FormatTime(_levelTimeElapsed.Value)}, {Time.timeScale.ToString("0.00")}x
 Seed: {SeedManager.Instance.Seed}
 Enemy Spawn Params ----------
-Spawn delay: {_currentParams.SpawnDelay.ToString("0.00")}
-Count: (Current: {_currentEnemyCount.Value}) (Max: {_currentParams.SpawnCap.ToString("0.00")})
+Spawn delay: {enemySpawnParams.SpawnDelay.ToString("0.00")}
+Count: (Current: {_currentEnemyCount.Value}) (Max: {enemySpawnParams.SpawnCap.ToString("0.00")})
 Worm: Spawn Timer: {_wormSpawnTimer.RemainingTime} Max Strength Timer: {_wormMaxStrengthTimer.RemainingTime}
 Combat ----------
-Intensity Score: (Current: {_playerIntensityScore.Value.ToString("0.00")}) (Target: {_currentParams.MaxIntensity.ToString("0.00")})
+Intensity Score: (Current: {_playerIntensityScore.Value.ToString("0.00")}) (Target: {enemySpawnParams.MaxIntensity.ToString("0.00")})
 Player In Combat: {this.FormatBool(_playerInCombat.Value)}
 Any Enemies Engaged: {this.FormatBool(_anyEnemiesEngaged.Value)}
 Combat Timer: {_playerCombatTimer.RemainingTime}
