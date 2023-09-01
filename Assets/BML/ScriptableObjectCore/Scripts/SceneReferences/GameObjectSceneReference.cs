@@ -16,11 +16,12 @@ namespace BML.ScriptableObjectCore.Scripts.SceneReferences
             get => base.Value;
             set
             {
-                base.Value = value;
                 if (!_cacheComponentType.IsNullOrWhitespace())
                 {
-                    CachedComponent = base.Value.GetComponent(_cacheComponentType);
+                    CachedComponent = value.GetComponent(_cacheComponentType);
                 }
+
+                base.Value = value;
             }
         }
 
