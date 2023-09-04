@@ -5,12 +5,14 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using BML.Scripts.Player;
+using BML.Scripts.Player.Items;
 
 namespace BML.Scripts.UI
 {
     public class UiStoreItemIconController : MonoBehaviour
     {
-        [SerializeField] private StoreItem _storeItem;
+        [SerializeField] private PlayerItem _storeItem;
         [SerializeField] private Image _iconImage;
         [SerializeField] private CountMode _countMode = CountMode.None;
         [SerializeField] private GameObject _countGameObject;
@@ -24,12 +26,12 @@ namespace BML.Scripts.UI
             BuyAmount,
         }
         
-        public void Init(StoreItem storeItem) 
+        public void Init(PlayerItem storeItem) 
         {
             _storeItem = storeItem;
-            _iconImage.sprite = _storeItem._itemIcon;
-            if(_storeItem._useItemIconColor) {
-                _iconImage.color = _storeItem._itemIconColor;
+            _iconImage.sprite = _storeItem.Icon;
+            if(_storeItem.UseIconColor) {
+                _iconImage.color = _storeItem.IconColor;
             }
             
             if (_countMode == CountMode.None)
@@ -41,11 +43,11 @@ namespace BML.Scripts.UI
                 int countValue = 0;
                 if (_countMode == CountMode.Inventory)
                 {
-                    countValue = _storeItem._playerInventoryAmount.Value;
+                    // countValue = _storeItem._playerInventoryAmount.Value;
                 }
                 else if (_countMode == CountMode.BuyAmount)
                 {
-                    countValue = _storeItem._buyAmount;
+                    // countValue = _storeItem._buyAmount;
                 }
                 
                 bool doShowCount = (countValue > 1);
