@@ -4,6 +4,7 @@ using BML.ScriptableObjectCore.Scripts.Events;
 using UnityEngine;
 using UnityEngine.UI;
 using BML.Scripts.Store;
+using BML.Scripts.Player.Items;
 
 namespace BML.Scripts.UI
 {
@@ -21,21 +22,16 @@ namespace BML.Scripts.UI
         [SerializeField] private UiStoreItemIconController _storeItemIcon;
         [SerializeField] private UiStoreItemDetailController _uiStoreItemDetailController;
         
-        [SerializeField] private string _resourceIconText;
-        [SerializeField] private string _rareResourceIconText;
-        [SerializeField] private IntVariable _resourceCount;
-        [SerializeField] private IntVariable _rareResourceCount;
-        [SerializeField] private IntVariable _upgradesAvailableCount;
         [SerializeField] private BoolVariable _isGodModeEnabled;
 
-        [SerializeField] private StoreItem _itemToPurchase;
-        public StoreItem ItemToPurchase => _itemToPurchase;
+        [SerializeField] private PlayerItem _itemToPurchase;
+        public PlayerItem ItemToPurchase => _itemToPurchase;
         
         #endregion
 
         #region Public interface
         
-        public void Init(StoreItem itemToPurchase)
+        public void Init(PlayerItem itemToPurchase)
         {
             _itemToPurchase = itemToPurchase;
             _storeItemIcon.Init(_itemToPurchase);
@@ -68,35 +64,16 @@ namespace BML.Scripts.UI
                 return;
             }
 
-            bool canAffordItem = _itemToPurchase
-                .CheckIfCanAfford(_resourceCount.Value, _rareResourceCount.Value, _upgradesAvailableCount.Value)
-                .Overall;
-            bool interactable = canAffordItem && (!_itemToPurchase._hasMaxAmount || (_itemToPurchase._playerInventoryAmount.Value < _itemToPurchase._maxAmount.Value));
-            if (_button.interactable != interactable)
+            bool canAffordItem = _itemToPurchase.CheckIfCanAfford();
+            if (_button.interactable != canAffordItem)
             {
-                _button.interactable = interactable;
+                _button.interactable = canAffordItem;
             }
         }
 
         private void SetButtonText()
         {
-            string costText = "";
-            
-            if (_itemToPurchase._resourceCost > 0)
-                costText += $" + {_itemToPurchase._resourceCost}{_resourceIconText}";
-                
-            if (_itemToPurchase._rareResourceCost > 0)
-                costText += $" + {_itemToPurchase._rareResourceCost}{_rareResourceIconText}";
-                
-            if (_itemToPurchase._upgradeCost > 0)
-                costText += $" + {_itemToPurchase._upgradeCost}U";
-
-            //Remove leading +
-            if (costText != "") costText = costText.Substring(3);
-
-            _costText.text = costText;
-
-            _buyAmountText.text = ""+_itemToPurchase._buyAmount;
+            _costText.text = _itemToPurchase.FormatCostsAsText();
         }
         
         #endregion
