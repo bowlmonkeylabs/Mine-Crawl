@@ -6,6 +6,8 @@ using UnityEngine;
 using BML.Scripts.Utils;
 using BML.ScriptableObjectCore.Scripts.Events;
 using Sirenix.OdinInspector;
+using BML.Scripts.Player;
+using BML.Scripts.Player.Items;
 
 namespace BML.Scripts.UI
 {
@@ -13,9 +15,6 @@ namespace BML.Scripts.UI
     {
         [SerializeField] StoreInventory _upgradeStoreInventory;
         [SerializeField] private Transform _iconsContainer;
-        [SerializeField] private DynamicGameEvent _onBuyEvent;
-
-        [NonSerialized, ShowInInspector] private List<StoreItem> _itemsPlayerHas = new List<StoreItem>();
 
         private void Start()
         {
@@ -26,11 +25,11 @@ namespace BML.Scripts.UI
         void OnEnable() {
             UpdateInventory();
             GenerateStoreIcons();
-            _onBuyEvent.Subscribe(OnBuy_Dynamic);
+            // _onBuyEvent.Subscribe(OnBuy_Dynamic);
         }
 
         void OnDisable() {
-            _onBuyEvent.Unsubscribe(OnBuy_Dynamic);
+            // _onBuyEvent.Unsubscribe(OnBuy_Dynamic);
         }
 
         [Button]
@@ -39,16 +38,16 @@ namespace BML.Scripts.UI
 
             // ResolveInventory();
             
-            if(_itemsPlayerHas.Count > _iconsContainer.childCount) {
-                Debug.LogError("Upgrade inventory does not have enough slots to display all items");
-                return;
-            }
+            // if(_itemsPlayerHas.Count > _iconsContainer.childCount) {
+            //     Debug.LogError("Upgrade inventory does not have enough slots to display all items");
+            //     return;
+            // }
 
-            for(int i = 0; i < _itemsPlayerHas.Count; i++) {
-                GameObject iconGameObject = _iconsContainer.GetChild(i).gameObject;
-                iconGameObject.GetComponent<UiStoreItemIconController>().Init(_itemsPlayerHas[i]);
-                iconGameObject.SetActive(true);
-            }
+            // for(int i = 0; i < _itemsPlayerHas.Count; i++) {
+            //     GameObject iconGameObject = _iconsContainer.GetChild(i).gameObject;
+            //     iconGameObject.GetComponent<UiStoreItemIconController>().Init(_itemsPlayerHas[i]);
+            //     iconGameObject.SetActive(true);
+            // }
         }
 
         [Button]
@@ -59,38 +58,38 @@ namespace BML.Scripts.UI
             }
         }
 
-        protected void OnBuy_Dynamic(object prevStoreItem, object storeItem) {
-            OnBuy(storeItem as StoreItem);
+        protected void OnBuy_Dynamic(object prevStoreItem, object playerItem) {
+            OnBuy(playerItem as PlayerItem);
         }
-        protected void OnBuy(StoreItem storeItem)
+        protected void OnBuy(PlayerItem playerItem)
         {
-            if (!_itemsPlayerHas.Contains(storeItem))
-            {
-                _itemsPlayerHas.Add(storeItem);
-            }
+            // if (!_itemsPlayerHas.Contains(storeItem))
+            // {
+            //     _itemsPlayerHas.Add(storeItem);
+            // }
             GenerateStoreIcons();
         }
 
         private void UpdateInventory()
         {
-            for (int i = 0; i < _itemsPlayerHas.Count; i++)
-            {
-                var inventoryItem = _itemsPlayerHas[i];
-                if (inventoryItem._playerInventoryAmount.Value <= 0)
-                {
-                    _itemsPlayerHas.RemoveAt(i);
-                    i--;
-                }
-            }
+            // for (int i = 0; i < _itemsPlayerHas.Count; i++)
+            // {
+            //     var inventoryItem = _itemsPlayerHas[i];
+            //     if (inventoryItem._playerInventoryAmount.Value <= 0)
+            //     {
+            //         _itemsPlayerHas.RemoveAt(i);
+            //         i--;
+            //     }
+            // }
             
-            foreach (var storeItem in _upgradeStoreInventory.StoreItems)
-            {
-                if (storeItem._playerInventoryAmount.Value > 0 &&
-                    !_itemsPlayerHas.Contains(storeItem))
-                {
-                    _itemsPlayerHas.Add(storeItem);
-                }
-            }
+            // foreach (var storeItem in _upgradeStoreInventory.StoreItems)
+            // {
+            //     if (storeItem._playerInventoryAmount.Value > 0 &&
+            //         !_itemsPlayerHas.Contains(storeItem))
+            //     {
+            //         _itemsPlayerHas.Add(storeItem);
+            //     }
+            // }
         }
         
     }

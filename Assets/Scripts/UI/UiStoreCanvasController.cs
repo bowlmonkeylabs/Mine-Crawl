@@ -12,6 +12,8 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using UnityEngine.PlayerLoop;
 using Random = UnityEngine.Random;
+using BML.Scripts.Player;
+using BML.Scripts.Player.Items;
 
 namespace BML.Scripts.UI
 {
@@ -84,33 +86,33 @@ namespace BML.Scripts.UI
         {
             DestroyShopItems();
 
-            List<StoreItem> shownStoreItems = _storeInventory.StoreItems;
+            // List<StoreItem> shownStoreItems = _storeInventory.StoreItems;
 
-            if(_filterOutMaxedItems) {
-                shownStoreItems = shownStoreItems.Where(si => !si._hasMaxAmount || (si._playerInventoryAmount.Value < si._maxAmount.Value)).ToList();
-            }
+            // if(_filterOutMaxedItems) {
+            //     shownStoreItems = shownStoreItems.Where(si => !si._hasMaxAmount || (si._playerInventoryAmount.Value < si._maxAmount.Value)).ToList();
+            // }
 
-            if(_randomizeStoreOnBuy) {
-                Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
-                shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
-            }
+            // if(_randomizeStoreOnBuy) {
+            //     Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
+            //     shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
+            // }
 
-            if(_maxItemsShown > 0) {
-                shownStoreItems = shownStoreItems.Take(_maxItemsShown).ToList();
-            }
+            // if(_maxItemsShown > 0) {
+            //     shownStoreItems = shownStoreItems.Take(_maxItemsShown).ToList();
+            // }
 
-            if(shownStoreItems.Count > _listContainerStoreButtons.childCount) {
-                Debug.LogError("Store does not have enough buttons to display options");
-                return;
-            }
+            // if(shownStoreItems.Count > _listContainerStoreButtons.childCount) {
+            //     Debug.LogError("Store does not have enough buttons to display options");
+            //     return;
+            // }
 
-            for(int i = 0; i < shownStoreItems.Count; i++) {
-                GameObject buttonGameObject = _listContainerStoreButtons.GetChild(i).gameObject;
-                var uiStoreButtonControllerComponent = buttonGameObject.GetComponent<UiStoreButtonController>();
-                uiStoreButtonControllerComponent.Init(shownStoreItems[i]);
-                buttonGameObject.SetActive(true);
-                buttonList.Add(uiStoreButtonControllerComponent);
-            }
+            // for(int i = 0; i < shownStoreItems.Count; i++) {
+            //     GameObject buttonGameObject = _listContainerStoreButtons.GetChild(i).gameObject;
+            //     var uiStoreButtonControllerComponent = buttonGameObject.GetComponent<UiStoreButtonController>();
+            //     uiStoreButtonControllerComponent.Init(shownStoreItems[i]);
+            //     buttonGameObject.SetActive(true);
+            //     buttonList.Add(uiStoreButtonControllerComponent);
+            // }
 
             UpdateButtons();
         }
@@ -190,13 +192,13 @@ namespace BML.Scripts.UI
             }
         }
 
-        protected void OnBuy(object prevStoreItem, object storeItem)
+        protected void OnBuy(object prevStoreItem, object playerItem)
         {
             SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
             if (_randomizeStoreOnBuy)
             {
                 lastSelected =
-                    buttonList.FirstOrDefault(buttonController => buttonController.ItemToPurchase == (StoreItem)storeItem);
+                    buttonList.FirstOrDefault(buttonController => buttonController.ItemToPurchase == (PlayerItem)playerItem);
                 GenerateStoreItems();
                 if (lastSelected != null)
                 {

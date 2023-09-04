@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BML.Scripts.Player;
+using BML.Scripts.Player.Items;
 using BML.Scripts.Store;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -20,8 +22,8 @@ namespace BML.Scripts.UI
             this.SetDetails("", null, "", "");
         }
 
-        public void SetSelectedStoreItem(StoreItem storeItem) {
-            this.SetDetails(storeItem._itemLabel, storeItem._itemIcon, storeItem._itemEffectDescription, storeItem._itemStoreDescription);
+        public void SetSelectedStoreItem(PlayerItem storeItem) {
+            this.SetDetails(storeItem.Name, storeItem.Icon, storeItem.EffectDescription, storeItem.StoreDescription);
         }
 
         private void SetDetails(string itemLabel, Sprite itemIcon, string itemEffectDescription, string itemStoreDescription) {

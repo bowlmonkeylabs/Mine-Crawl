@@ -1,5 +1,7 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.Scripts.Player;
+using BML.Scripts.Player.Items;
 using MoreMountains.Feedbacks;
 using UnityEngine;
 
@@ -38,30 +40,30 @@ namespace BML.Scripts.Store
 
         private void OnInsufficientResources_Dynamic(object prev, object curr)
         {
-            OnInsufficientResources(curr as StoreItem);
+            // OnInsufficientResources(curr as StoreItem);
         }
         
-        private void OnInsufficientResources(StoreItem storeItem)
+        private void OnInsufficientResources(PlayerItem storeItem)
         {
-            bool canAfford = true;
-            switch (_resourceType)
-            {
-                case ResourceType.Resource:
-                    canAfford = storeItem.CanAfford.Resource;
-                    break;
-                case ResourceType.RareResource:
-                    canAfford = storeItem.CanAfford.RareResource;
-                    break;
-                case ResourceType.UpgradeResource:
-                    canAfford = storeItem.CanAfford.UpgradeResource;
-                    break;
-            }
+            // bool canAfford = true;
+            // switch (_resourceType)
+            // {
+            //     case ResourceType.Resource:
+            //         canAfford = storeItem.CanAfford.Resource;
+            //         break;
+            //     case ResourceType.RareResource:
+            //         canAfford = storeItem.CanAfford.RareResource;
+            //         break;
+            //     case ResourceType.UpgradeResource:
+            //         canAfford = storeItem.CanAfford.UpgradeResource;
+            //         break;
+            // }
 
-            if (!canAfford)
-            {
-                _insufficientResourcesFeedbacks.StopFeedbacks();
-                _insufficientResourcesFeedbacks.PlayFeedbacks();
-            }
+            // if (!canAfford)
+            // {
+            //     _insufficientResourcesFeedbacks.StopFeedbacks();
+            //     _insufficientResourcesFeedbacks.PlayFeedbacks();
+            // }
         }
     }
 }
