@@ -20,7 +20,7 @@ namespace BML.Scripts.UI
     {
         #region Inspector
         
-        [SerializeField] private ItemTreeGraph _itemTreeGraph;
+        [SerializeField] private Player.Items.ItemTreeGraph _itemTreeGraph;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private Transform _listContainerStoreButtons;
         [SerializeField] private Button _cancelButton;
