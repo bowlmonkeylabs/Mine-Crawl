@@ -1,7 +1,6 @@
 using BML.Scripts.Utils;
 using System.Collections.Generic;
 using System.Linq;
-using BML.Scripts.Store;
 using BML.Scripts.CaveV2;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -21,20 +20,14 @@ namespace BML.Scripts.UI
     {
         #region Inspector
         
-        [SerializeField, FoldoutGroup("CaveGen")] private GameObjectSceneReference _caveGeneratorGameObjectSceneReference;
-        private CaveGenComponentV2 _caveGenerator => _caveGeneratorGameObjectSceneReference?.CachedComponent as CaveGenComponentV2;
+        [SerializeField] private ItemTreeGraph _itemTreeGraph;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private Transform _listContainerStoreButtons;
         [SerializeField] private Button _cancelButton;
-        [SerializeField] private int _maxItemsShown = 0;
+        [SerializeField] private int _optionsCount = 2;
         [SerializeField] private bool _randomizeStoreOnBuy;
-        [SerializeField] private bool _filterOutMaxedItems;
         [SerializeField] private Button _buttonNavLeft;
         [SerializeField] private Button _buttonNavRight;
-        [SerializeField] private StoreInventory _storeInventory;
-        [SerializeField] private IntVariable _resourceCount;
-        [SerializeField] private IntVariable _rareResourceCount;
-        [SerializeField] private IntVariable _upgradesAvailableCount;
         
         #endregion
         
@@ -50,7 +43,7 @@ namespace BML.Scripts.UI
             #warning Remove this once we're done working on the stores/inventory
             GenerateStoreItems();
             
-            // SetNavigationOrder();
+            SetNavigationOrder();
         }
 
         void OnEnable()
@@ -59,20 +52,12 @@ namespace BML.Scripts.UI
             
             UpdateButtons();
             
-            _resourceCount.Subscribe(UpdateButtons);
-            _rareResourceCount.Subscribe(UpdateButtons);
-            _upgradesAvailableCount.Subscribe(UpdateButtons);
-            
             _onPurchaseEvent.Subscribe(OnBuy);
         }
 
         void OnDisable()
         {
             // Debug.Log("OnDisable");
-            
-            _resourceCount.Unsubscribe(UpdateButtons);
-            _rareResourceCount.Unsubscribe(UpdateButtons);
-            _upgradesAvailableCount.Unsubscribe(UpdateButtons);
             
             _onPurchaseEvent.Unsubscribe(OnBuy);
         }
@@ -86,33 +71,28 @@ namespace BML.Scripts.UI
         {
             DestroyShopItems();
 
-            // List<StoreItem> shownStoreItems = _storeInventory.StoreItems;
+            var shownStoreItems = _itemTreeGraph.GetUnobtainedItemPool();
 
-            // if(_filterOutMaxedItems) {
-            //     shownStoreItems = shownStoreItems.Where(si => !si._hasMaxAmount || (si._playerInventoryAmount.Value < si._maxAmount.Value)).ToList();
-            // }
+            if(_randomizeStoreOnBuy) {
+                Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
+                shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
+            }
 
-            // if(_randomizeStoreOnBuy) {
-            //     Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
-            //     shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
-            // }
+            shownStoreItems = shownStoreItems.Take(_optionsCount).ToList();
 
-            // if(_maxItemsShown > 0) {
-            //     shownStoreItems = shownStoreItems.Take(_maxItemsShown).ToList();
-            // }
+            if(shownStoreItems.Count > _listContainerStoreButtons.childCount) {
+                Debug.LogError("Store does not have enough buttons to display options");
+                return;
+            }
 
-            // if(shownStoreItems.Count > _listContainerStoreButtons.childCount) {
-            //     Debug.LogError("Store does not have enough buttons to display options");
-            //     return;
-            // }
-
-            // for(int i = 0; i < shownStoreItems.Count; i++) {
-            //     GameObject buttonGameObject = _listContainerStoreButtons.GetChild(i).gameObject;
-            //     var uiStoreButtonControllerComponent = buttonGameObject.GetComponent<UiStoreButtonController>();
-            //     uiStoreButtonControllerComponent.Init(shownStoreItems[i]);
-            //     buttonGameObject.SetActive(true);
-            //     buttonList.Add(uiStoreButtonControllerComponent);
-            // }
+            for(int i = 0; i < shownStoreItems.Count; i++) {
+                GameObject buttonGameObject = _listContainerStoreButtons.GetChild(i).gameObject;
+                var uiStoreButtonControllerComponent = buttonGameObject.GetComponent<UiStoreButtonController>();0
+                uiStoreButtonControllerComponent.Init(shownStoreItems[i]);
+                buttonGameObject.SetActive(true);
+                buttonList.Add(uiStoreButtonControllerComponent);
+                uiStoreButtonControllerComponent.OnInteractibilityChanged += SetNavigationOrder;
+            }
 
             UpdateButtons();
         }
@@ -123,6 +103,7 @@ namespace BML.Scripts.UI
             buttonList.Clear();
             
             for(int i = 0; i < _listContainerStoreButtons.childCount - 1; i++) {
+                _listContainerStoreButtons.GetChild(i).GetComponent<UiStoreButtonController>().OnInteractibilityChanged -= SetNavigationOrder;
                 _listContainerStoreButtons.GetChild(i).gameObject.SetActive(false);
             }
         }
@@ -154,6 +135,10 @@ namespace BML.Scripts.UI
             }
             
             SetNavigationOrder();
+        }
+
+        private void SetNavigationOrder() {
+            this.SetNavigationOrder(false, false);
         }
 
         private void SetNavigationOrder(bool includeInactive = false, bool includeNonInteractable = false)
@@ -194,6 +179,7 @@ namespace BML.Scripts.UI
 
         protected void OnBuy(object prevStoreItem, object playerItem)
         {
+            _itemTreeGraph.MarkItemAsObtained((PlayerItem)playerItem);
             SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
             if (_randomizeStoreOnBuy)
             {

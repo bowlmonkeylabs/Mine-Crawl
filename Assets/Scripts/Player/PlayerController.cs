@@ -12,7 +12,6 @@ using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using BML.Scripts.Store;
 using KinematicCharacterController;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
