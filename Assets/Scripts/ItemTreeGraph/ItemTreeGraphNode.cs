@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using BML.Scripts.Player.Items;
 using UnityEngine;
 using XNode;
 
-namespace BML.Scripts.Player.Items { 
+namespace BML.Scripts.ItemTreeGraph { 
     public class ItemTreeGraphNode : Node {
         [Input(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection From;
         [Output(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection To;
