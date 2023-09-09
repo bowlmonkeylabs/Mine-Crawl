@@ -501,9 +501,12 @@ namespace BML.Scripts
             // Instantiate new enemy game object
             var newGameObject = GameObjectUtils.SafeInstantiate(true, enemy.Prefab, _enemyContainer);
             newGameObject.transform.SetPositionAndRotation(position, rotation);
-            
-            spawnPoint.RecordEnemySpawned(enemy.OccupySpawnPoint);
 
+            if (spawnPoint != null)
+            {
+                spawnPoint.RecordEnemySpawned(enemy.OccupySpawnPoint);
+            }
+            
             // Set parameters on enemy despawnable instance
             var enemySpawnable = newGameObject.GetComponent<EnemySpawnable>();
             if (enemySpawnable != null)
