@@ -22,22 +22,23 @@ namespace BML.Scripts.Player.Items
 
             var startNodes = this.nodes.Where(node => node is ItemTreeGraphStartNode);
             foreach(var startNode in startNodes) {
-                //TODO: make sure this supports multiple opening connection
                 var itemNodes = startNode.Outputs
                     .Select(port => port.GetConnections().FirstOrDefault(c => c.IsInput)?.node)
                     .Where(node => node != null)
-                    .Select(node => node as ItemTreeGraphNode);
+                    .Select(node => node as ItemTreeGraphNode)
+                    .ToList();
                 while(itemNodes.Count() > 0) {
-                    var unobtainedItemNodes = itemNodes.Where(itemNode => !itemNode.Obtained).ToList();
-                    if(unobtainedItemNodes.Count() == itemNodes.Count()) {
-                        unobtainedItemPool.Add(unobtainedItemNodes[UnityEngine.Random.Range(0, unobtainedItemNodes.Count())].Item);
+                    var haveAnyNodesBeenObtained = itemNodes.Any(itemNode => itemNode.Obtained);
+                    if(!haveAnyNodesBeenObtained) {
+                        unobtainedItemPool.Add(itemNodes[UnityEngine.Random.Range(0, itemNodes.Count())].Item);
                         break;
                     }
 
                     itemNodes = itemNodes
                         .SelectMany(node => node.Outputs.Select(port => port.GetConnections().FirstOrDefault(c => c.IsInput)?.node))
                         .Where(node => node != null)
-                        .Select(node => node as ItemTreeGraphNode);
+                        .Select(node => node as ItemTreeGraphNode)
+                        .ToList();
                 }
             }
             return unobtainedItemPool;
