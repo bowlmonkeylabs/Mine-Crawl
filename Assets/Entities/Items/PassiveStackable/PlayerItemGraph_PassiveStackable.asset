@@ -1,6 +1,45 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7092249621597364930
+--- !u!114 &-5558730097424497059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 265593927741f7f4ca0df8cb5367b997, type: 3}
+  m_Name: Item Tree Graph Start
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: -924, y: -90}
+  ports:
+    keys:
+    - Start
+    values:
+    - _fieldName: Start
+      _node: {fileID: -5558730097424497059}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: From
+        node: {fileID: -638828647273197621}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+--- !u!114 &-638828647273197621
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -22,42 +61,42 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   graph: {fileID: 11400000}
-  position: {x: -280, y: -184}
+  position: {x: -488, y: -152}
   ports:
     keys:
     - From
     - To
     values:
     - _fieldName: From
-      _node: {fileID: -7092249621597364930}
-      _typeQualifiedName: BML.Scripts.ItemTreeGraph.ItemGraphConnection, BML.Scripts,
+      _node: {fileID: -638828647273197621}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: Start
-        node: {fileID: 6484029053894563336}
+        node: {fileID: -5558730097424497059}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
     - _fieldName: To
-      _node: {fileID: -7092249621597364930}
-      _typeQualifiedName: BML.Scripts.ItemTreeGraph.ItemGraphConnection, BML.Scripts,
+      _node: {fileID: -638828647273197621}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: From
-        node: {fileID: -3368899727627025390}
+        node: {fileID: -202585484066382525}
         reroutePoints: []
       - fieldName: From
-        node: {fileID: 1599094375233773276}
+        node: {fileID: 2359358694554025740}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
-  Obtained: 1
+  Obtained: 0
   Item: {fileID: 11400000, guid: 08daf6cb976ae0f499485642fcf2e647, type: 2}
---- !u!114 &-3368899727627025390
+--- !u!114 &-202585484066382525
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -79,31 +118,31 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   graph: {fileID: 11400000}
-  position: {x: 296, y: -312}
+  position: {x: 104, y: -408}
   ports:
     keys:
     - From
     - To
     values:
     - _fieldName: From
-      _node: {fileID: -3368899727627025390}
-      _typeQualifiedName: BML.Scripts.ItemTreeGraph.ItemGraphConnection, BML.Scripts,
+      _node: {fileID: -202585484066382525}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: To
-        node: {fileID: -7092249621597364930}
+        node: {fileID: -638828647273197621}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
     - _fieldName: To
-      _node: {fileID: -3368899727627025390}
-      _typeQualifiedName: BML.Scripts.ItemTreeGraph.ItemGraphConnection, BML.Scripts,
+      _node: {fileID: -202585484066382525}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: From
-        node: {fileID: 1383277532177352915}
+        node: {fileID: 6258287874985757224}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -111,38 +150,6 @@ MonoBehaviour:
       _dynamic: 0
   Obtained: 0
   Item: {fileID: 11400000, guid: 93dcaf8c13880d94b944105c90420c9d, type: 2}
---- !u!114 &-2363454039091588020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f8445c532b3f064d92579d3ce96782d, type: 3}
-  m_Name: Comment
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  graph: {fileID: 11400000}
-  position: {x: -808, y: -648}
-  ports:
-    keys: []
-    values: []
-  Width: 2280
-  Height: 1075
-  Color: {r: 1, g: 1, b: 1, a: 0.08}
-  TextColor: {r: 1, g: 1, b: 1, a: 1}
-  Description: Health Tree
-  Minimized: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,71 +159,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fbbd79584eeaee4fa392727f51444ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 7baeeb8ec27b10a46a80d2ce56271ec4, type: 3}
   m_Name: PlayerItemGraph_PassiveStackable
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: -2363454039091588020}
-  - {fileID: 6484029053894563336}
-  - {fileID: -7092249621597364930}
-  - {fileID: -3368899727627025390}
-  - {fileID: 1599094375233773276}
-  - {fileID: 1383277532177352915}
---- !u!114 &1383277532177352915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c4e280917d072640be943f96cba2774, type: 3}
-  m_Name: Bowl Moneky
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  graph: {fileID: 11400000}
-  position: {x: 920, y: -168}
-  ports:
-    keys:
-    - From
-    - To
-    values:
-    - _fieldName: From
-      _node: {fileID: 1383277532177352915}
-      _typeQualifiedName: BML.Scripts.ItemTreeGraph.ItemGraphConnection, BML.Scripts,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: To
-        node: {fileID: 1599094375233773276}
-        reroutePoints: []
-      - fieldName: To
-        node: {fileID: -3368899727627025390}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 2
-      _dynamic: 0
-    - _fieldName: To
-      _node: {fileID: 1383277532177352915}
-      _typeQualifiedName: BML.Scripts.ItemTreeGraph.ItemGraphConnection, BML.Scripts,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 2
-      _dynamic: 0
-  Obtained: 0
-  Item: {fileID: 11400000, guid: e0bdff0c441b49045be94cb506ee1ec2, type: 2}
---- !u!114 &1599094375233773276
+  - {fileID: -5558730097424497059}
+  - {fileID: -638828647273197621}
+  - {fileID: 6258287874985757224}
+  - {fileID: 2359358694554025740}
+  - {fileID: -202585484066382525}
+  - {fileID: 7641009534941850445}
+--- !u!114 &2359358694554025740
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -238,31 +191,31 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   graph: {fileID: 11400000}
-  position: {x: 296, y: -24}
+  position: {x: 152, y: 72}
   ports:
     keys:
     - From
     - To
     values:
     - _fieldName: From
-      _node: {fileID: 1599094375233773276}
-      _typeQualifiedName: BML.Scripts.ItemTreeGraph.ItemGraphConnection, BML.Scripts,
+      _node: {fileID: 2359358694554025740}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: To
-        node: {fileID: -7092249621597364930}
+        node: {fileID: -638828647273197621}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
     - _fieldName: To
-      _node: {fileID: 1599094375233773276}
-      _typeQualifiedName: BML.Scripts.ItemTreeGraph.ItemGraphConnection, BML.Scripts,
+      _node: {fileID: 2359358694554025740}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: From
-        node: {fileID: 1383277532177352915}
+        node: {fileID: 6258287874985757224}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -270,7 +223,7 @@ MonoBehaviour:
       _dynamic: 0
   Obtained: 0
   Item: {fileID: 11400000, guid: 41d572c482a0c8040baf3a65fd16e0e7, type: 2}
---- !u!114 &6484029053894563336
+--- !u!114 &6258287874985757224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -279,8 +232,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 265593927741f7f4ca0df8cb5367b997, type: 3}
-  m_Name: HealthTree
+  m_Script: {fileID: 11500000, guid: 7c4e280917d072640be943f96cba2774, type: 3}
+  m_Name: Bowl Moneky
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -292,20 +245,67 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   graph: {fileID: 11400000}
-  position: {x: -760, y: -184}
+  position: {x: 840, y: -168}
   ports:
     keys:
-    - Start
+    - From
+    - To
     values:
-    - _fieldName: Start
-      _node: {fileID: 6484029053894563336}
-      _typeQualifiedName: BML.Scripts.ItemTreeGraph.ItemGraphConnection, BML.Scripts,
+    - _fieldName: From
+      _node: {fileID: 6258287874985757224}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: From
-        node: {fileID: -7092249621597364930}
+      - fieldName: To
+        node: {fileID: -202585484066382525}
         reroutePoints: []
+      - fieldName: To
+        node: {fileID: 2359358694554025740}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: To
+      _node: {fileID: 6258287874985757224}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
+  Obtained: 0
+  Item: {fileID: 11400000, guid: e0bdff0c441b49045be94cb506ee1ec2, type: 2}
+--- !u!114 &7641009534941850445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8445c532b3f064d92579d3ce96782d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: -974, y: -758}
+  ports:
+    keys: []
+    values: []
+  Width: 2364
+  Height: 1267
+  Color: {r: 1, g: 1, b: 1, a: 0.08}
+  TextColor: {r: 1, g: 1, b: 1, a: 1}
+  Description: Health Tree
+  Minimized: 0
