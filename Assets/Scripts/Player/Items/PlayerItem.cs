@@ -85,6 +85,7 @@ namespace BML.Scripts.Player.Items
         public string EffectDescription { get => _effectDescription; }
         public string StoreDescription { get => _storeDescription; }
         public List<ItemEffect> ItemEffects { get => _itemEffects; }
+        public ItemType Type { get => _itemType; }
 
         public event OnAffordabilityChanged OnAffordabilityChanged;
 

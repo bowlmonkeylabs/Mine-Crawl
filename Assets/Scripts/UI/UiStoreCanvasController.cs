@@ -84,7 +84,7 @@ namespace BML.Scripts.UI
                 Debug.LogError("Store does not have enough buttons to display options");
                 return;
             }
-            
+
             for(int i = 0; i < shownStoreItems.Count; i++) {
                 GameObject buttonGameObject = _listContainerStoreButtons.GetChild(i).gameObject;
                 var uiStoreButtonControllerComponent = buttonGameObject.GetComponent<UiStoreButtonController>();
