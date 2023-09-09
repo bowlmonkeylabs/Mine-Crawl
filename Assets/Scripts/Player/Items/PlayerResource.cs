@@ -1,3 +1,4 @@
+using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine.UI;
 
 namespace BML.Scripts.Player.Items
 {
+    public delegate void OnAmountChanged();
+
     [InlineEditor()]
     [CreateAssetMenu(fileName = "PlayerResource", menuName = "BML/Player/PlayerResource", order = 0)]
     public class PlayerResource : ScriptableObject
@@ -16,9 +19,23 @@ namespace BML.Scripts.Player.Items
 
         [SerializeField, FoldoutGroup("Player")] IntVariable _playerCount;
 
+        public event OnAmountChanged OnAmountChanged;
+
+        void OnEnable() {
+            _playerCount.Subscribe(InvokeOnAmountChanged);
+        }
+
+        void OnDisable() {
+            _playerCount.Unsubscribe(InvokeOnAmountChanged);
+        }
+
+        private void InvokeOnAmountChanged() {
+            OnAmountChanged?.Invoke();
+        }
+
         public int PlayerCount {
             get => _playerCount.Value;
-            set => _playerCount.Value = Mathf.Min(0, _playerCount.Value - value);
+            set => _playerCount.Value = Mathf.Min(0, value);
         }
         public string IconText { get => _iconText; }
     }

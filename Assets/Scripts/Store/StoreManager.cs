@@ -5,7 +5,6 @@ using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Player;
 using BML.Scripts.Player.Items;
-using BML.Scripts.Store;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -17,7 +16,6 @@ namespace BML.Scripts
         [SerializeField] private BoolVariable _isGodModeEnabled;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private GameEvent _onStoreFailOpenEvent;
-        [SerializeField] private DynamicGameEvent _onInsufficientResources;
         [SerializeField] private UnityEvent _onPurchaseItem;
 
         private void Awake()
@@ -40,7 +38,6 @@ namespace BML.Scripts
                 if (!canAffordItem)
                 {
                     _onStoreFailOpenEvent.Raise();
-                    _onInsufficientResources.Raise(storeItem);
                     return;
                 }
             
