@@ -29,9 +29,7 @@ namespace BML.Scripts.UI
         {
             _storeItem = storeItem;
             _iconImage.sprite = _storeItem.Icon;
-            if(_storeItem.UseIconColor) {
-                _iconImage.color = _storeItem.IconColor;
-            }
+            _iconImage.color = _storeItem.UseIconColor ? _storeItem.IconColor : Color.white;
             
             if (_countMode == CountMode.None)
             {
@@ -42,11 +40,11 @@ namespace BML.Scripts.UI
                 int countValue = 0;
                 if (_countMode == CountMode.Inventory)
                 {
-                    // countValue = _storeItem._playerInventoryAmount.Value;
+                    countValue = 1;
                 }
                 else if (_countMode == CountMode.BuyAmount)
                 {
-                    // countValue = _storeItem._buyAmount;
+                    countValue = 1;
                 }
                 
                 bool doShowCount = (countValue > 1);
