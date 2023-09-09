@@ -79,7 +79,7 @@ namespace BML.Scripts.Player.Items
         }
 
         public Sprite Icon { get => _icon; }
-        public bool UseIconColor { get => _icon; }
+        public bool UseIconColor { get => _useIconColor; }
         public Color IconColor { get => _iconColor; }
         public string Name { get => _name; }
         public string EffectDescription { get => _effectDescription; }
