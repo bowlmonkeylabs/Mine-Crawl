@@ -27,6 +27,7 @@ namespace BML.Scripts.Player.Items
                     .Where(node => node != null)
                     .Select(node => node as ItemTreeGraphNode)
                     .ToList();
+                    
                 while(itemNodes.Count() > 0) {
                     var haveAnyNodesBeenObtained = itemNodes.Any(itemNode => itemNode.Obtained);
                     if(!haveAnyNodesBeenObtained) {

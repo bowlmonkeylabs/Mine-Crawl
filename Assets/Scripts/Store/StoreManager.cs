@@ -14,6 +14,7 @@ namespace BML.Scripts
     public class StoreManager : MonoBehaviour
     {
         [SerializeField] private BoolVariable _isGodModeEnabled;
+        [SerializeField] private PlayerInventory _playerInventory;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private GameEvent _onStoreFailOpenEvent;
         [SerializeField] private UnityEvent _onPurchaseItem;
@@ -41,7 +42,7 @@ namespace BML.Scripts
                     return;
                 }
             
-                storeItem.DeductCosts();
+                storeItem.DeductCosts();    
             }
 
             DoPurchase(storeItem);
@@ -49,6 +50,24 @@ namespace BML.Scripts
 
         private void DoPurchase(PlayerItem playerItem)
         {
+            switch(playerItem.Type) {
+                case ItemType.PassiveStackable:
+                    _playerInventory.AddPassiveStackableItem(playerItem);
+                    break;
+
+                case ItemType.Passive:
+                    _playerInventory.PassiveItem = playerItem;
+                    break;
+
+                case ItemType.Active:
+                    _playerInventory.ActiveItem = playerItem;
+                    break;
+
+                default:
+                    Debug.LogError($"Store Manager Does Not Support Item Type: {playerItem.Type}");
+                    break;
+            }
+            
             _onPurchaseItem.Invoke();
         }
     }

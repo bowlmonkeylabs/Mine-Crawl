@@ -35,7 +35,7 @@ namespace BML.Scripts.Player.Items
 
         public int PlayerCount {
             get => _playerCount.Value;
-            set => _playerCount.Value = Mathf.Min(0, value);
+            set => _playerCount.Value = Mathf.Max(0, value);
         }
         public string IconText { get => _iconText; }
     }
