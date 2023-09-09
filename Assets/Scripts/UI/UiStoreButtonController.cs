@@ -3,11 +3,12 @@ using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Events;
 using UnityEngine;
 using UnityEngine.UI;
-using BML.Scripts.Store;
 using BML.Scripts.Player.Items;
 
 namespace BML.Scripts.UI
 {
+    public delegate void OnInteractibilityChanged();
+
     public class UiStoreButtonController : MonoBehaviour
     {
         #region Inspector
@@ -18,7 +19,6 @@ namespace BML.Scripts.UI
         [SerializeField] private Button _button;
         
         [SerializeField] private TMPro.TMP_Text _costText;
-        [SerializeField] private TMPro.TMP_Text _buyAmountText;
         [SerializeField] private UiStoreItemIconController _storeItemIcon;
         [SerializeField] private UiStoreItemDetailController _uiStoreItemDetailController;
         
@@ -30,13 +30,20 @@ namespace BML.Scripts.UI
         #endregion
 
         #region Public interface
+
+        public event OnInteractibilityChanged OnInteractibilityChanged;
         
         public void Init(PlayerItem itemToPurchase)
         {
+            if(_itemToPurchase != null) {
+                _itemToPurchase.OnAffordabilityChanged -= UpdateInteractable;
+            }
             _itemToPurchase = itemToPurchase;
             _storeItemIcon.Init(_itemToPurchase);
             SetButtonText();
             UpdateInteractable();
+
+            _itemToPurchase.OnAffordabilityChanged += UpdateInteractable;
         }
 
         public void Raise()

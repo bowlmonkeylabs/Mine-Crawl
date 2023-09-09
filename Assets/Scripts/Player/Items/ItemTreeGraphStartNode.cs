@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-public class ItemTreeGraphStartNode : Node {
+namespace BML.Scripts.Player.Items { 
+    public class ItemTreeGraphStartNode : Node {
 
-	// Use this for initialization
-	protected override void Init() {
-		base.Init();
-		
-	}
+        [Output(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection Start;
 
-	// Return the correct value of an output port when requested
-	public override object GetValue(NodePort port) {
-		return null; // Replace this
-	}
+        // Use this for initialization
+        protected override void Init() {
+            base.Init();
+        }
+
+        // Return the correct value of an output port when requested
+        public override object GetValue(NodePort port) {
+            return null; // Replace this
+        }
+    }
 }
