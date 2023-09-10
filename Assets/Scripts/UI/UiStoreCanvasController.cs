@@ -26,8 +26,9 @@ namespace BML.Scripts.UI
         [SerializeField] private Button _cancelButton;
         [SerializeField] private int _optionsCount = 2;
         [SerializeField] private bool _randomizeStoreOnBuy;
-        [SerializeField] private Button _buttonNavLeft;
-        [SerializeField] private Button _buttonNavRight;
+        [SerializeField] private bool _navHorizontal = false;
+        [SerializeField, LabelText("@(_navHorizontal ? \"Button Nav Up\" : \"Button Nav Left\")")] private Button _buttonNavLeft;
+        [SerializeField, LabelText("@(_navHorizontal ? \"Button Nav Down\" : \"Button Nav Right\")")] private Button _buttonNavRight;
         
         #endregion
         
@@ -87,7 +88,8 @@ namespace BML.Scripts.UI
 
             for(int i = 0; i < shownStoreItems.Count; i++) {
                 GameObject buttonGameObject = _listContainerStoreButtons.GetChild(i).gameObject;
-                var uiStoreButtonControllerComponent = buttonGameObject.GetComponent<UiStoreButtonController>();
+                UiStoreButtonController uiStoreButtonControllerComponent = buttonGameObject.GetComponent<UiStoreButtonController>();
+                
                 uiStoreButtonControllerComponent.Init(shownStoreItems[i]);
                 buttonGameObject.SetActive(true);
                 buttonList.Add(uiStoreButtonControllerComponent);
@@ -164,10 +166,20 @@ namespace BML.Scripts.UI
                 
                 Navigation nav = new Navigation();
                 nav.mode = Navigation.Mode.Explicit;
-                nav.selectOnUp = filteredButtons[prevIndex];
-                nav.selectOnDown = filteredButtons[nextIndex];
-                if(_buttonNavLeft != null) nav.selectOnLeft = _buttonNavLeft;
-                if(_buttonNavRight != null) nav.selectOnRight = _buttonNavRight;
+                if (_navHorizontal) 
+                {
+                    nav.selectOnLeft = filteredButtons[prevIndex];
+                    nav.selectOnRight = filteredButtons[nextIndex];
+                    if (_buttonNavLeft != null) nav.selectOnUp = _buttonNavLeft;
+                    if (_buttonNavRight != null) nav.selectOnDown = _buttonNavRight;
+                }
+                else
+                {
+                    nav.selectOnUp = filteredButtons[prevIndex];
+                    nav.selectOnDown = filteredButtons[nextIndex];
+                    if (_buttonNavLeft != null) nav.selectOnLeft = _buttonNavLeft;
+                    if (_buttonNavRight != null) nav.selectOnRight = _buttonNavRight;
+                }
                 
                 filteredButtons[i].navigation = nav;
                 // Debug.Log(filteredButtons[i].navigation.selectOnUp.name);
