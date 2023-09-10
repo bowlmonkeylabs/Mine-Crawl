@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,14 +10,18 @@ namespace BML.Scripts
     public class LootTable : ScriptableObject
     {
         [Serializable]
-        private class TableEntry
+        public class LootTableEntry
         {
             public float DropChance;
             public UnityEvent OnDrop;
             public List<GameObject> DropPrefabs;
         }
 
-        [SerializeField] private List<TableEntry> _entries;
+        [SerializeField] private List<LootTableEntry> _entries;
+
+        public List<LootTableEntry> LootTableEntries { get => _entries; }
+
+        private List<List<LootTableEntry>> _lootTableHistory = new List<List<LootTableEntry>>();
 
         public List<GameObject> Evaluate(float value)
         {
@@ -32,6 +37,12 @@ namespace BML.Scripts
                 }
             }
             return null;
+        }
+
+        public void OverrideLootTable(LootTable overidingLootTable) {
+            _lootTableHistory.Add(new List<LootTableEntry>(LootTableEntries));
+            LootTableEntries.Clear();
+            LootTableEntries.AddRange(overidingLootTable.LootTableEntries);
         }
     }
 }

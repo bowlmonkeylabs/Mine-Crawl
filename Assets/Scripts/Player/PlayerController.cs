@@ -44,6 +44,10 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _pickaxeDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _swingCritChance;
+        [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSwingPickaxe;
+        [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSwingPickaxeHit;
+        [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSweepPickaxe;
+        [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSweepPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _sweepDamageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startSwingPickaxeFeedback;
@@ -204,6 +208,8 @@ namespace BML.Scripts.Player
             
             RaycastHit hit;
             RaycastHit? lowPriorityHit = null;
+
+            _onSwingPickaxe.Raise();
             
             if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _interactDistance.Value,
                 _interactMask, QueryTriggerInteraction.Ignore))
@@ -253,6 +259,7 @@ namespace BML.Scripts.Player
 
             _swingHitFeedbacks.transform.position = hit.point;
             _swingHitFeedbacks.PlayFeedbacks();
+            _onSwingPickaxeHit.Raise();
                 
             PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
             if (interactionReceiver == null) return;
@@ -295,6 +302,8 @@ namespace BML.Scripts.Player
             var halfExtents = _sweepCollider.size / 2f;
             Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, _sweepCollider.transform.rotation,
                 _interactMask, QueryTriggerInteraction.Ignore);
+            
+            _onSweepPickaxe.Raise();
 
             if (hitColliders.Length < 1)
             {
@@ -303,6 +312,7 @@ namespace BML.Scripts.Player
             }
             
             _sweepSuccessHitFeedbacks.PlayFeedbacks();
+            _onSweepPickaxeHit.Raise();
 
             // HashSet to prevent duplicates
             HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)> interactionReceivers =

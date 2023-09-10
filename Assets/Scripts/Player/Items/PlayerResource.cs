@@ -14,8 +14,8 @@ namespace BML.Scripts.Player.Items
     {
         [SerializeField, FoldoutGroup("Descriptors")] private string _name;
         [SerializeField, FoldoutGroup("Descriptors"), TextArea (7, 10)] private string _description;
-        [SerializeField, FoldoutGroup("Descriptors")] private Sprite _icon;
         [SerializeField, FoldoutGroup("Descriptors")] private string _iconText;
+        [SerializeField, FoldoutGroup("Descriptors"), PreviewField(100, ObjectFieldAlignment.Left)] private Sprite _icon;
 
         [SerializeField, FoldoutGroup("Player")] IntVariable _playerCount;
 

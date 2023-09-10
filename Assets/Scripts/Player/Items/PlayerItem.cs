@@ -18,18 +18,26 @@ namespace BML.Scripts.Player.Items
 
     public enum ItemEffectTrigger {
         WhenAcquiredOrActivated,
+        RecurringTimer,
         OnPickaxeSwing,
-        OnPickaxeSweep
+        OnPickaxeSwingHit,
+        OnPickaxeSweep,
+        OnPickaxeSweepHit
     }
 
     public enum ItemEffectType {
         StatIncrease,
-        FireProjectile
+        FireProjectile,
+        ChangeLootTable
     }
 
     [Serializable, InlineEditor()]
     public class ItemEffect {
         public ItemEffectTrigger Trigger = ItemEffectTrigger.WhenAcquiredOrActivated;
+
+        [ShowIfGroup("RecurringTimer", Condition = "Trigger", Value = ItemEffectTrigger.RecurringTimer)] public float Time;
+        [HideInInspector] public float LastTimeCheck;
+
         public ItemEffectType Type = ItemEffectType.StatIncrease;
 
         [ShowIfGroup("StatIncrease", Condition = "Type", Value = ItemEffectType.StatIncrease)]
@@ -37,7 +45,12 @@ namespace BML.Scripts.Player.Items
         [ShowIfGroup("StatIncrease")] public int StatIncreaseAmount;
 
         [ShowIfGroup("FireProjectile", Condition = "Type", Value = ItemEffectType.FireProjectile)]
-        [ShowIfGroup("FireProjectile")] public GameObject _projectilePrefab;
+        [ShowIfGroup("FireProjectile")] public GameObject ProjectilePrefab;
+        [ShowIfGroup("FireProjectile")] public GameObject ProjectileSpeed;
+
+        [ShowIfGroup("ChangeLootTable", Condition = "Type", Value = ItemEffectType.ChangeLootTable)]
+        [ShowIfGroup("ChangeLootTable")] public LootTable LootTableToOverride;
+        [ShowIfGroup("ChangeLootTable")] public LootTable OveridingLootTable;
     }
 
     public delegate void OnAffordabilityChanged();
@@ -49,9 +62,9 @@ namespace BML.Scripts.Player.Items
         [SerializeField, FoldoutGroup("Descriptors")] private string _name;
         [SerializeField, FoldoutGroup("Descriptors"), TextArea] private string _effectDescription;
         [SerializeField, FoldoutGroup("Descriptors"), TextArea] private string _storeDescription;
-        [SerializeField, FoldoutGroup("Descriptors")] private Sprite _icon;
         [SerializeField, FoldoutGroup("Descriptors")] private bool _useIconColor;
         [SerializeField, FoldoutGroup("Descriptors"), ShowIf("_useIconColor")] private Color _iconColor;
+        [SerializeField, FoldoutGroup("Descriptors"), PreviewField(100, ObjectFieldAlignment.Left)] private Sprite _icon;
 
         [
             DictionaryDrawerSettings(KeyLabel = "Resource", ValueLabel = "Amount",
