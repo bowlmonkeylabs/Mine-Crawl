@@ -4,6 +4,7 @@ using BML.ScriptableObjectCore.Scripts.Events;
 using UnityEngine;
 using UnityEngine.UI;
 using BML.Scripts.Player.Items;
+using Sirenix.Utilities;
 
 namespace BML.Scripts.UI
 {
@@ -35,7 +36,8 @@ namespace BML.Scripts.UI
         
         public void Init(PlayerItem itemToPurchase)
         {
-            if(_itemToPurchase != null) {
+            if (_itemToPurchase != null)
+            {
                 _itemToPurchase.OnAffordabilityChanged -= UpdateInteractable;
             }
             _itemToPurchase = itemToPurchase;
@@ -53,7 +55,7 @@ namespace BML.Scripts.UI
 
         public void SetStoreItemToSelected()
         {
-            if(_uiStoreItemDetailController != null && _itemToPurchase != null)
+            if (_uiStoreItemDetailController != null && _itemToPurchase != null)
             {
                 _uiStoreItemDetailController.SetSelectedStoreItem(_itemToPurchase);
             }
@@ -80,7 +82,10 @@ namespace BML.Scripts.UI
 
         private void SetButtonText()
         {
-            _costText.text = _itemToPurchase.FormatCostsAsText();
+            if (!_costText.SafeIsUnityNull())
+            {
+                _costText.text = _itemToPurchase.FormatCostsAsText();
+            }
         }
         
         #endregion
