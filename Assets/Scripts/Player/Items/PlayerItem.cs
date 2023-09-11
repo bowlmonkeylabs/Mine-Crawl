@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEditor;
 using System.Linq;
 using System;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.Utilities;
 
@@ -46,7 +47,8 @@ namespace BML.Scripts.Player.Items
 
         [ShowIfGroup("FireProjectile", Condition = "Type", Value = ItemEffectType.FireProjectile)]
         [ShowIfGroup("FireProjectile")] public GameObject ProjectilePrefab;
-        [ShowIfGroup("FireProjectile")] public GameObject ProjectileSpeed;
+        [ShowIfGroup("FireProjectile")] public TransformSceneReference MainCameraRef;
+        [ShowIfGroup("FireProjectile")] public TransformSceneReference ProjectileContainer;
 
         [ShowIfGroup("ChangeLootTable", Condition = "Type", Value = ItemEffectType.ChangeLootTable)]
         [ShowIfGroup("ChangeLootTable")] public LootTable LootTableToOverride;

@@ -142,18 +142,9 @@ namespace BML.Scripts.Player.Items
             }
 
             if(itemEffect.Type == ItemEffectType.FireProjectile) {
-                // container
-                // var projectile = GameObjectUtils.SafeInstantiate(true, itemEffect.ProjectilePrefab);
-                // projectile.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
-                // Calculate throw
-            // var throwDir = _mainCamera.forward;
-            // var throwForce = throwDir * force;
-            
-            // // Instantiate throwable
-            // var newGameObject = 
-            // newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
-            // var throwable = newGameObject.GetComponentInChildren<Throwable>();
-            // throwable.DoThrow(throwForce);
+                var projectile = GameObjectUtils.SafeInstantiate(true, itemEffect.ProjectilePrefab, itemEffect.ProjectileContainer.Value);
+                var mainCamera = itemEffect.MainCameraRef.Value.transform;
+                projectile.transform.SetPositionAndRotation(mainCamera.position, mainCamera.rotation);
             }
 
             if(itemEffect.Type == ItemEffectType.ChangeLootTable) {

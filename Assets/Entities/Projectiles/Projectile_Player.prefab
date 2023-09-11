@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8736196148616425852}
-  m_Layer: 15
+  m_Layer: 24
   m_Name: ProjectileModelOrParticlesParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8017796797026134314}
   - component: {fileID: 7391122811801765368}
-  m_Layer: 15
+  m_Layer: 24
   m_Name: DeflectFeedbacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -377,7 +377,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4073861062695157943}
-  m_Layer: 15
+  m_Layer: 24
   m_Name: Feedbacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -413,11 +413,8 @@ GameObject:
   - component: {fileID: 7854503322635327098}
   - component: {fileID: 3948568082478859347}
   - component: {fileID: 2397865955889468302}
-  - component: {fileID: 5936925736263570091}
-  - component: {fileID: 2303808602677369255}
-  - component: {fileID: 1885979069486394423}
-  m_Layer: 15
-  m_Name: Projectile_Deflectable
+  m_Layer: 24
+  m_Name: Projectile_Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -481,7 +478,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 7854503322635327098}
-  speed: 7
+  speed: 10
   deflectLayer: EnemyProjectileDeflected
   mainCameraRef: {fileID: 11400000, guid: 4f3c154bd5d34bd4e8e4d93472fefad9, type: 2}
 --- !u!114 &2397865955889468302
@@ -499,9 +496,9 @@ MonoBehaviour:
   _damage: 1
   _damageMask:
     serializedVersion: 2
-    m_Bits: 5285065
+    m_Bits: 5776457
   _damageCooldown: 2
-  _damageType: 64
+  _damageType: 32768
   _useRigidbodyVelocity: 1
   _rigidbody: {fileID: 7854503322635327098}
   _onCollisionEnter:
@@ -519,145 +516,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5936925736263570091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6264773026492306718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96e5457f6d8871d4a9d6dc9518bc622e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnInteract:
-    m_PersistentCalls:
-      m_Calls: []
-  _onPickaxeInteract:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2303808602677369255}
-        m_TargetAssemblyTypeName: BML.Scripts.PlayerDeflectable, BML.Scripts
-        m_MethodName: TryDeflect
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onPickaxeSecondaryInteract:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2303808602677369255}
-        m_TargetAssemblyTypeName: BML.Scripts.PlayerDeflectable, BML.Scripts
-        m_MethodName: TryDeflect
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &2303808602677369255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6264773026492306718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d26ed6cd9f940cf90bfa5b00b9b5022, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _upgradeDeflectProjectiles: {fileID: 11400000, guid: f00d0caa0c04b95448db19d7dde9c078, type: 2}
-  _onDeflectSuccess:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3948568082478859347}
-        m_TargetAssemblyTypeName: BML.Scripts.ProjectileDriver, BML.Scripts
-        m_MethodName: ChangeDirection
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3948568082478859347}
-        m_TargetAssemblyTypeName: BML.Scripts.ProjectileDriver, BML.Scripts
-        m_MethodName: SetSpeed
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 15
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 7391122811801765368}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1885979069486394423}
-        m_TargetAssemblyTypeName: BML.Scripts.Projectile.IgnoredCollisionsHandler,
-          BML.Scripts
-        m_MethodName: EnableCollisions
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onDeflectFailure:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4412284428161751536}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &1885979069486394423
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6264773026492306718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 706469d2538b49a689b3db6d32a458fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _colliders:
-  - {fileID: 2363402180298159716}
 --- !u!1 &7105204453429942838
 GameObject:
   m_ObjectHideFlags: 0
@@ -668,7 +526,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5147505785007405350}
   - component: {fileID: 4412284428161751536}
-  m_Layer: 0
+  m_Layer: 24
   m_Name: CollideFeedbacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
