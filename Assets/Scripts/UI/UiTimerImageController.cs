@@ -27,8 +27,14 @@ namespace BML.Scripts.UI
 
         #region Unity lifecycle
 
+        private void Start()
+        {
+            UpdateImage();
+        }
+
         private void OnEnable()
         {
+            UpdateImage();
             _timer.Subscribe(UpdateImage);
         }
 
