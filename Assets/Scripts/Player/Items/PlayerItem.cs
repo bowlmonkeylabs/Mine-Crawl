@@ -83,7 +83,7 @@ namespace BML.Scripts.Player.Items
             });
         }
 
-        private void OnDisble() {
+        private void OnDisable() {
             _itemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => {
                 entry.Key.OnAmountChanged -= InvokeOnAffordabilityChanged;
             });
