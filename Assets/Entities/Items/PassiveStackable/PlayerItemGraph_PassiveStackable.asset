@@ -22,7 +22,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   graph: {fileID: 11400000}
-  position: {x: -710.0233, y: 1237.1954}
+  position: {x: -904, y: 1256}
   ports:
     keys:
     - Start
@@ -39,6 +39,38 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
+--- !u!114 &-8117046188189048964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8445c532b3f064d92579d3ce96782d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: -952, y: 664}
+  ports:
+    keys: []
+    values: []
+  Width: 2278
+  Height: 1539
+  Color: {r: 1, g: 1, b: 1, a: 0.08}
+  TextColor: {r: 1, g: 1, b: 1, a: 1}
+  Description: Pickaxe Swing
+  Minimized: 0
 --- !u!114 &-8017767831684099069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,7 +93,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   graph: {fileID: 11400000}
-  position: {x: 264, y: 1672}
+  position: {x: 72, y: 1688}
   ports:
     keys:
     - From
@@ -154,7 +186,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   graph: {fileID: 11400000}
-  position: {x: -296, y: 1208}
+  position: {x: -488, y: 1224}
   ports:
     keys:
     - From
@@ -187,8 +219,59 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
-  Obtained: 0
+  Obtained: 1
   Item: {fileID: 11400000, guid: 9c0b613c93647784d900a4ff0e117c78, type: 2}
+--- !u!114 &-2587787219697522379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4e280917d072640be943f96cba2774, type: 3}
+  m_Name: Fire Projectile
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: -328, y: 3208}
+  ports:
+    keys:
+    - From
+    - To
+    values:
+    - _fieldName: From
+      _node: {fileID: -2587787219697522379}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Start
+        node: {fileID: 337168288027425340}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: To
+      _node: {fileID: -2587787219697522379}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+  Obtained: 1
+  Item: {fileID: 11400000, guid: e132221da35cb6e4498d7af7c2f1468d, type: 2}
 --- !u!114 &-638828647273197621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,6 +396,8 @@ MonoBehaviour:
   m_Name: PlayerItemGraph_PassiveStackable
   m_EditorClassIdentifier: 
   nodes:
+  - {fileID: 3779250414574659090}
+  - {fileID: -8117046188189048964}
   - {fileID: -5558730097424497059}
   - {fileID: -638828647273197621}
   - {fileID: 6258287874985757224}
@@ -324,6 +409,47 @@ MonoBehaviour:
   - {fileID: 8527830809428993885}
   - {fileID: 4241425090600993864}
   - {fileID: 7641009534941850445}
+  - {fileID: 337168288027425340}
+  - {fileID: -2587787219697522379}
+--- !u!114 &337168288027425340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 265593927741f7f4ca0df8cb5367b997, type: 3}
+  m_Name: Pickaxe Swing Speed Tree
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: -856, y: 3256}
+  ports:
+    keys:
+    - Start
+    values:
+    - _fieldName: Start
+      _node: {fileID: 337168288027425340}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: From
+        node: {fileID: -2587787219697522379}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
 --- !u!114 &2359358694554025740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,6 +504,38 @@ MonoBehaviour:
       _dynamic: 0
   Obtained: 0
   Item: {fileID: 11400000, guid: 41d572c482a0c8040baf3a65fd16e0e7, type: 2}
+--- !u!114 &3779250414574659090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8445c532b3f064d92579d3ce96782d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: -986, y: 2618.3943}
+  ports:
+    keys: []
+    values: []
+  Width: 2332
+  Height: 1251
+  Color: {r: 1, g: 1, b: 1, a: 0.08}
+  TextColor: {r: 1, g: 1, b: 1, a: 1}
+  Description: Test
+  Minimized: 0
 --- !u!114 &4241425090600993864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,7 +558,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   graph: {fileID: 11400000}
-  position: {x: 264, y: 920}
+  position: {x: 72, y: 936}
   ports:
     keys:
     - From
@@ -430,7 +588,7 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
-  Obtained: 0
+  Obtained: 1
   Item: {fileID: 11400000, guid: 93e7a2f9077cdb74a9f8b543cf7a6764, type: 2}
 --- !u!114 &6258287874985757224
 MonoBehaviour:
@@ -507,7 +665,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  graph: {fileID: 11400000}
+  graph: {fileID: 0}
   position: {x: -974, y: -758}
   ports:
     keys: []
@@ -516,7 +674,7 @@ MonoBehaviour:
   Height: 1267
   Color: {r: 1, g: 1, b: 1, a: 0.08}
   TextColor: {r: 1, g: 1, b: 1, a: 1}
-  Description: <Empty>
+  Description: Health
   Minimized: 0
 --- !u!114 &8527830809428993885
 MonoBehaviour:
@@ -540,7 +698,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   graph: {fileID: 11400000}
-  position: {x: 968, y: 1192}
+  position: {x: 776, y: 1208}
   ports:
     keys:
     - From

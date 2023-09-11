@@ -159,6 +159,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476d57a1661a4a559138142354d10596, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _setOriginTransform: 0
+  _origin: {fileID: 0}
   _explosionTime:
     UseConstant: 1
     EnableInstanceOptions: 0
@@ -183,6 +185,9 @@ MonoBehaviour:
   _explosionMask:
     serializedVersion: 2
     m_Bits: 4228288
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 0
   _damageType: 64
   _damage:
     UseConstant: 1
@@ -191,6 +196,7 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 1
     Variable: {fileID: 0}
+  _applyKnockback: 1
   _useExplosiveRadiusFeedback: 1
   _explosiveRadiusFeedback: {fileID: 6629829583488182570}
   _onActivate:
@@ -232,6 +238,78 @@ MonoBehaviour:
       - m_Target: {fileID: 3034139403369507695}
         m_TargetAssemblyTypeName: BML.Scripts.Explosive, BML.Scripts
         m_MethodName: Activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnCollisionExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollisionStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  TriggerLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  OnTriggerEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  Collision2DLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  OnCollision2DEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollision2DExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollision2DStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  Trigger2DLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  OnTrigger2DEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTrigger2DExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTrigger2DStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &3087156136254781691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8064516570588036163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 007ea1391362e4845aee91886eb0cda3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionLayerMask:
+    serializedVersion: 2
+    m_Bits: 16777216
+  OnCollisionEnterEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 297677073457279149}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
