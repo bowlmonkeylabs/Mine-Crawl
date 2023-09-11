@@ -20,7 +20,10 @@ namespace BML.Scripts.UI
     {
         #region Inspector
         
-        [SerializeField] private Player.Items.ItemTreeGraph _itemTreeGraph;
+        [SerializeField] private bool _useGraph = true;
+        [ShowIf("_useGraph"), SerializeField] private Player.Items.ItemTreeGraph _itemTreeGraph;
+        [HideIf("_useGraph"), SerializeField] private List<PlayerItem> _activeItemPool;
+        [HideIf("_useGraph"), SerializeField] private List<PlayerItem> _passiveItemPool;
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private Transform _listContainerStoreButtons;
         [SerializeField] private Button _cancelButton;
@@ -39,8 +42,6 @@ namespace BML.Scripts.UI
         
         private void Awake()
         {
-            // Debug.Log("Awake");
-            
             #warning Remove this once we're done working on the stores/inventory
             GenerateStoreItems();
             
@@ -49,8 +50,6 @@ namespace BML.Scripts.UI
 
         void OnEnable()
         {
-            // Debug.Log("OnEnable");
-            
             UpdateButtons();
             
             _onPurchaseEvent.Subscribe(OnBuy);
@@ -58,8 +57,6 @@ namespace BML.Scripts.UI
 
         void OnDisable()
         {
-            // Debug.Log("OnDisable");
-            
             _onPurchaseEvent.Unsubscribe(OnBuy);
         }
         
@@ -72,7 +69,13 @@ namespace BML.Scripts.UI
         {
             DestroyShopItems();
 
-            var shownStoreItems = _itemTreeGraph.GetUnobtainedItemPool();
+            List<PlayerItem> shownStoreItems;
+            if(_useGraph) {
+                 shownStoreItems = _itemTreeGraph.GetUnobtainedItemPool();
+            } else {
+                shownStoreItems = new List<PlayerItem>(_activeItemPool);
+                shownStoreItems.AddRange(_passiveItemPool);
+            }
 
             if(_randomizeStoreOnBuy) {
                 Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
