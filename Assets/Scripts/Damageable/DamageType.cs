@@ -15,6 +15,7 @@ namespace BML.Scripts {
         Enemy_Bomb_Explosion = 2048,
         Trap_Spike = 4096,
         Trap_Stalactite = 8192,
-        Enemy_Worm = 16384
+        Enemy_Worm = 16384,
+        Player_Projectile = 32768
     }
 }
