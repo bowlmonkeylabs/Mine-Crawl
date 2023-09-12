@@ -37,8 +37,14 @@ namespace BML.Scripts.Player.Items
             this.ApplyWhenAcquiredOrActivatedEffectsForPassiveItems();
 
             _effectTimersToUpdate = new List<TimerVariable>();
-            _effectTimersToUpdate.AddRange(_playerInventory.ActiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
-            _effectTimersToUpdate.AddRange(_playerInventory.PassiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
+            if (_playerInventory.ActiveItem)
+            {
+                _effectTimersToUpdate.AddRange(_playerInventory.ActiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
+            }
+            if (_playerInventory.PassiveItem)
+            {
+                _effectTimersToUpdate.AddRange(_playerInventory.PassiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
+            }
             _effectTimersToUpdate.AddRange(_playerInventory.PassiveStackableItems.SelectMany(i => i.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer)));
             _effectTimersToUpdate = _effectTimersToUpdate.Distinct().ToList();
             
@@ -152,7 +158,13 @@ namespace BML.Scripts.Player.Items
             });
         }
 
-        private void ApplyEffect(ItemEffect itemEffect) {
+        private void ApplyEffect(ItemEffect itemEffect)
+        {
+            if (itemEffect.UseActivationLimit && itemEffect.RemainingActivations.Value <= 0)
+            {
+                return;
+            }
+            
             if (itemEffect.UseActivationCooldownTimer)
             {
                 if (itemEffect.ActivationCooldownTimer.IsStarted && !itemEffect.ActivationCooldownTimer.IsFinished)
@@ -160,6 +172,11 @@ namespace BML.Scripts.Player.Items
                     return;
                 }
                 itemEffect.ActivationCooldownTimer.StartTimer();
+            }
+            
+            if (itemEffect.UseActivationLimit)
+            {
+                itemEffect.RemainingActivations.Value -= 1;
             }
             
             if(itemEffect.Type == ItemEffectType.StatIncrease) {
