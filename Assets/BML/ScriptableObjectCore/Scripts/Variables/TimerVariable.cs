@@ -135,6 +135,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [HorizontalGroup("Split", LabelWidth = .01f, Width = .2f)] [PropertyTooltip("$Tooltip")]
         [BoxGroup("Split/Left", ShowLabel = false)] [LabelText("$LabelText")] [LabelWidth(10f)]
         [SerializeField] private bool UseConstant = false;
+
+        public void SetVariable(TimerVariable timerVariable)
+        {
+            UseConstant = false;
+            Variable = timerVariable;
+        }
         
         [BoxGroup("Split/Right", ShowLabel = false)] [HideLabel] [ShowIf("UseConstant")]
         [SerializeField] private SafeFloatValueReference ConstantDuration;

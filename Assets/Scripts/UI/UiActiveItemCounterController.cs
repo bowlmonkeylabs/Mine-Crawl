@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using BML.Scripts.Player.Items;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -64,8 +65,8 @@ namespace BML.Scripts.UI
             _uiRoot.SetActive(true);
             _imageIcon.sprite = _activeItem.Icon;
             
-            // TODO control timer
-            // _timerImageController
+            var itemActivationTimer = _activeItem.ItemEffects.First(e => e.UseActivationCooldownTimer).ActivationCooldownTimer;
+            _timerImageController.SetTimerVariable(itemActivationTimer);
         }
     }
 }
