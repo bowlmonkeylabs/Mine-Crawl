@@ -65,6 +65,7 @@ namespace BML.Scripts.UI
             
             _uiRoot.SetActive(true);
             _imageIcon.sprite = _activeItem.Icon;
+            _imageIcon.color = (_activeItem.UseIconColor ? _activeItem.IconColor : Color.white);
             
             var itemActivationTimer = _activeItem.ItemEffects.First(e => e.UseActivationCooldownTimer).ActivationCooldownTimer;
             if (_timerImageController == null)
