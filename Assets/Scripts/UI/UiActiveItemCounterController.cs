@@ -28,6 +28,7 @@ namespace BML.Scripts.UI
         [FormerlySerializedAs("_root")] [TitleGroup("UI"), SerializeField] private GameObject _uiRoot;
         [TitleGroup("UI"), SerializeField] private Image _imageIcon;
         [TitleGroup("UI"), SerializeField] private UiTimerImageController _timerImageController;
+        [TitleGroup("UI"), SerializeField] private UiTextIntFormatter _remainingCountTextController;
 
         #endregion
 
@@ -66,7 +67,26 @@ namespace BML.Scripts.UI
             _imageIcon.sprite = _activeItem.Icon;
             
             var itemActivationTimer = _activeItem.ItemEffects.First(e => e.UseActivationCooldownTimer).ActivationCooldownTimer;
-            _timerImageController.SetTimerVariable(itemActivationTimer);
+            if (_timerImageController == null)
+            {
+                _timerImageController.gameObject.SetActive(false);
+            }
+            else
+            {
+                _timerImageController.gameObject.SetActive(true);
+                _timerImageController.SetTimerVariable(itemActivationTimer);
+            }
+            
+            var remainingActivationsVariable = _activeItem.ItemEffects.FirstOrDefault(e => e.UseActivationLimit)?.RemainingActivations;
+            if (remainingActivationsVariable == null)
+            {
+                _remainingCountTextController.gameObject.SetActive(false);
+            }
+            else
+            {
+                _remainingCountTextController.gameObject.SetActive(true);
+                _remainingCountTextController.SetVariable(remainingActivationsVariable);
+            }
         }
     }
 }

@@ -50,5 +50,11 @@ namespace BML.Scripts.UI
         {
             _text.text = GetFormattedValue();
         }
+
+        public void SetVariable(IntVariable intVariable)
+        {
+            _variable = intVariable;
+        }
+        
     }
 }
