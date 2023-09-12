@@ -36,6 +36,9 @@ namespace BML.Scripts.Player.Items
     public class ItemEffect {
         public ItemEffectTrigger Trigger = ItemEffectTrigger.WhenAcquiredOrActivated;
 
+        public bool UseActivationLimit = false;
+        [ShowIf("UseActivationLimit")] public IntVariable RemainingActivations;
+        
         public bool UseActivationCooldownTimer = false;
         [ShowIf("UseActivationCooldownTimer")] public TimerVariable ActivationCooldownTimer;
 
