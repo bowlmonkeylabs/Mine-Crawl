@@ -1,5 +1,6 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +26,15 @@ namespace BML.Scripts.UI
 
         #endregion
 
+        #region Public interface
+
+        public void SetTimerVariable(TimerVariable timerVariable)
+        {
+            _timer.SetVariable(timerVariable);
+        }
+
+        #endregion
+
         #region Unity lifecycle
 
         private void Start()
@@ -36,11 +46,13 @@ namespace BML.Scripts.UI
         {
             UpdateImage();
             _timer.Subscribe(UpdateImage);
+            _timer.SubscribeFinished(UpdateImage);
         }
 
         private void OnDisable()
         {
             _timer.Unsubscribe(UpdateImage);
+            _timer.UnsubscribeFinished(UpdateImage);
         }
 
         #endregion

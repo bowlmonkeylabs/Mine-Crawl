@@ -36,6 +36,9 @@ namespace BML.Scripts.Player.Items
     public class ItemEffect {
         public ItemEffectTrigger Trigger = ItemEffectTrigger.WhenAcquiredOrActivated;
 
+        public bool UseActivationCooldownTimer = false;
+        [ShowIf("UseActivationCooldownTimer")] public TimerVariable ActivationCooldownTimer;
+
         [ShowIfGroup("RecurringTimer", Condition = "Trigger", Value = ItemEffectTrigger.RecurringTimer)] public float Time;
         [HideInInspector] public float LastTimeCheck;
 

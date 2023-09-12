@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -28,11 +29,19 @@ namespace BML.Scripts.Player.Items
             }
         }
 
+        private List<TimerVariable> _effectTimersToUpdate;
+
         #region Unity lifecycle
 
         void OnEnable() {
             this.ApplyWhenAcquiredOrActivatedEffectsForPassiveItems();
 
+            _effectTimersToUpdate = new List<TimerVariable>();
+            _effectTimersToUpdate.AddRange(_playerInventory.ActiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
+            _effectTimersToUpdate.AddRange(_playerInventory.PassiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
+            _effectTimersToUpdate.AddRange(_playerInventory.PassiveStackableItems.SelectMany(i => i.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer)));
+            _effectTimersToUpdate = _effectTimersToUpdate.Distinct().ToList();
+            
             _playerInventory.OnPassiveStackableItemAdded += ApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveStackableItemRemoved += UnApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveItemAdded += ApplyWhenAcquiredOrActivatedEffects;
@@ -45,7 +54,9 @@ namespace BML.Scripts.Player.Items
         }
 
         void OnDisable() {
-           UnApplyWhenAcquiredOrActivatedEffectsForPassiveItems();
+            this.UnApplyWhenAcquiredOrActivatedEffectsForPassiveItems();
+            
+            _effectTimersToUpdate.Clear();
 
             _playerInventory.OnPassiveStackableItemAdded -= ApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveStackableItemRemoved -= UnApplyWhenAcquiredOrActivatedEffects;
@@ -68,6 +79,11 @@ namespace BML.Scripts.Player.Items
                     itemEffect.LastTimeCheck = Time.time;
                 }
             }));
+
+            foreach (var timer in _effectTimersToUpdate)
+            {
+                timer.UpdateTime();
+            }
         }
 
         #endregion
@@ -137,6 +153,15 @@ namespace BML.Scripts.Player.Items
         }
 
         private void ApplyEffect(ItemEffect itemEffect) {
+            if (itemEffect.UseActivationCooldownTimer)
+            {
+                if (itemEffect.ActivationCooldownTimer.IsStarted && !itemEffect.ActivationCooldownTimer.IsFinished)
+                {
+                    return;
+                }
+                itemEffect.ActivationCooldownTimer.StartTimer();
+            }
+            
             if(itemEffect.Type == ItemEffectType.StatIncrease) {
                 itemEffect.Stat.Value += itemEffect.StatIncreaseAmount;
             }
@@ -153,6 +178,11 @@ namespace BML.Scripts.Player.Items
         }
 
         private void UnApplyEffect(ItemEffect itemEffect) {
+            if (itemEffect.UseActivationCooldownTimer)
+            {
+                itemEffect.ActivationCooldownTimer.ResetTimer();
+            }
+            
             if(itemEffect.Type == ItemEffectType.StatIncrease) {
                 itemEffect.Stat.Value -= itemEffect.StatIncreaseAmount;
             }
