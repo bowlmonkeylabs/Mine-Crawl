@@ -42,26 +42,26 @@ namespace BML.Scripts.Player.Items
                 while (nodesToCheck.Count > 0 && depthCount <= MAX_ITEM_TREE_RECURSION_DEPTH)
                 {
                     depthCount++;
-                    var nodesWithObtainedStatus = nodesToCheck.Select(node =>
-                        (node: node, obtained: _playerInventory.PassiveStackableItems.Contains(node.Item)));
+                    var nodesWithStatus = nodesToCheck.Select(node =>
+                        (node: node, playerHas: _playerInventory.PassiveStackableItems.Contains(node.Item)));
                     
-                    var unobtainedNodes = nodesWithObtainedStatus.Where(node => !node.obtained).ToList();
+                    var unobtainedNodes = nodesWithStatus.Where(node => !node.playerHas).ToList();
                     unobtainedItemPool.AddRange(unobtainedNodes.Select(node => node.node.Item));
                     foreach (var node in unobtainedNodes)
                     {
                         nodesToCheck.Remove(node.node);
                     }
 
-                    var obtainedNodes = nodesToCheck.Where(node => node.Obtained).ToList();
+                    var obtainedNodes = nodesWithStatus.Where(node => node.playerHas).ToList();
                     var childrenOfObtainedNodes = obtainedNodes.SelectMany(node =>
-                            node.Outputs.First()
+                            node.node.Outputs.First()
                                 .GetConnections()
                                 .Where(port => port.IsInput)
                                 .Select(port => port.node as ItemTreeGraphNode))
                                 .Where(node => node != null);
                     foreach (var node in obtainedNodes)
                     {
-                        nodesToCheck.Remove(node);
+                        nodesToCheck.Remove(node.node);
                     }
                     nodesToCheck.AddRange(childrenOfObtainedNodes);
                 }
