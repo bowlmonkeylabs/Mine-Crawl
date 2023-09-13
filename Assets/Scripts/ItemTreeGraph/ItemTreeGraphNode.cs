@@ -1,15 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using BML.Scripts.Player.Items;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using XNode;
 
-namespace BML.Scripts.ItemTreeGraph { 
-    public class ItemTreeGraphNode : Node {
+namespace BML.Scripts.ItemTreeGraph 
+{ 
+    public class ItemTreeGraphNode : Node 
+    {
         [Input(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection From;
         [Output(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection To;
 
-        public bool Obtained = false;
+        [ShowInInspector, NonSerialized, ReadOnly] public bool Obtained = false;
         public PlayerItem Item;
 
         // Use this for initialization

@@ -79,7 +79,7 @@ namespace BML.Scripts.Player.Items
             PassiveItems.ForEach(psi => psi.ItemEffects.ForEach(itemEffect => {
                 if(itemEffect.Trigger == ItemEffectTrigger.RecurringTimer) {
                     if(itemEffect.Time > (Time.time - itemEffect.LastTimeCheck)) {
-                        Debug.Log("Hello?");
+                        // Debug.Log("Hello?");
                         this.ApplyEffect(itemEffect);
                     }
                     itemEffect.LastTimeCheck = Time.time;

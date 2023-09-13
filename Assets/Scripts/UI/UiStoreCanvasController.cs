@@ -195,7 +195,7 @@ namespace BML.Scripts.UI
         protected void OnBuy(object prevStoreItem, object playerItem)
         {
             _itemTreeGraph.MarkItemAsObtained((PlayerItem)playerItem);
-            SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
+            // SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
             if (_randomizeStoreOnBuy)
             {
                 lastSelected =
