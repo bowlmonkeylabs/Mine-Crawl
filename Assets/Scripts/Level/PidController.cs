@@ -170,11 +170,14 @@ namespace BML.Scripts.Level
         private void OnDrawGizmos()
         {
             var position = transform.position;
-            var targetPosition = _target.Value.transform.position;
-            var targetDirection = targetPosition - position;
-
             Shapes.Draw.Line(position, position + transform.forward, Color.blue);
-            Shapes.Draw.Line(position, position + targetDirection.normalized, Color.yellow);
+
+            if (_target.Value != null)
+            {
+                var targetPosition = _target.Value.transform.position;
+                var targetDirection = targetPosition - position;
+                Shapes.Draw.Line(position, position + targetDirection.normalized, Color.yellow);
+            }
         }
 
         #endregion
