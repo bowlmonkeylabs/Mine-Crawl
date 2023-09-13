@@ -1,3 +1,4 @@
+using System;
 using BML.Scripts.Utils;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,9 @@ namespace BML.Scripts.UI
         [SerializeField, LabelText("@(_navHorizontal ? \"Button Nav Up\" : \"Button Nav Left\")")] private Button _buttonNavLeft;
         [SerializeField, LabelText("@(_navHorizontal ? \"Button Nav Down\" : \"Button Nav Right\")")] private Button _buttonNavRight;
         
+        [SerializeField] private bool _enableLogs = false;
+        public bool EnableLogs => _enableLogs;
+        
         #endregion
         
         private List<UiStoreButtonController> buttonList = new List<UiStoreButtonController>();
@@ -43,7 +47,19 @@ namespace BML.Scripts.UI
         private void Awake()
         {
             #warning Remove this once we're done working on the stores/inventory
-            GenerateStoreItems();
+            {
+                for(int i = 0; i < _listContainerStoreButtons.childCount; i++)
+                {
+                    var buttonTransform = _listContainerStoreButtons.GetChild(i);
+                    var buttonController = buttonTransform.GetComponent<UiStoreButtonController>();
+                    if (_cancelButton != null && buttonController.Button == _cancelButton)
+                    {
+                        continue;
+                    }
+                    buttonController.ParentStoreCanvasController = this; // Ideally we should remember to assign this in the inspector, so we can remove this when we're done working on it. We only really need this code if we bring back dynamic shop button addition.
+                }
+                GenerateStoreItems();
+            }
             
             SetNavigationOrder();
         }
@@ -67,7 +83,9 @@ namespace BML.Scripts.UI
         [Button("Generate Store Items")]
         public void GenerateStoreItems()
         {
-            DestroyShopItems();
+            DestroyStoreItems();
+            
+            if (_enableLogs) Debug.Log($"GenerateStoreItems ({this.gameObject.name})");
 
             List<PlayerItem> shownStoreItems;
             if(_useGraph) {
@@ -103,13 +121,22 @@ namespace BML.Scripts.UI
         }
 
         [Button("Destroy Store Items")]
-        public void DestroyShopItems()
+        public void DestroyStoreItems()
         {
+            if (_enableLogs) Debug.Log($"DestroyStoreItems ({this.gameObject.name})");
+            
             buttonList.Clear();
             
-            for(int i = 0; i < _listContainerStoreButtons.childCount - 1; i++) {
-                _listContainerStoreButtons.GetChild(i).GetComponent<UiStoreButtonController>().OnInteractibilityChanged -= SetNavigationOrder;
-                _listContainerStoreButtons.GetChild(i).gameObject.SetActive(false);
+            for(int i = 0; i < _listContainerStoreButtons.childCount; i++)
+            {
+                var buttonTransform = _listContainerStoreButtons.GetChild(i);
+                var buttonController = buttonTransform.GetComponent<UiStoreButtonController>();
+                if (_cancelButton != null && buttonController.Button == _cancelButton)
+                {
+                    continue;
+                }
+                buttonController.OnInteractibilityChanged -= SetNavigationOrder;
+                buttonTransform.gameObject.SetActive(false);
             }
         }
         
@@ -134,6 +161,8 @@ namespace BML.Scripts.UI
 
         private void UpdateButtons()
         {
+            if (_enableLogs) Debug.Log($"UpdateButtons ({this.gameObject.name})");
+            
             foreach (var button in buttonList)
             {
                 button.UpdateInteractable();
@@ -148,6 +177,8 @@ namespace BML.Scripts.UI
 
         private void SetNavigationOrder(bool includeInactive = false, bool includeNonInteractable = false)
         {
+            if (_enableLogs) Debug.Log($"SetNavigationOrder ({this.gameObject.name})");
+            
             var filteredButtons = buttonList
                 .Where(b =>
                     (includeInactive || b.gameObject.activeSelf) 

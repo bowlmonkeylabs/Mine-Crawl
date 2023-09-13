@@ -13,6 +13,8 @@ namespace BML.Scripts.UI
     public class UiStoreButtonController : MonoBehaviour
     {
         #region Inspector
+
+        [SerializeField] public UiStoreCanvasController ParentStoreCanvasController;
         
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
 
@@ -27,6 +29,8 @@ namespace BML.Scripts.UI
 
         [SerializeField] private PlayerItem _itemToPurchase;
         public PlayerItem ItemToPurchase => _itemToPurchase;
+
+        private bool _enableLogs => ParentStoreCanvasController?.EnableLogs ?? false;
         
         #endregion
 
@@ -67,6 +71,8 @@ namespace BML.Scripts.UI
         
         public void UpdateInteractable()
         {
+            if (_enableLogs) Debug.Log($"UpdateInteractable ({_button.gameObject.name})");
+            
             if(_isGodModeEnabled.Value)
             {
                 _button.interactable = true;
