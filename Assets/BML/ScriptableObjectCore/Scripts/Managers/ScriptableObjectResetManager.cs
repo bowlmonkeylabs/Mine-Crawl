@@ -75,7 +75,8 @@ namespace BML.ScriptableObjectCore.Scripts.Managers
             {
                 variable.ResetTimer();
             }
-            if(ResettableScriptableObjects != null) {
+            if (ResettableScriptableObjects != null)
+            {
                 foreach (var resettable in ResettableScriptableObjects)
                 {
                     resettable.ResetScriptableObject();
