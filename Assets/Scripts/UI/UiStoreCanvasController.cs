@@ -66,6 +66,8 @@ namespace BML.Scripts.UI
 
         void OnEnable()
         {
+            OnItemPoolUpdated();
+            
             UpdateButtons();
             
             _onPurchaseEvent.Subscribe(OnBuy);
@@ -80,6 +82,21 @@ namespace BML.Scripts.UI
         
         #region Public interface
 
+        private List<PlayerItem> GetItemPool()
+        {
+            List<PlayerItem> itemPool;
+            if(_useGraph) 
+            {
+                itemPool = _itemTreeGraph.GetUnobtainedItemPool();
+            } 
+            else 
+            {
+                itemPool = new List<PlayerItem>(_activeItemPool);
+                itemPool.AddRange(_passiveItemPool);
+            }
+            return itemPool;
+        }
+
         [Button("Generate Store Items")]
         public void GenerateStoreItems()
         {
@@ -87,14 +104,8 @@ namespace BML.Scripts.UI
             
             if (_enableLogs) Debug.Log($"GenerateStoreItems ({this.gameObject.name})");
 
-            List<PlayerItem> shownStoreItems;
-            if(_useGraph) {
-                 shownStoreItems = _itemTreeGraph.GetUnobtainedItemPool();
-            } else {
-                shownStoreItems = new List<PlayerItem>(_activeItemPool);
-                shownStoreItems.AddRange(_passiveItemPool);
-            }
-
+            List<PlayerItem> shownStoreItems = GetItemPool();
+            
             if(_randomizeStoreOnBuy) {
                 Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
                 shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
@@ -158,6 +169,42 @@ namespace BML.Scripts.UI
         #endregion
         
         #region UI control
+
+        private void OnItemPoolUpdated()
+        {
+            if (!_randomizeStoreOnBuy)
+            {
+                GenerateStoreItems();
+                return;
+            }
+            
+            var itemPool = GetItemPool();
+            var statusOfItemsCurrentlyInShopButtons = buttonList.Select(button => 
+                (button: button, stillInItemPool: itemPool.Contains(button.ItemToPurchase))).ToList();
+            
+            foreach (var button in buttonList)
+            {
+                if (button.ItemToPurchase != null)
+                {
+                    itemPool.Remove(button.ItemToPurchase);
+                }
+            }
+            
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
+            int countOfButtonsStillInItemPool = statusOfItemsCurrentlyInShopButtons.Count(i => i.stillInItemPool);
+            var replacementOptions = itemPool.OrderBy(item => Random.value)
+                .Take(_optionsCount - countOfButtonsStillInItemPool).ToList();
+            int replacementIndex = 0;
+            foreach (var valueTuple in statusOfItemsCurrentlyInShopButtons)
+            {
+                if (!valueTuple.stillInItemPool)
+                {
+                    valueTuple.button.Init(replacementOptions[replacementIndex++]);
+                }
+            }
+            
+            
+        }
 
         private void UpdateButtons()
         {
