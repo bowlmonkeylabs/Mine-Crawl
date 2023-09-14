@@ -192,6 +192,10 @@ namespace BML.Scripts.Player.Items
             if(itemEffect.Type == ItemEffectType.ChangeLootTable) {
                itemEffect.LootTableToOverride.OverrideLootTable(itemEffect.OveridingLootTable);
             }
+
+            if(itemEffect.Type == ItemEffectType.ToggleBoolVariable) {
+               itemEffect.BoolVariableToToggle.Value = true;
+            }
         }
 
         private void UnApplyEffect(ItemEffect itemEffect) {
@@ -202,6 +206,10 @@ namespace BML.Scripts.Player.Items
             
             if(itemEffect.Type == ItemEffectType.StatIncrease) {
                 itemEffect.Stat.Value -= itemEffect.StatIncreaseAmount;
+            }
+
+            if(itemEffect.Type == ItemEffectType.ToggleBoolVariable) {
+               itemEffect.BoolVariableToToggle.Value = false;
             }
         }
     }
