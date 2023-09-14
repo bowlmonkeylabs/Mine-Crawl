@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0699a69989f2e77499221b13d2694b0b, type: 3}
-  m_Name: PlayerItem_Active_Bomb
+  m_Name: PlayerItem_PassiveStackable_DeflectDamage
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 11400000, guid: 4b1dac39812948140ba362034f3a17f7, type: 2}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -35,46 +34,34 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 10
       Data: 0
-    - Name: $v
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
     - Name: 
       Entry: 13
       Data: 
     - Name: 
       Entry: 8
       Data: 
-  _name: Blood Quartz
-  _effectDescription: +1 Max Health
-  _storeDescription: +1 Max Health
+  _name: Deflect Damage
+  _effectDescription: Deflected projectiles deal more damage
+  _storeDescription: Deflected projectiles deal more damage
   _useIconColor: 1
-  _iconColor: {r: 1, g: 0.9176231, b: 0.3820755, a: 1}
-  _icon: {fileID: 21300000, guid: 8bdf31d5100336446b0115b4002a8a31, type: 3}
-  _itemType: 1
+  _iconColor: {r: 0.8113208, g: 0.08036668, b: 0.100023285, a: 1}
+  _icon: {fileID: 21300000, guid: 16fa855ca98c8ed4b87d2ace1e16db34, type: 3}
+  _itemType: 0
   _itemEffects:
   - Trigger: 0
-    UseActivationLimit: 1
-    RemainingActivations: {fileID: 11400000, guid: 854325ec046576444a20daae883a3033, type: 2}
-    UseActivationCooldownTimer: 1
-    ActivationCooldownTimer: {fileID: 11400000, guid: bfd2d3644dfc50f40a4dfcd6e2b1c40f, type: 2}
+    UseActivationLimit: 0
+    RemainingActivations: {fileID: 0}
+    UseActivationCooldownTimer: 0
+    ActivationCooldownTimer: {fileID: 0}
     Time: 0
     LastTimeCheck: 0
-    Type: 1
-    Stat: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
-    StatIncreaseAmount: 2
-    ProjectilePrefab: {fileID: 8692043269319617905, guid: badef62d6c4a3d547bbf8b9847ddcd79, type: 3}
-    MainCameraRef: {fileID: 11400000, guid: 4f3c154bd5d34bd4e8e4d93472fefad9, type: 2}
-    ProjectileContainer: {fileID: 11400000, guid: 77d7b7aaf358a8c4898a2de7a9382d78, type: 2}
+    Type: 3
+    Stat: {fileID: 0}
+    StatIncreaseAmount: 0
+    ProjectilePrefab: {fileID: 0}
+    MainCameraRef: {fileID: 0}
+    ProjectileContainer: {fileID: 0}
     LootTableToOverride: {fileID: 0}
     OveridingLootTable: {fileID: 0}
-    BoolVariableToToggle: {fileID: 0}
+    BoolVariableToToggle: {fileID: 11400000, guid: b542848ee2f453440905f050d89553de, type: 2}
