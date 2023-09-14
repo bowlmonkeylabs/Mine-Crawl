@@ -28,6 +28,7 @@ namespace BML.Scripts.UI
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private Transform _listContainerStoreButtons;
         [SerializeField] private Button _cancelButton;
+        [SerializeField] private GameObject _noItemsAvailableUi;
         [SerializeField] private int _optionsCount = 2;
         [SerializeField] private bool _randomizeStoreOnBuy;
         [SerializeField] private bool _navHorizontal = false;
@@ -105,6 +106,16 @@ namespace BML.Scripts.UI
             if (_enableLogs) Debug.Log($"GenerateStoreItems ({this.gameObject.name})");
 
             List<PlayerItem> shownStoreItems = GetItemPool();
+
+            if (shownStoreItems.Count == 0)
+            {
+                if (_noItemsAvailableUi != null) _noItemsAvailableUi.SetActive(true);
+                return;
+            }
+            else
+            {
+                if (_noItemsAvailableUi != null) _noItemsAvailableUi.SetActive(false);
+            }
             
             if(_randomizeStoreOnBuy) {
                 Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
@@ -172,15 +183,28 @@ namespace BML.Scripts.UI
 
         private void OnItemPoolUpdated()
         {
-            if (!_randomizeStoreOnBuy)
+            if (!_randomizeStoreOnBuy || buttonList.Count < _optionsCount)
             {
                 GenerateStoreItems();
                 return;
             }
             
             var itemPool = GetItemPool();
+            var allShopButtons = Enumerable.Range(0, _listContainerStoreButtons.childCount - 1)
+                .Select(i => _listContainerStoreButtons.GetChild(i).GetComponent<UiStoreButtonController>())
+                .Where(button => _cancelButton == null || button.Button != _cancelButton);
             var statusOfItemsCurrentlyInShopButtons = buttonList.Select(button => 
-                (button: button, stillInItemPool: itemPool.Contains(button.ItemToPurchase))).ToList();
+                (button: button, stillInItemPool: button.ItemToPurchase != null && itemPool.Contains(button.ItemToPurchase))).ToList();
+            
+            if (itemPool.Count == 0)
+            {
+                if (_noItemsAvailableUi != null) _noItemsAvailableUi.SetActive(true);
+                return;
+            }
+            else
+            {
+                if (_noItemsAvailableUi != null) _noItemsAvailableUi.SetActive(false);
+            }
             
             foreach (var button in buttonList)
             {
@@ -202,8 +226,6 @@ namespace BML.Scripts.UI
                     valueTuple.button.Init(replacementOptions[replacementIndex++]);
                 }
             }
-            
-            
         }
 
         private void UpdateButtons()
