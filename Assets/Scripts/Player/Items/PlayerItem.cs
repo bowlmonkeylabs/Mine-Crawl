@@ -29,7 +29,8 @@ namespace BML.Scripts.Player.Items
     public enum ItemEffectType {
         StatIncrease,
         FireProjectile,
-        ChangeLootTable
+        ChangeLootTable,
+        ToggleBoolVariable
     }
 
     [Serializable, InlineEditor()]
@@ -59,6 +60,9 @@ namespace BML.Scripts.Player.Items
         [ShowIfGroup("ChangeLootTable", Condition = "Type", Value = ItemEffectType.ChangeLootTable)]
         [ShowIfGroup("ChangeLootTable")] public LootTable LootTableToOverride;
         [ShowIfGroup("ChangeLootTable")] public LootTable OveridingLootTable;
+
+        [ShowIfGroup("ToggleBoolVariable", Condition = "Type", Value = ItemEffectType.ToggleBoolVariable)]
+        [ShowIfGroup("ToggleBoolVariable")] public BoolVariable BoolVariableToToggle;
     }
 
     public delegate void OnAffordabilityChanged();
