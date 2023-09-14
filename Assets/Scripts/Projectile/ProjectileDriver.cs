@@ -1,12 +1,10 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Compass;
-using BML.Scripts.Player;
-using Codice.CM.Common.Tree.Partial;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace BML.Scripts
 {
@@ -24,16 +22,31 @@ namespace BML.Scripts
         [SerializeField] private string deflectLayer = "EnemyProjectileDeflected";
         [SerializeField] private TransformSceneReference mainCameraRef;
 
-        [SerializeField] private bool _enableHoming = false;
-        [SerializeField, ShowIf("_enableHoming")] private LayerMask _homingTargetAcquisitionLayerMask;
-        [SerializeField, ShowIf("_enableHoming")] private SafeTransformValueReference _homingTarget;
-        [SerializeField, ShowIf("_enableHoming")] private PIDParameters _horizontalRotationPidParameters;
-        [SerializeField, ShowIf("_enableHoming")] private bool _useSamePidParametersForVerticalRotation = true;
-        [SerializeField, ShowIf("_enableHoming")] private bool _disableHorizontal = false;
-        [SerializeField, ShowIf("_enableHoming")] private bool _disableVertical = false;
-        [SerializeField, ShowIf("@_enableHoming && !_useSamePidParametersForVerticalRotation")] private PIDParameters _verticalRotationPidParameters;
-        [ShowInInspector, ShowIf("_enableHoming")] private PID2 _horizontalRotationPidController;
-        [ShowInInspector, ShowIf("_enableHoming")] private PID2 _verticalRotationPidController;
+        [SerializeField] 
+        private bool _enableHoming = false;
+        [HorizontalGroup("EnableHomingAxes"), ShowIf("_enableHoming")] [SerializeField] 
+        private bool _enableHorizontalHoming = true;
+        [HorizontalGroup("EnableHomingAxes"), ShowIf("_enableHoming")] [SerializeField] 
+        private bool _enableVerticalHoming = true;
+        [FoldoutGroup("Homing", true), ShowIf("_enableHoming")] [SerializeField, Range(0f, 1f), OnValueChanged("UpdateCurvability"), Tooltip("Leave curvability set to 0 if you want to manually tweak the homing PID parameters.")] 
+        private float _curvability;
+        private bool _doUseCurvability => _curvability > 0;
+        [FoldoutGroup("Homing"), ShowIf("_enableHoming")] [SerializeField]
+        private CurveVariable _curvabilityToMinMaxOutput;
+        [FoldoutGroup("Homing"), ShowIf("_enableHoming")] [SerializeField] 
+        private LayerMask _homingTargetAcquisitionLayerMask;
+        [FoldoutGroup("Homing"), ShowIf("_enableHoming")] [SerializeField] 
+        private SafeTransformValueReference _homingTarget;
+        [FoldoutGroup("Homing"), ShowIf("@_enableHoming")] [SerializeField] 
+        private PIDParameters _horizontalRotationPidParameters;
+        [FoldoutGroup("Homing"), ShowIf("@_enableHoming && !_doUseCurvability")] [SerializeField] 
+        private bool _useSamePidParametersForVerticalRotation = true;
+        [FoldoutGroup("Homing"), ShowIf("@_enableHoming && !_doUseCurvability && !_useSamePidParametersForVerticalRotation")] [SerializeField] 
+        private PIDParameters _verticalRotationPidParameters;
+        [FoldoutGroup("Homing")] [ShowInInspector, ShowIf("_enableHoming")]
+        private PID2 _horizontalRotationPidController;
+        [FoldoutGroup("Homing")] [ShowInInspector, ShowIf("_enableHoming")] 
+        private PID2 _verticalRotationPidController;
         
         #endregion
 
@@ -41,6 +54,21 @@ namespace BML.Scripts
 
         private Vector3 _positionLastFixedUpdate;
         private float _traveledDistance;
+        private void UpdateCurvability()
+        {
+            if (_enableHoming)
+            {
+                if (_doUseCurvability)
+                {
+                    var size = _curvabilityToMinMaxOutput.Value.Evaluate(_curvability);
+                    _horizontalRotationPidParameters.OutputMinMax = new Vector2(-size, size);
+                }
+                else
+                {
+                    _horizontalRotationPidParameters.OutputMinMax = Vector2.zero;
+                }
+            }
+        }
 
         #region Unity lifecycle
 
@@ -49,7 +77,7 @@ namespace BML.Scripts
             if (_enableHoming)
             {
                 _horizontalRotationPidController = new PID2(_horizontalRotationPidParameters);
-                _verticalRotationPidController = new PID2(_useSamePidParametersForVerticalRotation ? _horizontalRotationPidParameters : _verticalRotationPidParameters);
+                _verticalRotationPidController = new PID2(_useSamePidParametersForVerticalRotation || _doUseCurvability ? _horizontalRotationPidParameters : _verticalRotationPidParameters);
             }
 
             if (_doLimitRange)
@@ -124,7 +152,8 @@ namespace BML.Scripts
 
                     float distanceToTargetFac = Mathf.Clamp01(targetDirection.magnitude / 10f);
                     
-                    var torque = (distanceToTargetFac * (_disableHorizontal ? 0 : horizontalTorqueCorrection) * Vector3.up) + (distanceToTargetFac * (_disableVertical ? 0 : verticalTorqueCorrection) * Vector3.right);
+                    var torque = (distanceToTargetFac * (!_enableHorizontalHoming ? 0 : horizontalTorqueCorrection) * Vector3.up)
+                                 + (distanceToTargetFac * (!_enableVerticalHoming ? 0 : verticalTorqueCorrection) * Vector3.right);
                     
                     rb.AddRelativeTorque(torque);
                     moveDirection = transform.forward;
