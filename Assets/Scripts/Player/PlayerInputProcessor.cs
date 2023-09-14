@@ -153,7 +153,7 @@ namespace BML.Scripts.Player
 		{
 			get
 			{
-				return (_isUpgradeStoreOpen.Value && _upgradesAvailable.Value > 0) ||
+				return (_isUpgradeStoreOpen.Value) ||
                     _containerUiMenuStates_Blocking
 					.GetBoolVariables()
 					.Any(b => (b != null && b.Value));
@@ -269,11 +269,7 @@ namespace BML.Scripts.Player
 			//if going to open menu, close other non blocking menus
             if(!_isPaused.Value) {
                 _containerUiMenuStates_NonBlocking.GetBoolVariables().ForEach((menuState) => {
-                    if(menuState.Equals(_isUpgradeStoreOpen) && _upgradesAvailable.Value > 0) {
-                        return;
-                    }
-
-                    if(!menuState.Equals(_isPaused)) {
+	                if(!menuState.Equals(_isPaused)) {
                         menuState.Value = false;
                     }
                 });
@@ -351,7 +347,7 @@ namespace BML.Scripts.Player
 		public void OnToggleUpgradeStore()
 		{
 			// Do nothing if blocking menu is already open
-			if (!_isUpgradeStoreOpen.Value && IsUsingUi_Blocking)
+			if (!_isUpgradeStoreOpen.Value && (IsUsingUi_Blocking || _upgradesAvailable.Value <= 0))
 			{
 				return;
 			}
@@ -363,14 +359,22 @@ namespace BML.Scripts.Player
             //     Debug.Log("player combat");
 			// 	return;
 			// }
-
-            if(_isUpgradeStoreOpen.Value && _upgradesAvailable.Value > 0) {
-                return;
-            }
+			
+			if (!_isUpgradeStoreOpen.Value)
+			{
+				foreach (var menuStateBoolVariable in _containerUiMenuStates_NonBlocking.GetBoolVariables())
+				{
+					if (!menuStateBoolVariable.Equals(_isUpgradeStoreOpen))
+					{
+						menuStateBoolVariable.Value = false;
+					}
+				}
+			}
 
             _isUpgradeStoreOpen.Value = !_isUpgradeStoreOpen.Value;
 		}
 
+		// Deprecated?
 		private void OpenUpgradeStore()
 		{
 			// If opening the store, close other menus
