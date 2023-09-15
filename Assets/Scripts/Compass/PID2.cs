@@ -54,7 +54,25 @@ namespace BML.Scripts.Compass
     [Serializable]
     public class PID2
     {
-        public PIDParameters Parameters;
+        public PIDParameters Parameters
+        {
+            get => _parameters;
+            set
+            {
+                _parameters = value;
+
+                switch (_parameters.DifferenceFunction)
+                {
+                    case DifferenceFunction.Subtract:
+                        _differenceFunction = PIDParameters.Subtract;
+                        break;
+                    case DifferenceFunction.DeltaAngle:
+                        _differenceFunction = Mathf.DeltaAngle;
+                        break;
+                }
+            }
+        }
+        [ShowInInspector] private PIDParameters _parameters;
 
         private Func<float, float, float> _differenceFunction;
 
@@ -66,16 +84,6 @@ namespace BML.Scripts.Compass
         public PID2(PIDParameters parameters)
         {
             Parameters = parameters;
-
-            switch (Parameters.DifferenceFunction)
-            {
-                case DifferenceFunction.Subtract:
-                    _differenceFunction = PIDParameters.Subtract;
-                    break;
-                case DifferenceFunction.DeltaAngle:
-                    _differenceFunction = Mathf.DeltaAngle;
-                    break;
-            }
         }
 
         /// <summary>
@@ -92,8 +100,8 @@ namespace BML.Scripts.Compass
             _p = currentError;
             _i = Mathf.Clamp(
                 _i + (_p * deltaTime),
-                -Parameters.IntegralSaturation,
-                Parameters.IntegralSaturation
+                -_parameters.IntegralSaturation,
+                _parameters.IntegralSaturation
             );
             if (!_isDerivativeInitialized)
             {
@@ -101,7 +109,7 @@ namespace BML.Scripts.Compass
             }
             else
             {
-                switch (Parameters.DerivativeMethod)
+                switch (_parameters.DerivativeMethod)
                 {
                     case DerivativeMethod.ErrorRateChange:
                         float errorRateOfChange = (_p - _prevError) / deltaTime;
@@ -119,11 +127,11 @@ namespace BML.Scripts.Compass
             _prevValue = currentValue; 
             _prevError = currentError;
 
-            var p = _p * Parameters.Kp;
-            var i = _i * Parameters.Ki;
-            var d = _d * Parameters.Kd;
+            var p = _p * _parameters.Kp;
+            var i = _i * _parameters.Ki;
+            var d = _d * _parameters.Kd;
         
-            return Mathf.Clamp(p + i + d, Parameters.OutputMinMax.x, Parameters.OutputMinMax.y);
+            return Mathf.Clamp(p + i + d, _parameters.OutputMinMax.x, _parameters.OutputMinMax.y);
         }
 
         public void Reset()

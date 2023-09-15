@@ -119,6 +119,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
             }
         }
 
+        public void AssignConstantValue(Transform value)
+        {
+            ReferenceTypeSelector = TransformReferenceTypes.Transform;
+            ReferenceValue_Transform = value;
+        }
+
         public String Name
         {
             get
