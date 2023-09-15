@@ -482,8 +482,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 7854503322635327098}
   speed: 7
+  _limitRange: 0
+  _dragWhenRangeLimitExceeded: 3
   deflectLayer: EnemyProjectileDeflected
   mainCameraRef: {fileID: 11400000, guid: 4f3c154bd5d34bd4e8e4d93472fefad9, type: 2}
+  _enableHoming:
+    ReferenceTypeSelector: 0
+    ConstantValue: 0
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+  _enableHomingOnDeflect:
+    ReferenceTypeSelector: 4
+    ConstantValue: 0
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 11400000, guid: 552ec489f82672547a08d4059d95689d, type: 2}
+  _enableHorizontalHoming: 1
+  _enableVerticalHoming: 1
+  _curvability: 0.5
+  _curvabilityToMinMaxOutput: {fileID: 11400000, guid: 12b810c11e26b36459fd26f8a38c38b2, type: 2}
+  _homingTargetAcquisitionLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  _homingTarget:
+    ReferenceTypeSelector: 0
+    ReferenceValue_Transform: {fileID: 0}
+    ReferenceValue_TransformSceneReference: {fileID: 0}
+    ReferenceValue_GameObjectSceneReference: {fileID: 0}
+  _horizontalRotationPidParameters:
+    Kp: 0.01
+    Ki: 0
+    Kd: 0.1
+    IntegralSaturation: 3
+    OutputMinMax: {x: -0.25, y: 0.25}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
+  _useSamePidParametersForVerticalRotation: 1
+  _verticalRotationPidParameters:
+    Kp: 0
+    Ki: 0
+    Kd: 0
+    IntegralSaturation: 0
+    OutputMinMax: {x: 0, y: 0}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
 --- !u!114 &2397865955889468302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -582,7 +627,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3948568082478859347}
         m_TargetAssemblyTypeName: BML.Scripts.ProjectileDriver, BML.Scripts
-        m_MethodName: ChangeDirection
+        m_MethodName: Deflect
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

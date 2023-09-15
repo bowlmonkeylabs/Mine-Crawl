@@ -3,6 +3,7 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Compass;
+using Shapes;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -23,29 +24,32 @@ namespace BML.Scripts
         [SerializeField] private TransformSceneReference mainCameraRef;
 
         [SerializeField] 
-        private bool _enableHoming = false;
-        [HorizontalGroup("EnableHomingAxes"), ShowIf("_enableHoming")] [SerializeField] 
+        private SafeBoolValueReference _enableHoming;
+        private bool _showHomingParameters => (_enableHoming.Value || !_enableHoming.UseConstant || _enableHomingOnDeflect.Value || !_enableHomingOnDeflect.UseConstant);
+        [SerializeField]
+        private SafeBoolValueReference _enableHomingOnDeflect;
+        [HorizontalGroup("EnableHomingAxes"), ShowIf("_showHomingParameters")] [SerializeField] 
         private bool _enableHorizontalHoming = true;
-        [HorizontalGroup("EnableHomingAxes"), ShowIf("_enableHoming")] [SerializeField] 
+        [HorizontalGroup("EnableHomingAxes"), ShowIf("_showHomingParameters")] [SerializeField] 
         private bool _enableVerticalHoming = true;
-        [FoldoutGroup("Homing", true), ShowIf("_enableHoming")] [SerializeField, Range(0f, 1f), OnValueChanged("UpdateCurvability"), Tooltip("Leave curvability set to 0 if you want to manually tweak the homing PID parameters.")] 
+        [FoldoutGroup("Homing", true), ShowIf("_showHomingParameters")] [SerializeField, Range(0f, 1f), OnValueChanged("UpdateCurvability"), Tooltip("Leave curvability set to 0 if you want to manually tweak the homing PID parameters.")] 
         private float _curvability;
         private bool _doUseCurvability => _curvability > 0;
-        [FoldoutGroup("Homing"), ShowIf("_enableHoming")] [SerializeField]
+        [FoldoutGroup("Homing"), ShowIf("_showHomingParameters")] [SerializeField]
         private CurveVariable _curvabilityToMinMaxOutput;
-        [FoldoutGroup("Homing"), ShowIf("_enableHoming")] [SerializeField] 
+        [FoldoutGroup("Homing"), ShowIf("_showHomingParameters")] [SerializeField] 
         private LayerMask _homingTargetAcquisitionLayerMask;
-        [FoldoutGroup("Homing"), ShowIf("_enableHoming")] [SerializeField] 
+        [FoldoutGroup("Homing"), ShowIf("_showHomingParameters")] [SerializeField] 
         private SafeTransformValueReference _homingTarget;
-        [FoldoutGroup("Homing"), ShowIf("@_enableHoming")] [SerializeField] 
+        [FoldoutGroup("Homing"), ShowIf("_showHomingParameters")] [SerializeField] 
         private PIDParameters _horizontalRotationPidParameters;
-        [FoldoutGroup("Homing"), ShowIf("@_enableHoming && !_doUseCurvability")] [SerializeField] 
+        [FoldoutGroup("Homing"), ShowIf("@_showHomingParameters && !_doUseCurvability")] [SerializeField] 
         private bool _useSamePidParametersForVerticalRotation = true;
-        [FoldoutGroup("Homing"), ShowIf("@_enableHoming && !_doUseCurvability && !_useSamePidParametersForVerticalRotation")] [SerializeField] 
+        [FoldoutGroup("Homing"), ShowIf("@_showHomingParameters && !_doUseCurvability && !_useSamePidParametersForVerticalRotation")] [SerializeField] 
         private PIDParameters _verticalRotationPidParameters;
-        [FoldoutGroup("Homing")] [ShowInInspector, ShowIf("_enableHoming")]
+        [FoldoutGroup("Homing")] [ShowInInspector, ShowIf("_showHomingParameters")]
         private PID2 _horizontalRotationPidController;
-        [FoldoutGroup("Homing")] [ShowInInspector, ShowIf("_enableHoming")] 
+        [FoldoutGroup("Homing")] [ShowInInspector, ShowIf("_showHomingParameters")] 
         private PID2 _verticalRotationPidController;
         
         #endregion
@@ -76,8 +80,7 @@ namespace BML.Scripts
         {
             if (_enableHoming)
             {
-                _horizontalRotationPidController = new PID2(_horizontalRotationPidParameters);
-                _verticalRotationPidController = new PID2(_useSamePidParametersForVerticalRotation || _doUseCurvability ? _horizontalRotationPidParameters : _verticalRotationPidParameters);
+                InitializePidControllers();
             }
 
             if (_doLimitRange)
@@ -113,14 +116,15 @@ namespace BML.Scripts
             {
                 // Update target selection
                 // TODO
-                bool didHit = Physics.SphereCast(transform.position, 1f, transform.forward, out var hitInfo, _limitRange, _homingTargetAcquisitionLayerMask);
+                float checkDistance = _limitRange > 0 ? _limitRange : speed * 2;
+                bool didHit = Physics.SphereCast(transform.position, 1f, transform.forward, out var hitInfo, checkDistance, _homingTargetAcquisitionLayerMask);
                 if (didHit)
                 {
                     _homingTarget.AssignConstantValue(hitInfo.transform);
                 }
                 else
                 {
-                    bool didHit2 = Physics.SphereCast(transform.position, 3f, transform.forward, out var hitInfo2, _limitRange, _homingTargetAcquisitionLayerMask);
+                    bool didHit2 = Physics.SphereCast(transform.position, 3f, transform.forward, out var hitInfo2, checkDistance, _homingTargetAcquisitionLayerMask);
                     if (didHit2)
                     {
                         _homingTarget.AssignConstantValue(hitInfo2.transform);
@@ -167,6 +171,11 @@ namespace BML.Scripts
         {
             var position = transform.position;
             Shapes.Draw.Line(position, position + transform.forward, Color.blue);
+            
+            var color1 = new Color(0.0f, 0.15f, 1f, 0.6f);
+            var color2 = new Color(0.8f,  0.9f, 0f, 0.3f);
+            Shapes.Draw.Line(ShapesBlendMode.Transparent, LineGeometry.Volumetric3D, LineEndCap.Round, ThicknessSpace.Meters, transform.position, transform.position+transform.forward*_limitRange, color1, color1, 1f);
+            Shapes.Draw.Line(ShapesBlendMode.Transparent, LineGeometry.Volumetric3D, LineEndCap.Round, ThicknessSpace.Meters, transform.position, transform.position+transform.forward*_limitRange, color2, color2, 3f);
 
             if (_enableHoming && _homingTarget.Value != null)
             {
@@ -180,16 +189,23 @@ namespace BML.Scripts
 
         #region Public interface
 
-        public void ChangeDirection(HitInfo hitInfo)
-        {
-            Deflect(hitInfo.HitDirection);
-        }
-
-        public void Deflect(Vector3 deflectDirection)
+        public void Deflect(HitInfo hitInfo)
         {
             gameObject.layer = LayerMask.NameToLayer(deflectLayer);
+            if (_enableHomingOnDeflect)
+            {
+                // TODO add a better interface to take info from the hit to augment projectile parameters (damage, speed, homing, homing targets/layers, curvability, color/visual)
+                _enableHoming.ReferenceTypeSelector = SafeBoolValueReference.BoolReferenceTypes.Constant;
+                _enableHoming.Value = true;
+                InitializePidControllers();
+            }
             
-            moveDirection = deflectDirection.normalized;
+            Redirect(hitInfo.HitDirection);
+        }
+
+        public void Redirect(Vector3 newDirection)
+        {
+            moveDirection = newDirection.normalized;
             rb.position = mainCameraRef.Value.position;
             rb.transform.forward = moveDirection;
             ApplyVelocity();
@@ -208,6 +224,18 @@ namespace BML.Scripts
         private void ApplyVelocity()
         {
             rb.velocity = moveDirection * speed;
+        }
+
+        #endregion
+
+        #region PID
+
+        private void InitializePidControllers()
+        {
+            if (_horizontalRotationPidController == null) _horizontalRotationPidController = new PID2(_horizontalRotationPidParameters);
+            _horizontalRotationPidController.Reset();
+            if (_verticalRotationPidController == null) _verticalRotationPidController = new PID2(_useSamePidParametersForVerticalRotation || _doUseCurvability ? _horizontalRotationPidParameters : _verticalRotationPidParameters);
+            _verticalRotationPidController.Reset();
         }
 
         #endregion
