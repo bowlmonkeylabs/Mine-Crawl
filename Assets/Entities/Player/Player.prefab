@@ -9570,6 +9570,7 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 3eaaa5f19236c3b44b1bf9c07f9affd1, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
   RotationSpeed: 1
   SpeedChangeRate: 10
   AnalogMovementCurve:
@@ -9668,12 +9669,14 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
   DashTime:
     ReferenceTypeSelector: 0
     ConstantValue: 0.2
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
   DashActive: {fileID: 11400000, guid: 0cfe6ddbe3de93e45ac2c79fcbe0f181, type: 2}
   DashInCooldown: {fileID: 11400000, guid: a37b8913d77aa8e47b5d1504e78331aa, type: 2}
   DashCooldownTimer: {fileID: 11400000, guid: 937a698e47634ff4283f92fbd3b3f16e, type: 2}
@@ -9718,12 +9721,38 @@ MonoBehaviour:
   _mainCamera: {fileID: 7265003986444444711}
   _uiAimReticle: {fileID: 0}
   _hoverUpdatesPerSecond: 20
+  _aimReticleNearScalingDistance: 1
+  _aimReticleNearScalingCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 2
+      inSlope: -1
+      outSlope: -1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -1
+      outSlope: -1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _interactDistance:
     ReferenceTypeSelector: 3
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: ac25573d9ef9d2c48a9fab74838b2e00, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
   _interactCastRadius: 0.15
   _interactMask:
     serializedVersion: 2
@@ -9743,6 +9772,7 @@ MonoBehaviour:
       ReferenceValue_FloatVariable: {fileID: 0}
       ReferenceValue_IntVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
     Variable: {fileID: 11400000, guid: 9c6b7b0183a07ad4eb911d60aba4e885, type: 2}
   _pickaxeSweepCooldown:
     UseConstant: 0
@@ -9752,6 +9782,7 @@ MonoBehaviour:
       ReferenceValue_FloatVariable: {fileID: 0}
       ReferenceValue_IntVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
     Variable: {fileID: 11400000, guid: 9f033b9462c6ebe459517c2953e67f35, type: 2}
   _pickaxeDamage:
     ReferenceTypeSelector: 2
@@ -9759,18 +9790,21 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 11400000, guid: 24cc2b3aa4293fb4f94460301ae1bdef, type: 2}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 541798a3b6084cc46b8f1e48ee3f98be, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
   _sweepDamage:
     ReferenceTypeSelector: 2
     ConstantValue: 1
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 11400000, guid: 5f1d6d0c10339ac429a046f0a23e1e03, type: 2}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 85076607768e1284b97d73647df3c6e7, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
   _swingCritChance:
     ReferenceTypeSelector: 3
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 541798a3b6084cc46b8f1e48ee3f98be, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
   _onSwingPickaxe: {fileID: 11400000, guid: 84cad83efca31fc4a9629cef610fba8e, type: 2}
   _onSwingPickaxeHit: {fileID: 11400000, guid: ea3a7b46005e18b45bf4d044b5186e71, type: 2}
   _onSweepPickaxe: {fileID: 11400000, guid: b83f724e78fbad34197f80a26f8276a7, type: 2}
@@ -9799,6 +9833,7 @@ MonoBehaviour:
       ReferenceValue_FloatVariable: {fileID: 0}
       ReferenceValue_IntVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
     Variable: {fileID: 11400000, guid: 0edba3be8bef07d46a08d9aadf04b47f, type: 2}
   _torchCount:
     UseConstant: 0
@@ -9835,6 +9870,7 @@ MonoBehaviour:
       ReferenceValue_FloatVariable: {fileID: 0}
       ReferenceValue_IntVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
     Variable: {fileID: 11400000, guid: 0afccb3fa1a87a74787526d182732ed3, type: 2}
   _ropeCount:
     UseConstant: 0
@@ -9863,6 +9899,7 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
   _healthController: {fileID: 1905872712608776435}
   _tryHeal: {fileID: 11400000, guid: 53271449bb8603c47888fac4bcdcd7e2, type: 2}
   _inCombat: {fileID: 11400000, guid: d14b9ee14bf2cde49a3a03f3e19ba4b3, type: 2}
@@ -10018,6 +10055,7 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 11400000, guid: 5c0c6371089aaba47b3c6f1d36c29e80, type: 2}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -27635,7 +27673,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 107.5203
+  field of view: 65.07074
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -27968,6 +28006,7 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 5a2e897791dba4746a854cb3c9d239bf, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
 --- !u!1 &7730667928466908283
 GameObject:
   m_ObjectHideFlags: 0

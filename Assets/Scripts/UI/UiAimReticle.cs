@@ -7,9 +7,8 @@ namespace BML.Scripts.UI
 {
     public class UiAimReticle : MonoBehaviour
     {
+        [SerializeField] private RectTransform _uiRoot;
         [SerializeField] private Image _reticleImage;
-        [SerializeField] private Arc _swingTimerArc;
-        [SerializeField] private Arc _sweepTimerArc;
         [SerializeField] private Color _hoverColor = Color.red;
 
         private Color originalColor;
@@ -28,5 +27,11 @@ namespace BML.Scripts.UI
             // _sweepTimerArc.ShapeProperties.FillColor = color;
             // _sweepTimerArc.ForceMeshUpdate();
         }
+
+        public void SetReticleScaling(float scale)
+        {
+            _uiRoot.localScale = Vector3.one * scale;
+        }
+        
     }
 }
