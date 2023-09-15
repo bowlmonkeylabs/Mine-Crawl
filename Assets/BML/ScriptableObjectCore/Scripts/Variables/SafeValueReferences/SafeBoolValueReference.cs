@@ -15,7 +15,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
     [SynchronizedHeader]
     [HideReferenceObjectPicker]
     [Serializable]
-    public class SafeFloatValueReference
+    public class SafeBoolValueReference
     {
         #region Inspector
         
@@ -30,14 +30,14 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         // [LabelWidth(10f)]
         // [SerializeField]
         // protected bool UseConstant = false;
-        protected bool UseConstant => ReferenceTypeSelector == FloatReferenceTypes.Constant;
+        public bool UseConstant => ReferenceTypeSelector == BoolReferenceTypes.Constant;
         
-        public enum FloatReferenceTypes {
+        public enum BoolReferenceTypes {
             Constant = 0,
-            FloatVariable = 1,
-            IntVariable = 2,
-            EvaluateCurveVariable = 3,
-            BoolVariable = 4,
+            BoolVariable = 1,
+            FloatVariable = 2,
+            IntVariable = 3,
+            FunctionVariable = 4,
         }
         
         [VerticalGroup("Top")]
@@ -48,7 +48,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         // [LabelText("T")] [LabelWidth(10f)]
         [HideLabel]
         [SerializeField]
-        protected FloatReferenceTypes ReferenceTypeSelector;
+        public BoolReferenceTypes ReferenceTypeSelector;
         
         // [HorizontalGroup("Top/Split/Left/Right", LabelWidth = .01f)]
         // [BoxGroup("Top/Split/Left/Right/Right", ShowLabel = false)]
@@ -106,7 +106,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         [HideLabel]
         [ShowIf("UseConstant")]
         [SerializeField]
-        protected float ConstantValue;
+        protected bool ConstantValue;
         
         
         #region Reference values
@@ -123,8 +123,17 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         // [HideIf("UseConstant")]
         // [SerializeField]
         // protected FloatReferenceTypes ReferenceTypeSelector;
+        
+        private bool _showBoolVariable => ReferenceTypeSelector == BoolReferenceTypes.BoolVariable;
+        [BoxGroup("Top/Split/Right", ShowLabel = false)]
+        [HideLabel]
+        [ShowIf("@!UseConstant && _showBoolVariable")]
+        [InlineEditor()]
+        [SerializeField]
+        protected BoolVariable ReferenceValue_BoolVariable;
+        
 
-        private bool _showFloatVariable => ReferenceTypeSelector == FloatReferenceTypes.FloatVariable;
+        private bool _showFloatVariable => ReferenceTypeSelector == BoolReferenceTypes.FloatVariable;
         [BoxGroup("Top/Split/Right", ShowLabel = false)]
         [HideLabel]
         [ShowIf("@!UseConstant && _showFloatVariable")]
@@ -133,7 +142,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         protected FloatVariable ReferenceValue_FloatVariable;
         
         
-        private bool _showIntVariable => ReferenceTypeSelector == FloatReferenceTypes.IntVariable;
+        private bool _showIntVariable => ReferenceTypeSelector == BoolReferenceTypes.IntVariable;
         [BoxGroup("Top/Split/Right", ShowLabel = false)]
         [HideLabel]
         [ShowIf("@!UseConstant && _showIntVariable")]
@@ -142,22 +151,13 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         protected IntVariable ReferenceValue_IntVariable;
         
         
-        private bool _showEvaluateCurveVariable => ReferenceTypeSelector == FloatReferenceTypes.EvaluateCurveVariable;
+        private bool _showFunctionVariable => ReferenceTypeSelector == BoolReferenceTypes.FunctionVariable;
         [BoxGroup("Top/Split/Right", ShowLabel = false)]
         [HideLabel]
-        [ShowIf("@!UseConstant && _showEvaluateCurveVariable")]
+        [ShowIf("@!UseConstant && _showFunctionVariable")]
         [InlineEditor()]
         [SerializeField]
-        protected EvaluateCurveVariable ReferenceValue_EvaluateCurveVariable;
-        
-        
-        private bool _showBoolVariable => ReferenceTypeSelector == FloatReferenceTypes.BoolVariable;
-        [BoxGroup("Top/Split/Right", ShowLabel = false)]
-        [HideLabel]
-        [ShowIf("@!UseConstant && _showBoolVariable")]
-        [InlineEditor()]
-        [SerializeField]
-        protected BoolVariable ReferenceValue_BoolVariable;
+        protected FunctionVariable ReferenceValue_FunctionVariable;
         
         
         
@@ -170,7 +170,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         
         #region Interface
 
-        public float Value
+        public bool Value
         {
             get
             {
@@ -178,17 +178,17 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                     return ConstantValue;
                 switch (ReferenceTypeSelector)
                 {
-                    case FloatReferenceTypes.FloatVariable:
-                        return ReferenceValue_FloatVariable?.Value ?? 0;
-                    case FloatReferenceTypes.IntVariable:
-                        return ReferenceValue_IntVariable?.Value ?? 0;
-                    case FloatReferenceTypes.EvaluateCurveVariable:
-                        return ReferenceValue_EvaluateCurveVariable?.Value ?? 0;
-                    case FloatReferenceTypes.BoolVariable:
-                        return (ReferenceValue_BoolVariable?.Value ?? false) ? 1f : 0f;
+                    case BoolReferenceTypes.BoolVariable:
+                        return ReferenceValue_BoolVariable?.Value ?? false;
+                    case BoolReferenceTypes.FloatVariable:
+                        return (ReferenceValue_FloatVariable?.Value ?? 0) > 0;
+                    case BoolReferenceTypes.IntVariable:
+                        return (ReferenceValue_IntVariable?.Value ?? 0) > 0;
+                    case BoolReferenceTypes.FunctionVariable:
+                        return (ReferenceValue_FunctionVariable?.Value ?? 0) > 0;
                     default:
-                        Debug.LogError($"Trying to access Float variable but none set in inspector!");
-                        return default(float);
+                        Debug.LogError($"Trying to access Bool variable but none set in inspector!");
+                        return default(bool);
                 }
             }
             set
@@ -200,24 +200,24 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                 }
                 switch (ReferenceTypeSelector)
                 {
-                    case FloatReferenceTypes.FloatVariable:
-                        if (ReferenceValue_FloatVariable != null)
-                            ReferenceValue_FloatVariable.Value = value;
-                        break;
-                    case FloatReferenceTypes.IntVariable:
-                        if (ReferenceValue_FloatVariable != null)
-                            ReferenceValue_FloatVariable.Value = Mathf.FloorToInt(value);
-                        break;
-                    case FloatReferenceTypes.EvaluateCurveVariable:
-                        // if (ReferenceValue_EvaluateCurveVariable != null)
-                        //     ReferenceValue_EvaluateCurveVariable.Value = value;
-                        break;
-                    case FloatReferenceTypes.BoolVariable:
+                    case BoolReferenceTypes.BoolVariable:
                         if (ReferenceValue_BoolVariable != null)
-                            ReferenceValue_BoolVariable.Value = (value > 0);
+                            ReferenceValue_BoolVariable.Value = value;
+                        break;
+                    case BoolReferenceTypes.FloatVariable:
+                        if (ReferenceValue_FloatVariable != null)
+                            ReferenceValue_FloatVariable.Value = value ? 1f : 0f;
+                        break;
+                    case BoolReferenceTypes.IntVariable:
+                        if (ReferenceValue_FloatVariable != null)
+                            ReferenceValue_FloatVariable.Value = value ? 1 : 0;
+                        break;
+                    case BoolReferenceTypes.FunctionVariable:
+                        // if (ReferenceValue_FunctionVariable != null)
+                        //     ReferenceValue_FunctionVariable.Value = value;
                         break;
                     default:
-                        Debug.LogError($"Trying to access Float variable but none set in inspector!");
+                        Debug.LogError($"Trying to access Bool variable but none set in inspector!");
                         break;
                 }
             }
@@ -231,16 +231,16 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                     return $"{ConstantValue}";
                 switch (ReferenceTypeSelector)
                 {
-                    case FloatReferenceTypes.FloatVariable:
-                        return ReferenceValue_FloatVariable?.GetName();
-                    case FloatReferenceTypes.IntVariable:
-                        return ReferenceValue_IntVariable?.GetName();
-                    case FloatReferenceTypes.EvaluateCurveVariable:
-                        return ReferenceValue_EvaluateCurveVariable?.GetName();
-                    case FloatReferenceTypes.BoolVariable:
+                    case BoolReferenceTypes.BoolVariable:
                         return ReferenceValue_BoolVariable?.GetName();
+                    case BoolReferenceTypes.FloatVariable:
+                        return ReferenceValue_FloatVariable?.GetName();
+                    case BoolReferenceTypes.IntVariable:
+                        return ReferenceValue_IntVariable?.GetName();
+                    case BoolReferenceTypes.FunctionVariable:
+                        return ReferenceValue_FunctionVariable?.GetName();
                 }
-                return "<Missing Float>";
+                return "<Missing Bool>";
             }
         }
         
@@ -252,16 +252,16 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                     return $"{ConstantValue}";
                 switch (ReferenceTypeSelector)
                 {
-                    case FloatReferenceTypes.FloatVariable:
-                        return ReferenceValue_FloatVariable?.GetDescription();
-                    case FloatReferenceTypes.IntVariable:
-                        return ReferenceValue_IntVariable?.GetDescription();
-                    case FloatReferenceTypes.EvaluateCurveVariable:
-                        return ReferenceValue_EvaluateCurveVariable?.GetDescription();
-                    case FloatReferenceTypes.BoolVariable:
+                    case BoolReferenceTypes.BoolVariable:
                         return ReferenceValue_BoolVariable?.GetDescription();
+                    case BoolReferenceTypes.FloatVariable:
+                        return ReferenceValue_FloatVariable?.GetDescription();
+                    case BoolReferenceTypes.IntVariable:
+                        return ReferenceValue_IntVariable?.GetDescription();
+                    case BoolReferenceTypes.FunctionVariable:
+                        return ReferenceValue_FunctionVariable?.GetDescription();
                 }
-                return "<Missing Float>";
+                return "<Missing Bool>";
             }
         }
 
@@ -269,17 +269,17 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         {
             switch (ReferenceTypeSelector)
             {
-                case FloatReferenceTypes.FloatVariable:
+                case BoolReferenceTypes.BoolVariable:
+                    ReferenceValue_BoolVariable?.Subscribe(callback);
+                    break;
+                case BoolReferenceTypes.FloatVariable:
                     ReferenceValue_FloatVariable?.Subscribe(callback);
                     break;
-                case FloatReferenceTypes.IntVariable:
+                case BoolReferenceTypes.IntVariable:
                     ReferenceValue_IntVariable?.Subscribe(callback);
                     break;
-                case FloatReferenceTypes.EvaluateCurveVariable:
-                    ReferenceValue_EvaluateCurveVariable?.Subscribe(callback);
-                    break;
-                case FloatReferenceTypes.BoolVariable:
-                    ReferenceValue_BoolVariable?.Subscribe(callback);
+                case BoolReferenceTypes.FunctionVariable:
+                    ReferenceValue_FunctionVariable?.Subscribe(callback);
                     break;
             }
         }
@@ -288,17 +288,17 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         {
             switch (ReferenceTypeSelector)
             {
-                case FloatReferenceTypes.FloatVariable:
+                case BoolReferenceTypes.BoolVariable:
+                    ReferenceValue_BoolVariable?.Unsubscribe(callback);
+                    break;
+                case BoolReferenceTypes.FloatVariable:
                     ReferenceValue_FloatVariable?.Unsubscribe(callback);
                     break;
-                case FloatReferenceTypes.IntVariable:
+                case BoolReferenceTypes.IntVariable:
                     ReferenceValue_IntVariable?.Unsubscribe(callback);
                     break;
-                case FloatReferenceTypes.EvaluateCurveVariable:
-                    ReferenceValue_EvaluateCurveVariable?.Unsubscribe(callback);
-                    break;
-                case FloatReferenceTypes.BoolVariable:
-                    ReferenceValue_BoolVariable?.Unsubscribe(callback);
+                case BoolReferenceTypes.FunctionVariable:
+                    ReferenceValue_FunctionVariable?.Unsubscribe(callback);
                     break;
             }
         }
@@ -329,6 +329,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         //     InstanceName = "{I} ";
         //     InstancePath = "IntermediateProperties";
         // }
+        
+        public static implicit operator bool(SafeBoolValueReference b) => b.Value;
 
         #endregion
     }
