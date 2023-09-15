@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BML.ScriptableObjectCore.Scripts.Utils;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.ScriptableObjectCore.Scripts.Variables.ValueReferences;
 using Sirenix.OdinInspector;
 using UnityEditor;
@@ -17,7 +18,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         public FunctionVariableOperators op;
         
         [HideLabel]
-        public FloatValueReference value;
+        public SafeFloatValueReference value;
     }
 
     internal enum FunctionVariableOperators {
@@ -61,7 +62,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     public class FunctionVariable : SerializedScriptableObject, IFloatValue
     {
 #region Inspector
-        
+
         [TextArea (7, 10)]
         [HideInInlineEditors]
         public string Description;
