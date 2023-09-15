@@ -476,6 +476,9 @@ namespace BML.Scripts.CaveV2
                                     {
                                         // var edgeAlreadyUsed = keepEdges.Contains(edge) || offshootPath.Contains(edge);
                                         var edgeAlreadyUsed = offshootPath.Contains(edge) || shortestPathFromStartToEndList.Contains(edge) || keepEdges.Contains(edge);
+                                        var edgeConnectsToStartOrEnd =
+                                            edge.Source == startNode || edge.Source == endNode ||
+                                            edge.Target == startNode || edge.Target == endNode;
 
                                         CaveNodeData otherVertex;
                                         if (offshootStart == edge.Source) otherVertex = edge.Target;
@@ -484,7 +487,7 @@ namespace BML.Scripts.CaveV2
                                                                     e.Source == otherVertex || e.Target == otherVertex)
                                                                     || keepEdges.Any(e =>
                                                                         e.Source == otherVertex || e.Target == otherVertex);
-                                        return !edgeAlreadyUsed && !vertexAlreadyUsed;
+                                        return !edgeAlreadyUsed && !vertexAlreadyUsed && !edgeConnectsToStartOrEnd;
                                     })
                                     .ToList();
                                 if (!adjacentEdges.Any())
@@ -682,11 +685,16 @@ namespace BML.Scripts.CaveV2
             // TODO more intelligent logic
             foreach (var caveGraphVertex in caveGraph.Vertices)
             {
-                if (caveGraphVertex == caveGraph.StartNode
-                    || caveGraphVertex == caveGraph.EndNode
-                    || caveGraphVertex == caveGraph.MerchantNode
-                ) {
-                    caveGraphVertex.NodeType = CaveNodeType.Medium;
+                if (caveGraphVertex == caveGraph.StartNode) {
+                    caveGraphVertex.NodeType = CaveNodeType.Start;
+                    continue;
+                }
+                if (caveGraphVertex == caveGraph.EndNode) {
+                    caveGraphVertex.NodeType = CaveNodeType.End;
+                    continue;
+                }
+                if (caveGraphVertex == caveGraph.MerchantNode) {
+                    caveGraphVertex.NodeType = CaveNodeType.Merchant;
                     continue;
                 }
                 

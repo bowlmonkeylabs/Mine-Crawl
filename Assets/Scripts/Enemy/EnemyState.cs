@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BehaviorDesigner.Runtime.Tasks;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
@@ -64,14 +65,9 @@ namespace BML.Scripts.Enemy
         private void Awake()
         {
             _currentNodes = new Dictionary<Collider, ICaveNodeData>();
+            Debug.Log(_behaviorTree.ExecutionStatus);
         }
-
-        private void Start()
-        {
-            if (_alertOnStart.Value)
-                _behaviorTree.SendEvent("SetAlerted");
-        }
-
+        
         private void OnEnable()
         {
             var payload = new EnemyStateManager.EnemyStatePayload(this);
@@ -88,6 +84,9 @@ namespace BML.Scripts.Enemy
 
         private void Update()
         {
+            if (_alertOnStart.Value && !isAlerted && _behaviorTree.ExecutionStatus == TaskStatus.Running)
+                SetAlerted();
+            
             UpdateAggroState();
         }
 
@@ -220,6 +219,13 @@ namespace BML.Scripts.Enemy
                 .ForEach(n => dist = Mathf.Min(dist, n.PlayerDistance));
 
             distanceToPlayer = dist;
+        }
+
+        [Button]
+        private void SetAlerted()
+        {
+            _behaviorTree.SendEvent("SetAlerted");
+            Debug.Log("SetAlerted: " +_behaviorTree.ExecutionStatus);
         }
 
         #endregion
