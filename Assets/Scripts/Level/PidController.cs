@@ -130,7 +130,7 @@ namespace BML.Scripts.Level
                 float zPositionCorrection = _zAxisPIDController.GetOutput(positionDiff.z, 0, Time.fixedDeltaTime);
                 Vector3 forceCorrection = new Vector3(xPositionCorrection, yPositionCorrection, zPositionCorrection);
                 
-                _rb.AddRelativeForce(forceCorrection);
+                _rb.AddForce(forceCorrection);
                 
                 // TODO add rotation for some more interesting movement?
             }
