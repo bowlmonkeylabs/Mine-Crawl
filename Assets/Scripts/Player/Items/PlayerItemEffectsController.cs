@@ -32,10 +32,15 @@ namespace BML.Scripts.Player.Items
         private List<TimerVariable> _effectTimersToUpdate;
 
         #region Unity lifecycle
-
-        void OnEnable() {
+        
+        private void Start()
+        {
+            // This needs to run AFTER ScriptableObjectResetManager, which runs on Start (early)
             this.ApplyWhenAcquiredOrActivatedEffectsForPassiveItems();
+        }
 
+        void OnEnable() 
+        {
             _effectTimersToUpdate = new List<TimerVariable>();
             if (_playerInventory.ActiveItem)
             {
