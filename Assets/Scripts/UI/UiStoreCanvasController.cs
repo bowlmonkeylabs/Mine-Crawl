@@ -14,17 +14,33 @@ using UnityEngine.PlayerLoop;
 using Random = UnityEngine.Random;
 using BML.Scripts.Player;
 using BML.Scripts.Player.Items;
+using Object = System.Object;
 
 namespace BML.Scripts.UI
 {
+    public enum StoreItemPoolType
+    {
+        Merchant,
+        MerchantEnd
+    }
+
+    [System.Serializable]
+    public class StoreItemPool
+    {
+        public StoreItemPoolType StoreItemPoolType;
+        public List<PlayerItem> ActiveItemPool;
+        public List<PlayerItem> PassiveItemPool;
+    }
+    
     public class UiStoreCanvasController : MonoBehaviour
     {
         #region Inspector
         
         [SerializeField] private bool _useGraph = true;
         [ShowIf("_useGraph"), SerializeField] private Player.Items.ItemTreeGraph _itemTreeGraph;
-        [HideIf("_useGraph"), SerializeField] private List<PlayerItem> _activeItemPool;
-        [HideIf("_useGraph"), SerializeField] private List<PlayerItem> _passiveItemPool;
+        [HideIf("_useGraph"), SerializeField] private DynamicGameEvent _onSetStorePool;
+        [HideIf("_useGraph"), SerializeField] private BoolVariable _game_MenuIsOpen_Store;
+        [HideIf("_useGraph"), SerializeField] private List<StoreItemPool> _storeItemPools = new List<StoreItemPool>();
         [SerializeField] private DynamicGameEvent _onPurchaseEvent;
         [SerializeField] private Transform _listContainerStoreButtons;
         [SerializeField] private Button _cancelButton;
@@ -42,6 +58,9 @@ namespace BML.Scripts.UI
         
         private List<UiStoreButtonController> buttonList = new List<UiStoreButtonController>();
         private UiStoreButtonController lastSelected = null;
+        
+        [ReadOnly, ShowInInspector]
+        private StoreItemPoolType currentType = StoreItemPoolType.Merchant;
 
         #region Unity lifecycle
         
@@ -52,11 +71,13 @@ namespace BML.Scripts.UI
                 for(int i = 0; i < _listContainerStoreButtons.childCount; i++)
                 {
                     var buttonTransform = _listContainerStoreButtons.GetChild(i);
-                    var buttonController = buttonTransform.GetComponent<UiStoreButtonController>();
-                    if (_cancelButton != null && buttonController.Button == _cancelButton)
+                    Button button = buttonTransform.GetComponent<Button>();
+                    if (_cancelButton != null && button == _cancelButton)
                     {
                         continue;
                     }
+
+                    var buttonController = buttonTransform.GetComponent<UiStoreButtonController>();
                     buttonController.ParentStoreCanvasController = this; // Ideally we should remember to assign this in the inspector, so we can remove this when we're done working on it. We only really need this code if we bring back dynamic shop button addition.
                 }
                 GenerateStoreItems();
@@ -78,10 +99,20 @@ namespace BML.Scripts.UI
         {
             _onPurchaseEvent.Unsubscribe(OnBuy);
         }
-        
+
+        private void OnDestroy()
+        {
+            _onSetStorePool.OnUpdate -= OnSetStorePool;
+        }
+
         #endregion
         
         #region Public interface
+        
+        public void Init()
+        {
+            _onSetStorePool.OnUpdate += OnSetStorePool;
+        }
 
         private List<PlayerItem> GetItemPool()
         {
@@ -90,10 +121,14 @@ namespace BML.Scripts.UI
             {
                 itemPool = _itemTreeGraph.GetUnobtainedItemPool();
             } 
-            else 
+            else
             {
-                itemPool = new List<PlayerItem>(_activeItemPool);
-                itemPool.AddRange(_passiveItemPool);
+                StoreItemPool storeItemPool = _storeItemPools.FirstOrDefault(pool => pool.StoreItemPoolType == currentType);
+                if (storeItemPool == null)
+                    Debug.LogError($"No StoreItemPool with type {currentType} assigned in {gameObject.name}!");
+                
+                itemPool = new List<PlayerItem>(storeItemPool.ActiveItemPool);
+                itemPool.AddRange(storeItemPool.PassiveItemPool);
             }
             return itemPool;
         }
@@ -117,7 +152,8 @@ namespace BML.Scripts.UI
                 if (_noItemsAvailableUi != null) _noItemsAvailableUi.SetActive(false);
             }
             
-            if(_randomizeStoreOnBuy) {
+            if(_randomizeStoreOnBuy)
+            {
                 Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
                 shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
             }
@@ -152,11 +188,13 @@ namespace BML.Scripts.UI
             for(int i = 0; i < _listContainerStoreButtons.childCount; i++)
             {
                 var buttonTransform = _listContainerStoreButtons.GetChild(i);
-                var buttonController = buttonTransform.GetComponent<UiStoreButtonController>();
-                if (_cancelButton != null && buttonController.Button == _cancelButton)
+                Button button = buttonTransform.GetComponent<Button>();
+                if (_cancelButton != null && button == _cancelButton)
                 {
                     continue;
                 }
+
+                var buttonController = buttonTransform.GetComponent<UiStoreButtonController>();
                 buttonController.OnInteractibilityChanged -= SetNavigationOrder;
                 buttonTransform.gameObject.SetActive(false);
             }
@@ -294,10 +332,10 @@ namespace BML.Scripts.UI
 
         protected void OnBuy(object prevStoreItem, object playerItem)
         {
-            _itemTreeGraph.MarkItemAsObtained((PlayerItem)playerItem);
-            // SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
+            if (_useGraph) _itemTreeGraph.MarkItemAsObtained((PlayerItem)playerItem);
             if (_randomizeStoreOnBuy)
             {
+                SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
                 lastSelected =
                     buttonList.FirstOrDefault(buttonController => buttonController.ItemToPurchase == (PlayerItem)playerItem);
                 GenerateStoreItems();
@@ -307,6 +345,12 @@ namespace BML.Scripts.UI
                     lastSelected.Button.Select();
                 }
             }
+        }
+
+        private void OnSetStorePool(Object prevPool, Object newPool)
+        {
+            currentType = (StoreItemPoolType) newPool;
+            _game_MenuIsOpen_Store.Value = true;
         }
         
         #endregion
