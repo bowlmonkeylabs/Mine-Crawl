@@ -79,13 +79,13 @@ namespace BML.Scripts.Player.Items
 
         public void ResetScriptableObject()
         {
+            this._activeItem?.ResetScriptableObject();
+            this._passiveItem?.ResetScriptableObject();
+            this._passiveStackableItems.ForEach(p => p.ResetScriptableObject());
+            
             this._activeItem = null;
             this._passiveItem = null;
             this._passiveStackableItems.Clear();
-
-            OnActiveItemAdded?.Invoke(null);
-            OnPassiveItemAdded?.Invoke(null);
-            OnPassiveStackableItemAdded?.Invoke(null);
         }
 
         #endregion

@@ -225,7 +225,6 @@ namespace BML.Scripts.Enemy
         private void SetAlerted()
         {
             _behaviorTree.SendEvent("SetAlerted");
-            Debug.Log("SetAlerted: " +_behaviorTree.ExecutionStatus);
         }
 
         #endregion

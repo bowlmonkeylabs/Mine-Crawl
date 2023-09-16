@@ -83,11 +83,10 @@ namespace BML.Scripts.Player.Items
         void Update() {
             PassiveItems.ForEach(psi => psi.ItemEffects.ForEach(itemEffect => {
                 if(itemEffect.Trigger == ItemEffectTrigger.RecurringTimer) {
-                    if(itemEffect.Time > (Time.time - itemEffect.LastTimeCheck)) {
-                        // Debug.Log("Hello?");
+                    if(Time.time - itemEffect.LastTimeCheck > itemEffect.Time) {
                         this.ApplyEffect(itemEffect);
+                        itemEffect.LastTimeCheck = Time.time;
                     }
-                    itemEffect.LastTimeCheck = Time.time;
                 }
             }));
 
