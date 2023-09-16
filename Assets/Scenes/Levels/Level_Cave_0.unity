@@ -413,13 +413,17 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: ResettableScriptableObjects
+    - Name: ResetOnStartResettableScriptableObjects
       Entry: 6
       Data: 
-  ResetContainer: {fileID: 11400000, guid: 381537679d3083a40b935bebcb997dd0, type: 2}
-  _resetOnStart: 1
+    - Name: ResetOnDestroyResettableScriptableObjects
+      Entry: 6
+      Data: 
+  ResetOnStartVariableContainer: {fileID: 11400000, guid: 381537679d3083a40b935bebcb997dd0, type: 2}
+  ResetOnDestroyVariableContainer: {fileID: 0}
   _resetVariables: {fileID: 0}
-  _onReset: {fileID: 0}
+  _onResetOnStart: {fileID: 0}
+  _onResetOnDestroy: {fileID: 0}
 --- !u!4 &486630318
 Transform:
   m_ObjectHideFlags: 0
