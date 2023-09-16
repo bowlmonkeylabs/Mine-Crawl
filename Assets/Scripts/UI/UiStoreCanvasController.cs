@@ -102,7 +102,8 @@ namespace BML.Scripts.UI
 
         private void OnDestroy()
         {
-            _onSetStorePool.OnUpdate -= OnSetStorePool;
+            if (!_useGraph)
+                _onSetStorePool.OnUpdate -= OnSetStorePool;
         }
 
         #endregion
@@ -111,7 +112,8 @@ namespace BML.Scripts.UI
         
         public void Init()
         {
-            _onSetStorePool.OnUpdate += OnSetStorePool;
+            if (!_useGraph)
+                _onSetStorePool.OnUpdate += OnSetStorePool;
         }
 
         private List<PlayerItem> GetItemPool()
