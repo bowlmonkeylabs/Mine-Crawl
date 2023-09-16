@@ -102,8 +102,11 @@ namespace BML.Scripts.UI
                 DebugGUI.SetGraphColor(_graphIntensity, intensityResponseColor);
                 DebugGUI.Graph(_graphIntensity, _playerIntensityScore.Value, true);
 
-                var enemySpawnerParams = (_enemySpawnManager.CachedComponent as EnemySpawnManager).EnemySpawnerParams;
-                DebugGUI.Graph(_graphIntensityTarget, enemySpawnerParams.MaxIntensity, true);
+                var enemySpawnerParams = (_enemySpawnManager.CachedComponent as EnemySpawnManager)?.EnemySpawnerParams;
+                if (enemySpawnerParams != null)
+                {
+                    DebugGUI.Graph(_graphIntensityTarget, enemySpawnerParams.MaxIntensity, true);
+                }
 
                 var intensityMinMax = DebugGUI.GetGraphMinMax(_graphIntensity);
                 var intensityTargetMinMax = DebugGUI.GetGraphMinMax(_graphIntensityTarget);
