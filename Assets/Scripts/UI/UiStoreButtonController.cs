@@ -34,6 +34,18 @@ namespace BML.Scripts.UI
         
         #endregion
 
+        #region Unity Lifecycle
+
+        private void OnDestroy()
+        {
+            if (_itemToPurchase != null)
+            {
+                _itemToPurchase.OnAffordabilityChanged -= UpdateInteractable;
+            }
+        }
+
+        #endregion
+
         #region Public interface
 
         public event OnInteractibilityChanged OnInteractibilityChanged;

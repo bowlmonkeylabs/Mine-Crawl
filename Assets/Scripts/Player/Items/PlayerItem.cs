@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEditor;
 using System.Linq;
 using System;
+using BML.ScriptableObjectCore.Scripts.Managers;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.Utilities;
@@ -63,13 +64,20 @@ namespace BML.Scripts.Player.Items
 
         [ShowIfGroup("ToggleBoolVariable", Condition = "Type", Value = ItemEffectType.ToggleBoolVariable)]
         [ShowIfGroup("ToggleBoolVariable")] public BoolVariable BoolVariableToToggle;
+
+        public void Reset()
+        {
+            LastTimeCheck = Mathf.NegativeInfinity;
+            RemainingActivations?.Reset();
+            ActivationCooldownTimer?.ResetTimer();
+        }
     }
 
     public delegate void OnAffordabilityChanged();
 
     [InlineEditor()]
     [CreateAssetMenu(fileName = "PlayerItem", menuName = "BML/Player/PlayerItem", order = 0)]
-    public class PlayerItem : SerializedScriptableObject
+    public class PlayerItem : SerializedScriptableObject, IResettableScriptableObject
     {
         [SerializeField, FoldoutGroup("Descriptors")] private string _name;
         [SerializeField, FoldoutGroup("Descriptors"), TextArea] private string _effectDescription;
@@ -101,6 +109,11 @@ namespace BML.Scripts.Player.Items
 
         private void InvokeOnAffordabilityChanged() {
             OnAffordabilityChanged?.Invoke();
+        }
+
+        public void ResetScriptableObject()
+        {
+            _itemEffects.ForEach(e => e.Reset());
         }
 
         public Sprite Icon { get => _icon; }
