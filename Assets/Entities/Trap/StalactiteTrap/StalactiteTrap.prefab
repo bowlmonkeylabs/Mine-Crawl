@@ -1009,6 +1009,7 @@ GameObject:
   m_Component:
   - component: {fileID: 528853764840805075}
   - component: {fileID: 472639286291875359}
+  - component: {fileID: 8150240442358661689}
   m_Layer: 0
   m_Name: StalactiteTrap
   m_TagString: Untagged
@@ -1062,6 +1063,7 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -1071,6 +1073,18 @@ MonoBehaviour:
   _onDeath:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 8150240442358661689}
+        m_TargetAssemblyTypeName: BML.Scripts.LootRandomizer, BML.Scripts
+        m_MethodName: Drop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 2012392423824498523}
         m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
         m_MethodName: PlayFeedbacks
@@ -1086,6 +1100,34 @@ MonoBehaviour:
   _onRevive:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8150240442358661689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4474856344138851638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7e5df4f8b64359914f082ef13f0f5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lootTable: {fileID: 11400000, guid: 263ea6a44098e3e4291fca73cf2107f8, type: 2}
+  _onDrop:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2265493856839925122}
+        m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
+        m_MethodName: Launch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5507788027060987501
 GameObject:
   m_ObjectHideFlags: 0
@@ -3074,6 +3116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3953987353532094227}
   - component: {fileID: 2012392423824498523}
+  - component: {fileID: 2265493856839925122}
   m_Layer: 0
   m_Name: DeathFeedbacks
   m_TagString: Untagged
@@ -3473,6 +3516,71 @@ MonoBehaviour:
         DebugActive: 0
         TargetGameObject: {fileID: 4474856344138851638}
         Mode: 0
+--- !u!114 &2265493856839925122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7588269548864807786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f680a7afde40b49d9741bdbc7aa5bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _firePoint: {fileID: 45089841359496097}
+  _container: {fileID: 11400000, guid: eddf651308826cd46a3e62a45a34c7cd, type: 2}
+  _quantity:
+    ReferenceTypeSelector: 0
+    ConstantValue: 1
+    ReferenceValue_FloatVariable: {fileID: 0}
+    RoundingBehavior_FloatVariable: 0
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+  _forceMode: 1
+  _direction:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 4ce6a649ad996fc4db299c21ed33231c, type: 2}
+  _directionVariance:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 6f2d74543750f50488792649a1c06eaa, type: 2}
+  _force:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: 67851cd4d7b4c1e42867187f80fac7c7, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+  _forceVariance:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: a4365917159380b49a1411371b092d44, type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+  _torque:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 437a6cb823740bd43a36c4d249851ab8, type: 2}
+  _torqueVariance:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 11400000, guid: 4697d588ccb41c94992b189d006afeef, type: 2}
+  _instantiateAsPrefab: 1
 --- !u!1 &8712970351292785667
 GameObject:
   m_ObjectHideFlags: 0
@@ -3542,6 +3650,9 @@ MonoBehaviour:
   _explosionMask:
     serializedVersion: 2
     m_Bits: 525504
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 0
   _damageType: 8192
   _damage:
     UseConstant: 1
