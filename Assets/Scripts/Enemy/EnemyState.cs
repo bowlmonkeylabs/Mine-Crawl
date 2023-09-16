@@ -65,7 +65,6 @@ namespace BML.Scripts.Enemy
         private void Awake()
         {
             _currentNodes = new Dictionary<Collider, ICaveNodeData>();
-            Debug.Log(_behaviorTree.ExecutionStatus);
         }
         
         private void OnEnable()
