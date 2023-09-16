@@ -11,27 +11,26 @@ namespace BML.ScriptableObjectCore.Scripts.Managers
 {
     public class ScriptableObjectResetManager : SerializedMonoBehaviour
     {
-        [SerializeField] private VariableContainer ResetContainer;
-        [SerializeField] private List<IResettableScriptableObject> ResettableScriptableObjects;
-        [SerializeField] private bool _resetOnStart;
+        [SerializeField, FoldoutGroup("Reset On Start")] private VariableContainer ResetOnStartVariableContainer;
+        [SerializeField, FoldoutGroup("Reset On Start")] private List<IResettableScriptableObject> ResetOnStartResettableScriptableObjects;
+        [SerializeField, FoldoutGroup("Reset On Destroy")] private VariableContainer ResetOnDestroyVariableContainer;
+        [SerializeField, FoldoutGroup("Reset On Destroy")] private List<IResettableScriptableObject> ResetOnDestroyResettableScriptableObjects;
         [SerializeField] private GameEvent _resetVariables;
-        [SerializeField] private GameEvent _onReset;
+        [SerializeField] private GameEvent _onResetOnStart;
+        [SerializeField] private GameEvent _onResetOnDestroy;
 
         #region Unity lifecycle
         
         public void Start()
         {
-            if (_resetOnStart)
-            {
-                ResetValues();
-            }
+            ResetValues(ResetOnStartVariableContainer, ResetOnStartResettableScriptableObjects);
         }
 
         private void OnEnable()
         {
             if (!_resetVariables.SafeIsUnityNull())
             {
-                _resetVariables.Subscribe(ResetValues);
+                _resetVariables.Subscribe(ResetAllValues);
             }
         }
 
@@ -39,42 +38,55 @@ namespace BML.ScriptableObjectCore.Scripts.Managers
         {
             if (!_resetVariables.SafeIsUnityNull())
             {
-                _resetVariables.Unsubscribe(ResetValues);
+                _resetVariables.Unsubscribe(ResetAllValues);
             }
+        }
+
+        public void OnDestroy()
+        {
+            ResetValues(ResetOnDestroyVariableContainer, ResetOnDestroyResettableScriptableObjects);
         }
 
         #endregion
 
-        public void ResetValues()
+        public void ResetAllValues() {
+            ResetValues(ResetOnStartVariableContainer, ResetOnStartResettableScriptableObjects);
+            ResetValues(ResetOnDestroyVariableContainer, ResetOnDestroyResettableScriptableObjects);
+        }
+
+        public void ResetValues(VariableContainer ResetContainer, List<IResettableScriptableObject> ResettableScriptableObjects)
         {
-            foreach (var variable in ResetContainer.GetFloatVariables())
-            {
-                variable.Reset();
+            if(ResetContainer != null) {
+                foreach (var variable in ResetContainer.GetFloatVariables())
+                {
+                    variable.Reset();
+                }
+                foreach (var variable in ResetContainer.GetIntVariables())
+                {
+                    variable.Reset();
+                }
+                foreach (var variable in ResetContainer.GetQuaternionVariables())
+                {
+                    variable.Reset();
+                }
+                foreach (var variable in ResetContainer.GetVector2Variables())
+                {
+                    variable.Reset();
+                }
+                foreach (var variable in ResetContainer.GetVector3Variables())
+                {
+                    variable.Reset();
+                }
+                foreach (var variable in ResetContainer.GetBoolVariables())
+                {
+                    variable.Reset();
+                }
+                foreach (var variable in ResetContainer.GetTimerVariables())
+                {
+                    variable.ResetTimer();
+                }
             }
-            foreach (var variable in ResetContainer.GetIntVariables())
-            {
-                variable.Reset();
-            }
-            foreach (var variable in ResetContainer.GetQuaternionVariables())
-            {
-                variable.Reset();
-            }
-            foreach (var variable in ResetContainer.GetVector2Variables())
-            {
-                variable.Reset();
-            }
-            foreach (var variable in ResetContainer.GetVector3Variables())
-            {
-                variable.Reset();
-            }
-            foreach (var variable in ResetContainer.GetBoolVariables())
-            {
-                variable.Reset();
-            }
-            foreach (var variable in ResetContainer.GetTimerVariables())
-            {
-                variable.ResetTimer();
-            }
+
             if (ResettableScriptableObjects != null)
             {
                 foreach (var resettable in ResettableScriptableObjects)
@@ -83,9 +95,9 @@ namespace BML.ScriptableObjectCore.Scripts.Managers
                 }
             }
 
-            if (!_onReset.SafeIsUnityNull())
+            if (!_onResetOnStart.SafeIsUnityNull())
             {
-                _onReset.Raise();
+                _onResetOnStart.Raise();
             }
         }
     }
