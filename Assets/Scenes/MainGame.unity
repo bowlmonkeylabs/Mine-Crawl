@@ -1464,6 +1464,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3786122457128592531, guid: 53e21db58897cb145ad955e037ed5d23, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3786122457128592532, guid: 53e21db58897cb145ad955e037ed5d23, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3995,10 +3999,13 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: ResettableScriptableObjects
+    - Name: ResetOnStartResettableScriptableObjects
+      Entry: 6
+      Data: 
+    - Name: ResetOnDestroyResettableScriptableObjects
       Entry: 7
-      Data: 0|MS.Internal.Xml.XPath.ClonableStack`1[[BML.ScriptableObjectCore.Scripts.Managers.IResettableScriptableObject,
-        ScriptableObjectSystem]], System.Xml
+      Data: 0|System.Collections.Generic.List`1[[BML.ScriptableObjectCore.Scripts.Managers.IResettableScriptableObject,
+        ScriptableObjectSystem]], mscorlib
     - Name: 
       Entry: 12
       Data: 2
@@ -4014,10 +4021,11 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  ResetContainer: {fileID: 11400000, guid: 6ca4d46ab2f036249acc3bc318c5205c, type: 2}
-  _resetOnStart: 1
+  ResetOnStartVariableContainer: {fileID: 11400000, guid: 6ca4d46ab2f036249acc3bc318c5205c, type: 2}
+  ResetOnDestroyVariableContainer: {fileID: 0}
   _resetVariables: {fileID: 0}
-  _onReset: {fileID: 11400000, guid: 41484265d9c42f64d92033cd6396d3ff, type: 2}
+  _onResetOnStart: {fileID: 0}
+  _onResetOnDestroy: {fileID: 11400000, guid: 41484265d9c42f64d92033cd6396d3ff, type: 2}
 --- !u!1001 &2145413827
 PrefabInstance:
   m_ObjectHideFlags: 0
