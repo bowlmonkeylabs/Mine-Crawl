@@ -32,7 +32,7 @@ namespace BML.Scripts.Player.Items
         {
             get => _activeItem;
             set {
-                if (value.Type == ItemType.Active)
+                if (value == null || value.Type == ItemType.Active)
                 {
                     if (_activeItem != null) OnActiveItemRemoved?.Invoke(_activeItem);
                     _activeItem = value;
@@ -45,7 +45,7 @@ namespace BML.Scripts.Player.Items
         {
             get => _passiveItem;
             set {
-                if (value.Type == ItemType.Passive)
+                if (value == null || value.Type == ItemType.Passive)
                 {
                     if (_passiveItem != null) OnPassiveItemRemoved?.Invoke(_passiveItem);
                     _passiveItem = value;
@@ -92,6 +92,7 @@ namespace BML.Scripts.Player.Items
 
         #region Events
 
+        //the parameter passed into the remove events is the item that was removed, and the param passed into the added events is the item that was added
         public event OnPlayerItemChanged<PlayerItem> OnPassiveStackableItemAdded;
         public event OnPlayerItemChanged<PlayerItem> OnPassiveStackableItemRemoved;
         public event OnPlayerItemChanged<PlayerItem> OnPassiveItemAdded;
