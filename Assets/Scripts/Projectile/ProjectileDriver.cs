@@ -112,22 +112,26 @@ namespace BML.Scripts
                 return;
             }
             
-            if (_enableHoming)
+            // If no target is acquired yet, check for targets
+            if (_enableHoming && _homingTarget.Value == null)
             {
                 // Update target selection
                 // TODO
                 float checkDistance = _limitRange > 0 ? _limitRange : speed * 2;
-                bool didHit = Physics.SphereCast(transform.position, 1f, transform.forward, out var hitInfo, checkDistance, _homingTargetAcquisitionLayerMask);
+                bool didHit = Physics.SphereCast(transform.position, 1f, transform.forward, out var hitInfo, checkDistance, _homingTargetAcquisitionLayerMask, QueryTriggerInteraction.Ignore);
                 if (didHit)
                 {
-                    _homingTarget.AssignConstantValue(hitInfo.transform);
+                    // Prioritize homing directly to the transform of the hit collider; Because of the offset baked into the rigidbody of 'flying' enemies (e.g. Bats), homing to hitInfo.transform caused the projectile to target the enemy origin rather than the center of mass.
+                    var targetTransform = hitInfo.collider?.transform ?? hitInfo.rigidbody?.transform ?? hitInfo.transform;
+                    _homingTarget.AssignConstantValue(targetTransform);
                 }
                 else
                 {
-                    bool didHit2 = Physics.SphereCast(transform.position, 3f, transform.forward, out var hitInfo2, checkDistance, _homingTargetAcquisitionLayerMask);
+                    bool didHit2 = Physics.SphereCast(transform.position, 3f, transform.forward, out var hitInfo2, checkDistance, _homingTargetAcquisitionLayerMask, QueryTriggerInteraction.Ignore);
                     if (didHit2)
                     {
-                        _homingTarget.AssignConstantValue(hitInfo2.transform);
+                        var targetTransform = hitInfo.collider?.transform ?? hitInfo.rigidbody?.transform ?? hitInfo.transform;
+                        _homingTarget.AssignConstantValue(targetTransform);
                     }
                     else
                     {
