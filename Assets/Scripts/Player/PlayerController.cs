@@ -31,6 +31,8 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Interactable hover")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Interactable hover")] private UiAimReticle _uiAimReticle;
         [SerializeField, FoldoutGroup("Interactable hover")] private int _hoverUpdatesPerSecond = 20;
+        [SerializeField, FoldoutGroup("Interactable hover")] private float _aimReticleNearScalingDistance = 0.1f;
+        [SerializeField, FoldoutGroup("Interactable hover")] private AnimationCurve _aimReticleNearScalingCurve = AnimationCurve.Constant(0, 1, 1);
         private float lastHoverUpdateTime;
 
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _interactDistance;
@@ -149,6 +151,7 @@ namespace BML.Scripts.Player
             if (primaryAction.IsPressed()) TrySwingPickaxe();
             if (secondaryAction.IsPressed()) TryUseSweep();
             HandleHover();
+            HandleReticleScaling();
             _combatTimer.UpdateTime(!_anyEnemiesEngaged.Value ? _safeCombatTimerDecayMultiplier : 1f);
             _pickaxeSwingCooldown.UpdateTime();
             _pickaxeSweepCooldown.UpdateTime();
@@ -605,8 +608,25 @@ namespace BML.Scripts.Player
                     return;
                 }
             }
-            
+
             _uiAimReticle.SetReticleHover(false);
+        }
+
+        private void HandleReticleScaling()
+        {
+            RaycastHit hit;
+            LayerMask combinedLayerMask = _terrainMask | _enemyMask | _interactMask;
+            if (Physics.Raycast(_mainCamera.position, _mainCamera.forward, out hit, _aimReticleNearScalingDistance,
+                    combinedLayerMask, QueryTriggerInteraction.Ignore))
+            {
+                var factor = hit.distance / _aimReticleNearScalingDistance;
+                var value = _aimReticleNearScalingCurve.Evaluate(factor);
+                _uiAimReticle.SetReticleScaling(value);
+            }
+            else
+            {
+                _uiAimReticle.SetReticleScaling(1);
+            }
         }
         
         #region Health
