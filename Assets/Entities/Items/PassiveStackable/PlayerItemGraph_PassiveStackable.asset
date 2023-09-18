@@ -83,7 +83,10 @@ MonoBehaviour:
       _node: {fileID: -8827786562620329545}
       _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: From
+        node: {fileID: 6331870998635983951}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 2
@@ -172,7 +175,7 @@ MonoBehaviour:
   Height: 2157
   Color: {r: 1, g: 1, b: 1, a: 0.08}
   TextColor: {r: 1, g: 1, b: 1, a: 1}
-  Description: Move Speed
+  Description: Movement
   Minimized: 0
 --- !u!114 &-6732325634839498397
 MonoBehaviour:
@@ -301,6 +304,42 @@ MonoBehaviour:
       _typeConstraint: 2
       _dynamic: 0
   Item: {fileID: 11400000, guid: 9c0b613c93647784d900a4ff0e117c78, type: 2}
+--- !u!114 &-4810589338872753868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 265593927741f7f4ca0df8cb5367b997, type: 3}
+  m_Name: Item Tree Graph Start
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: 4757.902, y: 45.123367}
+  ports:
+    keys:
+    - Start
+    values:
+    - _fieldName: Start
+      _node: {fileID: -4810589338872753868}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
 --- !u!114 &-2587787219697522379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,7 +434,10 @@ MonoBehaviour:
       _node: {fileID: -2509170156688688896}
       _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: From
+        node: {fileID: 3445101062105831689}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 2
@@ -445,7 +487,10 @@ MonoBehaviour:
       _node: {fileID: -2456058550346632562}
       _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: From
+        node: {fileID: 6331870998635983951}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 2
@@ -637,10 +682,10 @@ MonoBehaviour:
   m_Name: PlayerItemGraph_PassiveStackable
   m_EditorClassIdentifier: 
   nodes:
+  - {fileID: -1666630146242989297}
   - {fileID: 2506059620024367595}
   - {fileID: -6732325634839498397}
   - {fileID: -773952317044590768}
-  - {fileID: -1666630146242989297}
   - {fileID: -7006007381036858602}
   - {fileID: -5558730097424497059}
   - {fileID: -638828647273197621}
@@ -662,6 +707,9 @@ MonoBehaviour:
   - {fileID: 7702353369341445951}
   - {fileID: -2509170156688688896}
   - {fileID: 4618512384732791421}
+  - {fileID: 6331870998635983951}
+  - {fileID: 3445101062105831689}
+  - {fileID: -4810589338872753868}
   _playerInventory: {fileID: 11400000, guid: 9356dfe23cfc20041850028b69aa7e4c, type: 2}
 --- !u!114 &337168288027425340
 MonoBehaviour:
@@ -787,6 +835,59 @@ MonoBehaviour:
   TextColor: {r: 1, g: 1, b: 1, a: 1}
   Description: Projectile
   Minimized: 0
+--- !u!114 &3445101062105831689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4e280917d072640be943f96cba2774, type: 3}
+  m_Name: Deflect Homing
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: 3739.0254, y: 2539.1826}
+  ports:
+    keys:
+    - From
+    - To
+    values:
+    - _fieldName: From
+      _node: {fileID: 3445101062105831689}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: To
+        node: {fileID: -2509170156688688896}
+        reroutePoints: []
+      - fieldName: To
+        node: {fileID: 4618512384732791421}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: To
+      _node: {fileID: 3445101062105831689}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+  Item: {fileID: 11400000, guid: da038bdfb6a7dd04f8cdb865857654bf, type: 2}
 --- !u!114 &3963748555088967148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -923,7 +1024,10 @@ MonoBehaviour:
       _node: {fileID: 4618512384732791421}
       _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: From
+        node: {fileID: 3445101062105831689}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 2
@@ -982,6 +1086,59 @@ MonoBehaviour:
       _typeConstraint: 2
       _dynamic: 0
   Item: {fileID: 11400000, guid: e0bdff0c441b49045be94cb506ee1ec2, type: 2}
+--- !u!114 &6331870998635983951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4e280917d072640be943f96cba2774, type: 3}
+  m_Name: Electrolyte Powder
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: 3592, y: 40}
+  ports:
+    keys:
+    - From
+    - To
+    values:
+    - _fieldName: From
+      _node: {fileID: 6331870998635983951}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: To
+        node: {fileID: -8827786562620329545}
+        reroutePoints: []
+      - fieldName: To
+        node: {fileID: -2456058550346632562}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: To
+      _node: {fileID: 6331870998635983951}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+  Item: {fileID: 11400000, guid: 6e5fcea5f961cae4aa12bfc0d01ddc22, type: 2}
 --- !u!114 &6810362929777685439
 MonoBehaviour:
   m_ObjectHideFlags: 0
