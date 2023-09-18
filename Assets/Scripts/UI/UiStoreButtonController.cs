@@ -50,7 +50,12 @@ namespace BML.Scripts.UI
 
         public event OnInteractibilityChanged OnInteractibilityChanged;
         
-        public void Init(PlayerItem itemToPurchase)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemToPurchase"></param>
+        /// <param name="skipUiUpdate">Use this parameter if you plan to call UpdateButtons() manually, to update all the buttons at once in a batch.</param>
+        public void Init(PlayerItem itemToPurchase, bool skipUiUpdate = false)
         {
             if (_itemToPurchase != null)
             {
@@ -58,8 +63,11 @@ namespace BML.Scripts.UI
             }
             _itemToPurchase = itemToPurchase;
             _storeItemIcon.Init(_itemToPurchase);
-            SetButtonText();
-            UpdateInteractable();
+            if (!skipUiUpdate)
+            {
+                SetButtonText();
+                UpdateInteractable();
+            }
 
             _itemToPurchase.OnAffordabilityChanged += UpdateInteractable;
         }

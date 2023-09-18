@@ -83,7 +83,7 @@ namespace BML.Scripts.UI
                 GenerateStoreItems();
             }
             
-            SetNavigationOrder();
+            // SetNavigationOrder();
         }
 
         void OnEnable()
@@ -171,7 +171,7 @@ namespace BML.Scripts.UI
                 GameObject buttonGameObject = _listContainerStoreButtons.GetChild(i).gameObject;
                 UiStoreButtonController uiStoreButtonControllerComponent = buttonGameObject.GetComponent<UiStoreButtonController>();
                 
-                uiStoreButtonControllerComponent.Init(shownStoreItems[i]);
+                uiStoreButtonControllerComponent.Init(shownStoreItems[i], true);
                 buttonGameObject.SetActive(true);
                 buttonList.Add(uiStoreButtonControllerComponent);
                 uiStoreButtonControllerComponent.OnInteractibilityChanged += SetNavigationOrder;
@@ -199,6 +199,7 @@ namespace BML.Scripts.UI
                 var buttonController = buttonTransform.GetComponent<UiStoreButtonController>();
                 buttonController.OnInteractibilityChanged -= SetNavigationOrder;
                 buttonTransform.gameObject.SetActive(false);
+                if (_enableLogs) Debug.Log($"DestroyStoreItems ({this.gameObject.name}) ({buttonTransform.gameObject?.name}) (ActiveSelf {this.gameObject.activeSelf}) (ActiveInHierarchy {this.gameObject.activeInHierarchy})");
             }
         }
         
@@ -334,14 +335,16 @@ namespace BML.Scripts.UI
 
         protected void OnBuy(object prevStoreItem, object playerItem)
         {
+            if (_enableLogs) Debug.Log($"UiStoreCanvasController OnBuy ({playerItem}) (Buttons: {buttonList.Count})");
             if (_useGraph) _itemTreeGraph.MarkItemAsObtained((PlayerItem)playerItem);
             if (_randomizeStoreOnBuy)
             {
-                SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
                 lastSelected =
                     buttonList.FirstOrDefault(buttonController => buttonController.ItemToPurchase == (PlayerItem)playerItem);
+                SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
                 GenerateStoreItems();
-                if (lastSelected != null)
+                if (_enableLogs) Debug.Log($"UiStoreCanvasController OnBuy (Last selected {lastSelected} (ActiveSelf {lastSelected?.gameObject?.activeSelf}) (ActiveInHierarchy {lastSelected?.gameObject?.activeInHierarchy}))");
+                if (lastSelected != null && lastSelected.gameObject.activeSelf)
                 {
                     lastSelected.SetStoreItemToSelected();
                     lastSelected.Button.Select();
