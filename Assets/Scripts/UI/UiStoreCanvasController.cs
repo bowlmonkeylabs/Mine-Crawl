@@ -255,6 +255,7 @@ namespace BML.Scripts.UI
                 }
             }
             
+            SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
             Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
             int countOfButtonsStillInItemPool = statusOfItemsCurrentlyInShopButtons.Count(i => i.stillInItemPool);
             var replacementOptions = itemPool.OrderBy(item => Random.value)
