@@ -9,6 +9,7 @@ using BML.ScriptableObjectCore.Scripts.Managers;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.Utilities;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 
 namespace BML.Scripts.Player.Items
 {
@@ -50,8 +51,11 @@ namespace BML.Scripts.Player.Items
         public ItemEffectType Type = ItemEffectType.StatIncrease;
 
         [ShowIfGroup("StatIncrease", Condition = "Type", Value = ItemEffectType.StatIncrease)]
-        [ShowIfGroup("StatIncrease")] public IntVariable Stat;
-        [ShowIfGroup("StatIncrease")] public int StatIncreaseAmount;
+        [ShowIfGroup("StatIncrease")] public bool UsePercentageIncrease = false;
+        [ShowIfGroup("StatIncrease"), ShowIf("UsePercentageIncrease")] public FloatVariable FloatStat;
+        [ShowIfGroup("StatIncrease"), HideIf("UsePercentageIncrease")] public IntVariable IntStat;
+        [ShowIfGroup("StatIncrease"), HideIf("UsePercentageIncrease")] public int StatIncreaseAmount;
+        [ShowIfGroup("StatIncrease"), ShowIf("UsePercentageIncrease")] public float StatIncreasePercent;
 
         [ShowIfGroup("FireProjectile", Condition = "Type", Value = ItemEffectType.FireProjectile)]
         [ShowIfGroup("FireProjectile")] public GameObject ProjectilePrefab;

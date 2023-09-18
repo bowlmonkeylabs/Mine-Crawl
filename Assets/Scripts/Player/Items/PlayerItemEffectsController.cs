@@ -184,7 +184,11 @@ namespace BML.Scripts.Player.Items
             }
             
             if(itemEffect.Type == ItemEffectType.StatIncrease) {
-                itemEffect.Stat.Value += itemEffect.StatIncreaseAmount;
+                if(itemEffect.UsePercentageIncrease) {
+                    itemEffect.FloatStat.Value += itemEffect.FloatStat.DefaultValue * (itemEffect.StatIncreasePercent / 100f);
+                } else {
+                    itemEffect.IntStat.Value += itemEffect.StatIncreaseAmount;
+                }
             }
 
             if(itemEffect.Type == ItemEffectType.FireProjectile) {
@@ -209,7 +213,11 @@ namespace BML.Scripts.Player.Items
             }
             
             if(itemEffect.Type == ItemEffectType.StatIncrease) {
-                itemEffect.Stat.Value -= itemEffect.StatIncreaseAmount;
+                if(itemEffect.UsePercentageIncrease) {
+                    itemEffect.FloatStat.Value -= itemEffect.FloatStat.DefaultValue * (itemEffect.StatIncreasePercent / 100f);
+                } else {
+                    itemEffect.IntStat.Value -= itemEffect.StatIncreaseAmount;
+                }
             }
 
             if(itemEffect.Type == ItemEffectType.ToggleBoolVariable) {
