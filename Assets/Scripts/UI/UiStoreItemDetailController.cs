@@ -24,6 +24,10 @@ namespace BML.Scripts.UI
         public void SetSelectedStoreItem(PlayerItem storeItem) {
             this.SetDetails(storeItem.Name, storeItem.Icon, storeItem.EffectDescription, storeItem.StoreDescription);
         }
+        
+        public void ClearSelectedStoreItem() {
+            this.ClearDetails();
+        }
 
         private void SetDetails(string itemLabel, Sprite itemIcon, string itemEffectDescription, string itemStoreDescription) {
             _itemTitleText.text = itemLabel;
@@ -31,6 +35,13 @@ namespace BML.Scripts.UI
             // _itemImage.sprite = itemIcon;
             _itemEffectText.text = itemEffectDescription;
             _itemBodyText.text = itemStoreDescription;
+        }
+
+        private void ClearDetails()
+        {
+            _itemTitleText.text = "";
+            _itemEffectText.text = "";
+            _itemBodyText.text = "";
         }
     }
 }
