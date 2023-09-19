@@ -23,6 +23,7 @@ namespace BML.Scripts.UI
         
         [SerializeField] private TMPro.TMP_Text _costText;
         [SerializeField] private UiStoreItemIconController _storeItemIcon;
+        [SerializeField] private UiPlayerItemCounterController _uiItemIconController;
         [SerializeField] private UiStoreItemDetailController _uiStoreItemDetailController;
         
         [SerializeField] private BoolVariable _isGodModeEnabled;
@@ -63,6 +64,7 @@ namespace BML.Scripts.UI
             }
             _itemToPurchase = itemToPurchase;
             _storeItemIcon.Init(_itemToPurchase);
+            _uiItemIconController.Item = itemToPurchase;
             if (!skipUiUpdate)
             {
                 SetButtonText();
