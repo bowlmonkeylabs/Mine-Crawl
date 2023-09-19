@@ -29,8 +29,6 @@ namespace BML.Scripts.Player.Items
             }
         }
 
-        private List<TimerVariable> _effectTimersToUpdate;
-
         #region Unity lifecycle
         
         private void Start()
@@ -39,20 +37,12 @@ namespace BML.Scripts.Player.Items
             this.ApplyWhenAcquiredOrActivatedEffectsForPassiveItems();
         }
 
-        void OnEnable() 
+        void OnEnable()
         {
-            _effectTimersToUpdate = new List<TimerVariable>();
-            if (_playerInventory.ActiveItem)
-            {
-                _effectTimersToUpdate.AddRange(_playerInventory.ActiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
-            }
-            if (_playerInventory.PassiveItem)
-            {
-                _effectTimersToUpdate.AddRange(_playerInventory.PassiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
-            }
-            _effectTimersToUpdate.AddRange(_playerInventory.PassiveStackableItems.SelectMany(i => i.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer)));
-            _effectTimersToUpdate = _effectTimersToUpdate.Distinct().ToList();
-            
+            RepopulateEffectsTimersList();
+
+            _playerInventory.OnAnyItemAdded += CheckEffectsTimersListOnItemAdded;
+            _playerInventory.OnAnyItemRemoved += CheckEffectsTimersListOnItemRemoved;
             _playerInventory.OnPassiveStackableItemAdded += ApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveStackableItemRemoved += UnApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveItemAdded += ApplyWhenAcquiredOrActivatedEffects;
@@ -69,6 +59,8 @@ namespace BML.Scripts.Player.Items
             
             _effectTimersToUpdate.Clear();
 
+            _playerInventory.OnAnyItemAdded -= CheckEffectsTimersListOnItemAdded;
+            _playerInventory.OnAnyItemRemoved -= CheckEffectsTimersListOnItemRemoved;
             _playerInventory.OnPassiveStackableItemAdded -= ApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveStackableItemRemoved -= UnApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveItemAdded -= ApplyWhenAcquiredOrActivatedEffects;
@@ -90,10 +82,7 @@ namespace BML.Scripts.Player.Items
                 }
             }));
 
-            foreach (var timer in _effectTimersToUpdate)
-            {
-                timer.UpdateTime();
-            }
+            UpdateEffectsTimers();
         }
 
         #endregion
@@ -105,6 +94,55 @@ namespace BML.Scripts.Player.Items
             if (value.isPressed && _playerInventory.ActiveItem != null)
             {
                 ApplyWhenAcquiredOrActivatedEffectsForActiveItem();
+            }
+        }
+
+        #endregion
+
+        #region Effects timers
+
+        private List<TimerVariable> _effectTimersToUpdate;
+
+        private void RepopulateEffectsTimersList()
+        {
+            _effectTimersToUpdate = new List<TimerVariable>();
+            if (_playerInventory.ActiveItem)
+            {
+                _effectTimersToUpdate.AddRange(_playerInventory.ActiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
+            }
+            if (_playerInventory.PassiveItem)
+            {
+                _effectTimersToUpdate.AddRange(_playerInventory.PassiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
+            }
+            _effectTimersToUpdate.AddRange(_playerInventory.PassiveStackableItems.SelectMany(i => i.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer)));
+            _effectTimersToUpdate = _effectTimersToUpdate.Distinct().ToList();
+        }
+
+        private void CheckEffectsTimersListOnItemAdded(PlayerItem playerItem)
+        {
+            var itemTimers = playerItem.ItemEffects
+                .Where(e => e.UseActivationCooldownTimer)
+                .Select(e => e.ActivationCooldownTimer)
+                .ToList();
+            if (!itemTimers.Any())
+            {
+                return;
+            }
+            
+            _effectTimersToUpdate.AddRange(itemTimers);
+            _effectTimersToUpdate = _effectTimersToUpdate.Distinct().ToList();
+        }
+        
+        private void CheckEffectsTimersListOnItemRemoved(PlayerItem playerItem)
+        {
+            RepopulateEffectsTimersList();
+        }
+
+        private void UpdateEffectsTimers()
+        {
+            foreach (var timer in _effectTimersToUpdate)
+            {
+                timer.UpdateTime();
             }
         }
 
