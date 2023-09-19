@@ -28,6 +28,8 @@ namespace BML.Scripts.UI
 
         #region Public interface
 
+        public TimerReference Timer => _timer;
+
         public void SetTimerVariable(TimerVariable timerVariable)
         {
             _timer.SetVariable(timerVariable);
