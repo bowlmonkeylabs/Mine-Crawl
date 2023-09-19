@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
@@ -17,6 +18,9 @@ namespace BML.Scripts.Player.Items
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSwingPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxeHit;
+
+        [SerializeField, FoldoutGroup("Projectile")] private TransformSceneReference MainCameraRef;
+        [SerializeField, FoldoutGroup("Projectile")] private TransformSceneReference ProjectileContainer;
 
         private List<PlayerItem> PassiveItems {
             get {
@@ -230,8 +234,8 @@ namespace BML.Scripts.Player.Items
             }
 
             if(itemEffect.Type == ItemEffectType.FireProjectile) {
-                var projectile = GameObjectUtils.SafeInstantiate(true, itemEffect.ProjectilePrefab, itemEffect.ProjectileContainer.Value);
-                var mainCamera = itemEffect.MainCameraRef.Value.transform;
+                var projectile = GameObjectUtils.SafeInstantiate(true, itemEffect.ProjectilePrefab, ProjectileContainer.Value);
+                var mainCamera = MainCameraRef.Value.transform;
                 projectile.transform.SetPositionAndRotation(mainCamera.position, mainCamera.rotation);
             }
 
