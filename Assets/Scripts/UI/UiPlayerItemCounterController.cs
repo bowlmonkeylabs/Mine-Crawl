@@ -10,12 +10,22 @@ using UnityEngine.UI;
 namespace BML.Scripts.UI
 {
     [ExecuteAlways]
-    public class UiInventoryItemCounterController : MonoBehaviour
+    public class UiPlayerItemCounterController : MonoBehaviour
     {
         #region Inspector
-        
+
+        private enum ItemSource
+        {
+            PlayerItem,
+            PlayerInventory,
+        }
+
         [TitleGroup("Item")]
-        [SerializeField, OnValueChanged("UpdateAssignedItem")] private PlayerInventory _playerInventory;
+        [SerializeField, OnValueChanged("UpdateAssignedItem")] private ItemSource _itemSource;
+        [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerInventory")] private ItemType _inventoryItemType;
+        [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerInventory")] 
+        private PlayerInventory _playerInventory;
+        [ShowIf("@_itemSource == ItemSource.PlayerInventory")]
         public PlayerInventory PlayerInventory
         {
             get => _playerInventory;
@@ -23,23 +33,37 @@ namespace BML.Scripts.UI
             {
                 _playerInventory = value;
             }
-        }
-        [SerializeField, OnValueChanged("UpdateAssignedItem")] private ItemType _itemType;
-        [TitleGroup("Item"), ShowInInspector, ReadOnly] private PlayerItem _item
+        } 
+        [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerItem")] private PlayerItem _playerItem; 
+        [ShowInInspector, ShowIf("@_itemSource == ItemSource.PlayerInventory"), ReadOnly] public PlayerItem Item
         {
             get
             {
-                switch (_itemType)
+                switch (_itemSource)
                 {
-                    case ItemType.Active:
-                        return _playerInventory?.ActiveItem;
-                    case ItemType.Passive:
-                        return _playerInventory?.PassiveItem;
-                    case ItemType.PassiveStackable: 
+                    case ItemSource.PlayerItem:
+                        return _playerItem;
+                        break;
                     default:
-                        return null;
+                    case ItemSource.PlayerInventory:
+                        switch (_inventoryItemType)
+                        {
+                            case ItemType.Active:
+                                return _playerInventory?.ActiveItem;
+                            case ItemType.Passive:
+                                return _playerInventory?.PassiveItem;
+                            case ItemType.PassiveStackable: 
+                            default:
+                                return null;
+                                break;
+                        }
                         break;
                 }
+            }
+            set
+            {
+                _playerItem = value;
+                _itemSource = ItemSource.PlayerItem;
             }
         }
 
@@ -105,17 +129,17 @@ namespace BML.Scripts.UI
         
         private void UpdateAssignedItem()
         {
-            if (_item == null)
+            if (Item == null)
             {
                 _uiRoot.SetActive(false);
                 return;
             }
             
             _uiRoot.SetActive(true);
-            _imageIcon.sprite = _item.Icon;
-            _imageIcon.color = (_item.UseIconColor ? _item.IconColor : Color.white);
+            _imageIcon.sprite = Item.Icon;
+            _imageIcon.color = (Item.UseIconColor ? Item.IconColor : Color.white);
             
-            var itemActivationTimer = _item.ItemEffects.FirstOrDefault(e => e.UseActivationCooldownTimer)?.ActivationCooldownTimer;
+            var itemActivationTimer = Item.ItemEffects.FirstOrDefault(e => e.UseActivationCooldownTimer)?.ActivationCooldownTimer;
             if (itemActivationTimer == null)
             {
                 _timerImageController.gameObject.SetActive(false);
@@ -126,7 +150,7 @@ namespace BML.Scripts.UI
                 _timerImageController.SetTimerVariable(itemActivationTimer);
             }
             
-            var remainingActivationsVariable = _item.ItemEffects.FirstOrDefault(e => e.UseActivationLimit)?.RemainingActivations;
+            var remainingActivationsVariable = Item.ItemEffects.FirstOrDefault(e => e.UseActivationLimit)?.RemainingActivations;
             if (remainingActivationsVariable == null)
             {
                 _remainingCountTextController.gameObject.SetActive(false);
@@ -137,10 +161,10 @@ namespace BML.Scripts.UI
                 _remainingCountTextController.SetVariable(remainingActivationsVariable);
             }
 
-            _bindingHintText.gameObject.SetActive(_item.Type == ItemType.Active);
+            _bindingHintText.gameObject.SetActive(Item.Type == ItemType.Active);
 
-            _itemTypeText.text = _item.Type.ToString().ToUpper();
-            _itemTypeText.gameObject.SetActive(_item.Type == ItemType.Passive);
+            _itemTypeText.text = Item.Type.ToString().ToUpper();
+            _itemTypeText.gameObject.SetActive(Item.Type == ItemType.Passive);
         }
     }
 }
