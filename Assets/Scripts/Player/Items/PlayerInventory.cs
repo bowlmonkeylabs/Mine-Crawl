@@ -34,9 +34,17 @@ namespace BML.Scripts.Player.Items
             set {
                 if (value == null || value.Type == ItemType.Active)
                 {
-                    if (_activeItem != null) OnActiveItemRemoved?.Invoke(_activeItem);
+                    if (_activeItem != null)
+                    {
+                        OnAnyItemRemoved?.Invoke(_activeItem);
+                        OnActiveItemRemoved?.Invoke(_activeItem);
+                    }
                     _activeItem = value;
-                    if (value != null) OnActiveItemAdded?.Invoke(value);
+                    if (value != null)
+                    {
+                        OnAnyItemAdded?.Invoke(value);
+                        OnActiveItemAdded?.Invoke(value);
+                    }
                 }
             }
         }
@@ -47,9 +55,17 @@ namespace BML.Scripts.Player.Items
             set {
                 if (value == null || value.Type == ItemType.Passive)
                 {
-                    if (_passiveItem != null) OnPassiveItemRemoved?.Invoke(_passiveItem);
+                    if (_passiveItem != null)
+                    {
+                        OnAnyItemRemoved?.Invoke(_passiveItem);
+                        OnPassiveItemRemoved?.Invoke(_passiveItem);
+                    }
                     _passiveItem = value;
-                    if (value != null) OnPassiveItemAdded?.Invoke(value);
+                    if (value != null)
+                    {
+                        OnAnyItemAdded?.Invoke(value);
+                        OnPassiveItemAdded?.Invoke(value);
+                    }
                 }
             }
         }
@@ -61,6 +77,7 @@ namespace BML.Scripts.Player.Items
             if (playerItem.Type == ItemType.PassiveStackable)
             {
                 _passiveStackableItems.Add(playerItem);
+                OnAnyItemAdded?.Invoke(playerItem);
                 OnPassiveStackableItemAdded?.Invoke(playerItem);
             }
         }
@@ -72,7 +89,8 @@ namespace BML.Scripts.Player.Items
                 bool didRemove = _passiveStackableItems.Remove(playerItem);
                 if (didRemove)
                 {
-                    OnPassiveStackableItemAdded?.Invoke(playerItem);
+                    OnAnyItemRemoved?.Invoke(playerItem);
+                    OnPassiveStackableItemRemoved?.Invoke(playerItem);
                 }
             }
         }
@@ -93,6 +111,8 @@ namespace BML.Scripts.Player.Items
         #region Events
 
         //the parameter passed into the remove events is the item that was removed, and the param passed into the added events is the item that was added
+        public event OnPlayerItemChanged<PlayerItem> OnAnyItemAdded;
+        public event OnPlayerItemChanged<PlayerItem> OnAnyItemRemoved;
         public event OnPlayerItemChanged<PlayerItem> OnPassiveStackableItemAdded;
         public event OnPlayerItemChanged<PlayerItem> OnPassiveStackableItemRemoved;
         public event OnPlayerItemChanged<PlayerItem> OnPassiveItemAdded;
