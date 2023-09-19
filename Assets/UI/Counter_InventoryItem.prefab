@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2326762827121597966}
   m_Layer: 0
-  m_Name: Counter_ActiveItem
+  m_Name: Counter_InventoryItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -385,14 +385,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.9176231, b: 0.3820755, a: 1}
+  m_Color: {r: 0.42161253, g: 0.9622642, b: 0.13163051, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8bdf31d5100336446b0115b4002a8a31, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 15c0ac7c13001604cae848175312608d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1969,7 +1969,7 @@ GameObject:
   - component: {fileID: 2142685298317227620}
   - component: {fileID: 4362632572337551839}
   m_Layer: 0
-  m_Name: UiItemCounterController
+  m_Name: UiItemCounterController (ASSIGN)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2006,8 +2006,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5851ca74d8b44f0589ef57ce4e9441e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _itemSource: 0
+  _inventoryItemType: 1
   _playerInventory: {fileID: 11400000, guid: 9356dfe23cfc20041850028b69aa7e4c, type: 2}
-  _itemType: 1
+  _playerItem: {fileID: 11400000, guid: 21f25a196cfd2c0489ea131370f3ac49, type: 2}
   _uiRoot: {fileID: 1561186447148611450}
   _imageIcon: {fileID: 8678973459654731913}
   _timerImageController: {fileID: 6006245746519320955}
@@ -2026,7 +2028,7 @@ GameObject:
   - component: {fileID: 7688364880561432253}
   - component: {fileID: 1910252750758588188}
   m_Layer: 0
-  m_Name: Binding Hint
+  m_Name: Binding Hint (ASSIGN)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
