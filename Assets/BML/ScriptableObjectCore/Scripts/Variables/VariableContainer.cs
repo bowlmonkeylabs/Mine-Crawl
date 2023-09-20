@@ -15,9 +15,31 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [CreateAssetMenu(fileName = "VariableContainer", menuName = "BML/Variables/VariableContainer", order = 0)]
     public class VariableContainer : ScriptableObject
     {
+        private enum ContainerPopulateMode
+        {
+            Manual = 0,
+            Folder = 1,
+            ResetOnRestart = 2,
+        }
+        
+        [TitleGroup("Populate Container"), PropertyOrder(-3)]
+        [SerializeField] private ContainerPopulateMode _populateMode = ContainerPopulateMode.Manual;
+        
+        [TitleGroup("Populate Container"), ShowIf("@_populateMode == ContainerPopulateMode.Folder")]
         [FolderPath (RequireExistingPath = true), PropertyOrder(-2)]
+        [InlineButton("SetThisFolder", "This Folder"), PropertyTooltip("Sets 'Folder Path' for auto-population to the folder where this container is located.")]
         [SerializeField] private string FolderPath;
+        
+        // [PropertyTooltip("Sets 'Folder Path' for auto-population to the folder where this container is located.")]
+        public void SetThisFolder()
+        {
+            string fullPath = AssetDatabase.GetAssetPath(this);
+            FolderPath = fullPath.Substring(0, fullPath.LastIndexOf('/'));
+        }
+        
+        [TitleGroup("Populate Container"), ShowIf("@_populateMode == ContainerPopulateMode.Folder")]
         [SerializeField] private bool IncludeSubdirectories = false;
+
         [TextArea (5, 10)] public String Description;
         
         [Required] [PropertySpace(SpaceBefore = 10, SpaceAfter = 10)] [ListDrawerSettings(ShowPaging = false)]
@@ -60,9 +82,15 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     #if UNITY_EDITOR
 
         [GUIColor(0, 1, 0)]
-        [Button(ButtonSizes.Large)]
+        [TitleGroup("Populate Container"), PropertyOrder(0), ShowIf("@_populateMode != ContainerPopulateMode.Manual")]
+        [Button(ButtonSizes.Large), DisableIf("@(_populateMode == ContainerPopulateMode.Folder && string.IsNullOrEmpty(FolderPath))")]
         public void PopulateContainer()
         {
+            if (_populateMode == ContainerPopulateMode.Manual)
+            {
+                return;
+            }
+            
             TriggerVariables.Clear();
             BoolVariables.Clear();
             IntVariables.Clear();
@@ -72,100 +100,44 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             QuaternionVariables.Clear();
             TimerVariables.Clear();
 
-            foreach (var propertyPath in AssetDatabaseUtils.GetAssetRelativePaths(FolderPath, IncludeSubdirectories))
+            if (_populateMode == ContainerPopulateMode.Folder)
             {
-                TriggerVariable assetAsTrigger =
-                    AssetDatabase.LoadAssetAtPath(propertyPath, typeof(TriggerVariable)) as TriggerVariable;
-                if (assetAsTrigger != null)
-                {
-                    TriggerVariables.Add(assetAsTrigger);
-                    continue;
-                }
-                
-                BoolVariable assetAsBool = 
-                    AssetDatabase.LoadAssetAtPath(propertyPath, typeof(BoolVariable)) as BoolVariable;
-                if (assetAsBool != null)
-                {
-                    BoolVariables.Add(assetAsBool);
-                    continue;
-                }
-                
-                IntVariable assetAsInt = 
-                    AssetDatabase.LoadAssetAtPath(propertyPath, typeof(IntVariable)) as IntVariable;
-                if (assetAsInt != null)
-                {
-                    IntVariables.Add(assetAsInt);
-                    continue;
-                }
-                
-                FloatVariable assetAsFloat = 
-                    AssetDatabase.LoadAssetAtPath(propertyPath, typeof(FloatVariable)) as FloatVariable;
-                if (assetAsFloat != null)
-                {
-                    FloatVariables.Add(assetAsFloat);
-                    continue;
-                }
-                
-                Vector2Variable assetAsVector2 = 
-                    AssetDatabase.LoadAssetAtPath(propertyPath, typeof(Vector2Variable)) as Vector2Variable;
-                if (assetAsVector2 != null)
-                {
-                    Vector2Variables.Add(assetAsVector2);
-                    continue;
-                }
-                
-                Vector3Variable assetAsVector3 = 
-                    AssetDatabase.LoadAssetAtPath(propertyPath, typeof(Vector3Variable)) as Vector3Variable;
-                if (assetAsVector3 != null)
-                {
-                    Vector3Variables.Add(assetAsVector3);
-                    continue;
-                }
-                
-                QuaternionVariable assetAsQuaternion = 
-                    AssetDatabase.LoadAssetAtPath(propertyPath, typeof(QuaternionVariable)) as QuaternionVariable;
-                if (assetAsQuaternion != null)
-                {
-                    QuaternionVariables.Add(assetAsQuaternion);
-                    continue;
-                }
-                
-                TimerVariable assetAsTimer = 
-                    AssetDatabase.LoadAssetAtPath(propertyPath, typeof(TimerVariable)) as TimerVariable;
-                if (assetAsTimer != null)
-                {
-                    TimerVariables.Add(assetAsTimer);
-                    continue;
-                }
-                
-                FunctionVariable assetAsFunction = 
-                    AssetDatabase.LoadAssetAtPath(propertyPath, typeof(TimerVariable)) as FunctionVariable;
-                if (assetAsFunction != null)
-                {
-                    FunctionVariables.Add(assetAsFunction);
-                    continue;
-                }
+                TriggerVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<TriggerVariable>(FolderPath, IncludeSubdirectories).ToList();
+                BoolVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<BoolVariable>(FolderPath, IncludeSubdirectories).ToList();
+                IntVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<IntVariable>(FolderPath, IncludeSubdirectories).ToList();
+                FloatVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<FloatVariable>(FolderPath, IncludeSubdirectories).ToList();
+                Vector2Variables = AssetDatabaseUtils.FindAndLoadAssetsOfType<Vector2Variable>(FolderPath, IncludeSubdirectories).ToList();
+                Vector3Variables = AssetDatabaseUtils.FindAndLoadAssetsOfType<Vector3Variable>(FolderPath, IncludeSubdirectories).ToList();
+                QuaternionVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<QuaternionVariable>(FolderPath, IncludeSubdirectories).ToList();
+                TimerVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<TimerVariable>(FolderPath, IncludeSubdirectories).ToList();
+                FunctionVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<FunctionVariable>(FolderPath, IncludeSubdirectories).ToList();
             }
-            Debug.Log($"{TriggerVariables.Count} Triggers" +
-            $" | {BoolVariables.Count} Bools" +
-            $" | {IntVariables.Count} Ints" +
-            $" | {FloatVariables.Count} Floats" +
-            $" | {Vector2Variables.Count} Vector2s" +
-            $" | {Vector3Variables.Count} Vector3s" +
-            $" | {QuaternionVariables.Count} Quaternions" +
-            $" | {TimerVariables.Count} Timers" +
-            $" | {FunctionVariables.Count} Functions");
-        }
-        
+            else if (_populateMode == ContainerPopulateMode.ResetOnRestart)
+            {
+                // Only populate lists of resettable variable types
+                // TriggerVariables = FindAndLoadAssetsOfType<TriggerVariable>().Where(variable => variable.ResetOnRestart).ToList();
+                BoolVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<BoolVariable>().Where(variable => variable.ResetOnRestart).ToList();
+                IntVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<IntVariable>().Where(variable => variable.ResetOnRestart).ToList();
+                FloatVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<FloatVariable>().Where(variable => variable.ResetOnRestart).ToList();
+                Vector2Variables = AssetDatabaseUtils.FindAndLoadAssetsOfType<Vector2Variable>().Where(variable => variable.ResetOnRestart).ToList();
+                Vector3Variables = AssetDatabaseUtils.FindAndLoadAssetsOfType<Vector3Variable>().Where(variable => variable.ResetOnRestart).ToList();
+                QuaternionVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<QuaternionVariable>().Where(variable => variable.ResetOnRestart).ToList();
+                TimerVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<TimerVariable>().Where(variable => variable.ResetOnRestart).ToList();
+                // FunctionVariables = FindAndLoadAssetsOfType<FunctionVariable>().Where(variable => variable.ResetOnRestart).ToList();
+            }
 
-        [Button(ButtonSizes.Small), PropertyOrder(-1)]
-        public void SetThisFolder()
-        {
-            string fullPath = AssetDatabase.GetAssetPath(this);
-            FolderPath = fullPath.Substring(0, fullPath.LastIndexOf('/'));
-        } 
-        
-    #endif
+            Debug.Log($"{TriggerVariables.Count} Triggers" +
+                      $" | {BoolVariables.Count} Bools" +
+                      $" | {IntVariables.Count} Ints" +
+                      $" | {FloatVariables.Count} Floats" +
+                      $" | {Vector2Variables.Count} Vector2s" +
+                      $" | {Vector3Variables.Count} Vector3s" +
+                      $" | {QuaternionVariables.Count} Quaternions" +
+                      $" | {TimerVariables.Count} Timers" +
+                      $" | {FunctionVariables.Count} Functions");
+        }
+
+#endif
         
     }
 

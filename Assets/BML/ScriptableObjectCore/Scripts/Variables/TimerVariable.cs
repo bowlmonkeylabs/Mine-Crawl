@@ -18,6 +18,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [CreateAssetMenu(fileName = "TimerVariable", menuName = "BML/Variables/TimerVariable", order = 0)]
     public class TimerVariable : ScriptableObject
     {
+        [SerializeField] private bool resetOnRestart;
+        public bool ResetOnRestart => resetOnRestart;
+
         [SerializeField] private SafeFloatValueReference _duration;
 
         public float Duration
