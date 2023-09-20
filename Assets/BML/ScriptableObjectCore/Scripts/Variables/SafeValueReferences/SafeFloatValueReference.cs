@@ -38,6 +38,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
             IntVariable = 2,
             EvaluateCurveVariable = 3,
             BoolVariable = 4,
+            FunctionVariable = 5,
         }
         
         [VerticalGroup("Top")]
@@ -160,6 +161,15 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         protected BoolVariable ReferenceValue_BoolVariable;
         
         
+        private bool _showFunctionVariable => ReferenceTypeSelector == FloatReferenceTypes.FunctionVariable;
+        [BoxGroup("Top/Split/Right", ShowLabel = false)]
+        [HideLabel]
+        [ShowIf("@!UseConstant && _showFunctionVariable")]
+        [InlineEditor()]
+        [SerializeField]
+        protected FunctionVariable ReferenceValue_FunctionVariable;
+        
+        
         
         #endregion
 
@@ -186,6 +196,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                         return ReferenceValue_EvaluateCurveVariable?.Value ?? 0;
                     case FloatReferenceTypes.BoolVariable:
                         return (ReferenceValue_BoolVariable?.Value ?? false) ? 1f : 0f;
+                    case FloatReferenceTypes.FunctionVariable:
+                        return ReferenceValue_FunctionVariable?.Value ?? 0;
                     default:
                         Debug.LogError($"Trying to access Float variable but none set in inspector!");
                         return default(float);
@@ -216,6 +228,10 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                         if (ReferenceValue_BoolVariable != null)
                             ReferenceValue_BoolVariable.Value = (value > 0);
                         break;
+                    case FloatReferenceTypes.FunctionVariable:
+                        // if (ReferenceValue_FunctionVariable != null)
+                        //     ReferenceValue_FunctionVariable.Value = (value > 0);
+                        break;
                     default:
                         Debug.LogError($"Trying to access Float variable but none set in inspector!");
                         break;
@@ -239,6 +255,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                         return ReferenceValue_EvaluateCurveVariable?.GetName();
                     case FloatReferenceTypes.BoolVariable:
                         return ReferenceValue_BoolVariable?.GetName();
+                    case FloatReferenceTypes.FunctionVariable:
+                        return ReferenceValue_FunctionVariable?.GetName();
                 }
                 return "<Missing Float>";
             }
@@ -260,6 +278,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                         return ReferenceValue_EvaluateCurveVariable?.GetDescription();
                     case FloatReferenceTypes.BoolVariable:
                         return ReferenceValue_BoolVariable?.GetDescription();
+                    case FloatReferenceTypes.FunctionVariable:
+                        return ReferenceValue_FunctionVariable?.GetDescription();
                 }
                 return "<Missing Float>";
             }
@@ -281,6 +301,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                 case FloatReferenceTypes.BoolVariable:
                     ReferenceValue_BoolVariable?.Subscribe(callback);
                     break;
+                case FloatReferenceTypes.FunctionVariable:
+                    ReferenceValue_FunctionVariable?.Subscribe(callback);
+                    break;
             }
         }
 
@@ -299,6 +322,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                     break;
                 case FloatReferenceTypes.BoolVariable:
                     ReferenceValue_BoolVariable?.Unsubscribe(callback);
+                    break;
+                case FloatReferenceTypes.FunctionVariable:
+                    ReferenceValue_FunctionVariable?.Unsubscribe(callback);
                     break;
             }
         }
