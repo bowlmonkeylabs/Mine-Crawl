@@ -367,10 +367,12 @@ namespace BML.Scripts.Player
                         hitPos = hit.point;
                         if (isCrit)
                         {
+                            _sweepCritInstanceFeedbacks.AllowSameFramePlay();
                             _sweepCritInstanceFeedbacks.PlayFeedbacks(hitPos, 1f);
                         }
                         else
                         {
+                            _sweepHitFeedbacks.AllowSameFramePlay();
                             _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
                         }
                         break;
