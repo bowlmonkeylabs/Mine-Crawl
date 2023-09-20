@@ -740,6 +740,8 @@ Transform:
   - {fileID: 4172424076495046127}
   - {fileID: 4202865626655948805}
   - {fileID: 6085417918487158117}
+  - {fileID: 2163677678157941954}
+  - {fileID: 8840553558657599862}
   - {fileID: 4060818029642542441}
   - {fileID: 2334952726822837022}
   m_Father: {fileID: 8722278798120057416}
@@ -6858,7 +6860,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 863770675}
-  m_RootOrder: 12
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5764780521212753629
 MonoBehaviour:
@@ -7561,6 +7563,208 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1420921488293788070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8840553558657599862}
+  - component: {fileID: 248858468724892660}
+  m_Layer: 8
+  m_Name: SweepCritInstanceFeedbacks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8840553558657599862
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420921488293788070}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
+  m_Children: []
+  m_Father: {fileID: 863770675}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &248858468724892660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420921488293788070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Feedbacks: []
+  InitializationMode: 2
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  ForceTimescaleMode: 0
+  ForcedTimescaleMode: 1
+  DurationMultiplier: 1
+  RandomizeDuration: 0
+  RandomDurationMultiplier: {x: 0.5, y: 1.5}
+  DisplayFullDurationDetails: 0
+  PlayerTimescaleMode: 1
+  OnlyPlayIfWithinRange: 0
+  RangeCenter: {fileID: 0}
+  RangeDistance: 5
+  UseRangeFalloff: 0
+  RangeFalloff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapRangeFalloff: {x: 0, y: 1}
+  IgnoreRangeEvents: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlay: 1
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRevert:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  FeedbacksList:
+  - id: 0
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  ForceStopFeedbacksOnDisable: 1
+  references:
+    version: 1
+    00000000:
+      type: {class: MMF_ParticlesInstantiation, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: -1022162872
+        Label: Particles Instantiation
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        Owner: {fileID: 248858468724892660}
+        DebugActive: 0
+        Mode: 2
+        ObjectPoolSize: 10
+        MutualizePools: 1
+        ParentTransform: {fileID: 0}
+        CachedRecycle: 1
+        ParticlesPrefab: {fileID: 7377670805060737501, guid: e33fbff44a33346448123612f5355bcf, type: 3}
+        RandomParticlePrefabs: []
+        ForceSetActiveOnPlay: 0
+        PositionMode: 3
+        InstantiateParticlesPosition: {fileID: 0}
+        TargetWorldPosition: {x: 0, y: 0, z: 0}
+        Offset: {x: 0, y: 0, z: 0}
+        NestParticles: 0
+        ApplyRotation: 0
+        ApplyScale: 0
 --- !u!1 &1560123334007057798
 GameObject:
   m_ObjectHideFlags: 0
@@ -9602,6 +9806,7 @@ MonoBehaviour:
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 3eaaa5f19236c3b44b1bf9c07f9affd1, type: 2}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   RotationSpeed: 1
   SpeedChangeRate: 10
   AnalogMovementCurve:
@@ -9659,6 +9864,8 @@ MonoBehaviour:
   FallTimeout: 0.15
   Grounded: 1
   IsGrounded: {fileID: 11400000, guid: 119394bf1e71f344b86a222e8d780bc0, type: 2}
+  IsJumpingUp: {fileID: 11400000, guid: 149b6c864f370f84d9b5210fb3e14736, type: 2}
+  IsFallingDown: {fileID: 11400000, guid: 5c48c52b60a398c45817345594084430, type: 2}
   KnockbackVerticalForce: 2
   KnockbackDuration: 0.25
   KnockbackHorizontalForceCurve:
@@ -9701,6 +9908,7 @@ MonoBehaviour:
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   DashTime:
     ReferenceTypeSelector: 0
     ConstantValue: 0.2
@@ -9708,6 +9916,7 @@ MonoBehaviour:
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   DashActive: {fileID: 11400000, guid: 0cfe6ddbe3de93e45ac2c79fcbe0f181, type: 2}
   DashInCooldown: {fileID: 11400000, guid: a37b8913d77aa8e47b5d1504e78331aa, type: 2}
   DashCooldownTimer: {fileID: 11400000, guid: 937a698e47634ff4283f92fbd3b3f16e, type: 2}
@@ -9784,6 +9993,7 @@ MonoBehaviour:
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: ac25573d9ef9d2c48a9fab74838b2e00, type: 2}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _interactCastRadius: 0.15
   _interactMask:
     serializedVersion: 2
@@ -9804,6 +10014,7 @@ MonoBehaviour:
       ReferenceValue_IntVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
       ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
     Variable: {fileID: 11400000, guid: 9c6b7b0183a07ad4eb911d60aba4e885, type: 2}
   _pickaxeSweepCooldown:
     UseConstant: 0
@@ -9814,6 +10025,7 @@ MonoBehaviour:
       ReferenceValue_IntVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
       ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
     Variable: {fileID: 11400000, guid: 9f033b9462c6ebe459517c2953e67f35, type: 2}
   _pickaxeDamage:
     ReferenceTypeSelector: 2
@@ -9822,6 +10034,7 @@ MonoBehaviour:
     ReferenceValue_IntVariable: {fileID: 11400000, guid: 24cc2b3aa4293fb4f94460301ae1bdef, type: 2}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 541798a3b6084cc46b8f1e48ee3f98be, type: 2}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _sweepDamage:
     ReferenceTypeSelector: 2
     ConstantValue: 1
@@ -9829,6 +10042,7 @@ MonoBehaviour:
     ReferenceValue_IntVariable: {fileID: 11400000, guid: 5f1d6d0c10339ac429a046f0a23e1e03, type: 2}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 85076607768e1284b97d73647df3c6e7, type: 2}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _swingCritChance:
     ReferenceTypeSelector: 3
     ConstantValue: 0
@@ -9836,6 +10050,16 @@ MonoBehaviour:
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 541798a3b6084cc46b8f1e48ee3f98be, type: 2}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+  _sweepCritChance:
+    ReferenceTypeSelector: 5
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 11400000, guid: 433796d25e0e34145a900f5cb631aa2e, type: 2}
+  _critDamageMultiplier: 2
   _onSwingPickaxe: {fileID: 11400000, guid: 84cad83efca31fc4a9629cef610fba8e, type: 2}
   _onSwingPickaxeHit: {fileID: 11400000, guid: ea3a7b46005e18b45bf4d044b5186e71, type: 2}
   _onSweepPickaxe: {fileID: 11400000, guid: b83f724e78fbad34197f80a26f8276a7, type: 2}
@@ -9853,6 +10077,8 @@ MonoBehaviour:
   _sweepSuccessHitFeedbacks: {fileID: 4991192362427267039}
   _sweepHitEnemyFeedback: {fileID: 5764780521212753629}
   _swingCritFeedbacks: {fileID: 6763227702262468176}
+  _sweepCritFeedbacks: {fileID: 5639620639218775163}
+  _sweepCritInstanceFeedbacks: {fileID: 248858468724892660}
   _torchPrefab: {fileID: 8692043269319617905, guid: edb8efafa5a40e944b6001753e059f59, type: 3}
   _torchThrowForce: 8
   _torchInstanceContainer: {fileID: 11400000, guid: 2e35ec9942ac213479d20958884ac6e4, type: 2}
@@ -9865,6 +10091,7 @@ MonoBehaviour:
       ReferenceValue_IntVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
       ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
     Variable: {fileID: 11400000, guid: 0edba3be8bef07d46a08d9aadf04b47f, type: 2}
   _torchCount:
     UseConstant: 0
@@ -9902,6 +10129,7 @@ MonoBehaviour:
       ReferenceValue_IntVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
       ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
     Variable: {fileID: 11400000, guid: 0afccb3fa1a87a74787526d182732ed3, type: 2}
   _ropeCount:
     UseConstant: 0
@@ -9931,6 +10159,7 @@ MonoBehaviour:
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _healthController: {fileID: 1905872712608776435}
   _tryHeal: {fileID: 11400000, guid: 53271449bb8603c47888fac4bcdcd7e2, type: 2}
   _inCombat: {fileID: 11400000, guid: d14b9ee14bf2cde49a3a03f3e19ba4b3, type: 2}
@@ -10087,6 +10316,7 @@ MonoBehaviour:
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -24350,7 +24580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d9de05a2e70424e8718c7cf216b134, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conditionPreview: '-  Is Grounded
+  conditionPreview: '-  Player_ Is Grounded
 
     - ! Player_ In Dash
 
@@ -27706,7 +27936,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 107.5203
+  field of view: 92.5011
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -28040,6 +28270,7 @@ MonoBehaviour:
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 5a2e897791dba4746a854cb3c9d239bf, type: 2}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
 --- !u!1 &7730667928466908283
 GameObject:
   m_ObjectHideFlags: 0
@@ -29610,7 +29841,7 @@ Transform:
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children: []
   m_Father: {fileID: 863770675}
-  m_RootOrder: 11
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4991192362427267039
 MonoBehaviour:
@@ -30729,16 +30960,93 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
---- !u!198 &2599902467193343756 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1291339071860702140, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
-  m_PrefabInstance: {fileID: 3890960061709579440}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2794262310649021554 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
   m_PrefabInstance: {fileID: 3890960061709579440}
   m_PrefabAsset: {fileID: 0}
+--- !u!198 &2599902467193343756 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1291339071860702140, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
+  m_PrefabInstance: {fileID: 3890960061709579440}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5048760685977138667
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 863770675}
+    m_Modifications:
+    - target: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].Active
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5670417655354747987, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_Name
+      value: SweepCritFeedbacks
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+--- !u!4 &2163677678157941954 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+  m_PrefabInstance: {fileID: 5048760685977138667}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5639620639218775163 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+  m_PrefabInstance: {fileID: 5048760685977138667}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5350706952515162931
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31624,9 +31932,9 @@ PrefabInstance:
     - {fileID: 3960018906311444401, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
     - {fileID: 1834598533700266193, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
---- !u!108 &6442617568504354145 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 2518388751964019896, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
+--- !u!4 &1939597532527996424 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7021408810435422161, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
   m_PrefabInstance: {fileID: 8906954242875656665}
   m_PrefabAsset: {fileID: 0}
 --- !u!198 &3569760054384691783 stripped
@@ -31634,8 +31942,8 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 5337203621404181406, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
   m_PrefabInstance: {fileID: 8906954242875656665}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1939597532527996424 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7021408810435422161, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
+--- !u!108 &6442617568504354145 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 2518388751964019896, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
   m_PrefabInstance: {fileID: 8906954242875656665}
   m_PrefabAsset: {fileID: 0}
