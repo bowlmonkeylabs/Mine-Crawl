@@ -44,6 +44,20 @@ namespace BML.ScriptableObjectCore.Scripts.Utils
 
             return assetRelativePaths;
         }
+        
+        public static IEnumerable<T> FindAndLoadAssetsOfType<T>(string folderPath = null, bool includeSubdirectories = true) where T : Object
+        {
+            string[] searchInFolders = (string.IsNullOrEmpty(folderPath) ? null : new string[] { folderPath }); 
+            return AssetDatabase.FindAssets($"t:{typeof(T).Name}", searchInFolders)
+                .Select(guid => AssetDatabase.GUIDToAssetPath(guid))
+                .Where(assetPath =>
+                {
+                    string assetFolderPath = Path.GetDirectoryName(assetPath);
+                    bool inRootFolder = assetFolderPath == folderPath;
+                    return includeSubdirectories || inRootFolder;
+                })
+                .Select(assetPath => AssetDatabase.LoadAssetAtPath<T>(assetPath));
+        }
     
 #endif
     }

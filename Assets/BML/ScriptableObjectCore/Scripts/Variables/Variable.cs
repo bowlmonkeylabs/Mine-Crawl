@@ -15,6 +15,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [InlineEditor(InlineEditorObjectFieldModes.Foldout)]
     public class Variable<T> : ScriptableVariableBase, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
+        [SerializeField] private bool resetOnRestart;
+        public bool ResetOnRestart => resetOnRestart;
+        
         [HideInInlineEditors] public bool EnableDebugOnUpdate;
         [TextArea(7, 10)] [HideInInlineEditors] public String Description;
         [SerializeField] [LabelText("Default")] [LabelWidth(50f)] private T defaultValue;
