@@ -46,6 +46,8 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _pickaxeDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _swingCritChance;
+        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepCritChance;
+        [SerializeField, FoldoutGroup("Pickaxe")] private int _critDamageMultiplier = 2;
         [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSwingPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSwingPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSweepPickaxe;
@@ -63,6 +65,8 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepSuccessHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitEnemyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingCritFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepCritFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepCritInstanceFeedbacks;
         
         [SerializeField, FoldoutGroup("Torch")] private GameObject _torchPrefab;
         [SerializeField, FoldoutGroup("Torch")] private float _torchThrowForce;
@@ -274,7 +278,7 @@ namespace BML.Scripts.Player
 
             if (isCrit)
             {
-                damage *= 2f;
+                damage *= _critDamageMultiplier;
                 _swingCritFeedbacks.PlayFeedbacks(hit.point);
             }
             HitInfo pickaxeHitInfo = new HitInfo(_damageType, Mathf.FloorToInt(damage), _mainCamera.forward, hit.point);
@@ -332,9 +336,18 @@ namespace BML.Scripts.Player
                 
                 interactionReceivers.Add((interactionReceiver, hitCollider.bounds.center));
             }
-            
+
             if (isEnemyHit)
+            {
                 _sweepHitEnemyFeedback.PlayFeedbacks();
+            }
+            
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
+            bool isCrit = Random.value < _sweepCritChance.Value;
+            if (isCrit)
+            {
+                _sweepCritFeedbacks.PlayFeedbacks();
+            }
 
             foreach (var (interactionReceiver, colliderCenter) in interactionReceivers)
             {
@@ -346,19 +359,26 @@ namespace BML.Scripts.Player
                 var dist = delta.magnitude + 5f;
                 RaycastHit[] hits = Physics.SphereCastAll(_mainCamera.position, .5f, dir, dist, _interactMask,
                     QueryTriggerInteraction.Ignore);
-
                 
                 foreach (var hit in hits)
                 {
                     if (hit.collider.gameObject == interactionReceiver.gameObject)
                     {
                         hitPos = hit.point;
-                        _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        if (isCrit)
+                        {
+                            _sweepCritInstanceFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        }
+                        else
+                        {
+                            _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        }
                         break;
                     }
                 }
 
-                HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, Mathf.FloorToInt(_sweepDamage.Value), _mainCamera.forward, 
+                int damage = Mathf.FloorToInt(_sweepDamage.Value) * (isCrit ? _critDamageMultiplier : 1);
+                HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, damage, _mainCamera.forward, 
                     hitPos);
                 interactionReceiver.ReceiveSecondaryInteraction(pickaxeHitInfo);
             }

@@ -57,6 +57,8 @@ namespace BML.Scripts.Player
 		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
 		[SerializeField, FoldoutGroup("Player Grounded")] bool Grounded = true;
 		[SerializeField, FoldoutGroup("Player Grounded")] BoolVariable IsGrounded;
+		[SerializeField, FoldoutGroup("Player Grounded")] BoolVariable IsJumpingUp;
+		[SerializeField, FoldoutGroup("Player Grounded")] BoolVariable IsFallingDown;
 		
 		[SerializeField, FoldoutGroup("Knockback")] float KnockbackVerticalForce = 10f;
 		[SerializeField, FoldoutGroup("Knockback")] float KnockbackDuration = .2f;
@@ -414,6 +416,11 @@ namespace BML.Scripts.Player
 		{
 			if (Grounded || _isRopeMovementEnabled.Value)
 			{
+				if (IsFallingDown)
+				{
+					IsFallingDown.Value = false;
+				}
+				
 				// reset the fall timeout timer
 				_fallTimeoutDelta = FallTimeout;
 				
@@ -430,6 +437,8 @@ namespace BML.Scripts.Player
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_motor.ForceUnground();
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					
+					IsJumpingUp.Value = true;
 				}
 
 				// jump timeout
@@ -458,21 +467,43 @@ namespace BML.Scripts.Player
 			{
 				_verticalVelocity += _currentGravity * Time.deltaTime;
 			}
+			if (_verticalVelocity <= 0 && IsJumpingUp.Value)
+			{
+				IsJumpingUp.Value = false;
+			}
+			if (!Grounded && _verticalVelocity <= 0 && !IsFallingDown.Value)
+			{
+				IsFallingDown.Value = true;
+			}
 			
 			//Move up and down in NoClip mode
 			if (isNoClipEnabled.Value)
 			{
 				if (_input.JumpHeld)
+				{
 					_verticalVelocity = noClipUpDownVelocity;
-				
+					IsJumpingUp.Value = true;
+					IsFallingDown.Value = false;
+				}
 				else if (_input.CrouchHeld)
-					_verticalVelocity = -noClipUpDownVelocity;
+				{
+					IsJumpingUp.Value = false;
+					IsFallingDown.Value = true;
+				}
 				else
+				{
+					IsJumpingUp.Value = false;
+					IsFallingDown.Value = false;
 					_verticalVelocity = 0f;
+				}
 			}
 
 			if (DashActive.Value)
+			{
 				_verticalVelocity = 0f;
+				IsJumpingUp.Value = false;
+				IsFallingDown.Value = false;
+			}
 		}
 
         private Vector3 GetInputDirection() {
