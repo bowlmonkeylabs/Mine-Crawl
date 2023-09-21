@@ -14,6 +14,9 @@ namespace BML.Scripts.Player.Items
     public class PlayerItemEffectsController : MonoBehaviour
     {
         [SerializeField] private PlayerInventory _playerInventory;
+
+        [SerializeField, FoldoutGroup("Player")] private BoolVariable _inDash;
+        
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSwingPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private DynamicGameEvent _onSwingPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxe;
@@ -55,6 +58,8 @@ namespace BML.Scripts.Player.Items
             _playerInventory.OnPassiveItemAdded += ApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveItemRemoved += UnApplyWhenAcquiredOrActivatedEffects;
 
+            _inDash.Subscribe(OnInDashChange);
+            
             _onSwingPickaxe.Subscribe(ApplyOnPickaxeSwingEffectsForPassiveItems);
             _onSwingPickaxeHit.Subscribe(ApplyOnPickaxeSwingHitEffectsForPassiveItems);
             _onSweepPickaxe.Subscribe(ApplyOnPickaxeSweepEffectsForPassiveItems);
@@ -73,6 +78,8 @@ namespace BML.Scripts.Player.Items
             _playerInventory.OnPassiveStackableItemRemoved -= UnApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveItemAdded -= ApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveItemRemoved -= UnApplyWhenAcquiredOrActivatedEffects;
+
+            _inDash.Unsubscribe(OnInDashChange);
 
             _onSwingPickaxe.Unsubscribe(ApplyOnPickaxeSwingEffectsForPassiveItems);
             _onSwingPickaxeHit.Unsubscribe(ApplyOnPickaxeSwingHitEffectsForPassiveItems);
@@ -103,6 +110,19 @@ namespace BML.Scripts.Player.Items
             if (value.isPressed && _playerInventory.ActiveItem != null)
             {
                 ApplyWhenAcquiredOrActivatedEffectsForActiveItem();
+            }
+        }
+
+        #endregion
+
+        #region Variable update callbacks
+
+        private void OnInDashChange(bool prevInDash, bool currInDash)
+        {
+            bool enteringDash = (!prevInDash && currInDash);
+            if (enteringDash)
+            {
+                ApplyOnDashEffectsForPassiveItems();
             }
         }
 
@@ -163,6 +183,10 @@ namespace BML.Scripts.Player.Items
 
         private void UnApplyWhenAcquiredOrActivatedEffectsActive() {
             this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItem, ItemEffectTrigger.WhenAcquiredOrActivated, false);
+        }
+        
+        private void ApplyOnDashEffectsForPassiveItems() {
+            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnDash, true));
         }
 
         private void ApplyOnPickaxeSwingEffectsForPassiveItems() {

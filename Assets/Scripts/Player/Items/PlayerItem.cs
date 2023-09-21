@@ -22,6 +22,7 @@ namespace BML.Scripts.Player.Items
     public enum ItemEffectTrigger {
         WhenAcquiredOrActivated,
         RecurringTimer,
+        OnDash,
         OnPickaxeSwing,
         OnPickaxeSwingHit,
         OnPickaxeSweep,
