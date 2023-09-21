@@ -25,14 +25,16 @@ namespace BML.Scripts.Player.Items
         OnPickaxeSwing,
         OnPickaxeSwingHit,
         OnPickaxeSweep,
-        OnPickaxeSweepHit
+        OnPickaxeSweepHit,
+        OnPickaxeSwingCrit,
     }
 
     public enum ItemEffectType {
         StatIncrease,
         FireProjectile,
         ChangeLootTable,
-        ToggleBoolVariable
+        ToggleBoolVariable,
+        InstantiatePrefab
     }
 
     [Serializable, InlineEditor()]
@@ -66,6 +68,11 @@ namespace BML.Scripts.Player.Items
 
         [ShowIfGroup("ToggleBoolVariable", Condition = "Type", Value = ItemEffectType.ToggleBoolVariable)]
         [ShowIfGroup("ToggleBoolVariable")] public BoolVariable BoolVariableToToggle;
+
+        [ShowIfGroup("InstantiatePrefab", Condition = "Type", Value = ItemEffectType.InstantiatePrefab)]
+        [ShowIfGroup("InstantiatePrefab")] public GameObject PrefabToInstantiate;
+        [ShowIfGroup("InstantiatePrefab")] public TransformSceneReference InstantiatePrefabPositionTransform;
+        [ShowIfGroup("InstantiatePrefab")] public TransformSceneReference InstantiatePrefabContainer;
 
         public void Reset()
         {

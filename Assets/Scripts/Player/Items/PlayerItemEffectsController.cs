@@ -15,9 +15,10 @@ namespace BML.Scripts.Player.Items
     {
         [SerializeField] private PlayerInventory _playerInventory;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSwingPickaxe;
-        [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSwingPickaxeHit;
+        [SerializeField, FoldoutGroup("Pickaxe Events")] private DynamicGameEvent _onSwingPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxeHit;
+        [SerializeField, FoldoutGroup("Pickaxe Events")] private DynamicGameEvent _onSwingPickaxeCrit;
 
         [SerializeField, FoldoutGroup("Projectile")] private TransformSceneReference MainCameraRef;
         [SerializeField, FoldoutGroup("Projectile")] private TransformSceneReference ProjectileContainer;
@@ -32,6 +33,8 @@ namespace BML.Scripts.Player.Items
                 return passiveItems;
             }
         }
+
+        private Vector3 _pickaxeHitPosition = Vector3.negativeInfinity;
 
         #region Unity lifecycle
         
@@ -56,6 +59,7 @@ namespace BML.Scripts.Player.Items
             _onSwingPickaxeHit.Subscribe(ApplyOnPickaxeSwingHitEffectsForPassiveItems);
             _onSweepPickaxe.Subscribe(ApplyOnPickaxeSweepEffectsForPassiveItems);
             _onSweepPickaxeHit.Subscribe(ApplyOnPickaxeSweepHitEffectsForPassiveItems);
+            _onSwingPickaxeCrit.Subscribe(ApplyOnPickaxeSwingCritEffectsForPassiveItems);
         }
 
         void OnDisable() {
@@ -74,6 +78,7 @@ namespace BML.Scripts.Player.Items
             _onSwingPickaxeHit.Unsubscribe(ApplyOnPickaxeSwingHitEffectsForPassiveItems);
             _onSweepPickaxe.Unsubscribe(ApplyOnPickaxeSweepEffectsForPassiveItems);
             _onSweepPickaxeHit.Unsubscribe(ApplyOnPickaxeSweepHitEffectsForPassiveItems);
+            _onSwingPickaxeCrit.Unsubscribe(ApplyOnPickaxeSwingCritEffectsForPassiveItems);
         }
 
         void Update() {
@@ -164,8 +169,17 @@ namespace BML.Scripts.Player.Items
             PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeSwing, true));
         }
 
-        private void ApplyOnPickaxeSwingHitEffectsForPassiveItems() {
+        private void ApplyOnPickaxeSwingHitEffectsForPassiveItems(object previousValue, object hitPosition) {
+            _pickaxeHitPosition = (Vector3) hitPosition;
             PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeSwingHit, true));
+            _pickaxeHitPosition = Vector3.negativeInfinity;
+        }
+
+        private void ApplyOnPickaxeSwingCritEffectsForPassiveItems(object previousValue, object hitPosition)
+        {
+            _pickaxeHitPosition = (Vector3) hitPosition;
+            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeSwingCrit, true));
+            _pickaxeHitPosition = Vector3.negativeInfinity;
         }
 
         private void ApplyOnPickaxeSweepEffectsForPassiveItems() {
@@ -245,6 +259,13 @@ namespace BML.Scripts.Player.Items
 
             if(itemEffect.Type == ItemEffectType.ToggleBoolVariable) {
                itemEffect.BoolVariableToToggle.Value = true;
+            }
+
+            if(itemEffect.Type == ItemEffectType.InstantiatePrefab) {
+                var gameObject = GameObjectUtils.SafeInstantiate(true, itemEffect.PrefabToInstantiate, itemEffect.InstantiatePrefabContainer?.Value);
+                var position = itemEffect.InstantiatePrefabPositionTransform?.Value.position ?? (_pickaxeHitPosition != Vector3.negativeInfinity ? _pickaxeHitPosition : transform.position);
+                var rotation = itemEffect.InstantiatePrefabPositionTransform?.Value.rotation ?? transform.rotation;
+                gameObject.transform.SetPositionAndRotation(position, rotation);
             }
         }
 
