@@ -29,13 +29,15 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [FolderPath (RequireExistingPath = true), PropertyOrder(-2)]
         [InlineButton("SetThisFolder", "This Folder"), PropertyTooltip("Sets 'Folder Path' for auto-population to the folder where this container is located.")]
         [SerializeField] private string FolderPath;
-        
+
+#if UNITY_EDITOR
         // [PropertyTooltip("Sets 'Folder Path' for auto-population to the folder where this container is located.")]
         public void SetThisFolder()
         {
             string fullPath = AssetDatabase.GetAssetPath(this);
             FolderPath = fullPath.Substring(0, fullPath.LastIndexOf('/'));
         }
+#endif
         
         [TitleGroup("Populate Container"), ShowIf("@_populateMode == ContainerPopulateMode.Folder")]
         [SerializeField] private bool IncludeSubdirectories = false;
