@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Events;
@@ -49,7 +49,8 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepCritChance;
         [SerializeField, FoldoutGroup("Pickaxe")] private int _critDamageMultiplier = 2;
         [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSwingPickaxe;
-        [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSwingPickaxeHit;
+        [SerializeField, FoldoutGroup("Pickaxe")] private DynamicGameEvent _onSwingPickaxeHit;
+        [SerializeField, FoldoutGroup("Pickaxe")] private DynamicGameEvent _onSwingPickaxeCrit;
         [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSweepPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSweepPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
@@ -266,7 +267,7 @@ namespace BML.Scripts.Player
 
             _swingHitFeedbacks.transform.position = hit.point;
             _swingHitFeedbacks.PlayFeedbacks();
-            _onSwingPickaxeHit.Raise();
+            _onSwingPickaxeHit.Raise(hit.point);
                 
             PickaxeInteractionReceiver interactionReceiver = hit.collider.GetComponent<PickaxeInteractionReceiver>();
             if (interactionReceiver == null) return;
@@ -280,6 +281,7 @@ namespace BML.Scripts.Player
             {
                 damage *= _critDamageMultiplier;
                 _swingCritFeedbacks.PlayFeedbacks(hit.point);
+                _onSwingPickaxeCrit.Raise(hit.point);
             }
             HitInfo pickaxeHitInfo = new HitInfo(_damageType, Mathf.FloorToInt(damage), _mainCamera.forward, hit.point);
             interactionReceiver.ReceiveInteraction(pickaxeHitInfo);
