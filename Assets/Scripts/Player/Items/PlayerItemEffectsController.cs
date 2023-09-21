@@ -245,6 +245,11 @@ namespace BML.Scripts.Player.Items
                 } else {
                     itemEffect.IntStat.Value += itemEffect.StatIncreaseAmount;
                 }
+
+                if(itemEffect.IsTemporaryStatIncrease) {
+                    LeanTween.value(0f, 1f, itemEffect.TemporaryStatIncreaseTime)
+                        .setOnComplete(_ => this.UnApplyEffect(itemEffect));
+                }   
             }
 
             if(itemEffect.Type == ItemEffectType.FireProjectile) {
