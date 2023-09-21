@@ -54,6 +54,8 @@ namespace BML.Scripts.Player.Items
 
         [ShowIfGroup("StatIncrease", Condition = "Type", Value = ItemEffectType.StatIncrease)]
         [ShowIfGroup("StatIncrease")] public bool UsePercentageIncrease = false;
+        [ShowIfGroup("StatIncrease")] public bool IsTemporaryStatIncrease = false;
+        [ShowIfGroup("StatIncrease"), ShowIf("IsTemporaryStatIncrease")] public float TemporaryStatIncreaseTime;
         [ShowIfGroup("StatIncrease"), ShowIf("UsePercentageIncrease")] public FloatVariable FloatStat;
         [ShowIfGroup("StatIncrease"), HideIf("UsePercentageIncrease")] public IntVariable IntStat;
         [ShowIfGroup("StatIncrease"), HideIf("UsePercentageIncrease")] public int StatIncreaseAmount;
