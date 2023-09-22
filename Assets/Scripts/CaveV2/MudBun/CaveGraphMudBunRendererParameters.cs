@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.Utils;
+using BML.Utils;
+using BML.Utils.Random;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -34,8 +36,10 @@ namespace BML.Scripts.CaveV2.MudBun
         private class RoomOptions
         {
             // [PreviewField]
-            public RandomUtils.WeightedOptions<GameObject> defaultPrefabs;
-            public RandomUtils.WeightedOptions<GameObject> roomPrefabs;
+            [AssetsOnly]
+            public WeightedValueOptions<GameObject> defaultPrefabs;
+            [AssetsOnly]
+            public WeightedValueOptions<GameObject> roomPrefabs;
             // [Tooltip("Set to -1 to disable limit.")]
             // public int countLimit = -1;
         }
@@ -77,7 +81,7 @@ namespace BML.Scripts.CaveV2.MudBun
             return _roomTypes[nodeType].defaultPrefabs.RandomWithWeights();
         }
 
-        public RandomUtils.WeightedOptions<GameObject> GetWeightedRoomOptionsForType(CaveNodeType nodeType)
+        public WeightedValueOptions<GameObject> GetWeightedRoomOptionsForType(CaveNodeType nodeType)
         {
             if (!_roomTypes.ContainsKey(nodeType))
             {

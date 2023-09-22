@@ -5,6 +5,8 @@ using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.Utils;
+using BML.Utils;
+using BML.Utils.Random;
 using Mono.CSharp.Linq;
 using MudBun;
 using Shapes;
@@ -137,17 +139,17 @@ namespace BML.Scripts.CaveV2.MudBun
                 {
                     List<CaveNodeConnectionData> edges = _caveGraph.AdjacentEdges(caveNodeData).ToList();
                     
-                    List<RandomUtils.WeightPair<SelectedRoom>> validWeightedRoomPairs = _caveGraphRenderParams.GetWeightedRoomOptionsForType(caveNodeData.NodeType).Options
+                    List<WeightedValueEntry<SelectedRoom>> validWeightedRoomPairs = _caveGraphRenderParams.GetWeightedRoomOptionsForType(caveNodeData.NodeType).Options
                     .Select(roomWeightedPair => {
-                        return new RandomUtils.WeightPair<SelectedRoom>(new SelectedRoom() {
-                                RoomPrefab = roomWeightedPair.value,
+                        return new WeightedValueEntry<SelectedRoom>(new SelectedRoom() {
+                                RoomPrefab = roomWeightedPair.Value,
                                 RoomScale = Vector3.one * caveNodeData.Scale,
                                 RoomRotation = Quaternion.identity,
                                 EdgeToConnectionPortIndexMap = new Dictionary<CaveNodeConnectionData, int>()
-                            }, roomWeightedPair.weight);
+                            }, roomWeightedPair.Weight);
                     })
                     .Where(roomWeightedPair => {
-                        List<CaveNodeConnectionPort> roomConnectionPorts = roomWeightedPair.value.RoomPrefab.GetComponent<CaveGraphMudBunRoom>()?.ConnectionPorts;
+                        List<CaveNodeConnectionPort> roomConnectionPorts = roomWeightedPair.Value.RoomPrefab.GetComponent<CaveGraphMudBunRoom>()?.ConnectionPorts;
 
                         if (roomConnectionPorts == null || roomConnectionPorts.Count() != edges.Count())
                         {
@@ -170,7 +172,7 @@ namespace BML.Scripts.CaveV2.MudBun
                                 }
                                 
                                 //get the connection points location in relation to the center of the room, then relate it to the center of the cave node
-                                var connectionPortInCaveGraphSpace = (edgeConnectionPortPairing.ConnectionPort.transform.position - roomWeightedPair.value.RoomPrefab.transform.position) + caveNodeData.LocalPosition;
+                                var connectionPortInCaveGraphSpace = (edgeConnectionPortPairing.ConnectionPort.transform.position - roomWeightedPair.Value.RoomPrefab.transform.position) + caveNodeData.LocalPosition;
                                  //get the position of this end of the edge in 2d space
                                 var caveNodePosition = caveNodeData.LocalPosition.xz();
                                 //get the position of the other end of the edge in 2d space
@@ -229,7 +231,7 @@ namespace BML.Scripts.CaveV2.MudBun
                             float midPointRotation = (LowerRotationBound + UpperRotationBound) / 2f;
                             if(Mathf.Abs(midPointRotation) < Mathf.Abs(minimalValidRotation)) {
                                 edgeConnectionPortPairingsSet.ForEach(edgeConnectionPortPairing => {
-                                    roomWeightedPair.value.EdgeToConnectionPortIndexMap[edgeConnectionPortPairing.Edge] = roomConnectionPorts.FindIndex(rcp => rcp == edgeConnectionPortPairing.ConnectionPort);
+                                    roomWeightedPair.Value.EdgeToConnectionPortIndexMap[edgeConnectionPortPairing.Edge] = roomConnectionPorts.FindIndex(rcp => rcp == edgeConnectionPortPairing.ConnectionPort);
                                 }); 
                                 
                                 return midPointRotation;
@@ -244,11 +246,11 @@ namespace BML.Scripts.CaveV2.MudBun
                         }
 
                         //set valid rooms rotation
-                        roomWeightedPair.value.RoomRotation = Quaternion.AngleAxis(minimalValidRotation, Vector3.up);
+                        roomWeightedPair.Value.RoomRotation = Quaternion.AngleAxis(minimalValidRotation, Vector3.up);
                         return true;
                     }).ToList();
 
-                    var validWeightedRoomOptions = new RandomUtils.WeightedOptions<SelectedRoom>() {
+                    var validWeightedRoomOptions = new WeightedValueOptions<SelectedRoom>() {
                         Options = validWeightedRoomPairs
                     };
 
