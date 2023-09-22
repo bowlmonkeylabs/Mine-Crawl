@@ -85,7 +85,7 @@ namespace BML.Scripts
                 }
 
                 RaycastHit hit;
-                Vector3 originToTarget = col.transform.position - origin;
+                Vector3 originToTarget = col.bounds.center - origin;
                 if (Physics.Raycast(origin, originToTarget.normalized, out hit, originToTarget.magnitude, _obstacleMask))
                 {
                     // Continue if hit obstacle
