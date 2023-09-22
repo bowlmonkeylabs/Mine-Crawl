@@ -413,6 +413,13 @@ namespace BML.Scripts
             // Spawn chosen enemy at chosen spawn point
             var newEnemy = SpawnEnemy((Vector3)spawnPos.position, (Quaternion)spawnPos.rotation, randomEnemyParams, randomSpawnPoint, randomSpawnPoint.ParentNode,
                 !randomSpawnPoint.IgnoreGlobalSpawnCap);
+
+            EnemyState enemyState = newEnemy.GetComponent<EnemyState>();
+            if (enemyState != null)
+                enemyState.AlertOnStart = randomSpawnPoint.AlertOnStart;
+            else
+                Debug.LogWarning("Failed to find EnemyState script on spawned enemy!");
+            
             SeedManager.Instance.UpdateSteppedSeed("EnemySpawnerCount");
             SeedManager.Instance.UpdateSteppedSeed("EnemySpawnerRetry", SeedManager.Instance.Seed);
             lastSpawnTime = Time.time;

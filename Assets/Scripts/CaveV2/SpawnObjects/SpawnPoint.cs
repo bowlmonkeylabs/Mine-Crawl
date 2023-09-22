@@ -66,6 +66,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [ShowInInspector, ReadOnly] public bool IgnoreGlobalSpawnCap => _ignoreGlobalSpawnCap && (!OnlyIgnoreGlobalSpawnCapForGuaranteedSpawns || (_guaranteeSpawnIfInRange && (_spawnLimit <= -1 || _spawnLimit >= _spawnCount))); 
         [SerializeField] 
         public bool OnlyIgnoreGlobalSpawnCapForGuaranteedSpawns = true; 
+        
+        [TitleGroup("Enemy behavior")]
+        [SerializeField] private bool _alertOnStart = true;
 
         [FoldoutGroup("Debug"), SerializeField] private bool _showDebugPrefab;
         [FoldoutGroup("Debug"), SerializeField] private GameObject _debugPrefab;
@@ -90,6 +93,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             set => _spawnChance = value;
         }
         private float _spawnChance = 1f;
+        public bool AlertOnStart => _alertOnStart;
         
         [FoldoutGroup("Current state"), ShowInInspector, ReadOnly] public bool SpawnImmediate => ((_guaranteeSpawnIfInRange && (_spawnLimit <= -1 || _spawnLimit > _spawnCount)) 
                                                                    || (_persistSpawns && _previousSpawnWasDespawned));
