@@ -13,52 +13,38 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [Serializable]
     [ShowOdinSerializedPropertiesInInspector]
     [InlineEditor(InlineEditorObjectFieldModes.Foldout)]
-    public class Variable<T> : ScriptableVariableBase, ISerializationCallbackReceiver, ISupportsPrefabSerialization
+    public abstract class Variable<T> : ScriptableVariableBase, ISupportsPrefabSerialization, ISerializationCallbackReceiver
     {
-        [SerializeField] private bool resetOnRestart;
-        public bool ResetOnRestart => resetOnRestart;
+        #region Inspector
         
+        [SerializeField, HideInInlineEditors] private bool resetOnRestart;
+        public bool ResetOnRestart => resetOnRestart;
+
+        [SerializeField, HideInInlineEditors] protected bool _enableLogs;
         [HideInInlineEditors] public bool EnableDebugOnUpdate;
+        
         [TextArea(7, 10)] [HideInInlineEditors] public String Description;
-        [SerializeField] [LabelText("Default")] [LabelWidth(50f)] private T defaultValue;
-        [SerializeField] [LabelText("Runtime")] [LabelWidth(50f)] private T runtimeValue;
+        [LabelText("Default")] [LabelWidth(50f)] [SerializeField] protected T defaultValue;
+        [LabelText("Runtime")] [LabelWidth(50f)] [SerializeField] protected T runtimeValue;
 
         protected T prevValue;
-        protected event OnUpdate OnUpdate;
-        protected event OnUpdate<T> OnUpdateDelta;
 
         [SerializeField, HideInInspector]
         private SerializationData serializationData;
 
         SerializationData ISupportsPrefabSerialization.SerializationData { get { return this.serializationData; } set { this.serializationData = value; } }
-
+        
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
             UnitySerializationUtility.DeserializeUnityObject(this, ref this.serializationData);
         }
-
+        
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
             UnitySerializationUtility.SerializeUnityObject(this, ref this.serializationData);
         }
 
-        public T Value
-        {
-            get => runtimeValue;
-            set
-            {
-                prevValue = runtimeValue;
-                runtimeValue = value;
-                this.OnUpdateDelta?.Invoke(prevValue, runtimeValue);
-                this.OnUpdate?.Invoke();
-                if(EnableDebugOnUpdate)
-                    Debug.LogError($"name: {name} | prevValue: {prevValue} | currentValue: {runtimeValue}");
-
-                prevValue = runtimeValue;
-                // Setting this means that 'prevValue' technically only contains the previous value during the frame an update occurs, otherwise it is in sync with 'runtimeValue'
-                // But this allows delta updates to work even when we edit values through the inspector (which circumvents this Value.set() method)
-            }
-        }
+        public abstract T Value { get; set; }
 
         public T DefaultValue
         {
@@ -75,34 +61,84 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             // Setting this means that 'prevValue' technically only contains the previous value during the frame an update occurs, otherwise it is in sync with 'runtimeValue'
             // But this allows delta updates to work even when we edit values through the inspector (which circumvents the Value.set() method)
         }
+        
+        #endregion
 
+        #region Events
+        
+        protected event OnUpdate OnUpdate;
+        protected event OnUpdate<T> OnUpdateDelta;
+
+        protected void InvokeOnUpdate()
+        {
+            if (_enableLogs) Debug.Log($"InvokeOnUpdate {this.name}");
+            
+            OnUpdate?.Invoke();
+        }
+
+        protected void ResetOnUpdate()
+        {
+            if (_enableLogs) Debug.Log($"ResetOnUpdate {this.name}");
+            
+            OnUpdate = null;
+        }
+        
+        protected void InvokeOnUpdateDelta(T prev, T curr)
+        {
+            if (_enableLogs) Debug.Log($"InvokeOnUpdateDelta {this.name} (Prev {prev}) (Curr {curr})");
+            
+            OnUpdateDelta?.Invoke(prev, curr);
+        }
+
+        protected void ResetOnUpdateDelta()
+        {
+            if (_enableLogs) Debug.Log($"ResetOnUpdateDelta {this.name}");
+            
+            OnUpdateDelta = null;
+        }
+        
         public void Subscribe(OnUpdate callback)
         {
+            if (_enableLogs) Debug.Log($"Subscribe {this.name} (OnUpdate {callback.Method.Name})");
+            
             this.OnUpdate += callback;
         }
 
         public void Subscribe(OnUpdate<T> callback)
         {
+            if (_enableLogs) Debug.Log($"Subscribe {this.name} (OnUpdate<T> {callback.Method.Name})");
+            
             this.OnUpdateDelta += callback;
         }
 
         public void Unsubscribe(OnUpdate callback)
         {
+            if (_enableLogs) Debug.Log($"Unsubscribe {this.name} (OnUpdate {callback.Method.Name})");
+            
             this.OnUpdate -= callback;
         }
 
         public void Unsubscribe(OnUpdate<T> callback)
         {
+            if (_enableLogs) Debug.Log($"Unsubscribe {this.name} (OnUpdate<T> {callback.Method.Name})");
+            
             this.OnUpdateDelta -= callback;
         }
 
+        #endregion
+
         public void SetValue(T value)
         {
+            if (_enableLogs) Debug.Log($"SetValue {this.name} (Current {Value}) (New {value})");
+            
             Value = value;
         }
 
-        public void Reset()
+        [Button]
+        public virtual void Reset()
         {
+            if (_enableLogs) Debug.Log($"Reset {this.name} (Runtime value {runtimeValue})");
+            
             prevValue = runtimeValue;
             runtimeValue = defaultValue;
             this.OnUpdateDelta?.Invoke(prevValue, runtimeValue);
@@ -114,19 +150,18 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             return this.SaveInstance(folderPath, name);
         }
 
-        private void Awake()
-        {
-
-        }
-
         private void OnEnable()
         {
+            if (_enableLogs) Debug.Log($"OnEnable {this.name}");
+            
             hideFlags = HideFlags.DontUnloadUnusedAsset;
             Reset();
         }
 
         private void OnDisable()
         {
+            if (_enableLogs) Debug.Log($"OnDisable {this.name}");
+            
             OnUpdate = null;
             //Undo.DestroyObjectImmediate(this);
             //AssetDatabase.SaveAssets();
@@ -252,6 +287,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             else
                 Debug.Log($"Trying to reset a SO <{Name}> using a constant value1 Nothing will happen.");
         }
+        
         public String Name
         {
             get
@@ -288,78 +324,4 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         }
     }
 
-    [Serializable]
-    [InlineProperty]
-    public class FloatReference : Reference<float, FloatVariable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class Vector2Reference : Reference<Vector2, Vector2Variable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class Vector3Reference : Reference<Vector3, Vector3Variable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class BoolReference : Reference<bool, BoolVariable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class IntReference : Reference<int, IntVariable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class QuaternionReference : Reference<Quaternion, QuaternionVariable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class CurveReference : Reference<AnimationCurve, CurveVariable>, ISerializationCallbackReceiver
-    {
-
-        private float minValue = float.MaxValue;
-        private float minTime = float.MaxValue;
-        private float maxValue = float.MinValue;
-        private float maxTime = float.MinValue;
-
-        public float MaxValue => maxValue;
-        public float MaxTime => maxTime;
-        public float MinValue => minValue;
-        public float MinTime => minTime;
-
-        private void RefreshMinMax()
-        {
-            if((Variable != null && Variable.Value != null) || (UseConstant && ConstantValue != null))
-            {
-                var curve = UseConstant ? ConstantValue : Variable.Value;
-                foreach(var key in curve.keys)
-                {
-                    if(key.value < minValue)
-                    {
-                        minValue = key.value;
-                        minTime = key.time;
-                    }
-                    if(key.value > maxValue)
-                    {
-                        maxValue = key.value;
-                        maxTime = key.time;
-                    }
-                }
-            }
-        }
-
-        public float EvaluateFactor(float time, bool zeroBaseline = false)
-        {
-            var value = Value.Evaluate(time);
-            var min = zeroBaseline ? 0 : minValue;
-            var factor = (value - min) / (maxValue - min);
-            return factor;
-        }
-
-        public void OnBeforeSerialize() { }
-        public void OnAfterDeserialize()
-        {
-            RefreshMinMax();
-        }
-    }
 }

@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using BML.ScriptableObjectCore.Scripts;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using Sirenix.OdinInspector.Editor;
 using UnityEngine;
 
 namespace BML.ScriptableObjectCoreEditor
@@ -20,7 +21,7 @@ namespace BML.ScriptableObjectCoreEditor
     using Object = UnityEngine.Object;
 
     [CustomEditor(typeof(ScriptableVariableBase), true)]
-    public class ScriptableVariableBaseEditor : Editor
+    public class ScriptableVariableBaseEditor : OdinEditor
     {
         private List<MonoBehaviour> monoBehaviours = new List<MonoBehaviour>();
         private List<MonoBehaviour> monoBehavioursPrefabs = new List<MonoBehaviour>();
@@ -172,11 +173,11 @@ namespace BML.ScriptableObjectCoreEditor
         {
             base.OnInspectorGUI();
 
-            if (GUILayout.Button("Broadcast Update Test"))
-            {
-                var test = this.target as dynamic;
-                test?.BroadcastUpdate();
-            }
+            // if (GUILayout.Button("Broadcast Update"))
+            // {
+            //     var test = this.target as dynamic;
+            //     test?.BroadcastUpdate();
+            // }
 
             if (GUILayout.Button("Find References"))
             {
