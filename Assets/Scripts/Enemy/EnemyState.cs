@@ -18,7 +18,6 @@ namespace BML.Scripts.Enemy
         #region Inspector
 
         [SerializeField] private BehaviorDesigner.Runtime.BehaviorTree _behaviorTree;
-        [SerializeField] private BoolReference _alertOnStart;
         [SerializeField] private AggroState _aggro;
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
         [SerializeField] private DynamicGameEvent _onEnemyAdded;
@@ -28,6 +27,13 @@ namespace BML.Scripts.Enemy
         [ShowInInspector, ReadOnly] private bool isAlerted;
         [ShowInInspector, ReadOnly] private bool isPlayerInLoS;
         [ShowInInspector, ReadOnly] private int distanceToPlayer;
+        [ShowInInspector, ReadOnly] private bool alertOnStart;
+
+        public bool AlertOnStart
+        {
+            get => alertOnStart;
+            set => alertOnStart = value;
+        }
 
         #endregion
 
@@ -83,7 +89,7 @@ namespace BML.Scripts.Enemy
 
         private void Update()
         {
-            if (_alertOnStart.Value && !isAlerted && _behaviorTree.ExecutionStatus == TaskStatus.Running)
+            if (AlertOnStart && !isAlerted && _behaviorTree.ExecutionStatus == TaskStatus.Running)
                 SetAlerted();
             
             UpdateAggroState();
