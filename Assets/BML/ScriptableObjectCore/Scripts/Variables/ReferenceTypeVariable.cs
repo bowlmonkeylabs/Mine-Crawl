@@ -8,7 +8,25 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.ReferenceTypeVariables
 {
     public class ReferenceTypeVariable<T> : Variable<T> where T : ICloneable
     {
-        public override T Value { get; set; }
+        public override T Value
+        {
+            get => runtimeValue;
+            set
+            {
+                if (_enableLogs) Debug.Log($"SetValue {this.name}");
+                
+                prevValue = runtimeValue;
+                runtimeValue = value;
+                this.InvokeOnUpdateDelta(prevValue, runtimeValue);
+                this.InvokeOnUpdate();
+                if(EnableDebugOnUpdate)
+                    Debug.LogError($"name: {name} | prevValue: {prevValue} | currentValue: {runtimeValue}");
+
+                prevValue = runtimeValue;
+                // Setting this means that 'prevValue' technically only contains the previous value during the frame an update occurs, otherwise it is in sync with 'runtimeValue'
+                // But this allows delta updates to work even when we edit values through the inspector (which circumvents this Value.set() method)
+            }
+        }
         
         public override void Reset()
         {
@@ -19,12 +37,6 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.ReferenceTypeVariables
             runtimeValue = (T)(defaultValue.Clone());
             this.InvokeOnUpdateDelta(prevValue, runtimeValue);
             this.InvokeOnUpdate();
-            if(EnableDebugOnUpdate)
-                Debug.LogError($"name: {name} | prevValue: {prevValue} | currentValue: {runtimeValue}");
-            
-            prevValue = runtimeValue;
-            // Setting this means that 'prevValue' technically only contains the previous value during the frame an update occurs, otherwise it is in sync with 'runtimeValue'
-            // But this allows delta updates to work even when we edit values through the inspector (which circumvents this Value.set() method)
         }
     }
 
