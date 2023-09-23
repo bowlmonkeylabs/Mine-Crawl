@@ -14,6 +14,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [Flags]
     public enum VariableContainerKey
     {
+        All = ResetOnRestartGame | ResetOnStartAnyLevel | ResetOnStartLevel0 | ResetOnStartLevel1,
         None = 0,
         ResetOnRestartGame = 1 << 0,
         ResetOnStartAnyLevel = 1 << 1,
@@ -100,6 +101,22 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
     #if UNITY_EDITOR
 
+        public static void PopulateAllRelatedContainers(VariableContainerKey containerKeyFlags)
+        {
+            if (containerKeyFlags == VariableContainerKey.None)
+            {
+                containerKeyFlags = VariableContainerKey.All;
+            }
+            var containersWithKey = AssetDatabaseUtils.FindAndLoadAssetsOfType<VariableContainer>()
+                .Where(container => (container.ContainerKey & containerKeyFlags) > 0);
+            foreach (var variableContainer in containersWithKey)
+            {
+                variableContainer.PopulateContainer();
+                EditorUtility.SetDirty(variableContainer);
+            }
+            AssetDatabase.SaveAssets();
+        }
+
         [GUIColor(0, 1, 0)]
         [TitleGroup("Populate Container"), PropertyOrder(0), ShowIf("@_populateMode != ContainerPopulateMode.Manual")]
         [Button(ButtonSizes.Large), DisableIf("@(_populateMode == ContainerPopulateMode.Folder && string.IsNullOrEmpty(FolderPath))")]
@@ -149,7 +166,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
                 LootTableVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<LootTableVariable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
             }
 
-            Debug.Log($"{TriggerVariables.Count} Triggers" +
+            Debug.Log($"PopulateContainer {this.name}: " +
+                      $"{TriggerVariables.Count} Triggers" +
                       $" | {BoolVariables.Count} Bools" +
                       $" | {IntVariables.Count} Ints" +
                       $" | {FloatVariables.Count} Floats" +

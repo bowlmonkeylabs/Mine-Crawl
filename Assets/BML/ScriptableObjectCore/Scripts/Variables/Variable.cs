@@ -3,6 +3,7 @@ using BML.ScriptableObjectCore.Scripts.CustomAttributes;
 using BML.ScriptableObjectCore.Scripts.Utils;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -18,7 +19,15 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     {
         #region Inspector
 
+    #if UNITY_EDITOR
+        private void OnIncludeInContainersChanged()
+        {
+            EditorUtility.SetDirty(this);
+            VariableContainer.PopulateAllRelatedContainers(includeInContainers);
+        }
+    #endif
         private Color _colorIncludeInContainers => includeInContainers != VariableContainerKey.None ? Color.green : Color.white;
+        [OnValueChanged("OnIncludeInContainersChanged")]
         [SerializeField, HideInInlineEditors, GUIColor("_colorIncludeInContainers")] private VariableContainerKey includeInContainers;
         public VariableContainerKey IncludeInContainers => includeInContainers;
 

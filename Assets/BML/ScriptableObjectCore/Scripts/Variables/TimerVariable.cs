@@ -5,6 +5,7 @@ using BML.ScriptableObjectCore.Scripts.CustomAttributes;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.ScriptableObjectCore.Scripts.Variables.ValueReferences;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -18,7 +19,15 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [CreateAssetMenu(fileName = "TimerVariable", menuName = "BML/Variables/TimerVariable", order = 0)]
     public class TimerVariable : ScriptableObject
     {
+#if UNITY_EDITOR
+        private void OnIncludeInContainersChanged()
+        {
+            EditorUtility.SetDirty(this);
+            VariableContainer.PopulateAllRelatedContainers(includeInContainers);
+        }
+#endif
         private Color _colorIncludeInContainers => includeInContainers != VariableContainerKey.None ? Color.green : Color.white;
+        [OnValueChanged("OnIncludeInContainersChanged")]
         [SerializeField, HideInInlineEditors, GUIColor("_colorIncludeInContainers")] private VariableContainerKey includeInContainers;
         public VariableContainerKey IncludeInContainers => includeInContainers;
 
