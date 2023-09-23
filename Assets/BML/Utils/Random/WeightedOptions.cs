@@ -19,9 +19,12 @@ namespace BML.Utils.Random
 
         // [HorizontalGroup("Split", 0.2f, LabelWidth = 1)] [HideLabel]
         [FormerlySerializedAs("weight")]
-        [MinValue(0)]
-        [TableColumnWidth(40, false)]
+        [MinValue(0), DisableIf("Lock")]
+        [TableColumnWidth(45, false)]
         public float Weight;
+
+        [TableColumnWidth(30, false)]
+        public bool Lock;
 
         public WeightedValueEntry(T value, float weight)
         {
@@ -67,27 +70,46 @@ namespace BML.Utils.Random
         [HideReferenceObjectPicker]
         [TableList(AlwaysExpanded = true)]
         public List<TWP> Options;
-        
-        [Button]
+
+        [Button(DrawResult = false)]
         [PropertyOrder(-1)]
         [DisableIf("@Mathf.Approximately(this.SumWeights, 1f)")]
         [HorizontalGroup("Split", 0.5f, LabelWidth = 100)]
-        public void Normalize()
+        public bool Normalize()
         {
-            if (Mathf.Approximately(SumWeights, 1f)) return;
+            if (Mathf.Approximately(SumWeights, 1f)) return true;
+            if (Mathf.Approximately(SumLockedWeights, 1f)) return true;
+            if (SumLockedWeights > 1)
+            {
+#warning throw or log?
+                throw new Exception("Sum of locked weights already exceeds 1; unable to normalize.");
+                Debug.LogError("Sum of locked weights already exceeds 1; unable to normalize.");
+                return false;
+            }
 
-            float scalingFactor =  1f / SumWeights;
+            float sumUnlockedWeights = SumWeights - SumLockedWeights;
+            float remainingUnlockedProbability = 1 - SumLockedWeights;
+            float scalingFactor =  remainingUnlockedProbability / sumUnlockedWeights;
             for (var i = 0; i < Options.Count; i++)
             {
                 var option = Options[i];
+                if (option.Lock) continue;
+                
                 option.Weight *= scalingFactor;
             }
+
+            return true;
         }
 
         [InfoBox("Weights must sum to 1.", InfoMessageType.Error, "@this.SumWeights != 1")]
         [HorizontalGroup("Split", 0.5f, LabelWidth = 100)]
         [ShowInInspector] 
         public float SumWeights => Options?.Sum(option => option.Weight) ?? -1;
+        
+        [InfoBox("Locked weights exceed a sum of 1.", InfoMessageType.Error, "@this.SumLockedWeights > 1")]
+        [HorizontalGroup("Split", 0.5f, LabelWidth = 100)]
+        [ShowInInspector, ShowIf("@SumLockedWeights > 1")]
+        public float SumLockedWeights => Options?.Where(option => option.Lock).Sum(option => option.Weight) ?? -1;
         
         public T RandomWithWeights()
         {
