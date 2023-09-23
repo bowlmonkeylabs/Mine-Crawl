@@ -285,7 +285,7 @@ namespace BML.Scripts.Player.Items
                 }
 
                 if(itemEffect.Type == ItemEffectType.ChangeLootTable) {
-                itemEffect.LootTableToOverride.OverrideLootTable(itemEffect.OveridingLootTable);
+                    itemEffect.LootTableVariable.Value.ModifyProbability(itemEffect.LootTableKey, itemEffect.LootTableAddAmount);
                 }
 
                 if(itemEffect.Type == ItemEffectType.ToggleBoolVariable) {

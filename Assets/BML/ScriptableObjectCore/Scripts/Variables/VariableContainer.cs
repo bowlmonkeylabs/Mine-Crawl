@@ -70,6 +70,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         [Required] [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)] [ListDrawerSettings(ShowPaging = false)]
         [SerializeField] private List<FunctionVariable> FunctionVariables = new List<FunctionVariable>();
+
+        [Required] [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)] [ListDrawerSettings(ShowPaging = false)]
+        [SerializeField] private List<LootTableVariable> LootTableVariables = new List<LootTableVariable>();
         
         public List<TriggerVariable> GetTriggerVariables() => TriggerVariables;
         public List<BoolVariable> GetBoolVariables() => BoolVariables;
@@ -80,13 +83,14 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         public List<QuaternionVariable> GetQuaternionVariables() => QuaternionVariables;
         public List<TimerVariable> GetTimerVariables() => TimerVariables;
         public List<FunctionVariable> GetFunctionVariables() => FunctionVariables;
+        public List<LootTableVariable> GetLootTableVariables() => LootTableVariables;
 
     #if UNITY_EDITOR
 
         [GUIColor(0, 1, 0)]
         [TitleGroup("Populate Container"), PropertyOrder(0), ShowIf("@_populateMode != ContainerPopulateMode.Manual")]
         [Button(ButtonSizes.Large), DisableIf("@(_populateMode == ContainerPopulateMode.Folder && string.IsNullOrEmpty(FolderPath))")]
-        public void PopulateContainer()
+        public virtual void PopulateContainer()
         {
             if (_populateMode == ContainerPopulateMode.Manual)
             {
@@ -101,6 +105,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             Vector3Variables.Clear();
             QuaternionVariables.Clear();
             TimerVariables.Clear();
+            FunctionVariables.Clear();
+            LootTableVariables.Clear();
 
             if (_populateMode == ContainerPopulateMode.Folder)
             {
@@ -113,6 +119,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
                 QuaternionVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<QuaternionVariable>(FolderPath, IncludeSubdirectories).ToList();
                 TimerVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<TimerVariable>(FolderPath, IncludeSubdirectories).ToList();
                 FunctionVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<FunctionVariable>(FolderPath, IncludeSubdirectories).ToList();
+                LootTableVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<LootTableVariable>(FolderPath, IncludeSubdirectories).ToList();
             }
             else if (_populateMode == ContainerPopulateMode.ResetOnRestart)
             {
@@ -126,6 +133,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
                 QuaternionVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<QuaternionVariable>().Where(variable => variable.ResetOnRestart).ToList();
                 TimerVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<TimerVariable>().Where(variable => variable.ResetOnRestart).ToList();
                 // FunctionVariables = FindAndLoadAssetsOfType<FunctionVariable>().Where(variable => variable.ResetOnRestart).ToList();
+                LootTableVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<LootTableVariable>().Where(variable => variable.ResetOnRestart).ToList();
             }
 
             Debug.Log($"{TriggerVariables.Count} Triggers" +
@@ -136,7 +144,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
                       $" | {Vector3Variables.Count} Vector3s" +
                       $" | {QuaternionVariables.Count} Quaternions" +
                       $" | {TimerVariables.Count} Timers" +
-                      $" | {FunctionVariables.Count} Functions");
+                      $" | {FunctionVariables.Count} Functions" +
+                      $" | {LootTableVariables.Count} Loot tables");
         }
 
 #endif
