@@ -12,14 +12,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.ValueTypeVariables
             get => runtimeValue;
             set
             {
-                if (_enableLogs) Debug.Log($"SetValue {this.name}");
+                if (enableLogs) Debug.Log($"SetValue {this.name}");
                 
                 prevValue = runtimeValue;
                 runtimeValue = value;
                 this.InvokeOnUpdateDelta(prevValue, runtimeValue);
                 this.InvokeOnUpdate();
-                if(EnableDebugOnUpdate)
-                    Debug.LogError($"name: {name} | prevValue: {prevValue} | currentValue: {runtimeValue}");
 
                 prevValue = runtimeValue;
                 // Setting this means that 'prevValue' technically only contains the previous value during the frame an update occurs, otherwise it is in sync with 'runtimeValue'

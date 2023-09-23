@@ -13,14 +13,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.ReferenceTypeVariables
             get => runtimeValue;
             set
             {
-                if (_enableLogs) Debug.Log($"SetValue {this.name}");
+                if (enableLogs) Debug.Log($"SetValue {this.name}");
                 
                 prevValue = runtimeValue;
                 runtimeValue = value;
                 this.InvokeOnUpdateDelta(prevValue, runtimeValue);
                 this.InvokeOnUpdate();
-                if(EnableDebugOnUpdate)
-                    Debug.LogError($"name: {name} | prevValue: {prevValue} | currentValue: {runtimeValue}");
 
                 prevValue = runtimeValue;
                 // Setting this means that 'prevValue' technically only contains the previous value during the frame an update occurs, otherwise it is in sync with 'runtimeValue'
@@ -31,7 +29,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.ReferenceTypeVariables
         public override void Reset()
         {
             // base.Reset(); // DON'T call base.Reset()
-            if (_enableLogs) Debug.Log($"Reset {this.name} (Runtime value {runtimeValue})");
+            if (enableLogs) Debug.Log($"Reset {this.name} (Runtime value {runtimeValue})");
 
             prevValue = runtimeValue;
             runtimeValue = (T)(defaultValue.Clone());

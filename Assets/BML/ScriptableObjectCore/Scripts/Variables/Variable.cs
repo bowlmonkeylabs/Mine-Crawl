@@ -4,6 +4,7 @@ using BML.ScriptableObjectCore.Scripts.Utils;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BML.ScriptableObjectCore.Scripts.Variables
 {
@@ -16,12 +17,14 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     public abstract class Variable<T> : ScriptableVariableBase, ISupportsPrefabSerialization, ISerializationCallbackReceiver
     {
         #region Inspector
-        
-        [SerializeField, HideInInlineEditors] private bool resetOnRestart;
+
+        private Color _colorResetOnRestart => resetOnRestart ? Color.green : Color.gray;
+        [SerializeField, HideInInlineEditors, GUIColor("_colorResetOnRestart")] private bool resetOnRestart;
         public bool ResetOnRestart => resetOnRestart;
 
-        [SerializeField, HideInInlineEditors] protected bool _enableLogs;
-        [HideInInlineEditors] public bool EnableDebugOnUpdate;
+        private Color _colorEnableLogs => enableLogs ? Color.yellow : Color.gray;
+        [InfoBox("Logging is enabled for this scriptable object", InfoMessageType.Warning, visibleIfMemberName:"enableLogs")]
+        [FormerlySerializedAs("_enableLogs")] [SerializeField, HideInInlineEditors, GUIColor("_colorEnableLogs")] protected bool enableLogs;
         
         [TextArea(7, 10)] [HideInInlineEditors] public String Description;
         [LabelText("Default")] [LabelWidth(50f)] [SerializeField] protected T defaultValue;
@@ -71,56 +74,56 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         protected void InvokeOnUpdate()
         {
-            if (_enableLogs) Debug.Log($"InvokeOnUpdate {this.name}");
+            if (enableLogs) Debug.Log($"InvokeOnUpdate {this.name}");
             
             OnUpdate?.Invoke();
         }
 
         protected void ResetOnUpdate()
         {
-            if (_enableLogs) Debug.Log($"ResetOnUpdate {this.name}");
+            if (enableLogs) Debug.Log($"ResetOnUpdate {this.name}");
             
             OnUpdate = null;
         }
         
         protected void InvokeOnUpdateDelta(T prev, T curr)
         {
-            if (_enableLogs) Debug.Log($"InvokeOnUpdateDelta {this.name} (Prev {prev}) (Curr {curr})");
+            if (enableLogs) Debug.Log($"InvokeOnUpdateDelta {this.name} (Prev {prev}) (Curr {curr})");
             
             OnUpdateDelta?.Invoke(prev, curr);
         }
 
         protected void ResetOnUpdateDelta()
         {
-            if (_enableLogs) Debug.Log($"ResetOnUpdateDelta {this.name}");
+            if (enableLogs) Debug.Log($"ResetOnUpdateDelta {this.name}");
             
             OnUpdateDelta = null;
         }
         
         public void Subscribe(OnUpdate callback)
         {
-            if (_enableLogs) Debug.Log($"Subscribe {this.name} (OnUpdate {callback.Method.Name})");
+            if (enableLogs) Debug.Log($"Subscribe {this.name} (OnUpdate {callback.Method.Name})");
             
             this.OnUpdate += callback;
         }
 
         public void Subscribe(OnUpdate<T> callback)
         {
-            if (_enableLogs) Debug.Log($"Subscribe {this.name} (OnUpdate<T> {callback.Method.Name})");
+            if (enableLogs) Debug.Log($"Subscribe {this.name} (OnUpdate<T> {callback.Method.Name})");
             
             this.OnUpdateDelta += callback;
         }
 
         public void Unsubscribe(OnUpdate callback)
         {
-            if (_enableLogs) Debug.Log($"Unsubscribe {this.name} (OnUpdate {callback.Method.Name})");
+            if (enableLogs) Debug.Log($"Unsubscribe {this.name} (OnUpdate {callback.Method.Name})");
             
             this.OnUpdate -= callback;
         }
 
         public void Unsubscribe(OnUpdate<T> callback)
         {
-            if (_enableLogs) Debug.Log($"Unsubscribe {this.name} (OnUpdate<T> {callback.Method.Name})");
+            if (enableLogs) Debug.Log($"Unsubscribe {this.name} (OnUpdate<T> {callback.Method.Name})");
             
             this.OnUpdateDelta -= callback;
         }
@@ -129,7 +132,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         public void SetValue(T value)
         {
-            if (_enableLogs) Debug.Log($"SetValue {this.name} (Current {Value}) (New {value})");
+            if (enableLogs) Debug.Log($"SetValue {this.name} (Current {Value}) (New {value})");
             
             Value = value;
         }
@@ -137,7 +140,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [Button]
         public virtual void Reset()
         {
-            if (_enableLogs) Debug.Log($"Reset {this.name} (Runtime value {runtimeValue})");
+            if (enableLogs) Debug.Log($"Reset {this.name} (Runtime value {runtimeValue})");
             
             prevValue = runtimeValue;
             runtimeValue = defaultValue;
@@ -152,7 +155,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         private void OnEnable()
         {
-            if (_enableLogs) Debug.Log($"OnEnable {this.name}");
+            if (enableLogs) Debug.Log($"OnEnable {this.name}");
             
             hideFlags = HideFlags.DontUnloadUnusedAsset;
             Reset();
@@ -160,7 +163,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         private void OnDisable()
         {
-            if (_enableLogs) Debug.Log($"OnDisable {this.name}");
+            if (enableLogs) Debug.Log($"OnDisable {this.name}");
             
             OnUpdate = null;
             //Undo.DestroyObjectImmediate(this);
