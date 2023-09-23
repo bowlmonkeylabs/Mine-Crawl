@@ -179,30 +179,31 @@ namespace BML.ScriptableObjectCoreEditor
             //     test?.BroadcastUpdate();
             // }
 
-            if (GUILayout.Button("Find References"))
+            bool isNestedEditor = EditorGUI.indentLevel > 0;
+            if (!isNestedEditor && GUILayout.Button("Find References"))
             {
                 if (!this.isInit)
                 {
                     this.isInit = true;
                     this.Init();
                 }
+                
+                //if (this.monoBehaviours.Count > 0)
+                //{
+                EditorGUILayout.Space(10f);
+                this.monoBehavioursFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(this.monoBehavioursFoldout, "All Scripts That Have Reference", (GUIStyle)null, (Action<Rect>)null, (GUIStyle)null);
+                if(this.monoBehavioursFoldout)
+                    this.DrawListOfObjects<MonoBehaviour>(this.monoBehaviours, this.missingBackgroundColor, this.monoBehavioursNotUseds);
+                EditorGUILayout.EndFoldoutHeaderGroup();
+                //}
+                if(this.scriptableObjects.Count <= 0)
+                    return;
+                EditorGUILayout.Space(10f);
+                this.scriptableObjectsFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(this.scriptableObjectsFoldout, "All Scriptable Objects That Have Reference", (GUIStyle)null, (Action<Rect>)null, (GUIStyle)null);
+                if(this.scriptableObjectsFoldout)
+                    this.DrawListOfObjects<ScriptableObject>(this.scriptableObjects, this.WarningBackgroundColor, this.scriptableObjectsNotUseds);
+                EditorGUILayout.EndFoldoutHeaderGroup();
             }
-
-            //if (this.monoBehaviours.Count > 0)
-            //{
-            EditorGUILayout.Space(10f);
-            this.monoBehavioursFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(this.monoBehavioursFoldout, "All Scripts That Have Reference", (GUIStyle)null, (Action<Rect>)null, (GUIStyle)null);
-            if(this.monoBehavioursFoldout)
-                this.DrawListOfObjects<MonoBehaviour>(this.monoBehaviours, this.missingBackgroundColor, this.monoBehavioursNotUseds);
-            EditorGUILayout.EndFoldoutHeaderGroup();
-            //}
-            if(this.scriptableObjects.Count <= 0)
-                return;
-            EditorGUILayout.Space(10f);
-            this.scriptableObjectsFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(this.scriptableObjectsFoldout, "All Scriptable Objects That Have Reference", (GUIStyle)null, (Action<Rect>)null, (GUIStyle)null);
-            if(this.scriptableObjectsFoldout)
-                this.DrawListOfObjects<ScriptableObject>(this.scriptableObjects, this.WarningBackgroundColor, this.scriptableObjectsNotUseds);
-            EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
         private void DrawListOfObjects<T>(List<T> objects, Color missingColor, List<bool> notUseds = null)
