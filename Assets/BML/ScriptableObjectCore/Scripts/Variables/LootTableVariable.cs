@@ -10,7 +10,7 @@ using UnityEngine.Events;
 
 namespace BML.ScriptableObjectCore.Scripts.Variables
 {
-    [Serializable]
+    [Flags]
     public enum LootTableKey
     {
         Nothing = 0,

@@ -11,6 +11,16 @@ using UnityEngine;
 
 namespace BML.ScriptableObjectCore.Scripts.Variables
 {
+    [Flags]
+    public enum VariableContainerKey
+    {
+        None = 0,
+        ResetOnRestartGame = 1 << 0,
+        ResetOnStartAnyLevel = 1 << 1,
+        ResetOnStartLevel0 = 1 << 2,
+        ResetOnStartLevel1 = 1 << 3,
+    }
+    
     [Required]
     [CreateAssetMenu(fileName = "VariableContainer", menuName = "BML/Variables/VariableContainer", order = 0)]
     public class VariableContainer : ScriptableObject
@@ -19,7 +29,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         {
             Manual = 0,
             Folder = 1,
-            ResetOnRestart = 2,
+            ContainerKey = 2,
         }
         
         [TitleGroup("Populate Container"), PropertyOrder(-3)]
@@ -41,6 +51,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         
         [TitleGroup("Populate Container"), ShowIf("@_populateMode == ContainerPopulateMode.Folder")]
         [SerializeField] private bool IncludeSubdirectories = false;
+
+        [TitleGroup("Populate Container"), ShowIf("@_populateMode == ContainerPopulateMode.ContainerKey")]
+        [SerializeField] private VariableContainerKey ContainerKey;
 
         [TextArea (5, 10)] public String Description;
         
@@ -121,19 +134,19 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
                 FunctionVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<FunctionVariable>(FolderPath, IncludeSubdirectories).ToList();
                 LootTableVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<LootTableVariable>(FolderPath, IncludeSubdirectories).ToList();
             }
-            else if (_populateMode == ContainerPopulateMode.ResetOnRestart)
+            else if (_populateMode == ContainerPopulateMode.ContainerKey)
             {
                 // Only populate lists of resettable variable types
-                // TriggerVariables = FindAndLoadAssetsOfType<TriggerVariable>().Where(variable => variable.ResetOnRestart).ToList();
-                BoolVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<BoolVariable>().Where(variable => variable.ResetOnRestart).ToList();
-                IntVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<IntVariable>().Where(variable => variable.ResetOnRestart).ToList();
-                FloatVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<FloatVariable>().Where(variable => variable.ResetOnRestart).ToList();
-                Vector2Variables = AssetDatabaseUtils.FindAndLoadAssetsOfType<Vector2Variable>().Where(variable => variable.ResetOnRestart).ToList();
-                Vector3Variables = AssetDatabaseUtils.FindAndLoadAssetsOfType<Vector3Variable>().Where(variable => variable.ResetOnRestart).ToList();
-                QuaternionVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<QuaternionVariable>().Where(variable => variable.ResetOnRestart).ToList();
-                TimerVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<TimerVariable>().Where(variable => variable.ResetOnRestart).ToList();
-                // FunctionVariables = FindAndLoadAssetsOfType<FunctionVariable>().Where(variable => variable.ResetOnRestart).ToList();
-                LootTableVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<LootTableVariable>().Where(variable => variable.ResetOnRestart).ToList();
+                // TriggerVariables = FindAndLoadAssetsOfType<TriggerVariable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
+                BoolVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<BoolVariable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
+                IntVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<IntVariable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
+                FloatVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<FloatVariable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
+                Vector2Variables = AssetDatabaseUtils.FindAndLoadAssetsOfType<Vector2Variable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
+                Vector3Variables = AssetDatabaseUtils.FindAndLoadAssetsOfType<Vector3Variable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
+                QuaternionVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<QuaternionVariable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
+                TimerVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<TimerVariable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
+                // FunctionVariables = FindAndLoadAssetsOfType<FunctionVariable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
+                LootTableVariables = AssetDatabaseUtils.FindAndLoadAssetsOfType<LootTableVariable>().Where(variable => (variable.IncludeInContainers & ContainerKey) == ContainerKey).ToList();
             }
 
             Debug.Log($"{TriggerVariables.Count} Triggers" +

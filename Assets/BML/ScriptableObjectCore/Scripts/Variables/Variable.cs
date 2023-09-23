@@ -18,9 +18,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     {
         #region Inspector
 
-        private Color _colorResetOnRestart => resetOnRestart ? Color.green : Color.gray;
-        [SerializeField, HideInInlineEditors, GUIColor("_colorResetOnRestart")] private bool resetOnRestart;
-        public bool ResetOnRestart => resetOnRestart;
+        private Color _colorIncludeInContainers => includeInContainers != VariableContainerKey.None ? Color.green : Color.white;
+        [SerializeField, HideInInlineEditors, GUIColor("_colorIncludeInContainers")] private VariableContainerKey includeInContainers;
+        public VariableContainerKey IncludeInContainers => includeInContainers;
 
         private Color _colorEnableLogs => enableLogs ? Color.yellow : Color.gray;
         [InfoBox("Logging is enabled for this scriptable object", InfoMessageType.Warning, visibleIfMemberName:"enableLogs")]

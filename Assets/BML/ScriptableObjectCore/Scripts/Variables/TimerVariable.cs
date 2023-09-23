@@ -18,8 +18,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [CreateAssetMenu(fileName = "TimerVariable", menuName = "BML/Variables/TimerVariable", order = 0)]
     public class TimerVariable : ScriptableObject
     {
-        [SerializeField] private bool resetOnRestart;
-        public bool ResetOnRestart => resetOnRestart;
+        private Color _colorIncludeInContainers => includeInContainers != VariableContainerKey.None ? Color.green : Color.white;
+        [SerializeField, HideInInlineEditors, GUIColor("_colorIncludeInContainers")] private VariableContainerKey includeInContainers;
+        public VariableContainerKey IncludeInContainers => includeInContainers;
 
         [SerializeField] private SafeFloatValueReference _duration;
 
