@@ -19,13 +19,15 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     {
         #region Inspector
 
-    #if UNITY_EDITOR
+        [TextArea(7, 10)] [HideInInlineEditors] public String Description;
+        
+#if UNITY_EDITOR
         private void OnIncludeInContainersChanged()
         {
             EditorUtility.SetDirty(this);
             VariableContainer.PopulateAllRelatedContainers(includeInContainers);
         }
-    #endif
+#endif
         private Color _colorIncludeInContainers => includeInContainers != VariableContainerKey.None ? Color.green : Color.white;
         [OnValueChanged("OnIncludeInContainersChanged")]
         [SerializeField, HideInInlineEditors, GUIColor("_colorIncludeInContainers")] private VariableContainerKey includeInContainers;
@@ -34,10 +36,11 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         private Color _colorEnableLogs => enableLogs ? Color.yellow : Color.gray;
         [InfoBox("Logging is enabled for this scriptable object", InfoMessageType.Warning, visibleIfMemberName:"enableLogs")]
         [FormerlySerializedAs("_enableLogs")] [SerializeField, HideInInlineEditors, GUIColor("_colorEnableLogs")] protected bool enableLogs;
-        
-        [TextArea(7, 10)] [HideInInlineEditors] public String Description;
-        [LabelText("Default")] [LabelWidth(50f)] [SerializeField] protected T defaultValue;
-        [LabelText("Runtime")] [LabelWidth(50f)] [SerializeField] protected T runtimeValue;
+
+        [LabelText("Default"), LabelWidth(65f)] [InlineButton("Reset", label:"  Reset  ")]
+        [SerializeField] protected T defaultValue;
+        [LabelText("Runtime"), LabelWidth(65f)] [OnValueChanged("BroadcastUpdate")] [InlineButton("BroadcastUpdate", label:" Update")]
+        [SerializeField] protected T runtimeValue;
 
         protected T prevValue;
 
@@ -63,9 +66,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             get => defaultValue;
         }
 
-        [Button]
+        // [Button]
+        // [HorizontalGroup("Buttons")]
         public void BroadcastUpdate()
         {
+            if (enableLogs) Debug.Log($"BroadcastUpdate {this.name}");
+            
             OnUpdate?.Invoke();
             OnUpdateDelta?.Invoke(prevValue, runtimeValue);
             
@@ -146,7 +152,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             Value = value;
         }
 
-        [Button]
+        // [Button]
+        // [HorizontalGroup("Buttons")]
         public virtual void Reset()
         {
             if (enableLogs) Debug.Log($"Reset {this.name} (Runtime value {runtimeValue})");
