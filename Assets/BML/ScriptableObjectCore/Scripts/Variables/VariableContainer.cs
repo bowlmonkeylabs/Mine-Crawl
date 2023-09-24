@@ -14,12 +14,14 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [Flags]
     public enum VariableContainerKey
     {
-        All = ResetOnRestartGame | ResetOnStartAnyLevel | ResetOnStartLevel0 | ResetOnStartLevel1,
+        All = ResetOnRestartGame | ResetOnStartAnyLevel | ResetOnStartLevel0 | ResetOnStartLevel1 | UserSettings,
         None = 0,
         ResetOnRestartGame = 1 << 0,
         ResetOnStartAnyLevel = 1 << 1,
         ResetOnStartLevel0 = 1 << 2,
         ResetOnStartLevel1 = 1 << 3,
+        
+        UserSettings = 1 << 10,
     }
     
     [Required]
