@@ -140,6 +140,7 @@ namespace BML.Scripts.CaveV2.MudBun
                     List<CaveNodeConnectionData> edges = _caveGraph.AdjacentEdges(caveNodeData).ToList();
                     
                     List<WeightedValueEntry<SelectedRoom>> validWeightedRoomPairs = _caveGraphRenderParams.GetWeightedRoomOptionsForType(caveNodeData.NodeType).Options
+                    .Where(roomWeightedPair => roomWeightedPair.Weight > 0)
                     .Select(roomWeightedPair => {
                         return new WeightedValueEntry<SelectedRoom>(new SelectedRoom() {
                                 RoomPrefab = roomWeightedPair.Value,
