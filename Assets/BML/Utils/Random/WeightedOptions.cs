@@ -122,7 +122,7 @@ namespace BML.Utils.Random
             foreach (var pair in this.Options)
             {
                 acc += pair.Weight;
-                if (randomRoll <= acc)
+                if (pair.Weight > 0 && randomRoll <= acc)
                 {
                     return pair.Value;
                 }
