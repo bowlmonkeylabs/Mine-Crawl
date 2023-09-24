@@ -31,18 +31,22 @@ namespace BML.Scripts.CaveV2.MudBun
         [SerializeField] public GameObject MerchantRoomPrefab;
         [SerializeField] public GameObject TunnelPrefab;
         [SerializeField] public GameObject TunnelWithBarrierPrefab;
-
+        
         [Serializable]
+        [HideReferenceObjectPicker]
         private class RoomOptions
         {
             // [PreviewField]
-            [AssetsOnly]
-            public WeightedValueOptions<GameObject> defaultPrefabs;
-            [AssetsOnly]
-            public WeightedValueOptions<GameObject> roomPrefabs;
+            // [AssetsOnly]
+            [HideReferenceObjectPicker]
+            public WeightedValueOptions<GameObject> defaultPrefabs = new WeightedValueOptions<GameObject>();
+            // [AssetsOnly]
+            [HideReferenceObjectPicker]
+            public WeightedValueOptions<GameObject> roomPrefabs = new WeightedValueOptions<GameObject>();
             // [Tooltip("Set to -1 to disable limit.")]
             // public int countLimit = -1;
         }
+        
         [DictionaryDrawerSettings(KeyLabel = "Room Type", ValueLabel = "Rooms",
             DisplayMode = DictionaryDisplayOptions.ExpandedFoldout)]
         [SerializeField]
@@ -75,7 +79,7 @@ namespace BML.Scripts.CaveV2.MudBun
         {
             if (!_roomTypes.ContainsKey(nodeType))
             {
-                return null;
+                return default;
             }
 
             return _roomTypes[nodeType].defaultPrefabs.RandomWithWeights();

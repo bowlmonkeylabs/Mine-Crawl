@@ -68,7 +68,7 @@ namespace BML.Utils.Random
         [LabelText("Weighted Options"), HideLabel, Indent(0)]
         [HideReferenceObjectPicker]
         [TableList(AlwaysExpanded = true)]
-        public List<TWP> Options;
+        public List<TWP> Options = new List<TWP>();
 
         [Button(DrawResult = false)]
         [PropertyOrder(-1)]
