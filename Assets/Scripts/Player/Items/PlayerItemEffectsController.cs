@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -244,57 +245,61 @@ namespace BML.Scripts.Player.Items
 
         private void ApplyEffect(ItemEffect itemEffect)
         {
-            if (itemEffect.UseActivationLimit && itemEffect.RemainingActivations.Value <= 0)
-            {
-                return;
-            }
-            
-            if (itemEffect.UseActivationCooldownTimer)
-            {
-                if (itemEffect.ActivationCooldownTimer.IsStarted && !itemEffect.ActivationCooldownTimer.IsFinished)
+            try {
+                if (itemEffect.UseActivationLimit && itemEffect.RemainingActivations.Value <= 0)
                 {
                     return;
                 }
-                itemEffect.ActivationCooldownTimer.StartTimer();
-            }
-            
-            if (itemEffect.UseActivationLimit)
-            {
-                itemEffect.RemainingActivations.Value -= 1;
-            }
-            
-            if(itemEffect.Type == ItemEffectType.StatIncrease) {
-                if(itemEffect.UsePercentageIncrease) {
-                    itemEffect.FloatStat.Value += itemEffect.FloatStat.DefaultValue * (itemEffect.StatIncreasePercent / 100f);
-                } else {
-                    itemEffect.IntStat.Value += itemEffect.StatIncreaseAmount;
+                
+                if (itemEffect.UseActivationCooldownTimer)
+                {
+                    if (itemEffect.ActivationCooldownTimer.IsStarted && !itemEffect.ActivationCooldownTimer.IsFinished)
+                    {
+                        return;
+                    }
+                    itemEffect.ActivationCooldownTimer.StartTimer();
+                }
+                
+                if (itemEffect.UseActivationLimit)
+                {
+                    itemEffect.RemainingActivations.Value -= 1;
+                }
+                
+                if(itemEffect.Type == ItemEffectType.StatIncrease) {
+                    if(itemEffect.UsePercentageIncrease) {
+                        itemEffect.FloatStat.Value += itemEffect.FloatStat.DefaultValue * (itemEffect.StatIncreasePercent / 100f);
+                    } else {
+                        itemEffect.IntStat.Value += itemEffect.StatIncreaseAmount;
+                    }
+
+                    if(itemEffect.IsTemporaryStatIncrease) {
+                        LeanTween.value(0f, 1f, itemEffect.TemporaryStatIncreaseTime)
+                            .setOnComplete(_ => this.UnApplyEffect(itemEffect));
+                    }   
                 }
 
-                if(itemEffect.IsTemporaryStatIncrease) {
-                    LeanTween.value(0f, 1f, itemEffect.TemporaryStatIncreaseTime)
-                        .setOnComplete(_ => this.UnApplyEffect(itemEffect));
-                }   
-            }
+                if(itemEffect.Type == ItemEffectType.FireProjectile) {
+                    var projectile = GameObjectUtils.SafeInstantiate(true, itemEffect.ProjectilePrefab, ProjectileContainer.Value);
+                    var mainCamera = MainCameraRef.Value.transform;
+                    projectile.transform.SetPositionAndRotation(mainCamera.position, mainCamera.rotation);
+                }
 
-            if(itemEffect.Type == ItemEffectType.FireProjectile) {
-                var projectile = GameObjectUtils.SafeInstantiate(true, itemEffect.ProjectilePrefab, ProjectileContainer.Value);
-                var mainCamera = MainCameraRef.Value.transform;
-                projectile.transform.SetPositionAndRotation(mainCamera.position, mainCamera.rotation);
-            }
+                if(itemEffect.Type == ItemEffectType.ChangeLootTable) {
+                itemEffect.LootTableToOverride.OverrideLootTable(itemEffect.OveridingLootTable);
+                }
 
-            if(itemEffect.Type == ItemEffectType.ChangeLootTable) {
-               itemEffect.LootTableToOverride.OverrideLootTable(itemEffect.OveridingLootTable);
-            }
+                if(itemEffect.Type == ItemEffectType.ToggleBoolVariable) {
+                itemEffect.BoolVariableToToggle.Value = true;
+                }
 
-            if(itemEffect.Type == ItemEffectType.ToggleBoolVariable) {
-               itemEffect.BoolVariableToToggle.Value = true;
-            }
-
-            if(itemEffect.Type == ItemEffectType.InstantiatePrefab) {
-                var gameObject = GameObjectUtils.SafeInstantiate(true, itemEffect.PrefabToInstantiate, itemEffect.InstantiatePrefabContainer?.Value);
-                var position = itemEffect.InstantiatePrefabPositionTransform?.Value.position ?? (_pickaxeHitPosition != Vector3.negativeInfinity ? _pickaxeHitPosition : transform.position);
-                var rotation = itemEffect.InstantiatePrefabPositionTransform?.Value.rotation ?? transform.rotation;
-                gameObject.transform.SetPositionAndRotation(position, rotation);
+                if(itemEffect.Type == ItemEffectType.InstantiatePrefab) {
+                    var gameObject = GameObjectUtils.SafeInstantiate(true, itemEffect.PrefabToInstantiate, itemEffect.InstantiatePrefabContainer?.Value);
+                    var position = itemEffect.InstantiatePrefabPositionTransform?.Value.position ?? (_pickaxeHitPosition != Vector3.negativeInfinity ? _pickaxeHitPosition : transform.position);
+                    var rotation = itemEffect.InstantiatePrefabPositionTransform?.Value.rotation ?? transform.rotation;
+                    gameObject.transform.SetPositionAndRotation(position, rotation);
+                }
+            } catch(Exception exception) {
+                Debug.LogWarning("Item effect failed to apply: " + exception.Message);
             }
         }
 
