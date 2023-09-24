@@ -101,14 +101,19 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
     #if UNITY_EDITOR
 
-        public static void PopulateAllRelatedContainers(VariableContainerKey containerKeyFlags)
+        public static void PopulateAllRelatedContainers(VariableContainerKey containerKeyFlags, VariableContainerKey? prevContainerKeyFlags = null)
         {
             if (containerKeyFlags == VariableContainerKey.None)
             {
                 containerKeyFlags = VariableContainerKey.All;
             }
+            // We also need to update all containers with the previously selected key in order to remove from their lists. When we don't know the previous key (which is all the time) we have to update ALL containers :(
+            if (prevContainerKeyFlags == null)
+            {
+                prevContainerKeyFlags = VariableContainerKey.All;
+            }
             var containersWithKey = AssetDatabaseUtils.FindAndLoadAssetsOfType<VariableContainer>()
-                .Where(container => (container.ContainerKey & containerKeyFlags) > 0);
+                .Where(container => ((container.ContainerKey & containerKeyFlags) | (container.ContainerKey & prevContainerKeyFlags.Value)) > 0);
             foreach (var variableContainer in containersWithKey)
             {
                 variableContainer.PopulateContainer();

@@ -25,7 +25,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         private void OnIncludeInContainersChanged()
         {
             EditorUtility.SetDirty(this);
-            VariableContainer.PopulateAllRelatedContainers(includeInContainers);
+            VariableContainer.PopulateAllRelatedContainers(includeInContainers, null);
         }
 #endif
         private Color _colorIncludeInContainers => includeInContainers != VariableContainerKey.None ? Color.green : Color.white;
