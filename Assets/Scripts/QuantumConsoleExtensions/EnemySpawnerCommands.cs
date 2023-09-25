@@ -15,6 +15,8 @@ namespace BML.Scripts.QuantumConsoleExtensions
         [SerializeField] private FloatVariable _currentPercentToMaxSpawn;
         [SerializeField] private TransformSceneReference _playerTransformSceneReference;
 
+        [SerializeField] private CaveWormSpawner _caveWormSpawner;
+
         #region Commands
 
         [Command("get-intensity", "Displays the current measurement of intensity with respect to what's currently happening to the player. This value is reactive to gameplay, not a set value.")]
@@ -71,6 +73,28 @@ namespace BML.Scripts.QuantumConsoleExtensions
             }
         }
         
+        #endregion
+
+        #region Worm commands
+
+        [Command("pause-worm", "Pause worm countdown timer.")]
+        private void SetWormPaused(bool paused = true)
+        {
+            _caveWormSpawner.PauseSpawnTimer(paused);
+        }
+
+        [Command("delay-worm", "Delay worm countdown timer.")]
+        private void DelayWormTimer(float addTimeSeconds)
+        {
+            _caveWormSpawner.DelaySpawnTimer(addTimeSeconds);
+        }
+
+        [Command("delete-worm", "The maker meets its maker.")]
+        private void DelayWormTimer(bool killHimExtraHard = false)
+        {
+            _caveWormSpawner.DeleteWorm(killHimExtraHard);
+        }
+
         #endregion
     }
 }
