@@ -24,7 +24,8 @@ namespace BML.Scripts.Player.Items
         [SerializeField] private PlayerInventory _playerInventory;
         [SerializeField] private IntVariable _maxSlottedTrees;
 
-        private static int MAX_ITEM_TREE_RECURSION_DEPTH = 99; 
+        private static int MAX_ITEM_TREE_RECURSION_DEPTH = 99;
+        private Dictionary<ItemTreeGraphStartNode, int> _itemObtainedCountCache = new Dictionary<ItemTreeGraphStartNode, int>();
 
         public void TraverseItemTree(ItemTreeGraphStartNode startNode, Action<ItemTreeGraphNode> nodeAction) {
             var itemNodes = startNode.GetOutputPort("Start").GetConnections().Select(nodePort => nodePort.node);
@@ -111,7 +112,13 @@ namespace BML.Scripts.Player.Items
                 return false;
             });
             (nodeWithItem as ItemTreeGraphNode).Obtained = true;
-            GetTreeStartNodeForItem(item).Slotted = true;
+
+            var treeStartNode = GetTreeStartNodeForItem(item);
+            treeStartNode.Slotted = true;
+            if(!_itemObtainedCountCache.ContainsKey(treeStartNode)) {
+                _itemObtainedCountCache[treeStartNode] = 0;
+            }
+            _itemObtainedCountCache[treeStartNode] += 1;
         }
 
         public ItemTreeGraphStartNode GetTreeStartNodeForItem(PlayerItem item) {
@@ -140,9 +147,10 @@ namespace BML.Scripts.Player.Items
         }
 
         public int GetObtainedCount(ItemTreeGraphStartNode startNode) {
-            int obtainedCount = 0;
-            TraverseItemTree(startNode, node => obtainedCount += node.Obtained ? 1 : 0);
-            return obtainedCount;
+            // int obtainedCount = 0;
+            // TraverseItemTree(startNode, node => obtainedCount += node.Obtained ? 1 : 0);
+            // return obtainedCount;
+            return _itemObtainedCountCache.ContainsKey(startNode) ? _itemObtainedCountCache[startNode] : 0;
         }
 
         public void ResetScriptableObject() {
@@ -154,6 +162,8 @@ namespace BML.Scripts.Player.Items
                     (node as ItemTreeGraphStartNode).Slotted = false;
                 }
             });
+
+            _itemObtainedCountCache.Clear();
         }
     }
 }
