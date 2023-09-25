@@ -3,7 +3,9 @@ using BML.ScriptableObjectCore.Scripts.CustomAttributes;
 using BML.ScriptableObjectCore.Scripts.Utils;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BML.ScriptableObjectCore.Scripts.Variables
 {
@@ -13,61 +15,63 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [Serializable]
     [ShowOdinSerializedPropertiesInInspector]
     [InlineEditor(InlineEditorObjectFieldModes.Foldout)]
-    public class Variable<T> : ScriptableVariableBase, ISerializationCallbackReceiver, ISupportsPrefabSerialization
+    public abstract class Variable<T> : ScriptableVariableBase, ISupportsPrefabSerialization, ISerializationCallbackReceiver
     {
-        [SerializeField] private bool resetOnRestart;
-        public bool ResetOnRestart => resetOnRestart;
-        
-        [HideInInlineEditors] public bool EnableDebugOnUpdate;
+        #region Inspector
+
         [TextArea(7, 10)] [HideInInlineEditors] public String Description;
-        [SerializeField] [LabelText("Default")] [LabelWidth(50f)] private T defaultValue;
-        [SerializeField] [LabelText("Runtime")] [LabelWidth(50f)] private T runtimeValue;
+        
+#if UNITY_EDITOR
+        private void OnIncludeInContainersChanged()
+        {
+            EditorUtility.SetDirty(this);
+            VariableContainer.PopulateAllRelatedContainers(includeInContainers, null);
+        }
+#endif
+        private Color _colorIncludeInContainers => includeInContainers != VariableContainerKey.None ? Color.green : Color.white;
+        [OnValueChanged("OnIncludeInContainersChanged")]
+        [SerializeField, HideInInlineEditors, GUIColor("_colorIncludeInContainers")] private VariableContainerKey includeInContainers;
+        public VariableContainerKey IncludeInContainers => includeInContainers;
+
+        private Color _colorEnableLogs => enableLogs ? Color.yellow : Color.gray;
+        [InfoBox("Logging is enabled for this scriptable object", InfoMessageType.Warning, visibleIfMemberName:"enableLogs")]
+        [FormerlySerializedAs("_enableLogs")] [SerializeField, HideInInlineEditors, GUIColor("_colorEnableLogs")] protected bool enableLogs;
+
+        [LabelText("Default"), LabelWidth(65f)] [InlineButton("Reset", label:"  Reset  ")]
+        [SerializeField] protected T defaultValue;
+        [LabelText("Runtime"), LabelWidth(65f)] [OnValueChanged("BroadcastUpdate")] [InlineButton("BroadcastUpdate", label:" Update")]
+        [SerializeField] protected T runtimeValue;
 
         protected T prevValue;
-        protected event OnUpdate OnUpdate;
-        protected event OnUpdate<T> OnUpdateDelta;
 
         [SerializeField, HideInInspector]
         private SerializationData serializationData;
 
         SerializationData ISupportsPrefabSerialization.SerializationData { get { return this.serializationData; } set { this.serializationData = value; } }
-
+        
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
             UnitySerializationUtility.DeserializeUnityObject(this, ref this.serializationData);
         }
-
+        
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
             UnitySerializationUtility.SerializeUnityObject(this, ref this.serializationData);
         }
 
-        public T Value
-        {
-            get => runtimeValue;
-            set
-            {
-                prevValue = runtimeValue;
-                runtimeValue = value;
-                this.OnUpdateDelta?.Invoke(prevValue, runtimeValue);
-                this.OnUpdate?.Invoke();
-                if(EnableDebugOnUpdate)
-                    Debug.LogError($"name: {name} | prevValue: {prevValue} | currentValue: {runtimeValue}");
-
-                prevValue = runtimeValue;
-                // Setting this means that 'prevValue' technically only contains the previous value during the frame an update occurs, otherwise it is in sync with 'runtimeValue'
-                // But this allows delta updates to work even when we edit values through the inspector (which circumvents this Value.set() method)
-            }
-        }
+        public abstract T Value { get; set; }
 
         public T DefaultValue
         {
             get => defaultValue;
         }
 
-        [Button]
+        // [Button]
+        // [HorizontalGroup("Buttons")]
         public void BroadcastUpdate()
         {
+            if (enableLogs) Debug.Log($"BroadcastUpdate {this.name}");
+            
             OnUpdate?.Invoke();
             OnUpdateDelta?.Invoke(prevValue, runtimeValue);
             
@@ -75,34 +79,85 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             // Setting this means that 'prevValue' technically only contains the previous value during the frame an update occurs, otherwise it is in sync with 'runtimeValue'
             // But this allows delta updates to work even when we edit values through the inspector (which circumvents the Value.set() method)
         }
+        
+        #endregion
 
+        #region Events
+        
+        protected event OnUpdate OnUpdate;
+        protected event OnUpdate<T> OnUpdateDelta;
+
+        protected void InvokeOnUpdate()
+        {
+            if (enableLogs) Debug.Log($"InvokeOnUpdate {this.name}");
+            
+            OnUpdate?.Invoke();
+        }
+
+        protected void ResetOnUpdate()
+        {
+            if (enableLogs) Debug.Log($"ResetOnUpdate {this.name}");
+            
+            OnUpdate = null;
+        }
+        
+        protected void InvokeOnUpdateDelta(T prev, T curr)
+        {
+            if (enableLogs) Debug.Log($"InvokeOnUpdateDelta {this.name} (Prev {prev}) (Curr {curr})");
+            
+            OnUpdateDelta?.Invoke(prev, curr);
+        }
+
+        protected void ResetOnUpdateDelta()
+        {
+            if (enableLogs) Debug.Log($"ResetOnUpdateDelta {this.name}");
+            
+            OnUpdateDelta = null;
+        }
+        
         public void Subscribe(OnUpdate callback)
         {
+            if (enableLogs) Debug.Log($"Subscribe {this.name} (OnUpdate {callback.Method.Name})");
+            
             this.OnUpdate += callback;
         }
 
         public void Subscribe(OnUpdate<T> callback)
         {
+            if (enableLogs) Debug.Log($"Subscribe {this.name} (OnUpdate<T> {callback.Method.Name})");
+            
             this.OnUpdateDelta += callback;
         }
 
         public void Unsubscribe(OnUpdate callback)
         {
+            if (enableLogs) Debug.Log($"Unsubscribe {this.name} (OnUpdate {callback.Method.Name})");
+            
             this.OnUpdate -= callback;
         }
 
         public void Unsubscribe(OnUpdate<T> callback)
         {
+            if (enableLogs) Debug.Log($"Unsubscribe {this.name} (OnUpdate<T> {callback.Method.Name})");
+            
             this.OnUpdateDelta -= callback;
         }
 
+        #endregion
+
         public void SetValue(T value)
         {
+            if (enableLogs) Debug.Log($"SetValue {this.name} (Current {Value}) (New {value})");
+            
             Value = value;
         }
 
-        public void Reset()
+        // [Button]
+        // [HorizontalGroup("Buttons")]
+        public virtual void Reset()
         {
+            if (enableLogs) Debug.Log($"Reset {this.name} (Runtime value {runtimeValue})");
+            
             prevValue = runtimeValue;
             runtimeValue = defaultValue;
             this.OnUpdateDelta?.Invoke(prevValue, runtimeValue);
@@ -114,19 +169,18 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             return this.SaveInstance(folderPath, name);
         }
 
-        private void Awake()
-        {
-
-        }
-
         private void OnEnable()
         {
+            if (enableLogs) Debug.Log($"OnEnable {this.name}");
+            
             hideFlags = HideFlags.DontUnloadUnusedAsset;
             Reset();
         }
 
         private void OnDisable()
         {
+            if (enableLogs) Debug.Log($"OnDisable {this.name}");
+            
             OnUpdate = null;
             //Undo.DestroyObjectImmediate(this);
             //AssetDatabase.SaveAssets();
@@ -252,6 +306,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             else
                 Debug.Log($"Trying to reset a SO <{Name}> using a constant value1 Nothing will happen.");
         }
+        
         public String Name
         {
             get
@@ -288,78 +343,4 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         }
     }
 
-    [Serializable]
-    [InlineProperty]
-    public class FloatReference : Reference<float, FloatVariable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class Vector2Reference : Reference<Vector2, Vector2Variable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class Vector3Reference : Reference<Vector3, Vector3Variable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class BoolReference : Reference<bool, BoolVariable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class IntReference : Reference<int, IntVariable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class QuaternionReference : Reference<Quaternion, QuaternionVariable> { }
-
-    [Serializable]
-    [InlineProperty]
-    public class CurveReference : Reference<AnimationCurve, CurveVariable>, ISerializationCallbackReceiver
-    {
-
-        private float minValue = float.MaxValue;
-        private float minTime = float.MaxValue;
-        private float maxValue = float.MinValue;
-        private float maxTime = float.MinValue;
-
-        public float MaxValue => maxValue;
-        public float MaxTime => maxTime;
-        public float MinValue => minValue;
-        public float MinTime => minTime;
-
-        private void RefreshMinMax()
-        {
-            if((Variable != null && Variable.Value != null) || (UseConstant && ConstantValue != null))
-            {
-                var curve = UseConstant ? ConstantValue : Variable.Value;
-                foreach(var key in curve.keys)
-                {
-                    if(key.value < minValue)
-                    {
-                        minValue = key.value;
-                        minTime = key.time;
-                    }
-                    if(key.value > maxValue)
-                    {
-                        maxValue = key.value;
-                        maxTime = key.time;
-                    }
-                }
-            }
-        }
-
-        public float EvaluateFactor(float time, bool zeroBaseline = false)
-        {
-            var value = Value.Evaluate(time);
-            var min = zeroBaseline ? 0 : minValue;
-            var factor = (value - min) / (maxValue - min);
-            return factor;
-        }
-
-        public void OnBeforeSerialize() { }
-        public void OnAfterDeserialize()
-        {
-            RefreshMinMax();
-        }
-    }
 }

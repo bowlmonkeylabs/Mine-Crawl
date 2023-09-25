@@ -2,44 +2,91 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 32
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f9adc35e93a4bbaab7a6180fe9b8b9f, type: 3}
+  m_Script: {fileID: 11500000, guid: b7c6501a4de1454f850bd717d18c749f, type: 3}
   m_Name: Ore_Common_LootTable
   m_EditorClassIdentifier: 
-  _entries:
-  - DropChance: 0.7
-    OnDrop:
-      m_PersistentCalls:
-        m_Calls: []
-    DropPrefabs: []
-  - DropChance: 0.15
-    OnDrop:
-      m_PersistentCalls:
-        m_Calls: []
-    DropPrefabs:
-    - {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
-  - DropChance: 0.09
-    OnDrop:
-      m_PersistentCalls:
-        m_Calls: []
-    DropPrefabs:
-    - {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
-    - {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
-  - DropChance: 0.05
-    OnDrop:
-      m_PersistentCalls:
-        m_Calls: []
-    DropPrefabs:
-    - {fileID: 541999808759209597, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
-  - DropChance: 0.01
-    OnDrop:
-      m_PersistentCalls:
-        m_Calls: []
-    DropPrefabs:
-    - {fileID: 2593184574423224280, guid: 834d003724cbd8248b8fef636f55d55f, type: 3}
+  Description: 
+  includeInContainers: 1
+  enableLogs: 0
+  defaultValue:
+    Entries:
+      Options:
+      - Value:
+          Key: 0
+          DropPrefabs: []
+        Weight: 0.7
+        Lock: 0
+      - Value:
+          Key: 1
+          DropPrefabs:
+          - {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+        Weight: 0.15
+        Lock: 1
+      - Value:
+          Key: 4
+          DropPrefabs:
+          - {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+          - {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+        Weight: 0.09
+        Lock: 1
+      - Value:
+          Key: 8
+          DropPrefabs:
+          - {fileID: 541999808759209597, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+        Weight: 0.05
+        Lock: 0
+      - Value:
+          Key: 16
+          DropPrefabs:
+          - {fileID: 2593184574423224280, guid: 834d003724cbd8248b8fef636f55d55f, type: 3}
+        Weight: 0.01
+        Lock: 1
+  runtimeValue:
+    Entries:
+      Options:
+      - Value:
+          Key: 0
+          DropPrefabs: []
+        Weight: 0.7
+        Lock: 0
+      - Value:
+          Key: 1
+          DropPrefabs:
+          - {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+        Weight: 0.15
+        Lock: 1
+      - Value:
+          Key: 4
+          DropPrefabs:
+          - {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+          - {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+        Weight: 0.09
+        Lock: 1
+      - Value:
+          Key: 8
+          DropPrefabs:
+          - {fileID: 541999808759209597, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+        Weight: 0.05
+        Lock: 0
+      - Value:
+          Key: 16
+          DropPrefabs:
+          - {fileID: 2593184574423224280, guid: 834d003724cbd8248b8fef636f55d55f, type: 3}
+        Weight: 0.01
+        Lock: 1
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []

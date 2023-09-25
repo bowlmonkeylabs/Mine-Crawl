@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.Utils;
+using BML.Utils;
+using BML.Utils.Random;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -29,16 +31,22 @@ namespace BML.Scripts.CaveV2.MudBun
         [SerializeField] public GameObject MerchantRoomPrefab;
         [SerializeField] public GameObject TunnelPrefab;
         [SerializeField] public GameObject TunnelWithBarrierPrefab;
-
+        
         [Serializable]
+        [HideReferenceObjectPicker]
         private class RoomOptions
         {
             // [PreviewField]
-            public RandomUtils.WeightedOptions<GameObject> defaultPrefabs;
-            public RandomUtils.WeightedOptions<GameObject> roomPrefabs;
+            // [AssetsOnly]
+            [HideReferenceObjectPicker]
+            public WeightedValueOptions<GameObject> defaultPrefabs = new WeightedValueOptions<GameObject>();
+            // [AssetsOnly]
+            [HideReferenceObjectPicker]
+            public WeightedValueOptions<GameObject> roomPrefabs = new WeightedValueOptions<GameObject>();
             // [Tooltip("Set to -1 to disable limit.")]
             // public int countLimit = -1;
         }
+        
         [DictionaryDrawerSettings(KeyLabel = "Room Type", ValueLabel = "Rooms",
             DisplayMode = DictionaryDisplayOptions.ExpandedFoldout)]
         [SerializeField]
@@ -71,13 +79,13 @@ namespace BML.Scripts.CaveV2.MudBun
         {
             if (!_roomTypes.ContainsKey(nodeType))
             {
-                return null;
+                return default;
             }
 
             return _roomTypes[nodeType].defaultPrefabs.RandomWithWeights();
         }
 
-        public RandomUtils.WeightedOptions<GameObject> GetWeightedRoomOptionsForType(CaveNodeType nodeType)
+        public WeightedValueOptions<GameObject> GetWeightedRoomOptionsForType(CaveNodeType nodeType)
         {
             if (!_roomTypes.ContainsKey(nodeType))
             {

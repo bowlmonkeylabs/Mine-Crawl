@@ -8,6 +8,8 @@ using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.CaveV2.SpawnObjects;
 using BML.Scripts.Enemy;
 using BML.Scripts.Utils;
+using BML.Utils;
+using BML.Utils.Random;
 using Shapes;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -355,7 +357,7 @@ namespace BML.Scripts
             //TODO: Here use the right spawn params based on difficulty of room enemy is being spawned in
             
             var weightPairs =  _enemySpawnerParams.SpawnAtTags.Select(e => 
-                new RandomUtils.WeightPair<EnemySpawnParams>(e, e.NormalizedSpawnWeight)).ToList();
+                new WeightedValueEntry<EnemySpawnParams>(e, e.NormalizedSpawnWeight)).ToList();
 
             var currentUniqueSeedForContext = SeedManager.Instance.GetSteppedSeed("EnemySpawnerCount") + SeedManager.Instance.GetSteppedSeed("EnemySpawnerRetry");
             Random.InitState(currentUniqueSeedForContext);
@@ -378,13 +380,13 @@ namespace BML.Scripts
             
             // Normalize spawn point weights
             var sumSpawnPointWeights = potentialSpawnPointsForTag.Sum(spawnPoint => spawnPoint.EnemySpawnWeight);
-            List<RandomUtils.WeightPair<SpawnPoint>> spawnPointWeights = 
+            List<WeightedValueEntry<SpawnPoint>> spawnPointWeights = 
                 potentialSpawnPointsForTag
                     .Select(spawnPoint =>
                     {
                         float spawnWeightNormalized = spawnPoint.EnemySpawnWeight / sumSpawnPointWeights;
                         spawnPoint.SpawnChance = spawnWeightNormalized;
-                        return new RandomUtils.WeightPair<SpawnPoint>(spawnPoint, spawnWeightNormalized);
+                        return new WeightedValueEntry<SpawnPoint>(spawnPoint, spawnWeightNormalized);
                     })
                     .ToList();
             
