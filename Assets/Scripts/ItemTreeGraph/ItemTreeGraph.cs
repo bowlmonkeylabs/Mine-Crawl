@@ -35,7 +35,7 @@ namespace BML.Scripts.Player.Items
 
                 itemNodes.ForEach(node => nodeAction.Invoke(node as ItemTreeGraphNode));
                 
-                itemNodes = itemNodes.SelectMany(node => node.GetOutputPort("From").GetConnections().Select(nodePort => nodePort.node));
+                itemNodes = itemNodes.SelectMany(node => node.GetOutputPort("To").GetConnections().Select(nodePort => nodePort.node));
             }
 
             if (depthCount >= MAX_ITEM_TREE_RECURSION_DEPTH)
