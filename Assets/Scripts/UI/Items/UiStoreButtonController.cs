@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using BML.Scripts.Player.Items;
 using Sirenix.Utilities;
 
-namespace BML.Scripts.UI
+namespace BML.Scripts.UI.Items
 {
     public delegate void OnInteractibilityChanged();
 

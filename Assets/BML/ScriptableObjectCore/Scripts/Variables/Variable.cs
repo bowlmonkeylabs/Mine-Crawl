@@ -251,6 +251,22 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         #endregion
 
+        #region Public interface
+
+        public void SetVariable(VT value)
+        {
+            UseConstant = false;
+            Variable = value;
+        }
+
+        public void SetConstant(T value)
+        {
+            UseConstant = true;
+            ConstantValue = value;
+        }
+
+        #endregion
+
         //WARNING: will update subscribers synchronously within whatever time cycle the var is updated (Awake, LateUpdate, etc.)
         public void Subscribe(OnUpdate callback)
         {

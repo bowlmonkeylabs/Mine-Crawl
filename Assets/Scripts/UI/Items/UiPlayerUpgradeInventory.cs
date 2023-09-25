@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 using BML.Scripts.Player;
 using BML.Scripts.Player.Items;
 
-namespace BML.Scripts.UI
+namespace BML.Scripts.UI.Items
 {
     public class UiPlayerUpgradeInventory : MonoBehaviour
     {

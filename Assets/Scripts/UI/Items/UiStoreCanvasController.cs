@@ -16,7 +16,7 @@ using BML.Scripts.Player;
 using BML.Scripts.Player.Items;
 using Object = System.Object;
 
-namespace BML.Scripts.UI
+namespace BML.Scripts.UI.Items
 {
     public enum StoreItemPoolType
     {
