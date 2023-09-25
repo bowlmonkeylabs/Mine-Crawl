@@ -19,13 +19,45 @@ namespace BML.Scripts.Player.Items
     }
 
     [CreateAssetMenu(fileName = "ItemTreeGraph", menuName = "BML/Graphs/ItemTreeGraph", order = 0)]
+    [ExecuteAlways]
     public class ItemTreeGraph : NodeGraph, IResettableScriptableObject
     {
+        #region Inspector
+        
         [SerializeField] private PlayerInventory _playerInventory;
         [SerializeField] private IntVariable _maxSlottedTrees;
 
+        #endregion
+        
+        #region Unity lifecycle
+
+        private void OnEnable()
+        {
+            UpdateTreeFromInventory();
+            
+            Debug.Log($"OnEnable ItemTreeGraph {this.name}");
+            
+            _playerInventory.OnPassiveStackableItemAdded += UpdateTreeFromInventory;
+            _playerInventory.OnPassiveStackableItemRemoved += UpdateTreeFromInventory;
+            _playerInventory.OnPassiveStackableItemChanged += UpdateTreeFromInventory;
+            _playerInventory.OnPassiveStackableItemTreeAdded += UpdateTreeFromInventory;
+            _playerInventory.OnPassiveStackableItemTreeRemoved += UpdateTreeFromInventory;
+            _playerInventory.OnPassiveStackableItemTreeChanged += UpdateTreeFromInventory;
+        }
+
+        private void OnDisable()
+        {
+            _playerInventory.OnPassiveStackableItemAdded -= UpdateTreeFromInventory;
+            _playerInventory.OnPassiveStackableItemRemoved -= UpdateTreeFromInventory;
+            _playerInventory.OnPassiveStackableItemChanged -= UpdateTreeFromInventory;
+            _playerInventory.OnPassiveStackableItemTreeAdded -= UpdateTreeFromInventory;
+            _playerInventory.OnPassiveStackableItemTreeRemoved -= UpdateTreeFromInventory;
+            _playerInventory.OnPassiveStackableItemTreeChanged -= UpdateTreeFromInventory;
+        }
+
+        #endregion
+        
         private static int MAX_ITEM_TREE_RECURSION_DEPTH = 99;
-        private Dictionary<ItemTreeGraphStartNode, int> _itemObtainedCountCache = new Dictionary<ItemTreeGraphStartNode, int>();
 
         public void TraverseItemTree(ItemTreeGraphStartNode startNode, Action<ItemTreeGraphNode> nodeAction) {
             var itemNodes = startNode.GetOutputPort("Start").GetConnections().Select(nodePort => nodePort.node);
@@ -45,14 +77,15 @@ namespace BML.Scripts.Player.Items
             }
         }
 
-        public List<PlayerItem> GetUnobtainedItemPool() 
+        public List<PlayerItem> GetUnobtainedItemPool(bool updateStatusInGraphWhileTraversing = true) 
         {
             var unobtainedItemPool = new List<PlayerItem>();
 
-            var startNodes = this.nodes.Where(node => node is ItemTreeGraphStartNode);
-            var slottedStartNodes = startNodes.Where(node => (node as ItemTreeGraphStartNode).Slotted);
+            var startNodes = this.nodes.OfType<ItemTreeGraphStartNode>();
+            // var slottedStartNodes = startNodes.Where(node => (node as ItemTreeGraphStartNode).Slotted);
+            var slottedStartNodes = _playerInventory.PassiveStackableItemTrees;
             
-            if(slottedStartNodes.Count() >= _maxSlottedTrees.Value) {
+            if(slottedStartNodes.Count >= _maxSlottedTrees.Value) {
                 startNodes = slottedStartNodes;
             }
 
@@ -62,8 +95,7 @@ namespace BML.Scripts.Player.Items
                     startNode.Outputs
                         .First()
                         .GetConnections().Where(nodePort => nodePort.IsInput).Select(nodePort => nodePort.node)
-                        .Select(node => node as ItemTreeGraphNode)
-                        .Where(node => node != null)
+                        .OfType<ItemTreeGraphNode>()
                 );
 
                 int depthCount = 0;
@@ -103,22 +135,66 @@ namespace BML.Scripts.Player.Items
             return unobtainedItemPool;
         }
 
-        public void MarkItemAsObtained(PlayerItem item) {
-            var nodeWithItem = nodes.FirstOrDefault(node => {
-                if(node is ItemTreeGraphNode) {
-                    return (node as ItemTreeGraphNode).Item == item;
-                }
+        public void MarkItemAsObtained(PlayerItem item) 
+        {
+            var nodeWithItem = nodes.OfType<ItemTreeGraphNode>().FirstOrDefault(node => node.Item == item);
+            UpdateTreeFromInventory(nodeWithItem);
+            
+            // nodeWithItem.Obtained = true;
+            //
+            // var treeStartNode = nodeWithItem.TreeStartNode ?? GetTreeStartNodeForItem(item);
+            // treeStartNode.Slotted = true;
+            // if(!_itemObtainedCountCache.ContainsKey(treeStartNode)) {
+            //     _itemObtainedCountCache[treeStartNode] = 0;
+            // }
+            // _itemObtainedCountCache[treeStartNode] += 1;
+        }
 
-                return false;
-            });
-            (nodeWithItem as ItemTreeGraphNode).Obtained = true;
+        public void UpdateTreeFromInventory()
+        {
+            Debug.Log($"UpdateTreeFromInventory ALL");
+            
+            var startNodes = nodes.OfType<ItemTreeGraphStartNode>();
+            foreach (var itemTreeGraphStartNode in startNodes)
+            {
+                bool isSlotted = _playerInventory.PassiveStackableItemTrees.Contains(itemTreeGraphStartNode);
+                itemTreeGraphStartNode.Slotted = isSlotted;
 
-            var treeStartNode = GetTreeStartNodeForItem(item);
-            treeStartNode.Slotted = true;
-            if(!_itemObtainedCountCache.ContainsKey(treeStartNode)) {
-                _itemObtainedCountCache[treeStartNode] = 0;
+                itemTreeGraphStartNode.NumberOfObtainedItemsInTree = 0;
             }
-            _itemObtainedCountCache[treeStartNode] += 1;
+            
+            var itemNodes = nodes.OfType<ItemTreeGraphNode>();
+            foreach (var itemTreeGraphNode in itemNodes)
+            {
+                bool isObtained = _playerInventory.PassiveStackableItems.Contains(itemTreeGraphNode.Item);
+                itemTreeGraphNode.Obtained = isObtained;
+
+                itemTreeGraphNode.TreeStartNode.NumberOfObtainedItemsInTree += isObtained ? 1 : 0;
+            }
+        }
+        public void UpdateTreeFromInventory(ItemTreeGraphNode itemNode)
+        {
+            Debug.Log($"UpdateTreeFromInventory {itemNode.name}");
+
+            bool isObtained = _playerInventory.PassiveStackableItems.Contains(itemNode.Item);
+            itemNode.Obtained = isObtained;
+            
+            var treeStartNode = itemNode.TreeStartNode ?? GetTreeStartNodeForItem(itemNode.Item);
+            UpdateTreeFromInventory(treeStartNode);
+        }
+        public void UpdateTreeFromInventory(PlayerItem item)
+        {
+            Debug.Log($"UpdateTreeFromInventory {item.name}");
+            
+            var itemNode = nodes.OfType<ItemTreeGraphNode>().FirstOrDefault(node => node.Item == item);
+            UpdateTreeFromInventory(itemNode);
+        }
+        public void UpdateTreeFromInventory(ItemTreeGraphStartNode treeStartNode)
+        {
+            Debug.Log($"UpdateTreeFromInventory {treeStartNode.name}");
+            
+            treeStartNode.Slotted = _playerInventory.PassiveStackableItemTrees.Contains(treeStartNode);
+            treeStartNode.NumberOfObtainedItemsInTree = _playerInventory.PassiveStackableItems.Count(item => item.PassiveStackableTreeStartNode == treeStartNode);
         }
 
         public ItemTreeGraphStartNode GetTreeStartNodeForItem(PlayerItem item) {
@@ -146,13 +222,6 @@ namespace BML.Scripts.Player.Items
                 .ToList();
         }
 
-        public int GetObtainedCount(ItemTreeGraphStartNode startNode) {
-            // int obtainedCount = 0;
-            // TraverseItemTree(startNode, node => obtainedCount += node.Obtained ? 1 : 0);
-            // return obtainedCount;
-            return _itemObtainedCountCache.ContainsKey(startNode) ? _itemObtainedCountCache[startNode] : 0;
-        }
-
         public void ResetScriptableObject() {
             nodes.ForEach(node => {
                 if(node is ItemTreeGraphNode) {
@@ -162,8 +231,6 @@ namespace BML.Scripts.Player.Items
                     (node as ItemTreeGraphStartNode).Slotted = false;
                 }
             });
-
-            _itemObtainedCountCache.Clear();
         }
     }
 }
