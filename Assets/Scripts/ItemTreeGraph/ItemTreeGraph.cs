@@ -123,10 +123,10 @@ namespace BML.Scripts.Player.Items
                 return false;
             });
 
-            var startNode = nodeWithItem.Inputs.FirstOrDefault()?.GetConnections().Where(port => port.IsOutput).FirstOrDefault()?.node;
+            var startNode = nodeWithItem.GetInputPort("From").GetConnections().FirstOrDefault().node;
             int depthCount = 0;
             while(!(startNode is ItemTreeGraphStartNode) && depthCount <= MAX_ITEM_TREE_RECURSION_DEPTH) {
-                startNode = nodeWithItem.Inputs.FirstOrDefault()?.GetConnections().Where(port => port.IsOutput).FirstOrDefault()?.node;
+                startNode = startNode.GetInputPort("From").GetConnections().FirstOrDefault().node;
                 depthCount++;
             }
 
