@@ -16,6 +16,8 @@ namespace BML.Scripts
 {
     public class CaveWormSpawner : MonoBehaviour
     {
+        #region Inspector
+        
         [SerializeField, TitleGroup("Spawning")] private TimerVariable _wormSpawnTimer;
         [SerializeField, TitleGroup("Spawning")] private BoolVariable _playerHasExitedStartRoom;
         [SerializeField, TitleGroup("Spawning")] private TimerVariable _wormMaxStrengthTimer;
@@ -37,6 +39,9 @@ namespace BML.Scripts
         private float currentSpeed;
         private GameObject spawnedWorm;
 
+        // Debug
+        private bool killHimAndDontComeBack;
+
         [System.Serializable]
         public class WormWarningData
         {
@@ -44,6 +49,10 @@ namespace BML.Scripts
             public float TimeOffsetFromSpawn;
             public MMF_Player Feedback;
         }
+        
+        #endregion
+
+        #region Unity lifecycle
 
         private void OnEnable()
         {
@@ -65,6 +74,10 @@ namespace BML.Scripts
             HandleWarnings();
             HandleSpawning();
         }
+
+        #endregion
+
+        #region Inner wormkings
 
         private void UpdateParameters()
         {
@@ -94,7 +107,7 @@ namespace BML.Scripts
 
         private void HandleSpawning()
         {
-            if (!_wormSpawnTimer.IsFinished)
+            if (killHimAndDontComeBack || !_wormSpawnTimer.IsFinished)
                 return;
 
             if (lastWormSpawnTime + currentSpawnDelay > Time.time)
@@ -117,7 +130,7 @@ namespace BML.Scripts
 
         private void ActivateWorm()
         {
-            _wormMaxStrengthTimer.StartTimer();
+            _wormMaxStrengthTimer.RestartTimer();
             _wormActivatedFeedback.PlayFeedbacks();
             if (_enableDebug) Debug.Log("Worm Activated");
         }
@@ -126,10 +139,45 @@ namespace BML.Scripts
         {
             if (hasExitedStartRoom)
             {
-                _wormSpawnTimer.StartTimer();
+                _wormSpawnTimer.RestartTimer();
                 if (_enableDebug) Debug.Log("Starting Worm Spawn Timer");
             }
         }
+
+        #endregion
+
+        #region Public interface
+
+        public void PauseSpawnTimer(bool pause = true)
+        {
+            if (pause)
+            {
+                _wormSpawnTimer.StopTimer();
+            }
+            else
+            {
+                _wormSpawnTimer.StartTimer();
+            }
+        }
+
+        public void DelaySpawnTimer(float addSeconds)
+        {
+            _wormSpawnTimer.AddTime(addSeconds);
+        }
+
+        public void DeleteWorm(bool killHimExtraHard = false)
+        {
+            if (killHimExtraHard)
+            {
+                killHimAndDontComeBack = true;
+            }
+            if (spawnedWorm != null)
+            {
+                Destroy(spawnedWorm);
+            }
+        }
+
+        #endregion
         
     }
 }
