@@ -52,6 +52,7 @@ namespace BML.Scripts
         {
             switch(playerItem.Type) {
                 case ItemType.PassiveStackable:
+                    _playerInventory.AddPassiveStackableItemTree(playerItem.PassiveStackableTreeStartNode);
                     _playerInventory.AddPassiveStackableItem(playerItem);
                     break;
 

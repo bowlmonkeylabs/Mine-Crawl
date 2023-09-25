@@ -10,6 +10,7 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.Utilities;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.Scripts.ItemTreeGraph;
 using UnityEngine.Serialization;
 
 namespace BML.Scripts.Player.Items
@@ -104,6 +105,8 @@ namespace BML.Scripts.Player.Items
         [SerializeField, FoldoutGroup("Descriptors")] private bool _useIconColor;
         [SerializeField, FoldoutGroup("Descriptors"), ShowIf("_useIconColor")] private Color _iconColor;
         [SerializeField, FoldoutGroup("Descriptors"), PreviewField(100, ObjectFieldAlignment.Left)] private Sprite _icon;
+        
+        [SerializeField, FoldoutGroup("Descriptors"), ReadOnly, ShowIf("@_itemType == ItemType.PassiveStackable")] public ItemTreeGraphStartNode PassiveStackableTreeStartNode;
 
         [
             DictionaryDrawerSettings(KeyLabel = "Resource", ValueLabel = "Amount",

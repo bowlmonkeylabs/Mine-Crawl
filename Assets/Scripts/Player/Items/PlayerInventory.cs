@@ -3,26 +3,50 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using BML.ScriptableObjectCore.Scripts.Managers;
+using BML.Scripts.ItemTreeGraph;
 
 namespace BML.Scripts.Player.Items
 {
     public delegate void OnPlayerItemChanged<PlayerItem>(PlayerItem item);
+    public delegate void OnInventoryChanged();
 
     [InlineEditor()]
     [CreateAssetMenu(fileName = "PlayerInventory", menuName = "BML/Player/PlayerInventory", order = 0)]
+    [ExecuteAlways]
     public class PlayerInventory : ScriptableObject, IResettableScriptableObject
     {
         #region Inspector
 
-        [SerializeField, OnValueChanged("OnActiveItemChanged"), InfoBox("Item is not of type 'Active'", InfoMessageType.Error, "@_activeItem != null && _activeItem.Type != ItemType.Active")] private PlayerItem _activeItem;
+        [OnValueChanged("OnActiveItemChanged")]
+        [SerializeField, InfoBox("Item is not of type 'Active'", InfoMessageType.Error, "@_activeItem != null && _activeItem.Type != ItemType.Active")] private PlayerItem _activeItem;
         private void OnActiveItemChanged()
         {
             OnActiveItemAdded?.Invoke(_activeItem);
         }
         
-        [SerializeField, InfoBox("Item is not of type 'Passive'", InfoMessageType.Error, "@_passiveItem != null && _passiveItem.Type != ItemType.Passive")] private PlayerItem _passiveItem;
+        [OnValueChanged("OnPassiveItemChanged")]
+        [SerializeField, InfoBox("Item is not of type 'Passive'", InfoMessageType.Error, "@_passiveItem != null && _passiveItem.Type != ItemType.Passive")]
+        private PlayerItem _passiveItem;
+        private void OnPassiveItemChanged()
+        {
+            OnPassiveItemAdded?.Invoke(_passiveItem);
+        }
         
+        [OnValueChanged("OnPassiveStackableItemsChanged")]
         [SerializeField] private List<PlayerItem> _passiveStackableItems;
+        private void OnPassiveStackableItemsChanged()
+        {
+            Debug.Log("OnPassiveStackableItemsChanged");
+            OnPassiveStackableItemChanged?.Invoke();
+        }
+
+        [OnValueChanged("OnPassiveStackableItemTreesChanged")]
+        [SerializeField] private List<ItemTreeGraphStartNode> _passiveStackableItemTrees;
+        private void OnPassiveStackableItemTreesChanged()
+        {
+            Debug.Log("OnPassiveStackableItemTreesChanged");
+            OnPassiveStackableItemTreeChanged?.Invoke();
+        }
 
         #endregion
 
@@ -78,6 +102,7 @@ namespace BML.Scripts.Player.Items
             {
                 _passiveStackableItems.Add(playerItem);
                 OnAnyItemAdded?.Invoke(playerItem);
+                OnPassiveStackableItemChanged?.Invoke();
                 OnPassiveStackableItemAdded?.Invoke(playerItem);
             }
         }
@@ -90,8 +115,31 @@ namespace BML.Scripts.Player.Items
                 if (didRemove)
                 {
                     OnAnyItemRemoved?.Invoke(playerItem);
+                    OnPassiveStackableItemChanged?.Invoke();
                     OnPassiveStackableItemRemoved?.Invoke(playerItem);
                 }
+            }
+        }
+
+        public List<ItemTreeGraphStartNode> PassiveStackableItemTrees => _passiveStackableItemTrees;
+
+        public void AddPassiveStackableItemTree(ItemTreeGraphStartNode itemTreeStartNode) 
+        {
+            if (!_passiveStackableItemTrees.Contains(itemTreeStartNode))
+            {
+                _passiveStackableItemTrees.Add(itemTreeStartNode);
+                OnPassiveStackableItemTreeChanged?.Invoke();
+                OnPassiveStackableItemTreeAdded?.Invoke(itemTreeStartNode);
+            }
+        }
+
+        public void RemovePassiveStackableItemTree(ItemTreeGraphStartNode itemTreeStartNode) 
+        {
+            bool didRemove = _passiveStackableItemTrees.Remove(itemTreeStartNode);
+            if (didRemove)
+            {
+                OnPassiveStackableItemTreeChanged?.Invoke();
+                OnPassiveStackableItemTreeRemoved?.Invoke(itemTreeStartNode);
             }
         }
 
@@ -113,8 +161,12 @@ namespace BML.Scripts.Player.Items
         //the parameter passed into the remove events is the item that was removed, and the param passed into the added events is the item that was added
         public event OnPlayerItemChanged<PlayerItem> OnAnyItemAdded;
         public event OnPlayerItemChanged<PlayerItem> OnAnyItemRemoved;
+        public event OnPlayerItemChanged<ItemTreeGraphStartNode> OnPassiveStackableItemTreeAdded;
+        public event OnPlayerItemChanged<ItemTreeGraphStartNode> OnPassiveStackableItemTreeRemoved;
+        public event OnInventoryChanged OnPassiveStackableItemTreeChanged;
         public event OnPlayerItemChanged<PlayerItem> OnPassiveStackableItemAdded;
         public event OnPlayerItemChanged<PlayerItem> OnPassiveStackableItemRemoved;
+        public event OnInventoryChanged OnPassiveStackableItemChanged;
         public event OnPlayerItemChanged<PlayerItem> OnPassiveItemAdded;
         public event OnPlayerItemChanged<PlayerItem> OnPassiveItemRemoved;
         public event OnPlayerItemChanged<PlayerItem> OnActiveItemAdded;
