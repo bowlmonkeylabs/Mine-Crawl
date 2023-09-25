@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using BML.ScriptableObjectCore.Scripts.Variables.ValueReferences;
+using BML.ScriptableObjectCore.Scripts.Variables.ValueTypeVariables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 {
     [Required]
     [CreateAssetMenu(fileName = "Vector3Variable", menuName = "BML/Variables/Vector3Variable", order = 0)]
-    public class Vector3Variable : Variable<Vector3>, IFloatValue, IVector3Value
+    public class Vector3Variable : ValueTypeVariable<Vector3>, IFloatValue, IVector3Value
     {
 #region Inspector
 
@@ -35,4 +36,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         Vector3 IValue<Vector3>.GetValue(Type type) => GetVector3();
     }
+
+    [Serializable]
+    [InlineProperty]
+    public class Vector3Reference : Reference<Vector3, Vector3Variable> { }
 }

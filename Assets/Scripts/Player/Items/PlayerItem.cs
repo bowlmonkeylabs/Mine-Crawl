@@ -10,6 +10,7 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.Utilities;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.Player.Items
 {
@@ -38,7 +39,7 @@ namespace BML.Scripts.Player.Items
         InstantiatePrefab
     }
 
-    [Serializable, InlineEditor()]
+    [Serializable, InlineEditor]
     public class ItemEffect {
         public ItemEffectTrigger Trigger = ItemEffectTrigger.WhenAcquiredOrActivated;
 
@@ -65,9 +66,15 @@ namespace BML.Scripts.Player.Items
         [ShowIfGroup("FireProjectile", Condition = "Type", Value = ItemEffectType.FireProjectile)]
         [ShowIfGroup("FireProjectile")] public GameObject ProjectilePrefab;
 
+        [FormerlySerializedAs("LootTableToOverride")]
         [ShowIfGroup("ChangeLootTable", Condition = "Type", Value = ItemEffectType.ChangeLootTable)]
-        [ShowIfGroup("ChangeLootTable")] public LootTable LootTableToOverride;
-        [ShowIfGroup("ChangeLootTable")] public LootTable OveridingLootTable;
+        
+        [ShowIfGroup("ChangeLootTable")] public LootTableVariable LootTableVariable;
+        private bool _lootTableKeyDoesNotExist => LootTableVariable != null && LootTableVariable.Value != null && !LootTableVariable.Value.HasKey(LootTableKey);
+        [ShowIfGroup("ChangeLootTable")]
+        [InfoBox("Key does not exist in selected loot table.", InfoMessageType.Error, visibleIfMemberName:"_lootTableKeyDoesNotExist")]
+        public LootTableKey LootTableKey;
+        [ShowIfGroup("ChangeLootTable")] public float LootTableAddAmount;
 
         [ShowIfGroup("ToggleBoolVariable", Condition = "Type", Value = ItemEffectType.ToggleBoolVariable)]
         [ShowIfGroup("ToggleBoolVariable")] public BoolVariable BoolVariableToToggle;

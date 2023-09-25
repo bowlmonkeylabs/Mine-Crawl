@@ -11,14 +11,14 @@ using UnityEngine;
 
 namespace BML.ScriptableObjectCore.Scripts.Variables
 {
-    // [Serializable]
+    [Serializable]
     internal class ValueOperatorPair
     {
         [HideLabel]
         public FunctionVariableOperators op;
-        
-        [HideLabel]
-        public SafeFloatValueReference value;
+
+        [HideLabel, HideReferenceObjectPicker]
+        public SafeFloatValueReference value = new SafeFloatValueReference();
     }
 
     internal enum FunctionVariableOperators {
@@ -66,13 +66,17 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [TextArea (7, 10)]
         [HideInInlineEditors]
         public string Description;
-        
+
         [Title("$Equation")]
-        [LabelText("Operations")]
-        [LabelWidth(60f)]
-        [HideReferenceObjectPicker]
+        [LabelText("Operations"), LabelWidth(60f)]
+        [HideReferenceObjectPicker, ListDrawerSettings(CustomAddFunction = "CustomAddOperation")]
         [SerializeField]
-        private List<ValueOperatorPair> Operations;
+        private List<ValueOperatorPair> Operations = new List<ValueOperatorPair>();
+
+        private void CustomAddOperation()
+        {
+            Operations.Add(new ValueOperatorPair());
+        }
         
         [ShowInInspector]
         [LabelWidth(60f)]

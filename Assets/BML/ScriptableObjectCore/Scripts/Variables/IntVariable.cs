@@ -1,5 +1,6 @@
 ﻿using System;
 using BML.ScriptableObjectCore.Scripts.Variables.ValueReferences;
+using BML.ScriptableObjectCore.Scripts.Variables.ValueTypeVariables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 {
     [Required]
     [CreateAssetMenu(fileName = "IntVariable", menuName = "BML/Variables/IntVariable", order = 0)]
-    public class IntVariable : Variable<int>, IFloatValue
+    public class IntVariable : ValueTypeVariable<int>, IFloatValue
     {
         public string GetName() => name;
         public string GetDescription() => Description;
@@ -18,6 +19,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         {
             Value += increment;
         }
-
     }
+    
+    [Serializable]
+    [InlineProperty]
+    public class IntReference : Reference<int, IntVariable> { }
 }
