@@ -9,6 +9,8 @@ namespace BML.Scripts.ItemTreeGraph {
 
         [Output(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection Start;
 
+        public bool Slotted = false;
+
         // Use this for initialization
         protected override void Init() {
             base.Init();
