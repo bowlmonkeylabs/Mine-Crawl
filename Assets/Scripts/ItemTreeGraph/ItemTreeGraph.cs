@@ -35,8 +35,6 @@ namespace BML.Scripts.Player.Items
         {
             UpdateTreeFromInventory();
             
-            Debug.Log($"OnEnable ItemTreeGraph {this.name}");
-            
             _playerInventory.OnPassiveStackableItemAdded += UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemRemoved += UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemChanged += UpdateTreeFromInventory;
@@ -139,21 +137,10 @@ namespace BML.Scripts.Player.Items
         {
             var nodeWithItem = nodes.OfType<ItemTreeGraphNode>().FirstOrDefault(node => node.Item == item);
             UpdateTreeFromInventory(nodeWithItem);
-            
-            // nodeWithItem.Obtained = true;
-            //
-            // var treeStartNode = nodeWithItem.TreeStartNode ?? GetTreeStartNodeForItem(item);
-            // treeStartNode.Slotted = true;
-            // if(!_itemObtainedCountCache.ContainsKey(treeStartNode)) {
-            //     _itemObtainedCountCache[treeStartNode] = 0;
-            // }
-            // _itemObtainedCountCache[treeStartNode] += 1;
         }
 
         public void UpdateTreeFromInventory()
         {
-            Debug.Log($"UpdateTreeFromInventory ALL");
-            
             var startNodes = nodes.OfType<ItemTreeGraphStartNode>();
             foreach (var itemTreeGraphStartNode in startNodes)
             {
@@ -174,8 +161,6 @@ namespace BML.Scripts.Player.Items
         }
         public void UpdateTreeFromInventory(ItemTreeGraphNode itemNode)
         {
-            Debug.Log($"UpdateTreeFromInventory {itemNode.name}");
-
             bool isObtained = _playerInventory.PassiveStackableItems.Contains(itemNode.Item);
             itemNode.Obtained = isObtained;
             
@@ -184,15 +169,11 @@ namespace BML.Scripts.Player.Items
         }
         public void UpdateTreeFromInventory(PlayerItem item)
         {
-            Debug.Log($"UpdateTreeFromInventory {item.name}");
-            
             var itemNode = nodes.OfType<ItemTreeGraphNode>().FirstOrDefault(node => node.Item == item);
             UpdateTreeFromInventory(itemNode);
         }
         public void UpdateTreeFromInventory(ItemTreeGraphStartNode treeStartNode)
         {
-            Debug.Log($"UpdateTreeFromInventory {treeStartNode.name}");
-            
             treeStartNode.Slotted = _playerInventory.PassiveStackableItemTrees.Contains(treeStartNode);
             treeStartNode.NumberOfObtainedItemsInTree = _playerInventory.PassiveStackableItems.Count(item => item.PassiveStackableTreeStartNode == treeStartNode);
         }

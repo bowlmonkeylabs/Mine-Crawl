@@ -1,5 +1,6 @@
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.UI;
+using BML.Scripts.UI.Items;
 using UnityEngine;
 
 namespace BML.Scripts

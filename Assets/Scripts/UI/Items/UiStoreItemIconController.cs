@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using BML.Scripts.Player;
 using BML.Scripts.Player.Items;
 
-namespace BML.Scripts.UI
+namespace BML.Scripts.UI.Items
 {
     public class UiStoreItemIconController : MonoBehaviour
     {
