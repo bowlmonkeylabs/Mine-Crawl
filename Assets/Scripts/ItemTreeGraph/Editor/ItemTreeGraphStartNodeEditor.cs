@@ -21,16 +21,16 @@ namespace BML.Scripts.ItemTreeGraph.Editor
             
             ItemTreeGraphStartNode nodeAsItemStartGraphNode = target as ItemTreeGraphStartNode;
             
-            //Show Label Above node
-            // Vector2 nodeLabelPos = NodeEditorWindow.current.GridToWindowPositionNoClipped(target.position + 
-            //     new Vector2(0f, -60f));
-            //
-            // NodeEditorPreferences.Settings prefs = NodeEditorPreferences.GetSettings();
-            // GUIStyle labelStyle = XNodeUtils.ZoomBasedStyle(35f, 85f, NodeEditorWindow.current.zoom,
-            //     prefs.minZoom, prefs.maxZoom,   new Color(.85f, .85f, 1f), FontStyle.Bold, TextAnchor.LowerCenter, false);
-            //
-            // GUI.Label(new Rect(nodeLabelPos, new Vector2(GetWidth(), 50f)), nodeAsItemStartGraphNode.name,
-            //     labelStyle);
+            // Show Label Above node
+             Vector2 nodeLabelPos = NodeEditorWindow.current.GridToWindowPositionNoClipped(target.position + 
+                 new Vector2(0f, -60f));
+            
+             NodeEditorPreferences.Settings prefs = NodeEditorPreferences.GetSettings();
+             GUIStyle labelStyle = XNodeUtils.ZoomBasedStyle(35f, 85f, NodeEditorWindow.current.zoom,
+                 prefs.minZoom, prefs.maxZoom,   new Color(.75f, 1f, .75f), FontStyle.Bold, TextAnchor.LowerCenter, false);
+            
+             GUI.Label(new Rect(nodeLabelPos, new Vector2(GetWidth(), 50f)), nodeAsItemStartGraphNode.name,
+                 labelStyle);
 
             //Put back the GUI area that is restricted to node's dimensions
             Vector2 nodePos = NodeEditorWindow.current.GridToWindowPositionNoClipped(target.position);
