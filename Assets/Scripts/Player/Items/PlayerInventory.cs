@@ -36,7 +36,6 @@ namespace BML.Scripts.Player.Items
         [SerializeField] private List<PlayerItem> _passiveStackableItems;
         private void OnPassiveStackableItemsChanged()
         {
-            Debug.Log("OnPassiveStackableItemsChanged");
             OnPassiveStackableItemChanged?.Invoke();
         }
 
@@ -44,7 +43,6 @@ namespace BML.Scripts.Player.Items
         [SerializeField] private List<ItemTreeGraphStartNode> _passiveStackableItemTrees;
         private void OnPassiveStackableItemTreesChanged()
         {
-            Debug.Log("OnPassiveStackableItemTreesChanged");
             OnPassiveStackableItemTreeChanged?.Invoke();
         }
 

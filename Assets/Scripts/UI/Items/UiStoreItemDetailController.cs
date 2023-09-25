@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace BML.Scripts.UI
+namespace BML.Scripts.UI.Items
 {
     public class UiStoreItemDetailController : MonoBehaviour
     {

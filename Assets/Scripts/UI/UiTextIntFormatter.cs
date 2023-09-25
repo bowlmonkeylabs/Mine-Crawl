@@ -3,6 +3,7 @@ using System.Text;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.UI
 {
@@ -10,17 +11,17 @@ namespace BML.Scripts.UI
     {
         [SerializeField] private TMP_Text _text;
         [SerializeField] private string _formatString = "P0";
-        [SerializeField] private IntVariable _variable;
+        [FormerlySerializedAs("_variable")] [SerializeField] private IntReference _value;
 
         private void Awake()
         {
             UpdateText();
-            _variable.Subscribe(UpdateText);
+            _value.Subscribe(UpdateText);
         }
 
         private void OnDestroy()
         {
-            _variable.Unsubscribe(UpdateText);
+            _value.Unsubscribe(UpdateText);
         }
 
         protected string GetFormattedValue()
@@ -43,7 +44,7 @@ namespace BML.Scripts.UI
             string asciiString = new string(asciiChars);
             
             
-            return _variable.Value.ToString(asciiString);
+            return _value.Value.ToString(asciiString);
         }
 
         protected void UpdateText()
@@ -53,7 +54,24 @@ namespace BML.Scripts.UI
 
         public void SetVariable(IntVariable intVariable)
         {
-            _variable = intVariable;
+            if (_value != null)
+            {
+                _value.Unsubscribe(UpdateText);
+            }
+            _value.SetVariable(intVariable);
+            if (_value != null)
+            {
+                _value.Subscribe(UpdateText);
+            }
+        }
+
+        /// <summary>
+        /// Set a constant value to override the mapped variable.
+        /// </summary>
+        public void SetConstant(int value)
+        {
+            _value.SetConstant(value);
+            UpdateText();
         }
         
     }
