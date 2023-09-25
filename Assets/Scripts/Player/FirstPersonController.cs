@@ -525,7 +525,7 @@ namespace BML.Scripts.Player
             if(DashActive.Value && Time.time - _startDashTime >= DashTime.Value) {
                 DashActive.Value = false;
                 _currentGravity = Gravity;
-                DashCooldownTimer.StartTimer();
+                DashCooldownTimer.RestartTimer();
                 DashInCooldown.Value = true;
             }
         }

@@ -510,7 +510,7 @@ namespace BML.Scripts.Player
         {
             _inCombat.Value = true;
             _isStoreOpen.Value = false;
-            _combatTimer.StartTimer();
+            _combatTimer.RestartTimer();
         }
 
         private void SetNotInCombat() 

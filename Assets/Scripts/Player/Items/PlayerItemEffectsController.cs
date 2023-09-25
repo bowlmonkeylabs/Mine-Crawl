@@ -257,7 +257,7 @@ namespace BML.Scripts.Player.Items
                     {
                         return;
                     }
-                    itemEffect.ActivationCooldownTimer.StartTimer();
+                    itemEffect.ActivationCooldownTimer.RestartTimer();
                 }
                 
                 if (itemEffect.UseActivationLimit)

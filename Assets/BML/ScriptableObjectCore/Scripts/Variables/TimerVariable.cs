@@ -70,7 +70,25 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [NonSerialized] 
         private bool isStarted = false;
 
+        /// <summary>
+        /// Start timer from where it left off.
+        /// </summary>
         public void StartTimer()
+        {
+            isStopped = false;
+            if (!isStarted)
+            {
+                remainingTime = Duration;
+                startTime = Time.time;
+            }
+            lastUpdateTime = Time.time;
+            OnUpdate?.Invoke();
+        }
+
+        /// <summary>
+        /// Start timer from the beginning.
+        /// </summary>
+        public void RestartTimer()
         {
             isStarted = true;
             isStopped = false;
@@ -80,7 +98,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             remainingTime = Duration;
             OnUpdate?.Invoke();
         }
-
+        
         public void ResetTimer()
         {
             isStarted = false;
@@ -95,6 +113,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         public void StopTimer()
         {
             isStopped = true;
+        }
+
+        public void AddTime(float addSeconds)
+        {
+            this.remainingTime += addSeconds;
+            OnUpdate?.Invoke();
         }
 
         public void Subscribe(OnUpdate_ callback)
@@ -261,10 +285,21 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             }
         }
 
+        public void StartTimer()
+        {
+            Variable?.StartTimer();
+            isConstantStopped = false;
+            if (!isConstantStarted)
+            {
+                ConstantRemainingTime = Duration;
+                startTime = Time.time;
+            }
+            lastUpdateTime = Time.time;
+        }
 
         public void RestartTimer()
         {
-            Variable?.StartTimer();
+            Variable?.RestartTimer();
             isConstantStarted = true;
             isConstantStopped = false;
             isConstantFinished = false;
