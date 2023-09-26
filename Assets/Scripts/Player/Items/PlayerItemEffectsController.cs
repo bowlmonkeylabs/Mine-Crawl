@@ -54,6 +54,12 @@ namespace BML.Scripts.Player.Items
 
             _playerInventory.OnAnyItemAdded += CheckEffectsTimersListOnItemAdded;
             _playerInventory.OnAnyItemRemoved += CheckEffectsTimersListOnItemRemoved;
+            _playerInventory.OnPassiveStackableItemAdded += CheckEffectsTimersListOnItemAdded;
+            _playerInventory.OnPassiveStackableItemRemoved += CheckEffectsTimersListOnItemRemoved;
+            
+            _playerInventory.OnPassiveStackableItemChanged += RepopulateEffectsTimersList;
+            _playerInventory.OnPassiveStackableItemTreeChanged += RepopulateEffectsTimersList;
+            
             _playerInventory.OnPassiveStackableItemAdded += ApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveStackableItemRemoved += UnApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveItemAdded += ApplyWhenAcquiredOrActivatedEffects;
@@ -75,6 +81,12 @@ namespace BML.Scripts.Player.Items
 
             _playerInventory.OnAnyItemAdded -= CheckEffectsTimersListOnItemAdded;
             _playerInventory.OnAnyItemRemoved -= CheckEffectsTimersListOnItemRemoved;
+            _playerInventory.OnPassiveStackableItemAdded -= CheckEffectsTimersListOnItemAdded;
+            _playerInventory.OnPassiveStackableItemRemoved -= CheckEffectsTimersListOnItemRemoved;
+            
+            _playerInventory.OnPassiveStackableItemChanged -= RepopulateEffectsTimersList;
+            _playerInventory.OnPassiveStackableItemTreeChanged -= RepopulateEffectsTimersList;
+            
             _playerInventory.OnPassiveStackableItemAdded -= ApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveStackableItemRemoved -= UnApplyWhenAcquiredOrActivatedEffects;
             _playerInventory.OnPassiveItemAdded -= ApplyWhenAcquiredOrActivatedEffects;

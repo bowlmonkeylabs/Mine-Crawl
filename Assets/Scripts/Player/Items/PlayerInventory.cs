@@ -102,7 +102,6 @@ namespace BML.Scripts.Player.Items
             {
                 _passiveStackableItems.Add(playerItem);
                 OnAnyItemAdded?.Invoke(playerItem);
-                OnPassiveStackableItemChanged?.Invoke();
                 OnPassiveStackableItemAdded?.Invoke(playerItem);
             }
         }
@@ -115,7 +114,6 @@ namespace BML.Scripts.Player.Items
                 if (didRemove)
                 {
                     OnAnyItemRemoved?.Invoke(playerItem);
-                    OnPassiveStackableItemChanged?.Invoke();
                     OnPassiveStackableItemRemoved?.Invoke(playerItem);
                 }
             }
@@ -128,7 +126,6 @@ namespace BML.Scripts.Player.Items
             if (!_passiveStackableItemTrees.Contains(itemTreeStartNode))
             {
                 _passiveStackableItemTrees.Add(itemTreeStartNode);
-                OnPassiveStackableItemTreeChanged?.Invoke();
                 OnPassiveStackableItemTreeAdded?.Invoke(itemTreeStartNode);
             }
         }
@@ -138,7 +135,6 @@ namespace BML.Scripts.Player.Items
             bool didRemove = _passiveStackableItemTrees.Remove(itemTreeStartNode);
             if (didRemove)
             {
-                OnPassiveStackableItemTreeChanged?.Invoke();
                 OnPassiveStackableItemTreeRemoved?.Invoke(itemTreeStartNode);
             }
         }
