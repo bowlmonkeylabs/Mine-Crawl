@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using BML.Scripts.ItemTreeGraph;
 using BML.Scripts.Player.Items;
+using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -105,6 +106,8 @@ namespace BML.Scripts.UI.Items
         [TitleGroup("UI"), SerializeField] private Image _imageIcon;
         [TitleGroup("UI"), SerializeField] private UiTimerImageController _timerImageController;
         [TitleGroup("UI"), SerializeField] private UiTextIntFormatter _remainingCountTextController;
+        [TitleGroup("UI"), SerializeField] private MMF_Player _remainingCountIncrementFeedbacks;
+        [TitleGroup("UI"), SerializeField] private MMF_Player _remainingCountDecrementFeedbacks;
         [TitleGroup("UI"), SerializeField] private TMP_Text _bindingHintText;
         [TitleGroup("UI"), SerializeField] private TMP_Text _itemTypeText;
         private Color _bindingHintOriginalColor;
@@ -123,14 +126,24 @@ namespace BML.Scripts.UI.Items
         private void OnEnable()
         {
             UpdatePassiveStackableTreeCounts();
+            
             _playerInventory.OnActiveItemAdded += OnActiveItemChanged;
             _playerInventory.OnActiveItemRemoved += OnActiveItemChanged;
+            
             _playerInventory.OnPassiveItemAdded += OnPassiveItemChanged;
             _playerInventory.OnPassiveItemRemoved += OnPassiveItemChanged;
+            
+            _playerInventory.OnPassiveStackableItemAdded += OnPassiveStackableItemAdded;
+            _playerInventory.OnPassiveStackableItemRemoved += OnPassiveStackableItemRemoved;
             _playerInventory.OnPassiveStackableItemChanged += OnPassiveStackableItemChanged;
+
+            _playerInventory.OnPassiveStackableItemTreeAdded += OnPassiveStackableItemTreeAdded;
+            _playerInventory.OnPassiveStackableItemTreeRemoved += OnPassiveStackableItemTreeRemoved;
             _playerInventory.OnPassiveStackableItemTreeChanged += OnPassiveStackableItemTreeChanged;
+            
             _timerImageController?.Timer?.Subscribe(OnItemActivationTimerUpdated);
             _timerImageController?.Timer?.SubscribeFinished(OnItemActivationTimerUpdated);
+            
             UpdateAssignedItem();
         }
 
@@ -138,10 +151,18 @@ namespace BML.Scripts.UI.Items
         {
             _playerInventory.OnActiveItemAdded -= OnActiveItemChanged;
             _playerInventory.OnActiveItemRemoved -= OnActiveItemChanged;
+            
             _playerInventory.OnPassiveItemAdded -= OnPassiveItemChanged;
             _playerInventory.OnPassiveItemRemoved -= OnPassiveItemChanged;
+            
+            _playerInventory.OnPassiveStackableItemAdded -= OnPassiveStackableItemAdded;
+            _playerInventory.OnPassiveStackableItemRemoved -= OnPassiveStackableItemRemoved;
             _playerInventory.OnPassiveStackableItemChanged -= OnPassiveStackableItemChanged;
+            
+            _playerInventory.OnPassiveStackableItemTreeAdded -= OnPassiveStackableItemTreeAdded;
+            _playerInventory.OnPassiveStackableItemTreeRemoved -= OnPassiveStackableItemTreeRemoved;
             _playerInventory.OnPassiveStackableItemTreeChanged -= OnPassiveStackableItemTreeChanged;
+            
             _timerImageController?.Timer?.Unsubscribe(OnItemActivationTimerUpdated);
             _timerImageController?.Timer?.UnsubscribeFinished(OnItemActivationTimerUpdated);
         }
@@ -178,11 +199,43 @@ namespace BML.Scripts.UI.Items
             }
         }
         
+        private void OnPassiveStackableItemAdded(PlayerItem playerItem)
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
+            {
+                UpdatePassiveStackableTreeCounts(playerItem.PassiveStackableTreeStartNode, 1);
+            }
+        }
+        
+        private void OnPassiveStackableItemRemoved(PlayerItem playerItem)
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
+            {
+                UpdatePassiveStackableTreeCounts(playerItem.PassiveStackableTreeStartNode, -1);
+            }
+        }
+        
         private void OnPassiveStackableItemChanged()
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
             {
                 UpdatePassiveStackableTreeCounts();
+            }
+        }
+        
+        private void OnPassiveStackableItemTreeAdded(ItemTreeGraphStartNode treeStartNode)
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
+            {
+                UpdateAssignedItem();
+            }
+        }
+        
+        private void OnPassiveStackableItemTreeRemoved(ItemTreeGraphStartNode treeStartNode)
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
+            {
+                UpdateAssignedItem();
             }
         }
         
@@ -222,7 +275,8 @@ namespace BML.Scripts.UI.Items
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
             {
                 // for passive stackable items, instead of 'remaining activations count' it should display the number of upgrades acquired in the respective tree.
-                _remainingCountTextController.SetVariable(null);
+                // _remainingCountTextController.SetVariable(null); // clear prev variable to unsubscribe from its events
+                UpdatePassiveStackableTreeCounts();
             }
             else
             {
@@ -233,6 +287,8 @@ namespace BML.Scripts.UI.Items
                 }
                 else
                 {
+                    remainingActivationsVariable.Unsubscribe(OnCountValueChanged);
+                    remainingActivationsVariable.Subscribe(OnCountValueChanged);
                     _remainingCountTextController.gameObject.SetActive(true);
                     _remainingCountTextController.SetVariable(remainingActivationsVariable);
                 }
@@ -244,14 +300,40 @@ namespace BML.Scripts.UI.Items
             _itemTypeText.gameObject.SetActive(Item.Type == ItemType.Passive);
         }
 
-        private void UpdatePassiveStackableTreeCounts()
+        private void OnCountValueChanged(int prev, int curr)
+        {
+            if (curr < prev)
+            {
+                _remainingCountDecrementFeedbacks.PlayFeedbacks();
+            }
+            else if (curr > prev)
+            {
+                _remainingCountIncrementFeedbacks.PlayFeedbacks();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="treeStartNode"></param>
+        /// <param name="signOfChange">Used to determine whether to play feedbacks for value incrementing or decrementing.</param>
+        private void UpdatePassiveStackableTreeCounts(ItemTreeGraphStartNode treeStartNode = null, int signOfChange = 0)
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
             {
                 if (InventoryPassiveStackableTreeStartNode != null)
                 {
+                    if (treeStartNode != null && treeStartNode != InventoryPassiveStackableTreeStartNode)
+                    {
+                        return;
+                    }
+                    
                     _remainingCountTextController.gameObject.SetActive(true);
                     _remainingCountTextController.SetConstant(InventoryPassiveStackableTreeStartNode.NumberOfObtainedItemsInTree);
+                    
+                    // Since we don't track what the previous value was, this is a hack to always play the 'increment' feedbacks; in normal gameplay, the # of passive stackable upgrades should only ever go up, I think...
+                    OnCountValueChanged(InventoryPassiveStackableTreeStartNode.NumberOfObtainedItemsInTree, 
+                        InventoryPassiveStackableTreeStartNode.NumberOfObtainedItemsInTree + signOfChange);
                 }
                 else
                 {
