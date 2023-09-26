@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.Player.Items;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 using XNode;
 
@@ -38,6 +39,9 @@ namespace BML.Scripts.ItemTreeGraph
                 var itemTreeGraphTo = (ItemTreeGraphNode)to.node;
                 var itemTreeGraphFrom = (ItemTreeGraphNode)from.node;
                 itemTreeGraphTo.PropagateUpdateToConnected(itemTreeGraphFrom.TreeStartNode);
+#if UNITY_EDITOR
+                AssetDatabase.SaveAssets();
+#endif
             }
         }
 
@@ -48,6 +52,9 @@ namespace BML.Scripts.ItemTreeGraph
             if (port.IsInput)
             {
                 this.PropagateUpdateToConnected(null);
+#if UNITY_EDITOR
+                AssetDatabase.SaveAssets();
+#endif
             }
         }
 
@@ -63,6 +70,9 @@ namespace BML.Scripts.ItemTreeGraph
             if (Item != null)
             {
                 Item.PassiveStackableTreeStartNode = treeStartNode;
+#if UNITY_EDITOR
+                EditorUtility.SetDirty(Item);
+#endif
             }
             
             var nodesConnectedToOutputs = this.Outputs.Where(nodePort => nodePort.IsConnected)
