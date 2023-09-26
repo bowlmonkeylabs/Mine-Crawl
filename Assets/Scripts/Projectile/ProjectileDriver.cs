@@ -60,17 +60,14 @@ namespace BML.Scripts
         private float _traveledDistance;
         private void UpdateCurvability()
         {
-            if (_enableHoming)
+            if (_doUseCurvability)
             {
-                if (_doUseCurvability)
-                {
-                    var size = _curvabilityToMinMaxOutput.Value.Evaluate(_curvability);
-                    _horizontalRotationPidParameters.OutputMinMax = new Vector2(-size, size);
-                }
-                else
-                {
-                    _horizontalRotationPidParameters.OutputMinMax = Vector2.zero;
-                }
+                var size = _curvabilityToMinMaxOutput.Value.Evaluate(_curvability);
+                _horizontalRotationPidParameters.OutputMinMax = new Vector2(-size, size);
+            }
+            else
+            {
+                _horizontalRotationPidParameters.OutputMinMax = Vector2.zero;
             }
         }
 
@@ -78,7 +75,7 @@ namespace BML.Scripts
 
         private void Start()
         {
-            if (_enableHoming)
+            if (_enableHoming.Value)
             {
                 InitializePidControllers();
             }
@@ -112,33 +109,36 @@ namespace BML.Scripts
                 return;
             }
             
-            // If no target is acquired yet, check for targets
-            if (_enableHoming && _homingTarget.Value == null)
+            if (_enableHoming.Value)
             {
-                // Update target selection
-                // TODO
-                float checkDistance = _limitRange > 0 ? _limitRange : speed * 2;
-                bool didHit = Physics.SphereCast(transform.position, 1f, transform.forward, out var hitInfo, checkDistance, _homingTargetAcquisitionLayerMask, QueryTriggerInteraction.Ignore);
-                if (didHit)
+                // If no target is acquired yet, check for targets
+                if (_homingTarget.Value == null)
                 {
-                    // Prioritize homing directly to the transform of the hit collider; Because of the offset baked into the rigidbody of 'flying' enemies (e.g. Bats), homing to hitInfo.transform caused the projectile to target the enemy origin rather than the center of mass.
-                    var targetTransform = hitInfo.collider?.transform ?? hitInfo.rigidbody?.transform ?? hitInfo.transform;
-                    _homingTarget.AssignConstantValue(targetTransform);
-                }
-                else
-                {
-                    bool didHit2 = Physics.SphereCast(transform.position, 3f, transform.forward, out var hitInfo2, checkDistance, _homingTargetAcquisitionLayerMask, QueryTriggerInteraction.Ignore);
-                    if (didHit2)
+                    // Update target selection
+                    // TODO
+                    float checkDistance = _limitRange > 0 ? _limitRange : speed * 2;
+                    bool didHit = Physics.SphereCast(transform.position, 1f, transform.forward, out var hitInfo, checkDistance, _homingTargetAcquisitionLayerMask, QueryTriggerInteraction.Ignore);
+                    if (didHit)
                     {
+                        // Prioritize homing directly to the transform of the hit collider; Because of the offset baked into the rigidbody of 'flying' enemies (e.g. Bats), homing to hitInfo.transform caused the projectile to target the enemy origin rather than the center of mass.
                         var targetTransform = hitInfo.collider?.transform ?? hitInfo.rigidbody?.transform ?? hitInfo.transform;
                         _homingTarget.AssignConstantValue(targetTransform);
                     }
                     else
                     {
+                        bool didHit2 = Physics.SphereCast(transform.position, 3f, transform.forward, out var hitInfo2, checkDistance, _homingTargetAcquisitionLayerMask, QueryTriggerInteraction.Ignore);
+                        if (didHit2)
+                        {
+                            var targetTransform = hitInfo.collider?.transform ?? hitInfo.rigidbody?.transform ?? hitInfo.transform;
+                            _homingTarget.AssignConstantValue(targetTransform);
+                        }
+                        else
+                        {
                         
+                        }
                     }
                 }
-
+                
                 if (_homingTarget?.Value != null)
                 {
                     // Adjust direction towards target
@@ -148,23 +148,25 @@ namespace BML.Scripts
                     Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
 
                     var currentOffsetFromTargetEulerAngles = rotation.eulerAngles - targetRotation.eulerAngles;
-                    
+                
                     if (currentOffsetFromTargetEulerAngles.x <= -180) currentOffsetFromTargetEulerAngles.x += 360;
                     else if (currentOffsetFromTargetEulerAngles.x >= 180) currentOffsetFromTargetEulerAngles.x -= 360;
-                    
+                
                     if (currentOffsetFromTargetEulerAngles.y <= -180) currentOffsetFromTargetEulerAngles.y += 360;
                     else if (currentOffsetFromTargetEulerAngles.y >= 180) currentOffsetFromTargetEulerAngles.y -= 360;
-                    
+                
                     float horizontalTorqueCorrection = _horizontalRotationPidController.GetOutput(currentOffsetFromTargetEulerAngles.y, 0, Time.fixedDeltaTime);
                     float verticalTorqueCorrection = _verticalRotationPidController.GetOutput(currentOffsetFromTargetEulerAngles.x, 0, Time.fixedDeltaTime);
 
                     float distanceToTargetFac = Mathf.Clamp01(targetDirection.magnitude / 10f);
-                    
+                
                     var torque = (distanceToTargetFac * (!_enableHorizontalHoming ? 0 : horizontalTorqueCorrection) * Vector3.up)
                                  + (distanceToTargetFac * (!_enableVerticalHoming ? 0 : verticalTorqueCorrection) * Vector3.right);
-                    
+                
                     rb.AddRelativeTorque(torque);
                     moveDirection = transform.forward;
+                
+                    // Debug.Log($"ApplyHoming (Name {this.gameObject.name}) (Torque {torque})");
                 }
             }
             
@@ -181,7 +183,7 @@ namespace BML.Scripts
             Shapes.Draw.Line(ShapesBlendMode.Transparent, LineGeometry.Volumetric3D, LineEndCap.Round, ThicknessSpace.Meters, transform.position, transform.position+transform.forward*_limitRange, color1, color1, 1f);
             Shapes.Draw.Line(ShapesBlendMode.Transparent, LineGeometry.Volumetric3D, LineEndCap.Round, ThicknessSpace.Meters, transform.position, transform.position+transform.forward*_limitRange, color2, color2, 3f);
 
-            if (_enableHoming && _homingTarget.Value != null)
+            if (_enableHoming.Value && _homingTarget.Value != null)
             {
                 var targetPosition = _homingTarget.Value.transform.position;
                 var targetDirection = targetPosition - position;
@@ -196,7 +198,7 @@ namespace BML.Scripts
         public void Deflect(HitInfo hitInfo)
         {
             gameObject.layer = LayerMask.NameToLayer(deflectLayer);
-            if (_enableHomingOnDeflect)
+            if (_enableHomingOnDeflect.Value)
             {
                 // TODO add a better interface to take info from the hit to augment projectile parameters (damage, speed, homing, homing targets/layers, curvability, color/visual)
                 _enableHoming.ReferenceTypeSelector = SafeBoolValueReference.BoolReferenceTypes.Constant;
