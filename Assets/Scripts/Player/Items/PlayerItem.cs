@@ -105,7 +105,6 @@ namespace BML.Scripts.Player.Items
         [SerializeField, FoldoutGroup("Descriptors")] private bool _useIconColor;
         [SerializeField, FoldoutGroup("Descriptors"), ShowIf("_useIconColor")] private Color _iconColor;
         [SerializeField, FoldoutGroup("Descriptors"), PreviewField(100, ObjectFieldAlignment.Left)] private Sprite _icon;
-        
         [SerializeField, FoldoutGroup("Descriptors"), ReadOnly, ShowIf("@_itemType == ItemType.PassiveStackable")] public ItemTreeGraphStartNode PassiveStackableTreeStartNode;
 
         [
