@@ -131,10 +131,14 @@ namespace BML.Scripts.Player.Items
         private void InvokeOnAffordabilityChanged() {
             OnAffordabilityChanged?.Invoke();
         }
+        
+        public event IResettableScriptableObject.OnResetScriptableObject OnReset;
 
         public void ResetScriptableObject()
         {
             _itemEffects.ForEach(e => e.Reset());
+            
+            OnReset?.Invoke();
         }
 
         public Sprite Icon { get => _icon; }
