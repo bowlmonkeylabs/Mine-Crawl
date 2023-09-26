@@ -38,6 +38,7 @@ namespace BML.Scripts.Player.Items
             _playerInventory.OnPassiveStackableItemAdded += UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemRemoved += UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemChanged += UpdateTreeFromInventory;
+            
             _playerInventory.OnPassiveStackableItemTreeAdded += UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemTreeRemoved += UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemTreeChanged += UpdateTreeFromInventory;
@@ -48,6 +49,7 @@ namespace BML.Scripts.Player.Items
             _playerInventory.OnPassiveStackableItemAdded -= UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemRemoved -= UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemChanged -= UpdateTreeFromInventory;
+            
             _playerInventory.OnPassiveStackableItemTreeAdded -= UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemTreeRemoved -= UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemTreeChanged -= UpdateTreeFromInventory;
