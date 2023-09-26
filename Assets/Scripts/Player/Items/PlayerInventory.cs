@@ -148,12 +148,16 @@ namespace BML.Scripts.Player.Items
             this._activeItem = null;
             this._passiveItem = null;
             this._passiveStackableItems.Clear();
+            this._passiveStackableItemTrees.Clear();
+
+            OnReset?.Invoke();
         }
 
         #endregion
 
         #region Events
-
+        
+        public event IResettableScriptableObject.OnResetScriptableObject OnReset;
         //the parameter passed into the remove events is the item that was removed, and the param passed into the added events is the item that was added
         public event OnPlayerItemChanged<PlayerItem> OnAnyItemAdded;
         public event OnPlayerItemChanged<PlayerItem> OnAnyItemRemoved;

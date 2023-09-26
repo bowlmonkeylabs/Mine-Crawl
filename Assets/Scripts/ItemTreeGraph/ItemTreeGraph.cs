@@ -42,6 +42,8 @@ namespace BML.Scripts.Player.Items
             _playerInventory.OnPassiveStackableItemTreeAdded += UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemTreeRemoved += UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemTreeChanged += UpdateTreeFromInventory;
+
+            _playerInventory.OnReset += UpdateTreeFromInventory;
         }
 
         private void OnDisable()
@@ -53,6 +55,8 @@ namespace BML.Scripts.Player.Items
             _playerInventory.OnPassiveStackableItemTreeAdded -= UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemTreeRemoved -= UpdateTreeFromInventory;
             _playerInventory.OnPassiveStackableItemTreeChanged -= UpdateTreeFromInventory;
+
+            _playerInventory.OnReset -= UpdateTreeFromInventory;
         }
 
         #endregion
@@ -204,6 +208,8 @@ namespace BML.Scripts.Player.Items
                 .Select(node => node as ItemTreeGraphStartNode)
                 .ToList();
         }
+        
+        public event IResettableScriptableObject.OnResetScriptableObject OnReset;
 
         public void ResetScriptableObject() {
             nodes.ForEach(node => {
@@ -214,6 +220,8 @@ namespace BML.Scripts.Player.Items
                     (node as ItemTreeGraphStartNode).Slotted = false;
                 }
             });
+            
+            OnReset?.Invoke();
         }
     }
 }
