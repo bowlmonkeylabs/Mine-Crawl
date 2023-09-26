@@ -44,7 +44,7 @@ namespace BML.Scripts.UI
             string asciiString = new string(asciiChars);
             
             
-            return _value.Value.ToString(asciiString);
+            return _value?.Value.ToString(asciiString) ?? "";
         }
 
         protected void UpdateText()
@@ -62,6 +62,7 @@ namespace BML.Scripts.UI
             if (_value != null)
             {
                 _value.Subscribe(UpdateText);
+                UpdateText();
             }
         }
 
@@ -70,6 +71,10 @@ namespace BML.Scripts.UI
         /// </summary>
         public void SetConstant(int value)
         {
+            if (_value != null)
+            {
+                _value.Unsubscribe(UpdateText);
+            }
             _value.SetConstant(value);
             UpdateText();
         }

@@ -21,6 +21,7 @@ namespace BML.Scripts.Player.Items
         [SerializeField, InfoBox("Item is not of type 'Active'", InfoMessageType.Error, "@_activeItem != null && _activeItem.Type != ItemType.Active")] private PlayerItem _activeItem;
         private void OnActiveItemChanged()
         {
+            OnAnyItemAdded?.Invoke(_activeItem);
             OnActiveItemAdded?.Invoke(_activeItem);
         }
         
@@ -29,6 +30,7 @@ namespace BML.Scripts.Player.Items
         private PlayerItem _passiveItem;
         private void OnPassiveItemChanged()
         {
+            OnAnyItemAdded?.Invoke(_passiveItem);
             OnPassiveItemAdded?.Invoke(_passiveItem);
         }
         
