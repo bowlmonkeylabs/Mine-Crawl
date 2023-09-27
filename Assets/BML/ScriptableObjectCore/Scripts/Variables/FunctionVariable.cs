@@ -26,6 +26,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         Subtract,
         Multiply,
         Divide,
+        Equal,
     }
 
     internal static class FunctionVariableOperatorsExtensions
@@ -39,6 +40,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         private static float Subtract(float a, float b) => a - b;
         private static float Multiply(float a, float b) => a * b;
         private static float Divide(float a, float b) => a / b;
+        private static float Equal(float a, float b) => a == b ? 1f : 0f;
         
         private static Dictionary<FunctionVariableOperators, Operator> OperatorToFunction = new Dictionary<FunctionVariableOperators,Operator>
         {
@@ -46,6 +48,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             {FunctionVariableOperators.Subtract, Subtract},
             {FunctionVariableOperators.Multiply, Multiply},
             {FunctionVariableOperators.Divide, Divide},
+            {FunctionVariableOperators.Equal, Equal},
         };
         
         private static Dictionary<FunctionVariableOperators, string> OperatorToString = new Dictionary<FunctionVariableOperators, string>
@@ -54,6 +57,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             {FunctionVariableOperators.Subtract, "-"},
             {FunctionVariableOperators.Multiply, "*"},
             {FunctionVariableOperators.Divide, "/"},
+            {FunctionVariableOperators.Equal, "=="},
         };
     }
     
