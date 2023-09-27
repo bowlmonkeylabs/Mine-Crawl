@@ -243,11 +243,22 @@ namespace BML.Scripts.Enemy
         
         #region Public interface
 
+        public void OnDeath(HitInfo hitInfo)
+        {
+            var payload = new EnemyKilledPayload
+            {
+                Position = this.transform.position,
+                HitInfo = hitInfo,
+            };
+            _onEnemyKilled.Raise(payload);
+        }
+        
         public void OnDeath()
         {
             var payload = new EnemyKilledPayload
             {
-                Position = this.transform.position
+                Position = this.transform.position,
+                HitInfo = null,
             };
             _onEnemyKilled.Raise(payload);
         }

@@ -18,7 +18,9 @@ namespace BML.Scripts {
         {
             DamageableItem damageable = _damageable.FirstOrDefault<DamageableItem>(di => di.DamageType.HasFlag(hitInfo.DamageType));
             if(damageable != null) {
-                if(!health.Damage(damageable.ApplyDamage(hitInfo.Damage))) {
+                var damageResult = damageable.ApplyDamage(hitInfo);
+                if (!health.Damage(damageResult))
+                {
                     damageable.OnFailDamage.Invoke(hitInfo);
                     return;
                 }

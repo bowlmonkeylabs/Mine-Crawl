@@ -26,7 +26,9 @@ namespace BML.Scripts
         [SerializeField, ShowIf("_isInvincible")] private SafeFloatValueReference _invincibilitySeconds;
         
         [SerializeField] private UnityEvent<int, int> _onHealthChange;
+        [SerializeField] private UnityEvent<HitInfo> _onTakeDamageHitInfo;
         [SerializeField] private UnityEvent _onTakeDamage;
+        [SerializeField] private UnityEvent<HitInfo> _onDeathHitInfo;
         [SerializeField] private UnityEvent _onDeath;
         [SerializeField] private UnityEvent _onRevive;
         #endregion
@@ -108,17 +110,27 @@ namespace BML.Scripts
             OnInvincibilityChange?.Invoke(IsInvincible);
         }
         
-        public bool Damage(int amount) 
+        public bool Damage(int amount)
         {
-            if (IsDead || IsInvincible) return false;
+            if (IsDead || IsInvincible || amount == 0) return false;
             
             lastDamageTime = Time.time;
             StartCoroutine(InvincibilityTimer());
 
-            return this.SetHealth(Value - amount) < 0;
+            return this.SetHealth(Value - amount, null) < 0;
         }
         
-        public int SetHealth(int newValue)
+        public bool Damage(HitInfo hitInfo)
+        {
+            if (IsDead || IsInvincible || hitInfo.Damage == 0) return false;
+            
+            lastDamageTime = Time.time;
+            StartCoroutine(InvincibilityTimer());
+
+            return this.SetHealth(Value - hitInfo.Damage, hitInfo) < 0;
+        }
+        
+        public int SetHealth(int newValue, HitInfo hitInfo = null)
         {
             newValue = Mathf.Clamp(newValue, 0, _hasMaxHealth ? _maxHealthReference.Value : 999);
 
@@ -128,11 +140,15 @@ namespace BML.Scripts
             
             _onHealthChange?.Invoke(oldValue, Value);
             OnHealthChange?.Invoke(oldValue, Value);
-            if (delta < 0) _onTakeDamage?.Invoke();
+            if (delta < 0)
+            {
+                _onTakeDamageHitInfo?.Invoke(hitInfo);
+                _onTakeDamage?.Invoke();
+            }
             
             if (Value <= 0)
             {
-                Death();
+                Death(hitInfo);
             }
 
             return delta;
@@ -160,8 +176,9 @@ namespace BML.Scripts
         
         #endregion
         
-        private void Death()
+        private void Death(HitInfo hitInfo)
         {
+            _onDeathHitInfo.Invoke(hitInfo);
             _onDeath.Invoke();
             OnDeath?.Invoke();
         }
@@ -169,7 +186,11 @@ namespace BML.Scripts
         private void OnHealthReferenceUpdated(int previousValue, int currentValue)
         {
             int delta = currentValue - previousValue;
-            if (delta < 0) _onTakeDamage?.Invoke();
+            if (delta < 0)
+            {
+                _onTakeDamageHitInfo?.Invoke(null);
+                _onTakeDamage?.Invoke();
+            }
             if (previousValue <= 0 && currentValue > 0)
             {
                 _onRevive?.Invoke();

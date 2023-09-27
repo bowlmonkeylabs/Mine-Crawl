@@ -2,7 +2,7 @@
 
 namespace BML.Scripts.CaveV2.Objects
 {
-    public class EnemyKilledPayload
+    public abstract class EnemyKilledPayload
     {
         public Vector3 Position;
     }
