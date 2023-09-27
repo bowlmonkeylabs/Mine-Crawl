@@ -6333,7 +6333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d9de05a2e70424e8718c7cf216b134, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conditionPreview: '-  Upgrade_ Bat Friend
+  conditionPreview: '-  Upgrade_ No Trigger Bat
 
 '
   StateMachines: []
@@ -12780,9 +12780,27 @@ MonoBehaviour:
       Enemy_Bomb_Explosion, Trap_Spike, Trap_Stalactite, Enemy_Worm, Player_Projectile
     _damageType: 64979
     _damageModifierType: 0
-    _damageMultiplier: 1
-    _damageResistance: 0
-    _damageOverride: 0
+    _damageMultiplier:
+      ReferenceTypeSelector: 0
+      ConstantValue: 1
+      ReferenceValue_FloatVariable: {fileID: 0}
+      RoundingBehavior_FloatVariable: 0
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+    _damageResistance:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      RoundingBehavior_FloatVariable: 0
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+    _damageOverride:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      RoundingBehavior_FloatVariable: 0
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
     _onDamage:
       m_PersistentCalls:
         m_Calls: []
