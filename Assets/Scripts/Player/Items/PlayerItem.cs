@@ -30,6 +30,7 @@ namespace BML.Scripts.Player.Items
         OnPickaxeSweep,
         OnPickaxeSweepHit,
         OnPickaxeSwingCrit,
+        OnPickaxeKillEnemy,
     }
 
     public enum ItemEffectType {
