@@ -12,6 +12,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Serialization;
+using EnemyKilledPayload = BML.Scripts.CaveV2.Objects.EnemyKilledPayload;
 
 namespace Intensity
 {
