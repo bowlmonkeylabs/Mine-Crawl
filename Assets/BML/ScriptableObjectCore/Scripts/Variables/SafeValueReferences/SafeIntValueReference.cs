@@ -45,6 +45,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
             FloatVariable = 2,
             BoolVariable = 3,
             FunctionVariable = 4,
+            EvaluateCurveVariable = 5,
         }
 
         public enum IntRoundingBehavior
@@ -179,6 +180,15 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         protected FunctionVariable ReferenceValue_FunctionVariable;
         
         
+        private bool _showEvaluateCurveVariable => ReferenceTypeSelector == IntReferenceTypes.EvaluateCurveVariable;
+        [BoxGroup("Top/Split/Right", ShowLabel = false)]
+        [HideLabel]
+        [ShowIf("@!UseConstant && _showEvaluateCurveVariable")]
+        [InlineEditor()]
+        [SerializeField]
+        protected EvaluateCurveVariable ReferenceValue_EvaluateCurveVariable;
+        
+        
         
         #endregion
 
@@ -227,6 +237,19 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                             case IntRoundingBehavior.Round:
                                 return Mathf.RoundToInt(ReferenceValue_FunctionVariable.Value);
                         }
+                    case IntReferenceTypes.EvaluateCurveVariable:
+                        if (ReferenceValue_EvaluateCurveVariable == null)
+                        {
+                            return 0;
+                        }
+                        switch (RoundingBehavior)
+                        {
+                            default:
+                            case IntRoundingBehavior.Truncate:
+                                return (int) Math.Truncate(ReferenceValue_EvaluateCurveVariable.Value);
+                            case IntRoundingBehavior.Round:
+                                return Mathf.RoundToInt(ReferenceValue_EvaluateCurveVariable.Value);
+                        }
                     default:
                         Debug.LogError($"Trying to access Int variable but none set in inspector!");
                         return default(int);
@@ -255,6 +278,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                         break;
                     case IntReferenceTypes.FunctionVariable:
                         break;
+                    case IntReferenceTypes.EvaluateCurveVariable:
+                        break;
                     default:
                         Debug.LogError($"Trying to access Int variable but none set in inspector!");
                         break;
@@ -278,6 +303,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                         return ReferenceValue_BoolVariable?.GetName();
                     case IntReferenceTypes.FunctionVariable:
                         return ReferenceValue_FunctionVariable?.GetName();
+                    case IntReferenceTypes.EvaluateCurveVariable:
+                        return ReferenceValue_EvaluateCurveVariable?.GetName();
                 }
                 return "<Missing Float>";
             }
@@ -299,6 +326,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                         return ReferenceValue_BoolVariable?.GetDescription();
                     case IntReferenceTypes.FunctionVariable:
                         return ReferenceValue_FunctionVariable?.GetDescription();
+                    case IntReferenceTypes.EvaluateCurveVariable:
+                        return ReferenceValue_EvaluateCurveVariable?.GetDescription();
                 }
                 return "<Missing Float>";
             }
@@ -320,6 +349,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                 case IntReferenceTypes.FunctionVariable:
                     ReferenceValue_FunctionVariable?.Subscribe(callback);
                     break;
+                case IntReferenceTypes.EvaluateCurveVariable:
+                    ReferenceValue_EvaluateCurveVariable?.Subscribe(callback);
+                    break;
             }
         }
 
@@ -338,6 +370,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                     break;
                 case IntReferenceTypes.FunctionVariable:
                     ReferenceValue_FunctionVariable?.Unsubscribe(callback);
+                    break;
+                case IntReferenceTypes.EvaluateCurveVariable:
+                    ReferenceValue_EvaluateCurveVariable?.Unsubscribe(callback);
                     break;
             }
         }
