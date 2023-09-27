@@ -5,6 +5,7 @@ using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.Scripts.Enemy;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -23,6 +24,8 @@ namespace BML.Scripts.Player.Items
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private DynamicGameEvent _onSwingPickaxeCrit;
+        
+        [SerializeField, FoldoutGroup("Enemy Events")] private DynamicGameEvent _onEnemyKilled;
 
         [SerializeField, FoldoutGroup("Projectile")] private TransformSceneReference MainCameraRef;
         [SerializeField, FoldoutGroup("Projectile")] private TransformSceneReference ProjectileContainer;
@@ -72,6 +75,8 @@ namespace BML.Scripts.Player.Items
             _onSweepPickaxe.Subscribe(ApplyOnPickaxeSweepEffectsForPassiveItems);
             _onSweepPickaxeHit.Subscribe(ApplyOnPickaxeSweepHitEffectsForPassiveItems);
             _onSwingPickaxeCrit.Subscribe(ApplyOnPickaxeSwingCritEffectsForPassiveItems);
+            
+            _onEnemyKilled.Subscribe(OnEnemyKilledDynamic);
         }
 
         void OnDisable() {
@@ -99,6 +104,8 @@ namespace BML.Scripts.Player.Items
             _onSweepPickaxe.Unsubscribe(ApplyOnPickaxeSweepEffectsForPassiveItems);
             _onSweepPickaxeHit.Unsubscribe(ApplyOnPickaxeSweepHitEffectsForPassiveItems);
             _onSwingPickaxeCrit.Unsubscribe(ApplyOnPickaxeSwingCritEffectsForPassiveItems);
+            
+            _onEnemyKilled.Unsubscribe(OnEnemyKilledDynamic);
         }
 
         void Update() {
@@ -136,6 +143,27 @@ namespace BML.Scripts.Player.Items
             if (enteringDash)
             {
                 ApplyOnDashEffectsForPassiveItems();
+            }
+        }
+
+        #endregion
+
+        #region Event callbacks
+
+        private void OnEnemyKilledDynamic(object prev, object payload)
+        {
+            var typedPayload = payload as EnemyKilledPayload;
+            if (payload == null) throw new ArgumentException("Invalid payload for OnEnemyKilled");
+            
+            OnEnemyKilled(typedPayload);
+        }
+        
+        private void OnEnemyKilled(EnemyKilledPayload payload)
+        {
+            var pickaxeDamageTypes = DamageType.Player_Pickaxe | DamageType.Player_Pickaxe_Secondary;
+            if ((payload.HitInfo.DamageType & pickaxeDamageTypes) > 0)
+            {
+                ApplyOnPickaxeKillEnemyEffectsForPassiveItems();
             }
         }
 
@@ -225,6 +253,10 @@ namespace BML.Scripts.Player.Items
 
         private void ApplyOnPickaxeSweepHitEffectsForPassiveItems() {
             PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeSweepHit, true));
+        }
+
+        private void ApplyOnPickaxeKillEnemyEffectsForPassiveItems() {
+            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeKillEnemy, true));
         }
 
         private void ApplyWhenAcquiredOrActivatedEffectsForPassiveItems() {
