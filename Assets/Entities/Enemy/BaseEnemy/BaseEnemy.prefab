@@ -434,6 +434,8 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -442,11 +444,14 @@ MonoBehaviour:
       m_Calls: []
   _onDeath:
     m_PersistentCalls:
+      m_Calls: []
+  _onDeathHitInfo:
+    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3643912459501020137}
         m_TargetAssemblyTypeName: BML.Scripts.Enemy.EnemyState, BML.Scripts
         m_MethodName: OnDeath
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -471,13 +476,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _behaviorTree: {fileID: 2633554240158441494}
-  _alertOnStart:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: d6bbb3b2d6a787c4db22688fd62ba368, type: 2}
   _aggro: 0
   _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
   _onEnemyAdded: {fileID: 11400000, guid: 11af9d6dcd5e4fa4783f86e476c474cd, type: 2}

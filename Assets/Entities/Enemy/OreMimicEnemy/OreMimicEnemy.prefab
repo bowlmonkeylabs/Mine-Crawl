@@ -2789,9 +2789,33 @@ MonoBehaviour:
       Enemy_Bomb_Explosion, Trap_Spike, Trap_Stalactite, Enemy_Worm, Player_Projectile
     _damageType: 64979
     _damageModifierType: 0
-    _damageMultiplier: 1
-    _damageResistance: 0
-    _damageOverride: 0
+    _damageMultiplier:
+      ReferenceTypeSelector: 0
+      ConstantValue: 1
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageResistance:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageOverride:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     _onDamage:
       m_PersistentCalls:
         m_Calls: []
@@ -4257,10 +4281,12 @@ MonoBehaviour:
   _quantity:
     ReferenceTypeSelector: 1
     ConstantValue: 0
+    RoundingBehavior: 0
     ReferenceValue_FloatVariable: {fileID: 0}
-    RoundingBehavior_FloatVariable: 0
     ReferenceValue_IntVariable: {fileID: 11400000, guid: ebca4ee5bc5a7094c869414633684a6f, type: 2}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
   _forceMode: 1
   _direction:
     UseConstant: 0
@@ -4282,12 +4308,16 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 11400000, guid: 67851cd4d7b4c1e42867187f80fac7c7, type: 2}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _forceVariance:
     ReferenceTypeSelector: 1
     ConstantValue: 0
     ReferenceValue_FloatVariable: {fileID: 11400000, guid: a4365917159380b49a1411371b092d44, type: 2}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _torque:
     UseConstant: 0
     EnableInstanceOptions: 0
@@ -4857,36 +4887,48 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.size
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
       propertyPath: _onTakeDamage.m_PersistentCalls.m_Calls.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7410978461684822676}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 332821998237552641}
+    - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 6137574798445879084}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
       objectReference: {fileID: 6137574798445879084}
+    - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -4908,12 +4950,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: PlayFeedbacks
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: Launch
+      objectReference: {fileID: 0}
+    - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: Kill
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
@@ -4944,21 +4990,29 @@ PrefabInstance:
       value: PlayFeedbacks
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: BML.Scripts.RigidBodyLauncher, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: BML.Scripts.Health, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
       value: BML.Scripts.Health, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgument
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
       value: 
       objectReference: {fileID: 2593184574423224280, guid: 031888ecd2537c742b2ebfda7fc8fa7d, type: 3}
+    - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgument
       value: 
@@ -4972,12 +5026,16 @@ PrefabInstance:
       value: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
-      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
+      propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6547013540985244886, guid: ba862138d6619bd449650baaad4863f3, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName

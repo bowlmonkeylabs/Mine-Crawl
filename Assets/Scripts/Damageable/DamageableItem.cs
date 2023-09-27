@@ -48,20 +48,27 @@ namespace BML.Scripts {
         public UnityEvent<HitInfo> OnFailDamage { get {return _onFailDamage;}}
         public UnityEvent<HitInfo> OnDeath { get {return _onDeath;}}
 
-        public int ApplyDamage(int damage) {
-            if(_damageModifierType == DamageModifierType.None) {
-                return damage;
+        private int ApplyDamage(int damage)
+        {
+            switch (_damageModifierType)
+            {
+                case DamageModifierType.Override:
+                    return _damageOverride.Value;
+                case DamageModifierType.Integer:
+                    return Math.Max(0, damage - _damageResistance.Value);
+                case DamageModifierType.Multiplier:
+                    return damage * _damageMultiplier.Value;
+                case DamageModifierType.None:
+                default:
+                    return damage;
             }
-
-            if(_damageModifierType == DamageModifierType.Override) {
-                return _damageOverride.Value;
-            }
-
-            if(_damageModifierType == DamageModifierType.Integer) {
-                return Math.Max(0, damage - _damageResistance.Value);
-            }
-
-            return damage * _damageMultiplier.Value;
+        }
+        
+        public HitInfo ApplyDamage(HitInfo hitInfo)
+        {
+            int computedDamage = ApplyDamage(hitInfo.Damage);
+            hitInfo.Damage = computedDamage;
+            return hitInfo;
         }
 
         private bool DisplayValues(DamageType selectedDamageTypes) {
