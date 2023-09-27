@@ -4,6 +4,7 @@ using System;
 using Sirenix.OdinInspector;
 using System.Linq;
 using System.Collections.Generic;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Attributes;
 
 namespace BML.Scripts {
@@ -25,18 +26,18 @@ namespace BML.Scripts {
         
         [SerializeField, FoldoutGroup("Params")]
         private DamageModifierType _damageModifierType = DamageModifierType.None;
-        
-        [SerializeField, FoldoutGroup("Params"), ShowIf("_damageModifierType", 
+
+        [SerializeField, FoldoutGroup("Params"), ShowIf("_damageModifierType",
              DamageModifierType.Multiplier)]
-        private int _damageMultiplier = 1;
+        private SafeIntValueReference _damageMultiplier = new SafeIntValueReference(1);
         
         [SerializeField, FoldoutGroup("Params"), ShowIf("_damageModifierType", 
              DamageModifierType.Integer)]
-        private int _damageResistance = 0;
+        private SafeIntValueReference _damageResistance;
         
         [SerializeField, FoldoutGroup("Params"), ShowIf("_damageModifierType", 
              DamageModifierType.Override)]
-        private int _damageOverride = 0;
+        private SafeIntValueReference _damageOverride;
         
         [SerializeField, FoldoutGroup("Params")] private UnityEvent<HitInfo> _onDamage;
         [SerializeField, FoldoutGroup("Params")] private UnityEvent<HitInfo> _onFailDamage;
@@ -53,14 +54,14 @@ namespace BML.Scripts {
             }
 
             if(_damageModifierType == DamageModifierType.Override) {
-                return _damageOverride;
+                return _damageOverride.Value;
             }
 
             if(_damageModifierType == DamageModifierType.Integer) {
-                return Math.Max(0, damage - _damageResistance);
+                return Math.Max(0, damage - _damageResistance.Value);
             }
 
-            return damage * _damageMultiplier;
+            return damage * _damageMultiplier.Value;
         }
 
         private bool DisplayValues(DamageType selectedDamageTypes) {
