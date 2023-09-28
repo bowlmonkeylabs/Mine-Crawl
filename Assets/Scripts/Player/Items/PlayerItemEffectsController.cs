@@ -333,7 +333,7 @@ namespace BML.Scripts.Player.Items
                 }
 
                 if(itemEffect.Type == ItemEffectType.ToggleBoolVariable) {
-                itemEffect.BoolVariableToToggle.Value = true;
+                    itemEffect.BoolVariableToToggle.Value = true;
                 }
 
                 if(itemEffect.Type == ItemEffectType.InstantiatePrefab) {
