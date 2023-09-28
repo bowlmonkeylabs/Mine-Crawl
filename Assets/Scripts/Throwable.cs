@@ -10,14 +10,21 @@ namespace BML.Scripts
     public class Throwable : MonoBehaviour
     {
         [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private Vector3 _initialForce = Vector3.zero;
+        [SerializeField] private ForceMode _initialForceMode;
         [SerializeField] private bool _stopOnGroundHit = false;
         [FormerlySerializedAs("_terrainLayerMask")] [ShowIf("_stopOnGroundHit")] [SerializeField] private LayerMask _stickyLayerMask;
         [ShowIf("_stopOnGroundHit")] [SerializeField] private UnityEvent _onGrounded;
 
         private bool _grounded = false;
 
-        void Awake() {
+        void Awake() 
+        {
             _rigidbody.isKinematic = false;
+            if (_initialForce != Vector3.zero)
+            {
+				_rigidbody.AddRelativeForce(_initialForce, _initialForceMode);
+            }
         }
 
         private void OnTriggerEnter (Collider collider)
