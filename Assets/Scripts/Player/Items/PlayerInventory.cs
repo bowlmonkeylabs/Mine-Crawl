@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
@@ -19,19 +20,43 @@ namespace BML.Scripts.Player.Items
 
         [OnValueChanged("OnActiveItemChanged")]
         [SerializeField, InfoBox("Item is not of type 'Active'", InfoMessageType.Error, "@_activeItem != null && _activeItem.Type != ItemType.Active")] private PlayerItem _activeItem;
+        
+        [NonSerialized]
+        private PlayerItem _prevActiveItem;
         private void OnActiveItemChanged()
         {
-            OnAnyItemAdded?.Invoke(_activeItem);
-            OnActiveItemAdded?.Invoke(_activeItem);
+            if (_passiveItem != null)
+            {
+                OnAnyItemAdded?.Invoke(_activeItem);
+                OnActiveItemAdded?.Invoke(_activeItem);
+            }
+            else
+            {
+                OnAnyItemRemoved?.Invoke(null);
+                OnActiveItemRemoved?.Invoke(null);
+            }
+            _prevActiveItem = _activeItem;
         }
-        
+
         [OnValueChanged("OnPassiveItemChanged")]
         [SerializeField, InfoBox("Item is not of type 'Passive'", InfoMessageType.Error, "@_passiveItem != null && _passiveItem.Type != ItemType.Passive")]
         private PlayerItem _passiveItem;
+        
+        [NonSerialized]
+        private PlayerItem _prevPassiveItem;
         private void OnPassiveItemChanged()
         {
-            OnAnyItemAdded?.Invoke(_passiveItem);
-            OnPassiveItemAdded?.Invoke(_passiveItem);
+            if (_passiveItem != null)
+            {
+                OnAnyItemAdded?.Invoke(_passiveItem);
+                OnPassiveItemAdded?.Invoke(_passiveItem);
+            }
+            else if (_prevPassiveItem != null)
+            {
+                OnAnyItemRemoved?.Invoke(_prevPassiveItem);
+                OnPassiveItemRemoved?.Invoke(_prevPassiveItem);
+            }
+            _prevPassiveItem = _passiveItem;
         }
         
         [OnValueChanged("OnPassiveStackableItemsChanged")]
@@ -46,6 +71,16 @@ namespace BML.Scripts.Player.Items
         private void OnPassiveStackableItemTreesChanged()
         {
             OnPassiveStackableItemTreeChanged?.Invoke();
+        }
+
+        #endregion
+
+        #region Unity lifecycle
+
+        private void Awake()
+        {
+            _prevActiveItem = _activeItem;
+            _prevPassiveItem = _passiveItem;
         }
 
         #endregion
@@ -69,6 +104,7 @@ namespace BML.Scripts.Player.Items
                         OnAnyItemAdded?.Invoke(value);
                         OnActiveItemAdded?.Invoke(value);
                     }
+                    _prevActiveItem = _activeItem;
                 }
             }
         }
@@ -90,6 +126,7 @@ namespace BML.Scripts.Player.Items
                         OnAnyItemAdded?.Invoke(value);
                         OnPassiveItemAdded?.Invoke(value);
                     }
+                    _prevPassiveItem = _passiveItem;
                 }
             }
         }
