@@ -13,12 +13,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [Flags]
     public enum LootTableKey
     {
-        Nothing = 0,
-        Health = 1 << 0,
-        Health2 = 1 << 1,
-        CommonOre = 1 << 2,
-        CommonOre2 = 1 << 3,
-        RareOre = 1 << 4,
+        Nothing = 1 << 0,
+        Health = 1 << 1,
+        Health2 = 1 << 2,
+        CommonOre = 1 << 3,
+        CommonOre2 = 1 << 4,
+        RareOre = 1 << 5,
     }
     
     [Serializable]
