@@ -16,20 +16,22 @@ namespace BML.Scripts {
 
         public void TakeDamage(HitInfo hitInfo)
         {
-            DamageableItem damageable = _damageable.FirstOrDefault<DamageableItem>(di => di.DamageType.HasFlag(hitInfo.DamageType));
-            if(damageable != null) {
-                var damageResult = damageable.ApplyDamage(hitInfo);
-                if (!health.Damage(damageResult))
-                {
-                    damageable.OnFailDamage.Invoke(hitInfo);
-                    return;
-                }
-                
-                _onDamage.Invoke(hitInfo);
-                damageable.OnDamage.Invoke(hitInfo);
+            foreach(DamageableItem di in _damageable){
+                if(di.DamageType.HasFlag(hitInfo.DamageType)) {
+                    var damageResult = di.ApplyDamage(hitInfo);
+                    if (!health.Damage(damageResult))
+                    {
+                        di.OnFailDamage.Invoke(hitInfo);
+                        continue;
+                    }
+                    
+                    _onDamage.Invoke(hitInfo);
+                    di.OnDamage.Invoke(hitInfo);
 
-                if(health.IsDead) {
-                    damageable.OnDeath.Invoke(hitInfo);
+                    if(health.IsDead) {
+                        di.OnDeath.Invoke(hitInfo);
+                        break;
+                    }
                 }
             }
         }
