@@ -155,13 +155,21 @@ namespace BML.Scripts.Player.Items
 
                 itemTreeGraphStartNode.NumberOfObtainedItemsInTree = 0;
             }
-            
+
             var itemNodes = nodes.OfType<ItemTreeGraphNode>();
             foreach (var itemTreeGraphNode in itemNodes)
             {
+                if (itemTreeGraphNode.TreeStartNode == null)
+                {
+                    Debug.Log($"Skipping null treeStartNode {itemTreeGraphNode.name}");
+                    continue;
+                }
+                    
+                
                 bool isObtained = _playerInventory.PassiveStackableItems.Contains(itemTreeGraphNode.Item);
                 itemTreeGraphNode.Obtained = isObtained;
 
+                Debug.Log($"Checking Obtained {itemTreeGraphNode.name}");
                 itemTreeGraphNode.TreeStartNode.NumberOfObtainedItemsInTree += isObtained ? 1 : 0;
             }
         }

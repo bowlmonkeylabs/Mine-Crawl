@@ -15,7 +15,7 @@ namespace BML.Scripts.ItemTreeGraph
         [Input(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection From;
         [Output(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection To;
         
-        [ShowInInspector, ReadOnly]
+        [ShowInInspector, ReadOnly, Required]
         public ItemTreeGraphStartNode TreeStartNode;
         
         [ShowInInspector, NonSerialized, ReadOnly]
