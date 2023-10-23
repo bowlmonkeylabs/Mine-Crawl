@@ -133,8 +133,6 @@ namespace BML.Scripts.Player
             _ropeCooldownTimer.SubscribeFinished(TryIncrementRopeCount);
             
             SetGodMode();
-            _requiredExperience.Value = _levelExperienceCurve.Value.Evaluate(_playerCurrentLevel.Value);
-            _previousRequiredExperience.Value = 0;
             primaryAction = playerInput.actions.FindAction("Primary");
             secondaryAction = playerInput.actions.FindAction("Secondary");
         }
@@ -533,6 +531,9 @@ namespace BML.Scripts.Player
         #region Upgrades
 
         public void TryIncrementCurrentLevelAndAvailableUpdateCount() {
+            _previousRequiredExperience.Value = CalculateRequiredExperience(_playerCurrentLevel.Value);
+            _requiredExperience.Value = CalculateRequiredExperience(_playerCurrentLevel.Value + 1);
+            
             //maximum check of going up 10 levels at once (they should never gain that much xp at once)
             int levelChecks = 0;
 
@@ -543,29 +544,23 @@ namespace BML.Scripts.Player
             }
         }
 
+        public float CalculateRequiredExperience(int level) {
+            float requiredExperience = 0;
+            for(int x = 0; x < level; x++) {
+                requiredExperience += _levelExperienceCurve.Value.Evaluate(x);
+            }
+
+            return requiredExperience;
+        }
+
         public void AddLevel(int amount, bool setXp)
         {
             if (amount > 0)
                 _availableUpdateCount.Value += amount;
 
-            if (amount > 0)
-            {
-                for (int i = 0; i < amount; i++)
-                {
-                    _previousRequiredExperience.Value = _requiredExperience.Value;
-                    _requiredExperience.Value += _levelExperienceCurve.Value.Evaluate(_playerCurrentLevel.Value + 1);
-                    _playerCurrentLevel.Value = Mathf.Max(0, _playerCurrentLevel.Value + 1);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < Mathf.Abs(amount); i++)
-                {
-                    _requiredExperience.Value -= _levelExperienceCurve.Value.Evaluate(_playerCurrentLevel.Value);
-                    _previousRequiredExperience.Value = _requiredExperience.Value - _levelExperienceCurve.Value.Evaluate(_playerCurrentLevel.Value - 1);
-                    _playerCurrentLevel.Value = Mathf.Max(0, _playerCurrentLevel.Value - 1);
-                }
-            }
+            _playerCurrentLevel.Value = Mathf.Max(0, _playerCurrentLevel.Value + amount);
+            _previousRequiredExperience.Value = CalculateRequiredExperience(_playerCurrentLevel.Value);
+            _requiredExperience.Value = CalculateRequiredExperience(_playerCurrentLevel.Value + 1);
 
             if (setXp)
                 _playerExperience.Value = Mathf.CeilToInt(_previousRequiredExperience.Value);
