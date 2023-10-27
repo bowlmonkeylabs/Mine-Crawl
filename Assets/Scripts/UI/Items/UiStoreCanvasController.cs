@@ -276,6 +276,7 @@ namespace BML.Scripts.UI.Items
             
             foreach (var button in buttonList)
             {
+                button.SetButtonText();
                 button.UpdateInteractable();
             }
             
