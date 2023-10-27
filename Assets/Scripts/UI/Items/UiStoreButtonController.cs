@@ -108,7 +108,7 @@ namespace BML.Scripts.UI.Items
             }
         }
 
-        private void SetButtonText()
+        public void SetButtonText()
         {
             if (!_costText.SafeIsUnityNull())
             {
