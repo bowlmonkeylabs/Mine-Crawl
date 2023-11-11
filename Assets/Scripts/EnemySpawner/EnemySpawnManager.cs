@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.CaveV2;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.CaveV2.SpawnObjects;
@@ -39,6 +40,7 @@ namespace BML.Scripts
         [SerializeField] private BoolVariable _isSpawningPaused;
         [SerializeField] private IntVariable _currentEnemyCount;
         [SerializeField] private BoolVariable _hasPlayerExitedStartRoom;
+        [SerializeField] private SafeFloatValueReference _intensityScore;
         [SerializeField] private DynamicGameEvent _onEnemyKilled;
         [SerializeField] private GameEvent _onAfterGenerateLevelObjects;
         [Required, SerializeField] [InlineEditor()] private EnemySpawnerParams _enemySpawnerParams;
@@ -329,7 +331,11 @@ namespace BML.Scripts
 
         private void HandleSpawning()
         {
-            if (Time.time < lastSpawnTime + _enemySpawnerParams.SpawnDelay)
+            float currentSpawnDelay = (_intensityScore.Value <= _enemySpawnerParams.LowIntensity)
+                ? _enemySpawnerParams.SpawnDelayLowIntensity
+                : _enemySpawnerParams.SpawnDelay;
+            
+            if (Time.time < lastSpawnTime + currentSpawnDelay)
             {
                 return;
             }

@@ -9,8 +9,10 @@ namespace BML.Scripts
     public class EnemySpawnerParams : ScriptableObject
     {
         public float SpawnDelay = 5f;
+        public float SpawnDelayLowIntensity = 3f;
         public float SpawnCap = 5f;
         public float MaxIntensity = 5;
+        public float LowIntensity = 2f;
         public float MinIntesity = 1;
         public List<EnemySpawnParams> SpawnAtTags;
     }

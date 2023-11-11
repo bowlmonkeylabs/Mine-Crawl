@@ -20,6 +20,7 @@ namespace BML.Scripts.UI
         
         private string _graphCombinedMinMax => $"combinedMinMax{_graphGroup}";
         private string _graphIntensity => $"playerIntensityScore{_graphGroup}";
+        private string _graphLowIntensityTarget => $"playerLowIntensityTarget{_graphGroup}";
         private string _graphIntensityTarget => $"playerIntensityScoreTarget{_graphGroup}";
         
         #endregion
@@ -45,6 +46,16 @@ namespace BML.Scripts.UI
                 0, 1,
                 _graphGroup,
                 Color.cyan,
+                true,
+                false,
+                true
+            );
+            DebugGUI.SetGraphProperties(
+                _graphLowIntensityTarget,
+                "LowIntensityTarget",
+                0, 1,
+                _graphGroup,
+                new Color(0, 0.5f, .85f, 1),
                 true,
                 false,
                 true
@@ -106,6 +117,7 @@ namespace BML.Scripts.UI
                 if (enemySpawnerParams != null)
                 {
                     DebugGUI.Graph(_graphIntensityTarget, enemySpawnerParams.MaxIntensity, true);
+                    DebugGUI.Graph(_graphLowIntensityTarget, enemySpawnerParams.LowIntensity, true);
                 }
 
                 var intensityMinMax = DebugGUI.GetGraphMinMax(_graphIntensity);
@@ -116,6 +128,7 @@ namespace BML.Scripts.UI
                 );
                 DebugGUI.SetGraphMinMax(_graphIntensity, combinedMinMax.min, combinedMinMax.max);
                 DebugGUI.SetGraphMinMax(_graphIntensityTarget, combinedMinMax.min, combinedMinMax.max);
+                DebugGUI.SetGraphMinMax(_graphLowIntensityTarget, combinedMinMax.min, combinedMinMax.max);
                 DebugGUI.SetGraphMinMax(_graphCombinedMinMax, combinedMinMax.min, combinedMinMax.max);
             }
         }
