@@ -336,8 +336,12 @@ namespace BML.Scripts.CaveV2.MudBun
                     // TODO prevent tunnels from cutting into rooms
                     // var sourceEdgePosition = source.LocalPosition;
                     // var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(edgeMidPosition);
-                    // var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(sourceTestPosition, edgeRotation);
-                    var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(sourceTestPosition, source.GameObject.transform.rotation);
+                    
+                    // NOTE: Using edgeRotation as the collider rotation for bounds check because rooms currently don't have
+                    // very accurate room colliders and are just approximated by box. Can cause issues with
+                    // non-symetrical colliders
+                    var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(sourceTestPosition, edgeRotation);
+                    // var sourceEdgePosition = source.BoundsColliders.ClosestPointOnBounds(sourceTestPosition, source.GameObject.transform.rotation);
                     var sourceColliderCenter = source.BoundsColliders.Select(coll => coll.bounds.center).Average();
                     sourceEdgePosition.y = sourceColliderCenter.y;
                     // sourceEdgePosition -= edgeDirFlattened;
@@ -345,8 +349,12 @@ namespace BML.Scripts.CaveV2.MudBun
                     
                     // var targetEdgePosition = target.LocalPosition;
                     // var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(edgeMidPosition);
-                    // var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(targetTestPosition, edgeRotation);
-                    var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(targetTestPosition, target.GameObject.transform.rotation);
+                    
+                    // NOTE: Using edgeRotation as the collider rotation for bounds check because rooms currently don't have
+                    // very accurate room colliders and are just approximated by box. Can cause issues with
+                    // non-symetrical colliders
+                    var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(targetTestPosition, edgeRotation);
+                    // var targetEdgePosition = target.BoundsColliders.ClosestPointOnBounds(targetTestPosition, target.GameObject.transform.rotation);
                     var targetColliderCenter = target.BoundsColliders.Select(coll => coll.bounds.center).Average();
                     targetEdgePosition.y = targetColliderCenter.y;
                     // targetEdgePosition += edgeDirFlattened;
