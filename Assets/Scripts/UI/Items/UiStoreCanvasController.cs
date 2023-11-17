@@ -46,7 +46,7 @@ namespace BML.Scripts.UI.Items
         [SerializeField] private Button _cancelButton;
         [SerializeField] private GameObject _noItemsAvailableUi;
         [SerializeField] private int _optionsCount = 2;
-        [SerializeField] private bool _randomizeStoreOnBuy;
+        [SerializeField] private bool _randomizeStore;
         [SerializeField] private bool _navHorizontal = false;
         [SerializeField, LabelText("@(_navHorizontal ? \"Button Nav Up\" : \"Button Nav Left\")")] private Button _buttonNavLeft;
         [SerializeField, LabelText("@(_navHorizontal ? \"Button Nav Down\" : \"Button Nav Right\")")] private Button _buttonNavRight;
@@ -154,7 +154,7 @@ namespace BML.Scripts.UI.Items
                 if (_noItemsAvailableUi != null) _noItemsAvailableUi.SetActive(false);
             }
             
-            if(_randomizeStoreOnBuy)
+            if(_randomizeStore)
             {
                 Random.InitState(SeedManager.Instance.GetSteppedSeed("UpgradeStore"));
                 shownStoreItems = shownStoreItems.OrderBy(c => Random.value).ToList();
@@ -224,7 +224,7 @@ namespace BML.Scripts.UI.Items
 
         private void OnItemPoolUpdated()
         {
-            if (!_randomizeStoreOnBuy || buttonList.Count < _optionsCount)
+            if (!_randomizeStore || buttonList.Count < _optionsCount)
             {
                 GenerateStoreItems();
                 return;
@@ -339,7 +339,7 @@ namespace BML.Scripts.UI.Items
         {
             if (_enableLogs) Debug.Log($"UiStoreCanvasController OnBuy ({playerItem}) (Buttons: {buttonList.Count})");
             if (_useGraph) _itemTreeGraph.MarkItemAsObtained((PlayerItem)playerItem);
-            if (_randomizeStoreOnBuy)
+            if (_randomizeStore)
             {
                 lastSelected =
                     buttonList.FirstOrDefault(buttonController => buttonController.ItemToPurchase == (PlayerItem)playerItem);
