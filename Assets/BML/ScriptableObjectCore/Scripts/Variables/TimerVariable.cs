@@ -12,6 +12,7 @@ using UnityEngine.Serialization;
 namespace BML.ScriptableObjectCore.Scripts.Variables
 {
     public delegate void OnUpdate_();
+    public delegate void OnStarted_();
     public delegate void OnFinished_();
 
     [Required]
@@ -44,6 +45,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [TextArea (7, 10)] [HideInInlineEditors] public String Description;
         
         public event OnUpdate_ OnUpdate;
+        public event OnStarted_ OnStarted;
         public event OnFinished_ OnFinished;
 
         // public float Duration => duration;
@@ -82,6 +84,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
                 startTime = Time.time;
             }
             lastUpdateTime = Time.time;
+            OnStarted?.Invoke();
             OnUpdate?.Invoke();
         }
 
@@ -96,6 +99,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             startTime = Time.time;
             lastUpdateTime = startTime;
             remainingTime = Duration;
+            OnStarted?.Invoke();
             OnUpdate?.Invoke();
         }
         
@@ -129,6 +133,16 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         public void Unsubscribe(OnUpdate_ callback)
         {
             this.OnUpdate -= callback;
+        }
+        
+        public void SubscribeStarted(OnStarted_ callback)
+        {
+            this.OnStarted += callback;
+        }
+
+        public void UnsubscribeStarted(OnStarted_ callback)
+        {
+            this.OnStarted -= callback;
         }
         
         public void SubscribeFinished(OnFinished_ callback)
