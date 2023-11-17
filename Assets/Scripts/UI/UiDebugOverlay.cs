@@ -52,7 +52,8 @@ namespace BML.Scripts.UI
 
         protected void UpdateText()
         {
-            _text.text = $@"Player pos: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
+            _text.text = $@"Game Version: {Application.version}
+Player pos: {this.FormatVector3(_playerTransformSceneReference.Value.position)}
 Level Time: {this.FormatTime(_levelTimeElapsed.Value)}, {Time.timeScale.ToString("0.00")}x
 Seed: {SeedManager.Instance.Seed}
 Enemy Spawn Params ----------
