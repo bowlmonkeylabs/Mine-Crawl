@@ -332,7 +332,7 @@ namespace BML.Scripts.Player.Items
                     itemEffect.LootTableVariable.Value.ModifyProbability(itemEffect.LootTableKey, itemEffect.LootTableAddAmount);
                 }
 
-                if(itemEffect.Type == ItemEffectType.ToggleBoolVariable) {
+                if(itemEffect.Type == ItemEffectType.SetBoolVariable) {
                     itemEffect.BoolVariableToToggle.Value = true;
                 }
 
@@ -341,6 +341,10 @@ namespace BML.Scripts.Player.Items
                     var position = itemEffect.InstantiatePrefabPositionTransform?.Value.position ?? (_pickaxeHitPosition != Vector3.negativeInfinity ? _pickaxeHitPosition : transform.position);
                     var rotation = itemEffect.InstantiatePrefabPositionTransform?.Value.rotation ?? transform.rotation;
                     gameObject.transform.SetPositionAndRotation(position, rotation);
+                }
+
+                if(itemEffect.Type == ItemEffectType.RestartTimerVariable) {
+                    itemEffect.RestartTimerVariable.RestartTimer();
                 }
             } catch(Exception exception) {
                 Debug.LogWarning("Item effect failed to apply: " + exception.Message);
@@ -361,7 +365,7 @@ namespace BML.Scripts.Player.Items
                 }
             }
 
-            if(itemEffect.Type == ItemEffectType.ToggleBoolVariable) {
+            if(itemEffect.Type == ItemEffectType.SetBoolVariable) {
                itemEffect.BoolVariableToToggle.Value = false;
             }
         }
