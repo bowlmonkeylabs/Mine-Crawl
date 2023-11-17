@@ -37,8 +37,9 @@ namespace BML.Scripts.Player.Items
         StatIncrease,
         FireProjectile,
         ChangeLootTable,
-        ToggleBoolVariable,
-        InstantiatePrefab
+        SetBoolVariable,
+        InstantiatePrefab,
+        RestartTimerVariable,
     }
 
     [Serializable, InlineEditor]
@@ -78,13 +79,16 @@ namespace BML.Scripts.Player.Items
         public LootTableKey LootTableKey;
         [ShowIfGroup("ChangeLootTable")] public float LootTableAddAmount;
 
-        [ShowIfGroup("ToggleBoolVariable", Condition = "Type", Value = ItemEffectType.ToggleBoolVariable)]
+        [ShowIfGroup("ToggleBoolVariable", Condition = "Type", Value = ItemEffectType.SetBoolVariable)]
         [ShowIfGroup("ToggleBoolVariable")] public BoolVariable BoolVariableToToggle;
 
         [ShowIfGroup("InstantiatePrefab", Condition = "Type", Value = ItemEffectType.InstantiatePrefab)]
         [ShowIfGroup("InstantiatePrefab")] public GameObject PrefabToInstantiate;
         [ShowIfGroup("InstantiatePrefab")] public TransformSceneReference InstantiatePrefabPositionTransform;
         [ShowIfGroup("InstantiatePrefab")] public TransformSceneReference InstantiatePrefabContainer;
+        
+        [ShowIfGroup("RestartTimerVariable", Condition = "Type", Value = ItemEffectType.RestartTimerVariable)]
+        [ShowIfGroup("RestartTimerVariable")] public TimerVariable RestartTimerVariable;
 
         public void Reset()
         {
