@@ -18,6 +18,7 @@ namespace BML.Scripts.Player.Items
         [SerializeField] private PlayerInventory _playerInventory;
 
         [SerializeField, FoldoutGroup("Player")] private BoolVariable _inDash;
+        [SerializeField, FoldoutGroup("Player")] private IntVariable _maxHealth;
         
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSwingPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private DynamicGameEvent _onSwingPickaxeHit;
@@ -110,7 +111,12 @@ namespace BML.Scripts.Player.Items
 
         void Update() {
             PassiveItems.ForEach(psi => psi.ItemEffects.ForEach(itemEffect => {
-                if(itemEffect.Trigger == ItemEffectTrigger.RecurringTimer) {
+                if(itemEffect.Trigger == ItemEffectTrigger.RecurringTimer || itemEffect.Trigger == ItemEffectTrigger.HealthRecurringTimer) {
+                    //if it is a recurring timer for health, pause the timer when player is at max health
+                    if(itemEffect.Trigger == ItemEffectTrigger.HealthRecurringTimer && itemEffect.IntStat.Value >= _maxHealth.Value) {
+                        itemEffect.LastTimeCheck = Time.time;
+                        return;
+                    }
                     if(Time.time - itemEffect.LastTimeCheck > itemEffect.Time) {
                         this.ApplyEffect(itemEffect);
                         itemEffect.LastTimeCheck = Time.time;

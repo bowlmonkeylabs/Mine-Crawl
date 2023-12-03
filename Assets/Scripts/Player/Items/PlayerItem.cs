@@ -31,6 +31,7 @@ namespace BML.Scripts.Player.Items
         OnPickaxeSweepHit,
         OnPickaxeSwingCrit,
         OnPickaxeKillEnemy,
+        HealthRecurringTimer
     }
 
     public enum ItemEffectType {
@@ -52,7 +53,7 @@ namespace BML.Scripts.Player.Items
         public bool UseActivationCooldownTimer = false;
         [ShowIf("UseActivationCooldownTimer")] public TimerVariable ActivationCooldownTimer;
 
-        [ShowIfGroup("RecurringTimer", Condition = "Trigger", Value = ItemEffectTrigger.RecurringTimer)] public float Time;
+        [ShowIf("@this.Trigger == ItemEffectTrigger.RecurringTimer || this.Trigger == ItemEffectTrigger.HealthRecurringTimer")] public float Time;
         [HideInInspector] public float LastTimeCheck;
 
         public ItemEffectType Type = ItemEffectType.StatIncrease;
