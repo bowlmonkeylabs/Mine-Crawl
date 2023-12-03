@@ -29,7 +29,7 @@ namespace BML.Scripts.Pathfinding
                 IsPathPossible = false;
                 return;
             }
-
+            
             IsPathPossible =  PathUtilities.IsPathPossible(node1, node2);
         }
     }
