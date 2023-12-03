@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
@@ -32,7 +32,17 @@ namespace BML.Scripts.UI
 
         public void SetTimerVariable(TimerVariable timerVariable)
         {
+            if (_timer != null)
+            {
+                _timer.Unsubscribe(UpdateImage);
+                _timer.UnsubscribeFinished(UpdateImage);
+            }
+
             _timer.SetVariable(timerVariable);
+
+            _timer.Subscribe(UpdateImage);
+            _timer.SubscribeFinished(UpdateImage);
+            UpdateImage();
         }
 
         #endregion

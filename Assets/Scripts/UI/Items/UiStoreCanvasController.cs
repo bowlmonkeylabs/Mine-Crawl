@@ -38,6 +38,7 @@ namespace BML.Scripts.UI.Items
         
         [SerializeField] private bool _useGraph = true;
         [ShowIf("_useGraph"), SerializeField] private Player.Items.ItemTreeGraph _itemTreeGraph;
+        [HideIf("_useGraph"), SerializeField] private PlayerInventory _playerInventory;
         [HideIf("_useGraph"), SerializeField] private DynamicGameEvent _onSetStorePool;
         [HideIf("_useGraph"), SerializeField] private BoolVariable _game_MenuIsOpen_Store;
         [HideIf("_useGraph"), SerializeField] private List<StoreItemPool> _storeItemPools = new List<StoreItemPool>();
@@ -129,8 +130,8 @@ namespace BML.Scripts.UI.Items
                 if (storeItemPool == null)
                     Debug.LogError($"No StoreItemPool with type {currentType} assigned in {gameObject.name}!");
                 
-                itemPool = new List<PlayerItem>(storeItemPool.ActiveItemPool);
-                itemPool.AddRange(storeItemPool.PassiveItemPool);
+                itemPool = new List<PlayerItem>(storeItemPool.ActiveItemPool.Where(activeItem => activeItem != _playerInventory.ActiveItem).ToList());
+                itemPool.AddRange(storeItemPool.PassiveItemPool.Where(passiveItem => passiveItem != _playerInventory.PassiveItem).ToList());
             }
             return itemPool;
         }
