@@ -30,10 +30,19 @@ namespace BML.Scripts.Tasks
         private float horizontalDelta, verticalDelta;
         private CharacterController charController;
         private bool hasGrounded;
+        
+        public override void OnAwake()
+        {
+            base.OnAwake();
+            
+            if (ai == null)
+                ai = transform.GetComponentInChildren<AIPath>();
+            
+            charController = transform.GetComponentInChildren<CharacterController>();
+        }
 
         public override void OnStart()
         {
-            charController = transform.GetComponentInChildren<CharacterController>();
             swoopStartTime = Time.time;
             ai.enabled = false;
             charController.enabled = true;

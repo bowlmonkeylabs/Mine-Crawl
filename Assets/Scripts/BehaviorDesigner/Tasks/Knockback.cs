@@ -24,9 +24,18 @@ namespace BML.Scripts.Tasks
         private float knockBackStartTime;
         private CharacterController charController;
 
+        public override void OnAwake()
+        {
+            base.OnAwake();
+            
+            if (ai == null)
+                ai = transform.GetComponent<AIPath>();
+            
+            charController = transform.GetComponentInChildren<CharacterController>();
+        }
+
         public override void OnStart()
         {
-            charController = transform.GetComponentInChildren<CharacterController>();
             knockBackStartTime = Time.time;
             ai.enabled = false;
             charController.enabled = true;
