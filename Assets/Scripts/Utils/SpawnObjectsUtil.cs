@@ -4,15 +4,17 @@ namespace BML.Scripts.Utils
 {
     public static class SpawnObjectsUtil
     {
-        public static bool GetPointTowards(Vector3 position, Vector3 direction, out Vector3 result, LayerMask layerMask, float checkDistance)
+        public static bool GetPointTowards(Vector3 position, Vector3 direction, out Vector3 hitPoint, out Vector3 hitNormal, LayerMask layerMask, float checkDistance)
         {
             var didHit = Physics.Raycast(new Ray(position, direction), out var hitInfo, checkDistance, layerMask);
             if (didHit)
             {
-                result = hitInfo.point;
+                hitPoint = hitInfo.point;
+                hitNormal = hitInfo.normal;
                 return true;
             }
-            result = position;
+            hitPoint = position;
+            hitNormal = hitInfo.normal;
             return false;
         }
     }
