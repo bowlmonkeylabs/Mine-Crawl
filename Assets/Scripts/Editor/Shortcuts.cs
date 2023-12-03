@@ -17,5 +17,20 @@ namespace BML.Scripts.Editor
             method.Invoke(new object(), null);
         }
         
+        
+        // Alt + K
+        [Shortcut("Find Player In Scene View", KeyCode.F, ShortcutModifiers.Alt)]
+        public static void FindPlayerInSceneView()
+        {
+            var playerInScene = GameObject.FindWithTag("Player");
+            if (playerInScene == null)
+            {
+                Debug.LogWarning("Could not find 'Player'.");
+                return;
+            }
+            Selection.activeTransform = playerInScene.transform;
+            SceneView.lastActiveSceneView.FrameSelected();
+        }
+        
     }
 }
