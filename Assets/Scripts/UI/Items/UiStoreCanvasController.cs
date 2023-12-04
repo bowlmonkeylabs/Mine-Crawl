@@ -128,9 +128,14 @@ namespace BML.Scripts.UI.Items
             {
                 StoreItemPool storeItemPool = _storeItemPools.FirstOrDefault(pool => pool.StoreItemPoolType == currentType);
                 if (storeItemPool == null)
+                {
                     Debug.LogError($"No StoreItemPool with type {currentType} assigned in {gameObject.name}!");
+                    return new List<PlayerItem>();
+                }
                 
-                itemPool = new List<PlayerItem>(storeItemPool.ActiveItemPool.Where(activeItem => activeItem != _playerInventory.ActiveItem).ToList());
+                itemPool = new List<PlayerItem>(storeItemPool.ActiveItemPool
+                    .Where(activeItem => activeItem != _playerInventory.SwappableActiveItem)
+                    .ToList());
                 itemPool.AddRange(storeItemPool.PassiveItemPool.Where(passiveItem => passiveItem != _playerInventory.PassiveItem).ToList());
             }
             return itemPool;

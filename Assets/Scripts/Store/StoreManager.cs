@@ -61,7 +61,7 @@ namespace BML.Scripts
                     break;
 
                 case ItemType.Active:
-                    _playerInventory.ActiveItem = playerItem;
+                    _playerInventory.SwappableActiveItem = playerItem;
                     break;
 
                 default:

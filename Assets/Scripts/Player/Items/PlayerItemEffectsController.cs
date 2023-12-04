@@ -17,8 +17,9 @@ namespace BML.Scripts.Player.Items
     {
         [SerializeField] private PlayerInventory _playerInventory;
 
+        [SerializeField, FoldoutGroup("Player")] private Transform _mainCamera;
+        [SerializeField, FoldoutGroup("Player")] private BoolVariable _inGodMode;
         [SerializeField, FoldoutGroup("Player")] private BoolVariable _inDash;
-        [SerializeField, FoldoutGroup("Player")] private IntVariable _maxHealth;
         
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSwingPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private DynamicGameEvent _onSwingPickaxeHit;
@@ -30,6 +31,8 @@ namespace BML.Scripts.Player.Items
 
         [SerializeField, FoldoutGroup("Projectile")] private TransformSceneReference MainCameraRef;
         [SerializeField, FoldoutGroup("Projectile")] private TransformSceneReference ProjectileContainer;
+        
+        [SerializeField, FoldoutGroup("Throwable")] private TransformSceneReference ThrowableContainer;
 
         private List<PlayerItem> PassiveItems {
             get {
@@ -39,6 +42,19 @@ namespace BML.Scripts.Player.Items
                     passiveItems.Add(_playerInventory.PassiveItem);
                 }
                 return passiveItems;
+            }
+        }
+        
+        private List<PlayerItem> AllItems {
+            get 
+            {
+                var allItems = new List<PlayerItem>();
+                allItems.AddRange(_playerInventory.PassiveStackableItems);
+                allItems.AddRange(_playerInventory.ActiveItems.Where(i => i != null));
+                if(_playerInventory.PassiveItem != null) {
+                    allItems.Add(_playerInventory.PassiveItem);
+                }
+                return allItems;
             }
         }
 
@@ -58,9 +74,8 @@ namespace BML.Scripts.Player.Items
 
             _playerInventory.OnAnyItemAdded += CheckEffectsTimersListOnItemAdded;
             _playerInventory.OnAnyItemRemoved += CheckEffectsTimersListOnItemRemoved;
-            _playerInventory.OnPassiveStackableItemAdded += CheckEffectsTimersListOnItemAdded;
-            _playerInventory.OnPassiveStackableItemRemoved += CheckEffectsTimersListOnItemRemoved;
             
+            _playerInventory.OnActiveItemChanged += RepopulateEffectsTimersList;
             _playerInventory.OnPassiveStackableItemChanged += RepopulateEffectsTimersList;
             _playerInventory.OnPassiveStackableItemTreeChanged += RepopulateEffectsTimersList;
             
@@ -83,13 +98,12 @@ namespace BML.Scripts.Player.Items
         void OnDisable() {
             this.UnApplyWhenAcquiredOrActivatedEffectsForPassiveItems();
             
-            _effectTimersToUpdate.Clear();
+            _effectActivationCooldownTimersToUpdate.Clear();
 
             _playerInventory.OnAnyItemAdded -= CheckEffectsTimersListOnItemAdded;
             _playerInventory.OnAnyItemRemoved -= CheckEffectsTimersListOnItemRemoved;
-            _playerInventory.OnPassiveStackableItemAdded -= CheckEffectsTimersListOnItemAdded;
-            _playerInventory.OnPassiveStackableItemRemoved -= CheckEffectsTimersListOnItemRemoved;
             
+            _playerInventory.OnActiveItemChanged -= RepopulateEffectsTimersList;
             _playerInventory.OnPassiveStackableItemChanged -= RepopulateEffectsTimersList;
             _playerInventory.OnPassiveStackableItemTreeChanged -= RepopulateEffectsTimersList;
             
@@ -109,17 +123,37 @@ namespace BML.Scripts.Player.Items
             _onEnemyKilled.Unsubscribe(OnEnemyKilledDynamic);
         }
 
-        void Update() {
-            PassiveItems.ForEach(psi => psi.ItemEffects.ForEach(itemEffect => {
-                if(itemEffect.Trigger == ItemEffectTrigger.RecurringTimer || itemEffect.Trigger == ItemEffectTrigger.HealthRecurringTimer) {
-                    //if it is a recurring timer for health, pause the timer when player is at max health
-                    if(itemEffect.Trigger == ItemEffectTrigger.HealthRecurringTimer && itemEffect.IntStat.Value >= _maxHealth.Value) {
-                        itemEffect.LastTimeCheck = Time.time;
+        void Update() 
+        {
+            AllItems.ForEach(item => item.ItemEffects.ForEach(itemEffect => {
+                if (itemEffect.Trigger == ItemEffectTrigger.RecurringTimer) 
+                {
+                    if (!itemEffect.RecurringTimerForTriggerConditional) 
+                    {
+                        if (itemEffect.RecurringTimerForTrigger.IsStarted &&
+                            !itemEffect.RecurringTimerForTrigger.IsStopped &&
+                            !itemEffect.RecurringTimerForTrigger.IsFinished)
+                        {
+                            itemEffect.RecurringTimerForTrigger.StopTimer();
+                        }
                         return;
                     }
-                    if(Time.time - itemEffect.LastTimeCheck > itemEffect.Time) {
+                    else if (!itemEffect.RecurringTimerForTrigger.IsStarted || itemEffect.RecurringTimerForTrigger.IsStopped)
+                    {
+                        itemEffect.RecurringTimerForTrigger.StartTimer();
+                    }
+                    itemEffect.RecurringTimerForTrigger.UpdateTime();
+                    if (itemEffect.RecurringTimerForTrigger.IsFinished) 
+                    {
                         this.ApplyEffect(itemEffect);
-                        itemEffect.LastTimeCheck = Time.time;
+                        if (itemEffect.RecurringTimerForTriggerConditional)
+                        {
+                            itemEffect.RecurringTimerForTrigger.RestartTimer();
+                        }
+                        else
+                        {
+                            itemEffect.RecurringTimerForTrigger.ResetTimer();
+                        }
                     }
                 }
             }));
@@ -130,12 +164,36 @@ namespace BML.Scripts.Player.Items
         #endregion
 
         #region Input callbacks
-
-        private void OnUseActiveItem(InputValue value)
+        
+        private void OnUseActiveItem1(InputValue value)
         {
-            if (value.isPressed && _playerInventory.ActiveItem != null)
+            if (value.isPressed && _playerInventory.ActiveItems.Count >= 1 && _playerInventory.ActiveItems[0] != null)
             {
-                ApplyWhenAcquiredOrActivatedEffectsForActiveItem();
+                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(0);
+            }
+        }
+        
+        private void OnUseActiveItem2(InputValue value)
+        {
+            if (value.isPressed && _playerInventory.ActiveItems.Count >= 2 && _playerInventory.ActiveItems[1] != null)
+            {
+                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(1);
+            }
+        }
+
+        private void OnUseActiveItem3(InputValue value)
+        {
+            if (value.isPressed && _playerInventory.ActiveItems.Count >= 3 && _playerInventory.ActiveItems[2] != null)
+            {
+                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(2);
+            }
+        }
+
+        private void OnUseActiveItem4(InputValue value)
+        {
+            if (value.isPressed && _playerInventory.ActiveItems.Count >= 4 && _playerInventory.ActiveItems[3] != null)
+            {
+                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(3);
             }
         }
 
@@ -177,36 +235,31 @@ namespace BML.Scripts.Player.Items
 
         #region Effects timers
 
-        private List<TimerVariable> _effectTimersToUpdate;
+        private List<TimerVariable> _effectActivationCooldownTimersToUpdate;
 
         private void RepopulateEffectsTimersList()
         {
-            _effectTimersToUpdate = new List<TimerVariable>();
-            if (_playerInventory.ActiveItem)
-            {
-                _effectTimersToUpdate.AddRange(_playerInventory.ActiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
-            }
+            _effectActivationCooldownTimersToUpdate = new List<TimerVariable>();
+            _effectActivationCooldownTimersToUpdate.AddRange(_playerInventory.ActiveItems.SelectMany(i => i?.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer) ?? new List<TimerVariable>()));
             if (_playerInventory.PassiveItem)
             {
-                _effectTimersToUpdate.AddRange(_playerInventory.PassiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
+                _effectActivationCooldownTimersToUpdate.AddRange(_playerInventory.PassiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
             }
-            _effectTimersToUpdate.AddRange(_playerInventory.PassiveStackableItems.SelectMany(i => i.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer)));
-            _effectTimersToUpdate = _effectTimersToUpdate.Distinct().ToList();
+            _effectActivationCooldownTimersToUpdate.AddRange(_playerInventory.PassiveStackableItems.SelectMany(i => i?.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer) ?? new List<TimerVariable>()));
+            _effectActivationCooldownTimersToUpdate = _effectActivationCooldownTimersToUpdate.Distinct().ToList();
         }
 
         private void CheckEffectsTimersListOnItemAdded(PlayerItem playerItem)
         {
-            var itemTimers = playerItem.ItemEffects
+            var itemActivationTimers = playerItem.ItemEffects
                 .Where(e => e.UseActivationCooldownTimer)
                 .Select(e => e.ActivationCooldownTimer)
                 .ToList();
-            if (!itemTimers.Any())
+            if (itemActivationTimers.Any())
             {
-                return;
+                _effectActivationCooldownTimersToUpdate.AddRange(itemActivationTimers);
+                _effectActivationCooldownTimersToUpdate = _effectActivationCooldownTimersToUpdate.Distinct().ToList();
             }
-            
-            _effectTimersToUpdate.AddRange(itemTimers);
-            _effectTimersToUpdate = _effectTimersToUpdate.Distinct().ToList();
         }
         
         private void CheckEffectsTimersListOnItemRemoved(PlayerItem playerItem)
@@ -216,7 +269,7 @@ namespace BML.Scripts.Player.Items
 
         private void UpdateEffectsTimers()
         {
-            foreach (var timer in _effectTimersToUpdate)
+            foreach (var timer in _effectActivationCooldownTimersToUpdate)
             {
                 timer.UpdateTime();
             }
@@ -224,12 +277,12 @@ namespace BML.Scripts.Player.Items
 
         #endregion
 
-        private void ApplyWhenAcquiredOrActivatedEffectsForActiveItem() {
-            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItem, ItemEffectTrigger.WhenAcquiredOrActivated, true);
+        private void ApplyWhenAcquiredOrActivatedEffectsForActiveItem(int index) {
+            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItems[index], ItemEffectTrigger.WhenAcquiredOrActivated, true);
         }
 
-        private void UnApplyWhenAcquiredOrActivatedEffectsActive() {
-            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItem, ItemEffectTrigger.WhenAcquiredOrActivated, false);
+        private void UnApplyWhenAcquiredOrActivatedEffectsActive(int index) {
+            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItems[index], ItemEffectTrigger.WhenAcquiredOrActivated, false);
         }
         
         private void ApplyOnDashEffectsForPassiveItems() {
@@ -296,12 +349,12 @@ namespace BML.Scripts.Player.Items
         private void ApplyEffect(ItemEffect itemEffect)
         {
             try {
-                if (itemEffect.UseActivationLimit && itemEffect.RemainingActivations.Value <= 0)
+                if (itemEffect.UseActivationLimit && itemEffect.RemainingActivations.Value <= 0 && !_inGodMode)
                 {
                     return;
                 }
                 
-                if (itemEffect.UseActivationCooldownTimer)
+                if (itemEffect.UseActivationCooldownTimer && !_inGodMode)
                 {
                     if (itemEffect.ActivationCooldownTimer.IsStarted && !itemEffect.ActivationCooldownTimer.IsFinished)
                     {
@@ -310,7 +363,7 @@ namespace BML.Scripts.Player.Items
                     itemEffect.ActivationCooldownTimer.RestartTimer();
                 }
                 
-                if (itemEffect.UseActivationLimit)
+                if (itemEffect.UseActivationLimit && !_inGodMode)
                 {
                     itemEffect.RemainingActivations.Value -= 1;
                 }
@@ -352,8 +405,24 @@ namespace BML.Scripts.Player.Items
                 if(itemEffect.Type == ItemEffectType.RestartTimerVariable) {
                     itemEffect.RestartTimerVariable.RestartTimer();
                 }
-            } catch(Exception exception) {
-                Debug.LogWarning("Item effect failed to apply: " + exception.Message);
+
+                if (itemEffect.Type == ItemEffectType.Throw)
+                {
+                    // Calculate throw
+                    var throwDir = _mainCamera.forward;
+                    var throwForce = throwDir * itemEffect.ThrowForce.Value;
+                    
+                    // Instantiate throwable
+                    var newGameObject = GameObjectUtils.SafeInstantiate(true, itemEffect.Throwable, ThrowableContainer.Value);
+                    newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
+                    var throwable = newGameObject.GetComponentInChildren<Throwable>();
+                    throwable.DoThrow(throwForce);
+                }
+                
+            } 
+            catch(Exception exception) 
+            {
+                Debug.LogError($"Item effect failed to apply ({itemEffect.Type}, {itemEffect.Trigger}): {exception.Message} | {exception.InnerException}");
             }
         }
 

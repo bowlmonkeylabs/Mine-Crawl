@@ -31,7 +31,6 @@ namespace BML.Scripts.Player.Items
         OnPickaxeSweepHit,
         OnPickaxeSwingCrit,
         OnPickaxeKillEnemy,
-        HealthRecurringTimer
     }
 
     public enum ItemEffectType {
@@ -41,6 +40,7 @@ namespace BML.Scripts.Player.Items
         SetBoolVariable,
         InstantiatePrefab,
         RestartTimerVariable,
+        Throw,
     }
 
     [Serializable, InlineEditor]
@@ -53,8 +53,8 @@ namespace BML.Scripts.Player.Items
         public bool UseActivationCooldownTimer = false;
         [ShowIf("UseActivationCooldownTimer")] public TimerVariable ActivationCooldownTimer;
 
-        [ShowIf("@this.Trigger == ItemEffectTrigger.RecurringTimer || this.Trigger == ItemEffectTrigger.HealthRecurringTimer")] public float Time;
-        [HideInInspector] public float LastTimeCheck;
+        [ShowIf("@this.Trigger == ItemEffectTrigger.RecurringTimer")] public TimerVariable RecurringTimerForTrigger;
+        [ShowIf("@this.Trigger == ItemEffectTrigger.RecurringTimer"), Tooltip("The recurring timer only runs while this is true.")] public SafeBoolValueReference RecurringTimerForTriggerConditional;
 
         public ItemEffectType Type = ItemEffectType.StatIncrease;
 
@@ -90,10 +90,14 @@ namespace BML.Scripts.Player.Items
         
         [ShowIfGroup("RestartTimerVariable", Condition = "Type", Value = ItemEffectType.RestartTimerVariable)]
         [ShowIfGroup("RestartTimerVariable")] public TimerVariable RestartTimerVariable;
+        
+        [ShowIfGroup("Throw", Condition = "Type", Value = ItemEffectType.Throw)]
+        [ShowIfGroup("Throw")] public SafeFloatValueReference ThrowForce;
+        [ShowIfGroup("Throw"), AssetsOnly] public GameObject Throwable;
 
         public void Reset()
         {
-            LastTimeCheck = Mathf.NegativeInfinity;
+            RecurringTimerForTrigger?.ResetTimer();
             RemainingActivations?.Reset();
             ActivationCooldownTimer?.ResetTimer();
         }

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0699a69989f2e77499221b13d2694b0b, type: 3}
-  m_Name: PlayerItem_Active_Bomb
+  m_Name: PlayerItem_Active_Torch
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -54,31 +54,21 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  _name: Bomb
-  _effectDescription: Drop a bomb
+  _name: Torch
+  _effectDescription: Drop a torch
   _storeDescription: 
   _useIconColor: 0
   _iconColor: {r: 1, g: 0.9176231, b: 0.3820755, a: 1}
-  _icon: {fileID: 21300000, guid: 8bdf31d5100336446b0115b4002a8a31, type: 3}
+  _icon: {fileID: 21300000, guid: f90435c67d815f047b0ccf8405618346, type: 3}
   PassiveStackableTreeStartNode: {fileID: 0}
   _itemType: 1
   _itemEffects:
   - Trigger: 0
     UseActivationLimit: 1
-    RemainingActivations: {fileID: 11400000, guid: 854325ec046576444a20daae883a3033, type: 2}
-    UseActivationCooldownTimer: 1
-    ActivationCooldownTimer: {fileID: 11400000, guid: bfd2d3644dfc50f40a4dfcd6e2b1c40f, type: 2}
-    RecurringTimerForTrigger:
-      UseConstant: 0
-      ConstantDuration:
-        ReferenceTypeSelector: 0
-        ConstantValue: 0
-        ReferenceValue_FloatVariable: {fileID: 0}
-        ReferenceValue_IntVariable: {fileID: 0}
-        ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-        ReferenceValue_BoolVariable: {fileID: 0}
-        ReferenceValue_FunctionVariable: {fileID: 0}
-      Variable: {fileID: 0}
+    RemainingActivations: {fileID: 11400000, guid: dcc1ad60fbe421843b6d6dcec22f6bd3, type: 2}
+    UseActivationCooldownTimer: 0
+    ActivationCooldownTimer: {fileID: 0}
+    RecurringTimerForTrigger: {fileID: 0}
     RecurringTimerForTriggerConditional:
       ReferenceTypeSelector: 0
       ConstantValue: 0
@@ -105,10 +95,49 @@ MonoBehaviour:
     RestartTimerVariable: {fileID: 0}
     ThrowForce:
       ReferenceTypeSelector: 0
-      ConstantValue: 10
+      ConstantValue: 8
       ReferenceValue_FloatVariable: {fileID: 0}
       ReferenceValue_IntVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
       ReferenceValue_BoolVariable: {fileID: 0}
       ReferenceValue_FunctionVariable: {fileID: 0}
-    Throwable: {fileID: 8692043269319617905, guid: badef62d6c4a3d547bbf8b9847ddcd79, type: 3}
+    Throwable: {fileID: 8692043269319617905, guid: edb8efafa5a40e944b6001753e059f59, type: 3}
+  - Trigger: 1
+    UseActivationLimit: 0
+    RemainingActivations: {fileID: 0}
+    UseActivationCooldownTimer: 0
+    ActivationCooldownTimer: {fileID: 0}
+    RecurringTimerForTrigger: {fileID: 11400000, guid: 0edba3be8bef07d46a08d9aadf04b47f, type: 2}
+    RecurringTimerForTriggerConditional:
+      ReferenceTypeSelector: 4
+      ConstantValue: 0
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 11400000, guid: 6db6f60692b814442b67d0041c0857eb, type: 2}
+    Type: 0
+    UsePercentageIncrease: 0
+    IsTemporaryStatIncrease: 0
+    TemporaryStatIncreaseTime: 0
+    FloatStat: {fileID: 0}
+    IntStat: {fileID: 11400000, guid: dcc1ad60fbe421843b6d6dcec22f6bd3, type: 2}
+    StatIncreaseAmount: 1
+    StatIncreasePercent: 0
+    ProjectilePrefab: {fileID: 0}
+    LootTableVariable: {fileID: 0}
+    LootTableKey: 0
+    LootTableAddAmount: 0
+    BoolVariableToToggle: {fileID: 0}
+    PrefabToInstantiate: {fileID: 0}
+    InstantiatePrefabPositionTransform: {fileID: 0}
+    InstantiatePrefabContainer: {fileID: 0}
+    RestartTimerVariable: {fileID: 0}
+    ThrowForce:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+    Throwable: {fileID: 0}

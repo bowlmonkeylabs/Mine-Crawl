@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.ItemTreeGraph;
 using BML.Scripts.Player.Items;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -26,6 +28,7 @@ namespace BML.Scripts.UI.Items
         [TitleGroup("Item")]
         [SerializeField, OnValueChanged("UpdateAssignedItem")] private ItemSource _itemSource;
         [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerInventory")] private ItemType _inventoryItemType;
+        [FormerlySerializedAs("_inventoryActiveSlotIndex")] [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Active")] private int _inventoryActiveItemIndex;
         [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerInventory")] 
         private PlayerInventory _playerInventory;
         [ShowIf("@_itemSource == ItemSource.PlayerInventory")]
@@ -75,7 +78,12 @@ namespace BML.Scripts.UI.Items
                         switch (_inventoryItemType)
                         {
                             case ItemType.Active:
-                                return _playerInventory?.ActiveItem;
+                                if (_playerInventory == null || _inventoryActiveItemIndex >=
+                                    _playerInventory.ActiveItems.Count)
+                                {
+                                    return null;
+                                }
+                                return _playerInventory.ActiveItems[_inventoryActiveItemIndex];
                             case ItemType.Passive:
                                 return _playerInventory?.PassiveItem;
                             case ItemType.PassiveStackable:
@@ -102,8 +110,17 @@ namespace BML.Scripts.UI.Items
             _itemSource = ItemSource.PlayerInventory;
         }
 
+        private enum ItemEffectTimerDisplayMode
+        {
+            None,
+            ActivationCooldownTimer,
+            RecurringTimer,
+        }
+
         [FormerlySerializedAs("_root")] [TitleGroup("UI"), SerializeField] private GameObject _uiRoot;
         [TitleGroup("UI"), SerializeField] private Image _imageIcon;
+        
+        [TitleGroup("UI"), ShowInInspector, ReadOnly] private ItemEffectTimerDisplayMode _timerDisplayMode;
         [TitleGroup("UI"), SerializeField] private UiTimerImageController _timerImageController;
         [TitleGroup("UI"), SerializeField] private UiTextIntFormatter _remainingCountTextController;
         [TitleGroup("UI"), SerializeField] private MMF_Player _remainingCountIncrementFeedbacks;
@@ -129,6 +146,7 @@ namespace BML.Scripts.UI.Items
             
             _playerInventory.OnActiveItemAdded += OnActiveItemChanged;
             _playerInventory.OnActiveItemRemoved += OnActiveItemChanged;
+            _playerInventory.OnActiveItemChanged += OnActiveItemListChanged;
             
             _playerInventory.OnPassiveItemAdded += OnPassiveItemChanged;
             _playerInventory.OnPassiveItemRemoved += OnPassiveItemChanged;
@@ -151,6 +169,7 @@ namespace BML.Scripts.UI.Items
         {
             _playerInventory.OnActiveItemAdded -= OnActiveItemChanged;
             _playerInventory.OnActiveItemRemoved -= OnActiveItemChanged;
+            _playerInventory.OnActiveItemChanged -= OnActiveItemListChanged;
             
             _playerInventory.OnPassiveItemAdded -= OnPassiveItemChanged;
             _playerInventory.OnPassiveItemRemoved -= OnPassiveItemChanged;
@@ -184,6 +203,14 @@ namespace BML.Scripts.UI.Items
         }
 
         private void OnActiveItemChanged(PlayerItem playerItem)
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Active)
+            {
+                UpdateAssignedItem();
+            }
+        }
+        
+        private void OnActiveItemListChanged()
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Active)
             {
@@ -249,6 +276,8 @@ namespace BML.Scripts.UI.Items
         
         #endregion
         
+        private static string ActiveItemBindingHint(int index) => $"<style=Player/UseActiveItem{index + 1}>";
+        
         private void UpdateAssignedItem()
         {
             if (Item == null)
@@ -257,19 +286,39 @@ namespace BML.Scripts.UI.Items
                 return;
             }
             
-            _uiRoot.SetActive(true);
             _imageIcon.sprite = Item.Icon;
             _imageIcon.color = (Item.UseIconColor ? Item.IconColor : Color.white);
+
+            // 'Recurring Timer' will take priority display; if null, then 'Activation Cooldown Timer' will be shown. This works with our current requirements, but may need to change in the future.
+            var recurringTimer = Item.ItemEffects
+                .FirstOrDefault(e => e.Trigger == ItemEffectTrigger.RecurringTimer)
+                ?.RecurringTimerForTrigger;
+            TimerVariable itemTimer = null;
+            if (recurringTimer != null)
+            {
+                _timerDisplayMode = ItemEffectTimerDisplayMode.RecurringTimer;
+                itemTimer = recurringTimer;
+            }
+            else
+            {
+                var activationCooldownTimer = Item.ItemEffects
+                    .FirstOrDefault(e => e.UseActivationCooldownTimer)
+                    ?.ActivationCooldownTimer;
+                if (activationCooldownTimer != null)
+                {
+                    _timerDisplayMode = ItemEffectTimerDisplayMode.ActivationCooldownTimer;
+                    itemTimer = activationCooldownTimer;
+                }
+            }
             
-            var itemActivationTimer = Item.ItemEffects.FirstOrDefault(e => e.UseActivationCooldownTimer)?.ActivationCooldownTimer;
-            if (itemActivationTimer == null)
+            if (itemTimer == null)
             {
                 _timerImageController.gameObject.SetActive(false);
             }
             else
             {
+                _timerImageController.SetTimerVariable(itemTimer);
                 _timerImageController.gameObject.SetActive(true);
-                _timerImageController.SetTimerVariable(itemActivationTimer);
             }
 
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
@@ -289,26 +338,39 @@ namespace BML.Scripts.UI.Items
                 {
                     remainingActivationsVariable.Unsubscribe(OnCountValueChanged);
                     remainingActivationsVariable.Subscribe(OnCountValueChanged);
-                    _remainingCountTextController.gameObject.SetActive(true);
                     _remainingCountTextController.SetVariable(remainingActivationsVariable);
+                    _remainingCountTextController.gameObject.SetActive(true);
                 }
             }
-
+            
             _bindingHintText.gameObject.SetActive(Item.Type == ItemType.Active);
+            if (Item.Type == ItemType.Active)
+            {
+                _bindingHintText.SetText(ActiveItemBindingHint(_inventoryActiveItemIndex));
+            }
 
-            _itemTypeText.text = Item.Type.ToString().ToUpper();
-            _itemTypeText.gameObject.SetActive(Item.Type == ItemType.Passive);
+            // _itemTypeText.text = Item.Type.ToString().ToUpper();
+            // _itemTypeText.gameObject.SetActive(Item.Type == ItemType.Passive);
+            _itemTypeText.gameObject.SetActive(false);
+            
+            _uiRoot.SetActive(true);
         }
 
         private void OnCountValueChanged(int prev, int curr)
         {
             if (curr < prev)
             {
-                _remainingCountDecrementFeedbacks.PlayFeedbacks();
+                if (!_remainingCountDecrementFeedbacks.SafeIsUnityNull())
+                {
+                    _remainingCountDecrementFeedbacks.PlayFeedbacks();
+                }
             }
             else if (curr > prev)
             {
-                _remainingCountIncrementFeedbacks.PlayFeedbacks();
+                if (!_remainingCountIncrementFeedbacks.SafeIsUnityNull())
+                {
+                    _remainingCountIncrementFeedbacks.PlayFeedbacks();
+                }
             }
         }
 

@@ -27,6 +27,13 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         Multiply,
         Divide,
         Equal,
+        NotEqual,
+        LessThan,
+        LessThanOrEqual,
+        GreaterThan,
+        GreaterThanOrEqual,
+        Min,
+        Max,
     }
 
     internal static class FunctionVariableOperatorsExtensions
@@ -40,7 +47,14 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         private static float Subtract(float a, float b) => a - b;
         private static float Multiply(float a, float b) => a * b;
         private static float Divide(float a, float b) => a / b;
-        private static float Equal(float a, float b) => a == b ? 1f : 0f;
+        private static float Equal(float a, float b) => Mathf.Approximately(a, b) ? 1f : 0f;
+        private static float NotEqual(float a, float b) => !Mathf.Approximately(a, b) ? 1f : 0f;
+        private static float LessThan(float a, float b) => a < b ? 1f : 0f;
+        private static float LessThanOrEqual(float a, float b) => a <= b ? 1f : 0f;
+        private static float GreaterThan(float a, float b) => a > b ? 1f : 0f;
+        private static float GreaterThanOrEqual(float a, float b) => a >= b ? 1f : 0f;
+        private static float Min(float a, float b) => Mathf.Min(a, b);
+        private static float Max(float a, float b) => Mathf.Max(a, b);
         
         private static Dictionary<FunctionVariableOperators, Operator> OperatorToFunction = new Dictionary<FunctionVariableOperators,Operator>
         {
@@ -49,6 +63,13 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             {FunctionVariableOperators.Multiply, Multiply},
             {FunctionVariableOperators.Divide, Divide},
             {FunctionVariableOperators.Equal, Equal},
+            {FunctionVariableOperators.NotEqual, NotEqual},
+            {FunctionVariableOperators.LessThan, LessThan},
+            {FunctionVariableOperators.LessThanOrEqual, LessThanOrEqual},
+            {FunctionVariableOperators.GreaterThan, GreaterThan},
+            {FunctionVariableOperators.GreaterThanOrEqual, GreaterThanOrEqual},
+            {FunctionVariableOperators.Min, Min},
+            {FunctionVariableOperators.Max, Max},
         };
         
         private static Dictionary<FunctionVariableOperators, string> OperatorToString = new Dictionary<FunctionVariableOperators, string>
@@ -58,6 +79,13 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             {FunctionVariableOperators.Multiply, "*"},
             {FunctionVariableOperators.Divide, "/"},
             {FunctionVariableOperators.Equal, "=="},
+            {FunctionVariableOperators.NotEqual, "!="},
+            {FunctionVariableOperators.LessThan, "<"},
+            {FunctionVariableOperators.LessThanOrEqual, "<="},
+            {FunctionVariableOperators.GreaterThan, ">"},
+            {FunctionVariableOperators.GreaterThanOrEqual, ">="},
+            {FunctionVariableOperators.Min, "MIN"},
+            {FunctionVariableOperators.Max, "MAX"},
         };
     }
     

@@ -27,6 +27,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             VariableContainer.PopulateAllRelatedContainers(includeInContainers);
         }
 #endif
+
+        [SerializeField] private bool _enableLogs;
+        
         private Color _colorIncludeInContainers => includeInContainers != VariableContainerKey.None ? Color.green : Color.white;
         [OnValueChanged("OnIncludeInContainersChanged")]
         [SerializeField, HideInInlineEditors, GUIColor("_colorIncludeInContainers")] private VariableContainerKey includeInContainers;
@@ -77,9 +80,11 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         /// </summary>
         public void StartTimer()
         {
+            if (_enableLogs) Debug.Log($"StartTimer ({this.name}) (IsAlreadyStarted? {isStarted}) (IsAlreadyStopped? {isStopped}) (IsAlreadyFinished? {isFinished}) (LastUpdateTime {lastUpdateTime})");
             isStopped = false;
             if (!isStarted)
             {
+                isStarted = true;
                 remainingTime = Duration;
                 startTime = Time.time;
             }
@@ -93,6 +98,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         /// </summary>
         public void RestartTimer()
         {
+            if (_enableLogs) Debug.Log($"RestartTimer ({this.name}) (IsAlreadyStarted? {isStarted}) (IsAlreadyStopped? {isStopped}) (IsAlreadyFinished? {isFinished}) (LastUpdateTime {lastUpdateTime})");
             isStarted = true;
             isStopped = false;
             isFinished = false;
@@ -105,6 +111,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         
         public void ResetTimer()
         {
+            if (_enableLogs) Debug.Log($"ResetTimer ({this.name}) (IsAlreadyStarted? {isStarted}) (IsAlreadyStopped? {isStopped}) (IsAlreadyFinished? {isFinished}) (LastUpdateTime {lastUpdateTime})");
             isStarted = false;
             isStopped = true;
             isFinished = false;
@@ -116,12 +123,14 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         public void StopTimer()
         {
+            if (_enableLogs) Debug.Log($"StopTimer ({this.name}) (IsAlreadyStarted? {isStarted}) (IsAlreadyStopped? {isStopped}) (IsAlreadyFinished? {isFinished}) (LastUpdateTime {lastUpdateTime})");
             isStopped = true;
         }
 
         public void AddTime(float addSeconds)
         {
             this.remainingTime += addSeconds;
+            if (_enableLogs) Debug.Log($"AddTime ({this.name}) (Add {addSeconds}) (Remaining {remainingTime}s) (LastUpdateTime {lastUpdateTime})");
             OnUpdate?.Invoke();
         }
 
@@ -161,11 +170,13 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             {
                 var updateTime = Time.time;
                 var deltaTime = (updateTime - lastUpdateTime);
+                var lastLastUpdateTime = lastUpdateTime;
                 lastUpdateTime = updateTime;
                 
                 remainingTime -= deltaTime * multiplier;
                 remainingTime = Mathf.Max(0f, remainingTime.Value);
 
+                if (_enableLogs) Debug.Log($"UpdateTime ({this.name}) (Time {updateTime}) (Delta {deltaTime}) (LastUpdateTime {lastUpdateTime}) (Remaining {remainingTime})");
                 OnUpdate?.Invoke();
                 if (remainingTime == 0)
                 {
@@ -222,7 +233,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         public bool IsStopped => (UseConstant) ? isConstantStopped : Variable.IsStopped;
 
         [BoxGroup("Split/Right", ShowLabel = false)] [HideLabel] [HideIf("UseConstant")] 
-        [SerializeField] private TimerVariable Variable;
+        [SerializeField] public TimerVariable Variable;
 
         private float startTime = Mathf.NegativeInfinity;
         private float lastUpdateTime = Mathf.NegativeInfinity;
@@ -305,6 +316,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isConstantStopped = false;
             if (!isConstantStarted)
             {
+                isConstantStarted = true;
                 ConstantRemainingTime = Duration;
                 startTime = Time.time;
             }
