@@ -18,8 +18,8 @@ namespace BML.Scripts.Player.Items
         [SerializeField] private PlayerInventory _playerInventory;
 
         [SerializeField, FoldoutGroup("Player")] private Transform _mainCamera;
+        [SerializeField, FoldoutGroup("Player")] private BoolVariable _inGodMode;
         [SerializeField, FoldoutGroup("Player")] private BoolVariable _inDash;
-        [SerializeField, FoldoutGroup("Player")] private IntVariable _maxHealth;
         
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSwingPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private DynamicGameEvent _onSwingPickaxeHit;
@@ -349,12 +349,12 @@ namespace BML.Scripts.Player.Items
         private void ApplyEffect(ItemEffect itemEffect)
         {
             try {
-                if (itemEffect.UseActivationLimit && itemEffect.RemainingActivations.Value <= 0)
+                if (itemEffect.UseActivationLimit && itemEffect.RemainingActivations.Value <= 0 && !_inGodMode)
                 {
                     return;
                 }
                 
-                if (itemEffect.UseActivationCooldownTimer)
+                if (itemEffect.UseActivationCooldownTimer && !_inGodMode)
                 {
                     if (itemEffect.ActivationCooldownTimer.IsStarted && !itemEffect.ActivationCooldownTimer.IsFinished)
                     {
@@ -363,7 +363,7 @@ namespace BML.Scripts.Player.Items
                     itemEffect.ActivationCooldownTimer.RestartTimer();
                 }
                 
-                if (itemEffect.UseActivationLimit)
+                if (itemEffect.UseActivationLimit && !_inGodMode)
                 {
                     itemEffect.RemainingActivations.Value -= 1;
                 }
