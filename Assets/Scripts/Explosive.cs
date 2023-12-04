@@ -94,6 +94,7 @@ namespace BML.Scripts
                 Vector3 originToTarget = col.bounds.center - origin;
                 if (Physics.Raycast(origin, originToTarget.normalized, out hit, originToTarget.magnitude, _obstacleMask))
                 {
+                    Debug.Log($"Trying to hit {col.name} but hit {hit.collider.name} instead");
                     // Continue if hit obstacle
                     continue;
                 }
