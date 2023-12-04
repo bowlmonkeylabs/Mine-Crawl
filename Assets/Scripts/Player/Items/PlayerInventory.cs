@@ -21,33 +21,37 @@ namespace BML.Scripts.Player.Items
         #region Inspector
         
         [FormerlySerializedAs("_activeStackableItems")]
-        [OnValueChanged("OnActiveItemChanged")]
+        [OnValueChanged("OnActiveItemChangedInInspector")]
         [SerializeField] private List<PlayerItem> _activeItems;
         [SerializeField] private int _swappableActiveItemIndex = 3;
 
         private PlayerItem _swappableActiveItem
         {
-            get => _activeItems[_swappableActiveItemIndex];
+            get {
+                int numActiveItemSlots = _swappableActiveItemIndex + 1;
+                if (_activeItems.Count < numActiveItemSlots)
+                {
+                    _activeItems.SetLength(numActiveItemSlots);
+                }
+                return _activeItems[_swappableActiveItemIndex];
+            }
             set
             {
+                int numActiveItemSlots = _swappableActiveItemIndex + 1;
+                if (_activeItems.Count < numActiveItemSlots)
+                {
+                    _activeItems.SetLength(numActiveItemSlots);
+                }
                 _activeItems[_swappableActiveItemIndex] = value;
             }
         }
 
         [NonSerialized]
         private PlayerItem _prevActiveItem;
-        private void OnActiveItemChanged()
+        [Button]
+        private void OnActiveItemChangedInInspector()
         {
-            if (_swappableActiveItem != null)
-            {
-                OnAnyItemAdded?.Invoke(_swappableActiveItem);
-                OnActiveItemAdded?.Invoke(_swappableActiveItem);
-            }
-            else
-            {
-                OnAnyItemRemoved?.Invoke(null);
-                OnActiveItemRemoved?.Invoke(null);
-            }
+            OnActiveItemChanged?.Invoke();
             _prevActiveItem = _swappableActiveItem;
         }
 
@@ -92,11 +96,6 @@ namespace BML.Scripts.Player.Items
 
         private void Awake()
         {
-            int numActiveItemSlots = _swappableActiveItemIndex + 1;
-            if (_activeItems.Count < numActiveItemSlots)
-            {
-                _activeItems.SetLength(numActiveItemSlots);
-            }
             _prevActiveItem = _swappableActiveItem;
             _prevPassiveItem = _passiveItem;
         }
@@ -116,7 +115,7 @@ namespace BML.Scripts.Player.Items
                         OnAnyItemRemoved?.Invoke(_swappableActiveItem);
                         OnActiveItemRemoved?.Invoke(_swappableActiveItem);
                     }
-                    _activeItems[_swappableActiveItemIndex] = value;
+                    _swappableActiveItem = value;
                     if (value != null)
                     {
                         OnAnyItemAdded?.Invoke(value);
@@ -233,6 +232,7 @@ namespace BML.Scripts.Player.Items
         public event OnPlayerItemChanged<PlayerItem> OnPassiveItemRemoved;
         public event OnPlayerItemChanged<PlayerItem> OnActiveItemAdded;
         public event OnPlayerItemChanged<PlayerItem> OnActiveItemRemoved;
+        public event OnInventoryChanged OnActiveItemChanged;
 
         #endregion
 

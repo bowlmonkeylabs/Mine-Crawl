@@ -130,6 +130,7 @@ namespace BML.Scripts.UI.Items
             
             _playerInventory.OnActiveItemAdded += OnActiveItemChanged;
             _playerInventory.OnActiveItemRemoved += OnActiveItemChanged;
+            _playerInventory.OnActiveItemChanged += OnActiveItemListChanged;
             
             _playerInventory.OnPassiveItemAdded += OnPassiveItemChanged;
             _playerInventory.OnPassiveItemRemoved += OnPassiveItemChanged;
@@ -152,6 +153,7 @@ namespace BML.Scripts.UI.Items
         {
             _playerInventory.OnActiveItemAdded -= OnActiveItemChanged;
             _playerInventory.OnActiveItemRemoved -= OnActiveItemChanged;
+            _playerInventory.OnActiveItemChanged -= OnActiveItemListChanged;
             
             _playerInventory.OnPassiveItemAdded -= OnPassiveItemChanged;
             _playerInventory.OnPassiveItemRemoved -= OnPassiveItemChanged;
@@ -185,6 +187,14 @@ namespace BML.Scripts.UI.Items
         }
 
         private void OnActiveItemChanged(PlayerItem playerItem)
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Active)
+            {
+                UpdateAssignedItem();
+            }
+        }
+        
+        private void OnActiveItemListChanged()
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Active)
             {
