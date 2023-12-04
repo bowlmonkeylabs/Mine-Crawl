@@ -5531,6 +5531,7 @@ MonoBehaviour:
   - id: 1
   - id: 2
   - id: 3
+  - id: 4
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   ForceStopFeedbacksOnDisable: 1
@@ -5954,6 +5955,98 @@ MonoBehaviour:
           m_PostInfinity: 2
           m_RotationOrder: 4
     00000001:
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: 315148303
+        Label: Unity Events
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        Owner: {fileID: 5045954649840789174}
+        DebugActive: 0
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 5622414999927123353}
+              m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+              m_MethodName: PlayFeedbacks
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
+    00000002:
       type: {class: MMF_Pause, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
         Active: 1
@@ -6029,7 +6122,7 @@ MonoBehaviour:
         ScriptDriven: 0
         AutoResume: 0
         AutoResumeAfter: 0.25
-    00000002:
+    00000003:
       type: {class: BMLInstantiateProjectile, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
       data:
         Active: 1
@@ -6109,7 +6202,7 @@ MonoBehaviour:
         CreateObjectPool: 0
         ObjectPoolSize: 5
         MutualizePools: 0
-    00000003:
+    00000004:
       type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
       data:
         Active: 1
@@ -10633,6 +10726,10 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 2581038386776533517, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 2840163620888121956, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: maxSpeed
       value: 2
@@ -10709,6 +10806,66 @@ PrefabInstance:
       propertyPath: m_Name
       value: SnakeEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.size
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[0]
+      value: 
+      objectReference: {fileID: 158001100064195096}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[1]
+      value: 
+      objectReference: {fileID: 7919342152129711908}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[2]
+      value: 
+      objectReference: {fileID: 1326547433822043292}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[3]
+      value: 
+      objectReference: {fileID: 881361326310904367}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[4]
+      value: 
+      objectReference: {fileID: 108717517478275917}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[5]
+      value: 
+      objectReference: {fileID: 2345393304520930005}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[6]
+      value: 
+      objectReference: {fileID: 7545192630088226632}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[7]
+      value: 
+      objectReference: {fileID: 7772461598032374675}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[8]
+      value: 
+      objectReference: {fileID: 6127028702623122919}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[9]
+      value: 
+      objectReference: {fileID: 6019832134316828360}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[10]
+      value: 
+      objectReference: {fileID: 6019832134316828360}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[11]
+      value: 
+      objectReference: {fileID: 5165649308831474126}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[12]
+      value: 
+      objectReference: {fileID: 8407744059300649270}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[13]
+      value: 
+      objectReference: {fileID: 421959301887639076}
     - target: {fileID: 8005718528128544450, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: FeedbacksList.Array.data[0].Offset.y
       value: 0.25
@@ -10944,6 +11101,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3807083870472402562, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
   m_PrefabInstance: {fileID: 2515476315477935693}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5622414999927123353 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 2515476315477935693}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &6092171625840772315
 Rigidbody:
   m_ObjectHideFlags: 0
