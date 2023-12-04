@@ -44,6 +44,19 @@ namespace BML.Scripts.Player.Items
                 return passiveItems;
             }
         }
+        
+        private List<PlayerItem> AllItems {
+            get 
+            {
+                var allItems = new List<PlayerItem>();
+                allItems.AddRange(_playerInventory.PassiveStackableItems);
+                allItems.AddRange(_playerInventory.ActiveItems.Where(i => i != null));
+                if(_playerInventory.PassiveItem != null) {
+                    allItems.Add(_playerInventory.PassiveItem);
+                }
+                return allItems;
+            }
+        }
 
         private Vector3 _pickaxeHitPosition = Vector3.negativeInfinity;
 
@@ -61,9 +74,8 @@ namespace BML.Scripts.Player.Items
 
             _playerInventory.OnAnyItemAdded += CheckEffectsTimersListOnItemAdded;
             _playerInventory.OnAnyItemRemoved += CheckEffectsTimersListOnItemRemoved;
-            _playerInventory.OnPassiveStackableItemAdded += CheckEffectsTimersListOnItemAdded;
-            _playerInventory.OnPassiveStackableItemRemoved += CheckEffectsTimersListOnItemRemoved;
             
+            _playerInventory.OnActiveItemChanged += RepopulateEffectsTimersList;
             _playerInventory.OnPassiveStackableItemChanged += RepopulateEffectsTimersList;
             _playerInventory.OnPassiveStackableItemTreeChanged += RepopulateEffectsTimersList;
             
@@ -86,13 +98,12 @@ namespace BML.Scripts.Player.Items
         void OnDisable() {
             this.UnApplyWhenAcquiredOrActivatedEffectsForPassiveItems();
             
-            _effectTimersToUpdate.Clear();
+            _effectActivationCooldownTimersToUpdate.Clear();
 
             _playerInventory.OnAnyItemAdded -= CheckEffectsTimersListOnItemAdded;
             _playerInventory.OnAnyItemRemoved -= CheckEffectsTimersListOnItemRemoved;
-            _playerInventory.OnPassiveStackableItemAdded -= CheckEffectsTimersListOnItemAdded;
-            _playerInventory.OnPassiveStackableItemRemoved -= CheckEffectsTimersListOnItemRemoved;
             
+            _playerInventory.OnActiveItemChanged -= RepopulateEffectsTimersList;
             _playerInventory.OnPassiveStackableItemChanged -= RepopulateEffectsTimersList;
             _playerInventory.OnPassiveStackableItemTreeChanged -= RepopulateEffectsTimersList;
             
@@ -112,17 +123,37 @@ namespace BML.Scripts.Player.Items
             _onEnemyKilled.Unsubscribe(OnEnemyKilledDynamic);
         }
 
-        void Update() {
-            PassiveItems.ForEach(psi => psi.ItemEffects.ForEach(itemEffect => {
-                if(itemEffect.Trigger == ItemEffectTrigger.RecurringTimer || itemEffect.Trigger == ItemEffectTrigger.HealthRecurringTimer) {
-                    //if it is a recurring timer for health, pause the timer when player is at max health
-                    if(itemEffect.Trigger == ItemEffectTrigger.HealthRecurringTimer && itemEffect.IntStat.Value >= _maxHealth.Value) {
-                        itemEffect.LastTimeCheck = Time.time;
+        void Update() 
+        {
+            AllItems.ForEach(item => item.ItemEffects.ForEach(itemEffect => {
+                if (itemEffect.Trigger == ItemEffectTrigger.RecurringTimer) 
+                {
+                    if (!itemEffect.RecurringTimerForTriggerConditional) 
+                    {
+                        if (itemEffect.RecurringTimerForTrigger.IsStarted &&
+                            !itemEffect.RecurringTimerForTrigger.IsStopped &&
+                            !itemEffect.RecurringTimerForTrigger.IsFinished)
+                        {
+                            itemEffect.RecurringTimerForTrigger.StopTimer();
+                        }
                         return;
                     }
-                    if(Time.time - itemEffect.LastTimeCheck > itemEffect.Time) {
+                    else if (!itemEffect.RecurringTimerForTrigger.IsStarted || itemEffect.RecurringTimerForTrigger.IsStopped)
+                    {
+                        itemEffect.RecurringTimerForTrigger.StartTimer();
+                    }
+                    itemEffect.RecurringTimerForTrigger.UpdateTime();
+                    if (itemEffect.RecurringTimerForTrigger.IsFinished) 
+                    {
                         this.ApplyEffect(itemEffect);
-                        itemEffect.LastTimeCheck = Time.time;
+                        if (itemEffect.RecurringTimerForTriggerConditional)
+                        {
+                            itemEffect.RecurringTimerForTrigger.RestartTimer();
+                        }
+                        else
+                        {
+                            itemEffect.RecurringTimerForTrigger.ResetTimer();
+                        }
                     }
                 }
             }));
@@ -204,36 +235,31 @@ namespace BML.Scripts.Player.Items
 
         #region Effects timers
 
-        private List<TimerVariable> _effectTimersToUpdate;
+        private List<TimerVariable> _effectActivationCooldownTimersToUpdate;
 
         private void RepopulateEffectsTimersList()
         {
-            _effectTimersToUpdate = new List<TimerVariable>();
-            if (_playerInventory.ActiveItem)
-            {
-                _effectTimersToUpdate.AddRange(_playerInventory.ActiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
-            }
+            _effectActivationCooldownTimersToUpdate = new List<TimerVariable>();
+            _effectActivationCooldownTimersToUpdate.AddRange(_playerInventory.ActiveItems.SelectMany(i => i?.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer) ?? new List<TimerVariable>()));
             if (_playerInventory.PassiveItem)
             {
-                _effectTimersToUpdate.AddRange(_playerInventory.PassiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
+                _effectActivationCooldownTimersToUpdate.AddRange(_playerInventory.PassiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
             }
-            _effectTimersToUpdate.AddRange(_playerInventory.PassiveStackableItems.SelectMany(i => i.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer)));
-            _effectTimersToUpdate = _effectTimersToUpdate.Distinct().ToList();
+            _effectActivationCooldownTimersToUpdate.AddRange(_playerInventory.PassiveStackableItems.SelectMany(i => i?.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer) ?? new List<TimerVariable>()));
+            _effectActivationCooldownTimersToUpdate = _effectActivationCooldownTimersToUpdate.Distinct().ToList();
         }
 
         private void CheckEffectsTimersListOnItemAdded(PlayerItem playerItem)
         {
-            var itemTimers = playerItem.ItemEffects
+            var itemActivationTimers = playerItem.ItemEffects
                 .Where(e => e.UseActivationCooldownTimer)
                 .Select(e => e.ActivationCooldownTimer)
                 .ToList();
-            if (!itemTimers.Any())
+            if (itemActivationTimers.Any())
             {
-                return;
+                _effectActivationCooldownTimersToUpdate.AddRange(itemActivationTimers);
+                _effectActivationCooldownTimersToUpdate = _effectActivationCooldownTimersToUpdate.Distinct().ToList();
             }
-            
-            _effectTimersToUpdate.AddRange(itemTimers);
-            _effectTimersToUpdate = _effectTimersToUpdate.Distinct().ToList();
         }
         
         private void CheckEffectsTimersListOnItemRemoved(PlayerItem playerItem)
@@ -243,7 +269,7 @@ namespace BML.Scripts.Player.Items
 
         private void UpdateEffectsTimers()
         {
-            foreach (var timer in _effectTimersToUpdate)
+            foreach (var timer in _effectActivationCooldownTimersToUpdate)
             {
                 timer.UpdateTime();
             }
