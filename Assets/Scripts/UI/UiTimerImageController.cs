@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,11 +33,8 @@ namespace BML.Scripts.UI
 
         public void SetTimerVariable(TimerVariable timerVariable)
         {
-            if (_timer != null)
-            {
-                _timer.Unsubscribe(UpdateImage);
-                _timer.UnsubscribeFinished(UpdateImage);
-            }
+            _timer.Unsubscribe(UpdateImage);
+            _timer.UnsubscribeFinished(UpdateImage);
 
             _timer.SetVariable(timerVariable);
 
@@ -71,6 +69,11 @@ namespace BML.Scripts.UI
 
         private void UpdateImage()
         {
+            if (this.SafeIsUnityNull() || !this.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+            
             float fillPercent = 0;
             var timerInactive = (!_timer.IsStarted || _timer.IsFinished);
             switch (_displayMode)
@@ -83,8 +86,10 @@ namespace BML.Scripts.UI
                     fillPercent = (timerInactive ? 1 : _timer.ElapsedTime / _timer.Duration);
                     break;
             }
+
             _image.fillAmount = fillPercent * _maxFill;
-            _image.enabled = !timerInactive || _showWhenTimerIsInactive;
+            _image.enabled = true;
+            // _image.enabled = !timerInactive || _showWhenTimerIsInactive;
         }
         
     }

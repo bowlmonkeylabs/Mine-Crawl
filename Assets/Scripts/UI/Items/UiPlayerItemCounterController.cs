@@ -4,6 +4,7 @@ using BML.Scripts.ItemTreeGraph;
 using BML.Scripts.Player.Items;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -257,7 +258,6 @@ namespace BML.Scripts.UI.Items
                 return;
             }
             
-            _uiRoot.SetActive(true);
             _imageIcon.sprite = Item.Icon;
             _imageIcon.color = (Item.UseIconColor ? Item.IconColor : Color.white);
             
@@ -268,8 +268,8 @@ namespace BML.Scripts.UI.Items
             }
             else
             {
-                _timerImageController.gameObject.SetActive(true);
                 _timerImageController.SetTimerVariable(itemActivationTimer);
+                _timerImageController.gameObject.SetActive(true);
             }
 
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
@@ -289,8 +289,8 @@ namespace BML.Scripts.UI.Items
                 {
                     remainingActivationsVariable.Unsubscribe(OnCountValueChanged);
                     remainingActivationsVariable.Subscribe(OnCountValueChanged);
-                    _remainingCountTextController.gameObject.SetActive(true);
                     _remainingCountTextController.SetVariable(remainingActivationsVariable);
+                    _remainingCountTextController.gameObject.SetActive(true);
                 }
             }
 
@@ -298,17 +298,25 @@ namespace BML.Scripts.UI.Items
 
             _itemTypeText.text = Item.Type.ToString().ToUpper();
             _itemTypeText.gameObject.SetActive(Item.Type == ItemType.Passive);
+            
+            _uiRoot.SetActive(true);
         }
 
         private void OnCountValueChanged(int prev, int curr)
         {
             if (curr < prev)
             {
-                _remainingCountDecrementFeedbacks.PlayFeedbacks();
+                if (!_remainingCountDecrementFeedbacks.SafeIsUnityNull())
+                {
+                    _remainingCountDecrementFeedbacks.PlayFeedbacks();
+                }
             }
             else if (curr > prev)
             {
-                _remainingCountIncrementFeedbacks.PlayFeedbacks();
+                if (!_remainingCountIncrementFeedbacks.SafeIsUnityNull())
+                {
+                    _remainingCountIncrementFeedbacks.PlayFeedbacks();
+                }
             }
         }
 

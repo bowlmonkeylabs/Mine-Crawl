@@ -353,7 +353,7 @@ namespace BML.Scripts.Player.Items
                     itemEffect.RestartTimerVariable.RestartTimer();
                 }
             } catch(Exception exception) {
-                Debug.LogWarning("Item effect failed to apply: " + exception.Message);
+                Debug.LogError($"Item effect failed to apply ({itemEffect.Type}, {itemEffect.Trigger}): {exception.Message} | {exception.InnerException}");
             }
         }
 
