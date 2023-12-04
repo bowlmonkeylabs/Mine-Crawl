@@ -4,13 +4,12 @@ using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.Scripts.CaveV2;
 using BML.Scripts.Enemy;
 using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts
@@ -39,6 +38,7 @@ namespace BML.Scripts
         private float currentSpawnDelay;
         private float currentSpeed;
         private GameObject spawnedWorm;
+        private bool isFirstAttack = true;
 
         // Debug
         private bool killHimAndDontComeBack;
@@ -114,20 +114,34 @@ namespace BML.Scripts
             if (lastWormSpawnTime + currentSpawnDelay > Time.time)
                 return;
 
-            Vector3 playerForwardFlat = _mainCamera.Value.forward.xoz();
-            Vector3 spawnPoint = _mainCamera.Value.position + playerForwardFlat * _spawnRadius;
-            Quaternion facePlayerDir = Quaternion.LookRotation(-playerForwardFlat.normalized);
+            Vector3 playerForwardFlat = _mainCamera.Value.forward.xoz().normalized;
+            Vector3 spawnDir;
+
+            if (isFirstAttack)
+            {
+                spawnDir = playerForwardFlat;
+                isFirstAttack = false;
+            }
+            else
+            {
+                Random.InitState(SeedManager.Instance.GetSteppedSeed("WormSpawner"));
+                spawnDir = Random.value > .5f ? playerForwardFlat : Vector3.up;
+            }
+
+            Vector3 spawnPoint = _mainCamera.Value.position + spawnDir * _spawnRadius;
+            Quaternion wormFaceDir = Quaternion.LookRotation(-spawnDir.normalized);
             
             if (spawnedWorm == null)
                 spawnedWorm = GameObject.Instantiate(_wormPrefab);
 
             spawnedWorm.transform.position = spawnPoint;
-            spawnedWorm.transform.rotation = facePlayerDir;
+            spawnedWorm.transform.rotation = wormFaceDir;
             
             WormController wormController = spawnedWorm.GetComponent<WormController>();
             wormController.Respawn(currentSpeed);
             
             lastWormSpawnTime = Time.time;
+            SeedManager.Instance.UpdateSteppedSeed("WormSpawner");
         }
 
         private void ActivateWorm()
