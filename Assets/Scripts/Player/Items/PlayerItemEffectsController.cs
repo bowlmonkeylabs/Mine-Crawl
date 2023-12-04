@@ -349,12 +349,12 @@ namespace BML.Scripts.Player.Items
         private void ApplyEffect(ItemEffect itemEffect)
         {
             try {
-                if (itemEffect.UseActivationLimit && itemEffect.RemainingActivations.Value <= 0 && !_inGodMode)
+                if (itemEffect.UseActivationLimit && itemEffect.RemainingActivations.Value <= 0 && !_inGodMode.Value)
                 {
                     return;
                 }
                 
-                if (itemEffect.UseActivationCooldownTimer && !_inGodMode)
+                if (itemEffect.UseActivationCooldownTimer && !_inGodMode.Value)
                 {
                     if (itemEffect.ActivationCooldownTimer.IsStarted && !itemEffect.ActivationCooldownTimer.IsFinished)
                     {
@@ -363,7 +363,7 @@ namespace BML.Scripts.Player.Items
                     itemEffect.ActivationCooldownTimer.RestartTimer();
                 }
                 
-                if (itemEffect.UseActivationLimit && !_inGodMode)
+                if (itemEffect.UseActivationLimit && !_inGodMode.Value)
                 {
                     itemEffect.RemainingActivations.Value -= 1;
                 }
