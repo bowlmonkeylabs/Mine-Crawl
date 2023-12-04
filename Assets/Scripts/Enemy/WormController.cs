@@ -7,7 +7,6 @@ namespace BML.Scripts.Enemy
 {
     public class WormController : MonoBehaviour
     {
-        [SerializeField] private float _maxDeltaAngle = 3f;
         [SerializeField] private Rigidbody _rb;
         [SerializeField] private Transform _burrowParticlePivot;
         [SerializeField] private LayerMask _terrainMask;
@@ -16,24 +15,16 @@ namespace BML.Scripts.Enemy
 
         private float speed;
         private Vector3 moveDirection, wormToPlayerDir;
+        private Vector3 playerPosOnSpawn;
 
         private void Start()
         {
             moveDirection = transform.forward;
+            playerPosOnSpawn = _mainCameraRef.Value.transform.position;
         }
 
         private void Update()
         {
-            if (!_playerRef.SafeIsUnityNull() && !_playerRef.Value.SafeIsUnityNull() && !transform.SafeIsUnityNull())
-            {
-                wormToPlayerDir = (_playerRef.Value.position - transform.position).normalized;
-            }
-            moveDirection = Vector3.RotateTowards(
-                moveDirection,
-                wormToPlayerDir,
-                _maxDeltaAngle * Mathf.Deg2Rad * Time.deltaTime,
-                Mathf.Infinity).normalized;
-
             HandleBurrowParticles();
         }
 
@@ -46,12 +37,17 @@ namespace BML.Scripts.Enemy
         private void HandleBurrowParticles()
         {
             RaycastHit hit;
+
+            Vector3 burrowParticlesDir = playerPosOnSpawn - transform.position;
+            float maxDist = (playerPosOnSpawn - transform.position).magnitude;
+
             if (!_mainCameraRef.SafeIsUnityNull() && !_mainCameraRef.Value.SafeIsUnityNull() 
-                && Physics.Raycast(_mainCameraRef.Value.position, -wormToPlayerDir, out hit, Mathf.Infinity, _terrainMask))
+                                                  && Physics.Raycast(playerPosOnSpawn, -burrowParticlesDir
+                                                      , out hit, maxDist, _terrainMask))
             {
                 _burrowParticlePivot.gameObject.SetActive(true);
                 _burrowParticlePivot.position = hit.point;
-                _burrowParticlePivot.rotation = Quaternion.LookRotation(-wormToPlayerDir);
+                _burrowParticlePivot.rotation = Quaternion.LookRotation(transform.forward);
             }
             else
             {
@@ -63,6 +59,7 @@ namespace BML.Scripts.Enemy
         {
             speed = newSpeed;
             moveDirection = transform.forward;
+            playerPosOnSpawn = _mainCameraRef.Value.transform.position;
         }
     }
 }

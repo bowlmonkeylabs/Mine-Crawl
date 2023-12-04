@@ -5,6 +5,7 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Enemy;
+using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -29,7 +30,7 @@ namespace BML.Scripts
         [SerializeField, TitleGroup("Feedback")] private MMF_Player _wormActivatedFeedback;
 
         [SerializeField, TitleGroup("References")] private GameObject _wormPrefab;
-        [SerializeField, TitleGroup("References")] private TransformSceneReference _playerRef;
+        [SerializeField, TitleGroup("References")] private TransformSceneReference _mainCamera;
 
         [SerializeField, FoldoutGroup("Debug")] private bool _enableDebug;
 
@@ -113,8 +114,9 @@ namespace BML.Scripts
             if (lastWormSpawnTime + currentSpawnDelay > Time.time)
                 return;
 
-            Vector3 spawnPoint = _playerRef.Value.position + Random.onUnitSphere * _spawnRadius;
-            Quaternion facePlayerDir = Quaternion.LookRotation((_playerRef.Value.position - spawnPoint).normalized);
+            Vector3 playerForwardFlat = _mainCamera.Value.forward.xoz();
+            Vector3 spawnPoint = _mainCamera.Value.position + playerForwardFlat * _spawnRadius;
+            Quaternion facePlayerDir = Quaternion.LookRotation(-playerForwardFlat.normalized);
             
             if (spawnedWorm == null)
                 spawnedWorm = GameObject.Instantiate(_wormPrefab);
