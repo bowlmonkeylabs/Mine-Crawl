@@ -41,6 +41,7 @@ namespace BML.Scripts.Player.Items
         SetBoolVariable,
         InstantiatePrefab,
         RestartTimerVariable,
+        Throw,
     }
 
     [Serializable, InlineEditor]
@@ -90,6 +91,10 @@ namespace BML.Scripts.Player.Items
         
         [ShowIfGroup("RestartTimerVariable", Condition = "Type", Value = ItemEffectType.RestartTimerVariable)]
         [ShowIfGroup("RestartTimerVariable")] public TimerVariable RestartTimerVariable;
+        
+        [ShowIfGroup("Throw", Condition = "Type", Value = ItemEffectType.Throw)]
+        [ShowIfGroup("Throw")] public SafeFloatValueReference ThrowForce;
+        [ShowIfGroup("Throw"), AssetsOnly] public GameObject Throwable;
 
         public void Reset()
         {

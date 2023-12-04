@@ -17,6 +17,7 @@ namespace BML.Scripts.Player.Items
     {
         [SerializeField] private PlayerInventory _playerInventory;
 
+        [SerializeField, FoldoutGroup("Player")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Player")] private BoolVariable _inDash;
         [SerializeField, FoldoutGroup("Player")] private IntVariable _maxHealth;
         
@@ -30,6 +31,8 @@ namespace BML.Scripts.Player.Items
 
         [SerializeField, FoldoutGroup("Projectile")] private TransformSceneReference MainCameraRef;
         [SerializeField, FoldoutGroup("Projectile")] private TransformSceneReference ProjectileContainer;
+        
+        [SerializeField, FoldoutGroup("Throwable")] private TransformSceneReference ThrowableContainer;
 
         private List<PlayerItem> PassiveItems {
             get {
@@ -376,7 +379,23 @@ namespace BML.Scripts.Player.Items
                 if(itemEffect.Type == ItemEffectType.RestartTimerVariable) {
                     itemEffect.RestartTimerVariable.RestartTimer();
                 }
-            } catch(Exception exception) {
+
+                if (itemEffect.Type == ItemEffectType.Throw)
+                {
+                    // Calculate throw
+                    var throwDir = _mainCamera.forward;
+                    var throwForce = throwDir * itemEffect.ThrowForce.Value;
+                    
+                    // Instantiate throwable
+                    var newGameObject = GameObjectUtils.SafeInstantiate(true, itemEffect.Throwable, ThrowableContainer.Value);
+                    newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
+                    var throwable = newGameObject.GetComponentInChildren<Throwable>();
+                    throwable.DoThrow(throwForce);
+                }
+                
+            } 
+            catch(Exception exception) 
+            {
                 Debug.LogError($"Item effect failed to apply ({itemEffect.Type}, {itemEffect.Trigger}): {exception.Message} | {exception.InnerException}");
             }
         }
