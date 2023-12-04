@@ -80,6 +80,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isStopped = false;
             if (!isStarted)
             {
+                isStarted = true;
                 remainingTime = Duration;
                 startTime = Time.time;
             }
@@ -305,6 +306,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isConstantStopped = false;
             if (!isConstantStarted)
             {
+                isConstantStarted = true;
                 ConstantRemainingTime = Duration;
                 startTime = Time.time;
             }
