@@ -5,6 +5,8 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using BML.ScriptableObjectCore.Scripts.Managers;
 using BML.Scripts.ItemTreeGraph;
+using Sirenix.Utilities;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.Player.Items
 {
@@ -17,25 +19,36 @@ namespace BML.Scripts.Player.Items
     public class PlayerInventory : ScriptableObject, IResettableScriptableObject
     {
         #region Inspector
-
-        [OnValueChanged("OnActiveItemChanged")]
-        [SerializeField, InfoBox("Item is not of type 'Active'", InfoMessageType.Error, "@_activeItem != null && _activeItem.Type != ItemType.Active")] private PlayerItem _activeItem;
         
+        [FormerlySerializedAs("_activeStackableItems")]
+        [OnValueChanged("OnActiveItemChanged")]
+        [SerializeField] private List<PlayerItem> _activeItems;
+        [SerializeField] private int _swappableActiveItemIndex = 3;
+
+        private PlayerItem _swappableActiveItem
+        {
+            get => _activeItems[_swappableActiveItemIndex];
+            set
+            {
+                _activeItems[_swappableActiveItemIndex] = value;
+            }
+        }
+
         [NonSerialized]
         private PlayerItem _prevActiveItem;
         private void OnActiveItemChanged()
         {
-            if (_passiveItem != null)
+            if (_swappableActiveItem != null)
             {
-                OnAnyItemAdded?.Invoke(_activeItem);
-                OnActiveItemAdded?.Invoke(_activeItem);
+                OnAnyItemAdded?.Invoke(_swappableActiveItem);
+                OnActiveItemAdded?.Invoke(_swappableActiveItem);
             }
             else
             {
                 OnAnyItemRemoved?.Invoke(null);
                 OnActiveItemRemoved?.Invoke(null);
             }
-            _prevActiveItem = _activeItem;
+            _prevActiveItem = _swappableActiveItem;
         }
 
         [OnValueChanged("OnPassiveItemChanged")]
@@ -79,7 +92,12 @@ namespace BML.Scripts.Player.Items
 
         private void Awake()
         {
-            _prevActiveItem = _activeItem;
+            int numActiveItemSlots = _swappableActiveItemIndex + 1;
+            if (_activeItems.Count < numActiveItemSlots)
+            {
+                _activeItems.SetLength(numActiveItemSlots);
+            }
+            _prevActiveItem = _swappableActiveItem;
             _prevPassiveItem = _passiveItem;
         }
 
@@ -87,27 +105,29 @@ namespace BML.Scripts.Player.Items
 
         #region Public interface
 
-        public PlayerItem ActiveItem 
+        public PlayerItem SwappableActiveItem 
         {
-            get => _activeItem;
+            get => _swappableActiveItem;
             set {
                 if (value == null || value.Type == ItemType.Active)
                 {
-                    if (_activeItem != null)
+                    if (_swappableActiveItem != null)
                     {
-                        OnAnyItemRemoved?.Invoke(_activeItem);
-                        OnActiveItemRemoved?.Invoke(_activeItem);
+                        OnAnyItemRemoved?.Invoke(_swappableActiveItem);
+                        OnActiveItemRemoved?.Invoke(_swappableActiveItem);
                     }
-                    _activeItem = value;
+                    _activeItems[_swappableActiveItemIndex] = value;
                     if (value != null)
                     {
                         OnAnyItemAdded?.Invoke(value);
                         OnActiveItemAdded?.Invoke(value);
                     }
-                    _prevActiveItem = _activeItem;
+                    _prevActiveItem = _swappableActiveItem;
                 }
             }
         }
+        
+        public List<PlayerItem> ActiveItems => _activeItems;
         
         public PlayerItem PassiveItem 
         {
@@ -178,11 +198,16 @@ namespace BML.Scripts.Player.Items
 
         public void ResetScriptableObject()
         {
-            this._activeItem?.ResetScriptableObject();
+            this._activeItems.ForEach(p => p?.ResetScriptableObject());
             this._passiveItem?.ResetScriptableObject();
-            this._passiveStackableItems.ForEach(p => p.ResetScriptableObject());
-            
-            this._activeItem = null;
+            this._passiveStackableItems.ForEach(p => p?.ResetScriptableObject());
+
+            this._swappableActiveItem = null;
+            int numActiveItemSlots = _swappableActiveItemIndex + 1;
+            if (_activeItems.Count != numActiveItemSlots)
+            {
+                _activeItems.SetLength(numActiveItemSlots);
+            }
             this._passiveItem = null;
             this._passiveStackableItems.Clear();
             this._passiveStackableItemTrees.Clear();

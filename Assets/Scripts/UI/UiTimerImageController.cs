@@ -88,8 +88,7 @@ namespace BML.Scripts.UI
             }
 
             _image.fillAmount = fillPercent * _maxFill;
-            _image.enabled = true;
-            // _image.enabled = !timerInactive || _showWhenTimerIsInactive;
+            _image.enabled = !timerInactive || _showWhenTimerIsInactive;
         }
         
     }

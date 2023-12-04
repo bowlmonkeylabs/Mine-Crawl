@@ -76,7 +76,7 @@ namespace BML.Scripts.UI.Items
                         switch (_inventoryItemType)
                         {
                             case ItemType.Active:
-                                return _playerInventory?.ActiveItem;
+                                return _playerInventory?.SwappableActiveItem;
                             case ItemType.Passive:
                                 return _playerInventory?.PassiveItem;
                             case ItemType.PassiveStackable:

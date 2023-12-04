@@ -130,12 +130,36 @@ namespace BML.Scripts.Player.Items
         #endregion
 
         #region Input callbacks
-
-        private void OnUseActiveItem(InputValue value)
+        
+        private void OnUseActiveItem1(InputValue value)
         {
-            if (value.isPressed && _playerInventory.ActiveItem != null)
+            if (value.isPressed && _playerInventory.ActiveItems.Count >= 1 && _playerInventory.ActiveItems[0] != null)
             {
-                ApplyWhenAcquiredOrActivatedEffectsForActiveItem();
+                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(0);
+            }
+        }
+        
+        private void OnUseActiveItem2(InputValue value)
+        {
+            if (value.isPressed && _playerInventory.ActiveItems.Count >= 2 && _playerInventory.ActiveItems[1] != null)
+            {
+                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(1);
+            }
+        }
+
+        private void OnUseActiveItem3(InputValue value)
+        {
+            if (value.isPressed && _playerInventory.ActiveItems.Count >= 3 && _playerInventory.ActiveItems[2] != null)
+            {
+                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(2);
+            }
+        }
+
+        private void OnUseActiveItem4(InputValue value)
+        {
+            if (value.isPressed && _playerInventory.ActiveItems.Count >= 4 && _playerInventory.ActiveItems[3] != null)
+            {
+                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(3);
             }
         }
 
@@ -224,12 +248,12 @@ namespace BML.Scripts.Player.Items
 
         #endregion
 
-        private void ApplyWhenAcquiredOrActivatedEffectsForActiveItem() {
-            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItem, ItemEffectTrigger.WhenAcquiredOrActivated, true);
+        private void ApplyWhenAcquiredOrActivatedEffectsForActiveItem(int index) {
+            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItems[index], ItemEffectTrigger.WhenAcquiredOrActivated, true);
         }
 
-        private void UnApplyWhenAcquiredOrActivatedEffectsActive() {
-            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItem, ItemEffectTrigger.WhenAcquiredOrActivated, false);
+        private void UnApplyWhenAcquiredOrActivatedEffectsActive(int index) {
+            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItems[index], ItemEffectTrigger.WhenAcquiredOrActivated, false);
         }
         
         private void ApplyOnDashEffectsForPassiveItems() {
