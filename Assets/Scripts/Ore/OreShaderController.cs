@@ -1,6 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts
 {
@@ -11,12 +12,15 @@ namespace BML.Scripts
 
         [SerializeField, Required] private Health _health;
         [SerializeField, Required] private Transform _critMarkerTransform;
-        [SerializeField, Required] private Renderer _renderer;
+        [FormerlySerializedAs("_renderer")] [SerializeField, Required] private Renderer _oreRenderer;
+        [SerializeField, Required] private Renderer _oreCrystalsRenderer;
         
         private static readonly int CritPosition = Shader.PropertyToID("_CritPosition");
         private static readonly int CrackPosition0 = Shader.PropertyToID("_CrackPosition0");
         private static readonly int CrackPosition1 = Shader.PropertyToID("_CrackPosition1");
         private static readonly int CrackPosition2 = Shader.PropertyToID("_CrackPosition2");
+        
+        private static readonly int DamageFac = Shader.PropertyToID("_DamageFac");
 
         #endregion
 
@@ -27,32 +31,14 @@ namespace BML.Scripts
             
         }
 
-        private void OnEnable()
-        {
-            // UpdateShader();
-            // _health.OnHealthChange += UpdateShaderOnHealthChange;
-        }
-        
-        private void OnDisable()
-        {
-            // _health.OnHealthChange -= UpdateShaderOnHealthChange;
-        }
-
         #endregion
-
-        private void UpdateShaderOnHealthChange(int prevHealth, int currHealth)
-        {
-            float healthFactor = (float) currHealth / _health.StartingHealth;
-            // _renderer.material.SetFloat("_VertexCrackStrengthFactor", 1 - healthFactor);
-            // _renderer.material.SetFloat("_CrackStrengthFactor", 1 - healthFactor);
-        }
 
         public void UpdateShaderOnPickaxeInteract(HitInfo hitInfo)
         {
             if (_critMarkerTransform.gameObject.activeInHierarchy)
             {
-                var localCritPosition = _renderer.transform.InverseTransformPoint(_critMarkerTransform.position);
-                _renderer.material.SetVector(CritPosition, localCritPosition);
+                var localCritPosition = _oreRenderer.transform.InverseTransformPoint(_critMarkerTransform.position);
+                _oreRenderer.material.SetVector(CritPosition, localCritPosition);
             }
 
             float oreDamageFac = 1 - ((float)_health.Value / (float)_health.StartingHealth);
@@ -64,37 +50,32 @@ namespace BML.Scripts
                 case 0:
                     break;
                 case 1:
-                    var crackPosition0 = _renderer.material.GetVector(CrackPosition0);
+                    var crackPosition0 = _oreRenderer.material.GetVector(CrackPosition0);
                     if (crackPosition0 == Vector4.zero)
                     {
-                        var localHitPosition = _renderer.transform.InverseTransformPoint(hitInfo.HitPositon);
-                        _renderer.material.SetVector(CrackPosition0, localHitPosition);
+                        var localHitPosition = _oreRenderer.transform.InverseTransformPoint(hitInfo.HitPositon);
+                        _oreRenderer.material.SetVector(CrackPosition0, localHitPosition);
                     }
                     break;
                 case 2:
-                    var crackPosition1 = _renderer.material.GetVector(CrackPosition1);
+                    var crackPosition1 = _oreRenderer.material.GetVector(CrackPosition1);
                     if (crackPosition1 == Vector4.zero)
                     {
-                        var localHitPosition = _renderer.transform.InverseTransformPoint(hitInfo.HitPositon);
-                        _renderer.material.SetVector(CrackPosition1, localHitPosition);
+                        var localHitPosition = _oreRenderer.transform.InverseTransformPoint(hitInfo.HitPositon);
+                        _oreRenderer.material.SetVector(CrackPosition1, localHitPosition);
                     }
                     break;
                 case 3:
-                    var crackPosition2 = _renderer.material.GetVector(CrackPosition2);
+                    var crackPosition2 = _oreRenderer.material.GetVector(CrackPosition2);
                     if (crackPosition2 == Vector4.zero)
                     {
-                        var localHitPosition = _renderer.transform.InverseTransformPoint(hitInfo.HitPositon);
-                        _renderer.material.SetVector(CrackPosition2, localHitPosition);
+                        var localHitPosition = _oreRenderer.transform.InverseTransformPoint(hitInfo.HitPositon);
+                        _oreRenderer.material.SetVector(CrackPosition2, localHitPosition);
                     }
                     break;
             }
-        }
-
-        private void UpdateShader()
-        { 
-            float healthFactor = (float) _health.Value / _health.StartingHealth;
-            // _renderer.material.SetFloat("_VertexCrackStrengthFactor", 1 - healthFactor);
-            // _renderer.material.SetFloat("_CrackStrengthFactor", 1 - healthFactor);
+            
+            _oreCrystalsRenderer.material.SetFloat(DamageFac, oreDamageFac);
         }
 
     }

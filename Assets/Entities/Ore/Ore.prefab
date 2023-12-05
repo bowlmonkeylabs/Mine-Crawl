@@ -941,7 +941,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _health: {fileID: 7664960571339365045}
   _critMarkerTransform: {fileID: 0}
-  _renderer: {fileID: 3454127850101988317}
+  _oreRenderer: {fileID: 3454127850101988317}
+  _oreCrystalsRenderer: {fileID: 0}
 --- !u!1 &3454127850225854728
 GameObject:
   m_ObjectHideFlags: 0
@@ -2090,6 +2091,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3cffb52b3f502e4abad73bffa3bd25c, type: 3}
+--- !u!23 &1925859997282217147 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: d3cffb52b3f502e4abad73bffa3bd25c, type: 3}
+  m_PrefabInstance: {fileID: 971531597071691839}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &788459420743620564 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d3cffb52b3f502e4abad73bffa3bd25c, type: 3}
@@ -4296,7 +4302,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _health: {fileID: 7664960571339365045}
   _critMarkerTransform: {fileID: 517902721090737292}
-  _renderer: {fileID: 7184147944372074786}
+  _oreRenderer: {fileID: 7184147944372074786}
+  _oreCrystalsRenderer: {fileID: 1925859997282217147}
 --- !u!114 &7822768784222172586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4521,19 +4528,31 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 6985341303465785546}
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1281332912521561773}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: TakeDamage
       objectReference: {fileID: 0}
     - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: UpdateShaderOnPickaxeInteract
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: BML.Scripts.Damageables, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 978657270361522038, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: BML.Scripts.OreShaderController, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 1468530653753540892, guid: 1294a8d6407f78d488da1ae2bedf1f29, type: 3}
       propertyPath: health
