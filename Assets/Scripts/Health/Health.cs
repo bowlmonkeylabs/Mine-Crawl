@@ -15,11 +15,14 @@ namespace BML.Scripts
 
         #region Inspector
         [SerializeField] private bool _useHealthVariable = false;
-        [SerializeField, ShowIf("_useHealthVariable")] [LabelText("health")] private IntVariable _healthReference;
+        [SerializeField, ShowIf("_useHealthVariable")] [LabelText("Health")] private IntVariable _healthReference;
+        [SerializeField, ShowIf("_useHealthVariable")] [LabelText("Health Temporary")] private IntVariable _tempHealthReference;
         [SerializeField, HideIf("_useHealthVariable")] private int _health;
+        [SerializeField, HideIf("_useHealthVariable")] private int _tempHealth;
 
         [SerializeField] private bool _hasMaxHealth = false;
         [SerializeField, ShowIf("_hasMaxHealth")] private IntReference _maxHealthReference;
+        [SerializeField, ShowIf("_hasMaxHealth")] private IntReference _maxHealthPossibleReference;
 
         [SerializeField] private bool _isInvincible = false;
         [ShowInInspector, ReadOnly] private bool _isInvincibleFrames = false;
@@ -55,11 +58,25 @@ namespace BML.Scripts
         private int _value{
             get => Value;
             set {
-                if(_useHealthVariable) _healthReference.Value = value;
-                else _health = value;
+                if (_useHealthVariable)
+                {
+                    value = Mathf.Min(_maxHealthPossible, value);
+                    var aboveMaxHealth = Mathf.Max(0, value - MaxHealth);
+                    _tempHealthReference.Value = aboveMaxHealth;
+                    _healthReference.Value = Mathf.Min(value, MaxHealth);
+                }
+                else
+                {
+                    value = Mathf.Min(_maxHealthPossible, value);
+                    var aboveMaxHealth = Mathf.Max(0, value - MaxHealth);
+                    _tempHealth = aboveMaxHealth;
+                    _health = Mathf.Min(value, MaxHealth);
+                }
             }}
-
-        public int Value {get => _useHealthVariable ? _healthReference.Value : _health;}
+        
+        private int _maxHealthPossible => _hasMaxHealth ? _maxHealthPossibleReference.Value : 999;
+        
+        public int Value {get => _useHealthVariable ? _healthReference.Value + _tempHealthReference.Value : _health + _tempHealth;}
         public bool IsDead {get => Value <= 0;}
         public bool IsInvincible => _isInvincible || _isInvincibleFrames;
 
@@ -124,7 +141,6 @@ namespace BML.Scripts
         
         public bool Damage(HitInfo hitInfo)
         {
-            Debug.Log($"IsInvincbile: {_isInvincible} IsDead: {IsDead}| ");
             if (IsDead || IsInvincible || hitInfo.Damage == 0) return false;
             
             lastDamageTime = Time.time;
