@@ -36,11 +36,14 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private Vector3 _projectionVector = Vector3.down;
         [SerializeField, ShowIf("@this._projectionBehavior == SpawnPointProjectionBehavior.Randomize")] 
         private Vector2 _projectionDirectionRandomnessRangeDegrees = new Vector2(30, 15);
-        [SerializeField] private float _projectionDistance = 45f;
+        [SerializeField, ShowIf("@this._projectionBehavior != SpawnPointProjectionBehavior.None")]
+        private float _projectionDistance = 45f;
+        [SerializeField, ShowIf("@this._projectionBehavior != SpawnPointProjectionBehavior.None")]
+        public bool RequireStableSurface = true;
 
         [SerializeField] private bool _doInheritParentRotation = true;
-        [FormerlySerializedAs("_rotateTowardsSurfaceNormal")] [SerializeField] private bool _alignToProjectionVector = true;
-        [FormerlySerializedAs("_alignToProjectionVector")] [SerializeField] private bool _alignToSurfaceNormal = true;
+        [ShowIf("@this._projectionBehavior != SpawnPointProjectionBehavior.None")] [SerializeField] private bool _alignToProjectionVector = true;
+        [ShowIf("@this._projectionBehavior != SpawnPointProjectionBehavior.None")] [SerializeField] private bool _alignToSurfaceNormal = false;
         [SerializeField] private Vector3 _rotationEulerOffset = Vector3.zero;
         
         [ShowInInspector, ReadOnly] private Vector3? _projectedPosition = null; 
