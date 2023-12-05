@@ -18,19 +18,18 @@ namespace BML.Scripts.Enemy
 
         private float speed;
         private Vector3 moveDirection;
-        private Vector3 playerPosOnSpawn;
         private Vector3 lastBurrowHitPoint;
+        private Vector3 target;
         private bool emergeParticlesActivated;
 
         private void Start()
         {
             moveDirection = transform.forward;
-            playerPosOnSpawn = _mainCameraRef.Value.transform.position;
         }
 
         private void Update()
         {
-            HandleBurrowParticles();
+            HandleFeedbacks();
         }
 
         private void FixedUpdate()
@@ -39,12 +38,12 @@ namespace BML.Scripts.Enemy
             _rb.MovePosition(_rb.position + moveDirection * (speed * Time.deltaTime));
         }
 
-        private void HandleBurrowParticles()
+        private void HandleFeedbacks()
         {
             RaycastHit hit;
 
-            Vector3 burrowParticlesDir = playerPosOnSpawn - transform.position;
-            float maxDist = (playerPosOnSpawn - transform.position).magnitude;
+            Vector3 burrowParticlesDir = target - transform.position;
+            float maxDist = (target - transform.position).magnitude;
 
             // Don't spawn particles if worm moving away from player
             if (Vector3.Dot(burrowParticlesDir, transform.forward) < 0)
@@ -54,7 +53,7 @@ namespace BML.Scripts.Enemy
             }
             
             if (!_mainCameraRef.SafeIsUnityNull() && !_mainCameraRef.Value.SafeIsUnityNull() 
-                                                  && Physics.SphereCast(playerPosOnSpawn, .5f, 
+                                                  && Physics.SphereCast(target, .5f, 
                                                       -burrowParticlesDir, out hit,
                                                       maxDist, _terrainMask))
             {
@@ -83,11 +82,11 @@ namespace BML.Scripts.Enemy
             }
         }
         
-        public void Respawn(float newSpeed)
+        public void Respawn(float newSpeed, Vector3 newTarget)
         {
             speed = newSpeed;
             moveDirection = transform.forward;
-            playerPosOnSpawn = _mainCameraRef.Value.transform.position;
+            target = newTarget;
         }
     }
 }

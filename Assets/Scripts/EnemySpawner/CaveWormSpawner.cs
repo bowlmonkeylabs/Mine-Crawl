@@ -40,6 +40,8 @@ namespace BML.Scripts
         private GameObject spawnedWorm;
         private bool isFirstAttack = true;
 
+        private List<WormBait.WormBait> wormBaits = new List<WormBait.WormBait>();
+
         // Debug
         private bool killHimAndDontComeBack;
 
@@ -60,6 +62,7 @@ namespace BML.Scripts
             _wormSpawnTimer.ResetTimer();
             _wormSpawnTimer.SubscribeFinished(ActivateWorm);
             _playerHasExitedStartRoom.Subscribe(StartWormTimer);
+            wormBaits.Clear();
         }
 
         private void OnDisable()
@@ -127,8 +130,20 @@ namespace BML.Scripts
                 Random.InitState(SeedManager.Instance.GetSteppedSeed("WormSpawner"));
                 spawnDir = Random.value > .5f ? playerForwardFlat : Vector3.up;
             }
+            
+            Vector3 spawnPoint, targetPoint;
+            if (wormBaits.Count > 0)
+            {
+                targetPoint = wormBaits[0].transform.position;
+                UnRegisterWormBait(wormBaits[0]);
+                spawnDir = Vector3.up;
+            }
+            else
+            {
+                targetPoint = _mainCamera.Value.position;
+            }
 
-            Vector3 spawnPoint = _mainCamera.Value.position + spawnDir * _spawnRadius;
+            spawnPoint = targetPoint + spawnDir * _spawnRadius;
             Quaternion wormFaceDir = Quaternion.LookRotation(-spawnDir.normalized);
             
             if (spawnedWorm == null)
@@ -138,7 +153,7 @@ namespace BML.Scripts
             spawnedWorm.transform.rotation = wormFaceDir;
             
             WormController wormController = spawnedWorm.GetComponent<WormController>();
-            wormController.Respawn(currentSpeed);
+            wormController.Respawn(currentSpeed, targetPoint);
             
             lastWormSpawnTime = Time.time;
             SeedManager.Instance.UpdateSteppedSeed("WormSpawner");
@@ -193,6 +208,15 @@ namespace BML.Scripts
             }
         }
 
+        public void RegisterWormBait(WormBait.WormBait wormBait)
+        {
+            wormBaits.Add(wormBait);
+        }
+        
+        public void UnRegisterWormBait(WormBait.WormBait wormBait)
+        {
+            wormBaits.Remove(wormBait);
+        }
         #endregion
         
     }
