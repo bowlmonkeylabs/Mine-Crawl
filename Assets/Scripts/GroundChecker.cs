@@ -30,9 +30,10 @@ namespace BML.Scripts
             Vector3 p2 = charCenter + _charController.height * 0.5F * Vector3.up;
             
             //Slight offset from bottom of char controller so collisions aren't missed
-            Vector3 offset = Vector3.up * .05f;
+            float offset = .15f;
 
-            if (Physics.CapsuleCast(p1 + offset, p2, _charController.radius, Vector3.down, out hit, _groundCheckDistance + _charController.height * 0.5f, _groundCheckLayer))
+            if (Physics.CapsuleCast(p1 + Vector3.up * offset, p2, _charController.radius, Vector3.down, out hit,
+        _groundCheckDistance + _charController.height * 0.5f + offset, _groundCheckLayer))
             {
                 OnUpdateGroundingStatus.Invoke(true);
                 if (!isGrounded)

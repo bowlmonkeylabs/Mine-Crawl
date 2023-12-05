@@ -1496,6 +1496,217 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1761274078803069344
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1424196520114769673}
+  - component: {fileID: 7296146152045834053}
+  m_Layer: 10
+  m_Name: SelfDestructFeedbacks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1424196520114769673
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1761274078803069344}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6524525142201322170}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7296146152045834053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1761274078803069344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Feedbacks: []
+  InitializationMode: 2
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  ForceTimescaleMode: 0
+  ForcedTimescaleMode: 1
+  DurationMultiplier: 1
+  RandomizeDuration: 0
+  RandomDurationMultiplier: {x: 0.5, y: 1.5}
+  DisplayFullDurationDetails: 0
+  PlayerTimescaleMode: 1
+  OnlyPlayIfWithinRange: 0
+  RangeCenter: {fileID: 0}
+  RangeDistance: 5
+  UseRangeFalloff: 0
+  RangeFalloff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapRangeFalloff: {x: 0, y: 1}
+  IgnoreRangeEvents: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlay: 1
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRevert:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  FeedbacksList:
+  - id: 0
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  ForceStopFeedbacksOnDisable: 1
+  references:
+    version: 1
+    00000000:
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: 548373142
+        Label: Unity Events
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        Owner: {fileID: 7296146152045834053}
+        DebugActive: 0
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 8203031633842827809}
+              m_TargetAssemblyTypeName: BML.Scripts.Health, BML.Scripts
+              m_MethodName: Kill
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
 --- !u!1 &1837583189647018436
 GameObject:
   m_ObjectHideFlags: 0
@@ -5605,12 +5816,6 @@ MonoBehaviour:
   FeedbacksList:
   - id: 0
   - id: 1
-  - id: 2
-  - id: 3
-  - id: 4
-  - id: 5
-  - id: 6
-  - id: 7
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   ForceStopFeedbacksOnDisable: 0
@@ -5752,11 +5957,11 @@ MonoBehaviour:
         MinDistance: 5
         MaxDistance: 30
     00000001:
-      type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      type: {class: BML_Flicker, ns: MoreMountains.Feedbacks, asm: BML.Scripts}
       data:
         Active: 1
-        UniqueID: -980285228
-        Label: Flicker
+        UniqueID: -259970381
+        Label: BML Flicker
         ChannelMode: 0
         Channel: 0
         MMChannelDefinition: {fileID: 0}
@@ -5819,477 +6024,21 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 2877217767058757864}
         DebugActive: 0
-        BoundRenderer: {fileID: 8557535776859870570}
+        BoundRenderers:
+        - {fileID: 8557535776859870570}
+        - {fileID: 5722048947936270803}
+        - {fileID: 6151272948622028499}
+        - {fileID: 226925392121236606}
+        - {fileID: 5454839384044466255}
+        - {fileID: 7089375434662619119}
+        - {fileID: 7927860949172192844}
         Mode: 0
         PropertyName: _Tint
-        FlickerDuration: 0.1
+        FlickerDuration: 0.2
         FlickerOctave: 0.04
         FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
         MaterialIndexes: 
         UseMaterialPropertyBlocks: 0
-        SpriteRendererTextureProperty: _MainTex
-    00000002:
-      type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: 744792386
-        Label: Flicker
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        Owner: {fileID: 2877217767058757864}
-        DebugActive: 0
-        BoundRenderer: {fileID: 5722048947936270803}
-        Mode: 0
-        PropertyName: _Tint
-        FlickerDuration: 0.1
-        FlickerOctave: 0.04
-        FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
-        MaterialIndexes: 
-        UseMaterialPropertyBlocks: 0
-        SpriteRendererTextureProperty: _MainTex
-    00000003:
-      type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: -951415474
-        Label: Flicker
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        Owner: {fileID: 2877217767058757864}
-        DebugActive: 0
-        BoundRenderer: {fileID: 226925392121236606}
-        Mode: 0
-        PropertyName: _Tint
-        FlickerDuration: 0.1
-        FlickerOctave: 0.04
-        FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
-        MaterialIndexes: 
-        UseMaterialPropertyBlocks: 0
-        SpriteRendererTextureProperty: _MainTex
-    00000004:
-      type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: -259842315
-        Label: Flicker
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        Owner: {fileID: 2877217767058757864}
-        DebugActive: 0
-        BoundRenderer: {fileID: 6151272948622028499}
-        Mode: 0
-        PropertyName: _Tint
-        FlickerDuration: 0.1
-        FlickerOctave: 0.04
-        FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
-        MaterialIndexes: 
-        UseMaterialPropertyBlocks: 0
-        SpriteRendererTextureProperty: _MainTex
-    00000005:
-      type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: 675185939
-        Label: Flicker
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        Owner: {fileID: 2877217767058757864}
-        DebugActive: 0
-        BoundRenderer: {fileID: 7089375434662619119}
-        Mode: 0
-        PropertyName: _Tint
-        FlickerDuration: 0.1
-        FlickerOctave: 0.04
-        FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
-        MaterialIndexes: 
-        UseMaterialPropertyBlocks: 0
-        SpriteRendererTextureProperty: _MainTex
-    00000006:
-      type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: -1957591832
-        Label: Flicker
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        Owner: {fileID: 2877217767058757864}
-        DebugActive: 0
-        BoundRenderer: {fileID: 5454839384044466255}
-        Mode: 0
-        PropertyName: _Tint
-        FlickerDuration: 0.1
-        FlickerOctave: 0.04
-        FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
-        MaterialIndexes: 
-        UseMaterialPropertyBlocks: 0
-        SpriteRendererTextureProperty: _MainTex
-    00000007:
-      type: {class: MMF_Flicker, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: 1801325939
-        Label: Flicker
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        Owner: {fileID: 2877217767058757864}
-        DebugActive: 0
-        BoundRenderer: {fileID: 7927860949172192844}
-        Mode: 0
-        PropertyName: _Tint
-        FlickerDuration: 0.1
-        FlickerOctave: 0.04
-        FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
-        MaterialIndexes: 
-        UseMaterialPropertyBlocks: 0
-        SpriteRendererTextureProperty: _MainTex
 --- !u!1 &4335650465394975177
 GameObject:
   m_ObjectHideFlags: 0
@@ -8015,6 +7764,42 @@ MonoBehaviour:
                 m_StringArgument: 
                 m_BoolArgument: 1
               m_CallState: 2
+            - m_Target: {fileID: 1441323613824105958}
+              m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+              m_MethodName: PlayFeedbacks
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 1
+              m_CallState: 2
+            - m_Target: {fileID: 3124417065513976126}
+              m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+              m_MethodName: Play
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 1
+              m_CallState: 2
+            - m_Target: {fileID: 4380147914521632417}
+              m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+              m_MethodName: Play
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 1
+              m_CallState: 2
         StopEvents:
           m_PersistentCalls:
             m_Calls:
@@ -8022,6 +7807,30 @@ MonoBehaviour:
               m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
               m_MethodName: SetActive
               m_Mode: 6
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+            - m_Target: {fileID: 3124417065513976126}
+              m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+              m_MethodName: Stop
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+            - m_Target: {fileID: 4380147914521632417}
+              m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+              m_MethodName: Stop
+              m_Mode: 1
               m_Arguments:
                 m_ObjectArgument: {fileID: 0}
                 m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -9397,6 +9206,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6762102912765331287}
   m_Mesh: {fileID: 0}
+--- !u!1 &7315872276205593583
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8551606813768118145}
+  m_Layer: 19
+  m_Name: Particles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8551606813768118145
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7315872276205593583}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 3124417065529213354}
+  - {fileID: 4474356323377271879}
+  m_Father: {fileID: 5493255106901909680}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7508055229176089002
 GameObject:
   m_ObjectHideFlags: 0
@@ -12225,6 +12066,250 @@ MonoBehaviour:
         ResetEvents:
           m_PersistentCalls:
             m_Calls: []
+--- !u!1001 &5090758608909321582
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8551606813768118145}
+    m_Modifications:
+    - target: {fileID: 8694388726828291167, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_Name
+      value: p_AttackAura
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5427628
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5427628
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.5427628
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.465
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+--- !u!4 &4474356323377271879 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+  m_PrefabInstance: {fileID: 5090758608909321582}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4471702249194623281 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8694388726828291167, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+  m_PrefabInstance: {fileID: 5090758608909321582}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &4380147914521632417 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8822385272885320655, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+  m_PrefabInstance: {fileID: 5090758608909321582}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3636209136038914137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4471702249194623281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd8ab284de1a65c49870e4b81e46134a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FollowPosition: 1
+  FollowPositionX: 1
+  FollowPositionY: 1
+  FollowPositionZ: 1
+  PositionSpace: 0
+  FollowRotation: 0
+  FollowScale: 0
+  FollowScaleFactor: 1
+  Target: {fileID: 7722682548143593176}
+  Offset: {x: 0, y: 0, z: 0}
+  AddInitialDistanceXToXOffset: 0
+  AddInitialDistanceYToYOffset: 0
+  AddInitialDistanceZToZOffset: 0
+  InterpolatePosition: 1
+  FollowPositionMode: 1
+  FollowPositionSpeed: 10
+  PositionSpringDamping: 0.3
+  PositionSpringFrequency: 3
+  InterpolateRotation: 1
+  FollowRotationMode: 1
+  FollowRotationSpeed: 10
+  InterpolateScale: 1
+  FollowScaleMode: 1
+  FollowScaleSpeed: 10
+  UpdateMode: 0
+  DisableSelfOnSetActiveFalse: 0
+  UseMinimumDistanceBeforeFollow: 0
+  MinimumDistanceBeforeFollow: 1
+  UseMaximumDistance: 0
+  MaximumDistance: 1
+  AnchorToInitialPosition: 0
+  MaxDistanceToAnchor: 1
+--- !u!1001 &6707369555988997765
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8551606813768118145}
+    m_Modifications:
+    - target: {fileID: 8523473334324716175, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_Name
+      value: p_LungeSmokeTrail
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.062
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.199
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+--- !u!4 &3124417065529213354 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+  m_PrefabInstance: {fileID: 6707369555988997765}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3124417065513976126 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8523473334340380603, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+  m_PrefabInstance: {fileID: 6707369555988997765}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3124417065529508874 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8523473334324716175, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+  m_PrefabInstance: {fileID: 6707369555988997765}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2939941581251005037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3124417065529508874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd8ab284de1a65c49870e4b81e46134a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FollowPosition: 1
+  FollowPositionX: 1
+  FollowPositionY: 1
+  FollowPositionZ: 1
+  PositionSpace: 0
+  FollowRotation: 1
+  FollowScale: 1
+  FollowScaleFactor: 1
+  Target: {fileID: 7722682548143593176}
+  Offset: {x: 0, y: 0, z: 0}
+  AddInitialDistanceXToXOffset: 0
+  AddInitialDistanceYToYOffset: 0
+  AddInitialDistanceZToZOffset: 0
+  InterpolatePosition: 1
+  FollowPositionMode: 1
+  FollowPositionSpeed: 10
+  PositionSpringDamping: 0.3
+  PositionSpringFrequency: 3
+  InterpolateRotation: 1
+  FollowRotationMode: 1
+  FollowRotationSpeed: 10
+  InterpolateScale: 1
+  FollowScaleMode: 1
+  FollowScaleSpeed: 10
+  UpdateMode: 0
+  DisableSelfOnSetActiveFalse: 0
+  UseMinimumDistanceBeforeFollow: 0
+  MinimumDistanceBeforeFollow: 1
+  UseMaximumDistance: 0
+  MaximumDistance: 1
+  AnchorToInitialPosition: 0
+  MaxDistanceToAnchor: 1
 --- !u!1001 &8714057318454351410
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12416,6 +12501,10 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 2581038386776533517, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2840163620888121956, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: height
       value: 0.5
@@ -12560,6 +12649,38 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 19
       objectReference: {fileID: 0}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[0]
+      value: 
+      objectReference: {fileID: 8557535776859870570}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[1]
+      value: 
+      objectReference: {fileID: 5722048947936270803}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[2]
+      value: 
+      objectReference: {fileID: 6151272948622028499}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[3]
+      value: 
+      objectReference: {fileID: 226925392121236606}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[4]
+      value: 
+      objectReference: {fileID: 5454839384044466255}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[5]
+      value: 
+      objectReference: {fileID: 7089375434662619119}
+    - target: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BoundRenderers.Array.data[6]
+      value: 
+      objectReference: {fileID: 7927860949172192844}
     - target: {fileID: 8005718528128544450, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: FeedbacksList.Array.data[0].InstantiateParticlesPosition
       value: 
@@ -12579,27 +12700,29 @@ PrefabInstance:
         Feedbacks"},"ID":12,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":3},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.Wait","NodeData":{"Offset":"(223.5282,268.2384)"},"ID":13,"Name":"Wait","Instant":true,"SharedFloatwaitTime":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":0.15},"SharedBoolrandomWait":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedFloatrandomWaitMin":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1},"SharedFloatrandomWaitMax":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(362.499939,269.3617)","Comment":"Swoop
         Feedbacks"},"ID":14,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":"","GameObjectmValue":4},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.SetSharedBool","NodeData":{"Offset":"(508.224854,265.099854)","Comment":"IsActivated"},"ID":15,"Name":"Set
         Shared Bool","Instant":true,"SharedBooltargetValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedBooltargetVariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsActivated","IsShared":true,"BooleanmValue":false}},{"Type":"BML.Scripts.Tasks.SwoopAtTarget","NodeData":{"Offset":"(657.6557,273.332764)"},"ID":16,"Name":"Swoop
-        At Target","Instant":true,"SharedTransform_swoopTransform":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null,"TransformmValue":5},"TransformSceneReference_targetRef":6,"Transform_rotationPivot":7,"SharedFloat_swoopTime":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1.25},"SharedFloat_swoopYOffset":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":-1.25},"SharedBool_isGrounded":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsGrounded","IsShared":true,"BooleanmValue":false},"AnimationCurve_horizontalMoveCurve":{"Keys":[[0,0,0,0],[1,1,2,2]],"PreWrapMode":"ClampForever","PostWrapMode":"ClampForever"},"AnimationCurve_verticalMoveCurve":{"Keys":[[0,0,2,2],[1,1,0,0]],"PreWrapMode":"ClampForever","PostWrapMode":"ClampForever"},"AIBaseai":8}]},{"Type":"BehaviorDesigner.Runtime.Tasks.BehaviorTreeReference","NodeData":{"Offset":"(1021.07056,290.357178)","Comment":"Seek
-        Player"},"ID":17,"Name":"Behavior Tree Reference","Instant":true,"ExternalBehavior[]externalBehaviors":[9],"SharedNamedVariable[]variables":[],"Booleancollapsed":false},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(1661.454,269.464874)","Comment":"Set
-        Alerted"},"ID":18,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-233.9817,264.021667)","Comment":"IsActivated"},"ID":19,"Name":"Compare
-        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsActivated","IsShared":true,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-58.3786,256.48645)","Comment":"!IsAlerted"},"ID":20,"Name":"Compare
-        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":10,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":false}},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(105.713989,257.44043)"},"ID":21,"Name":"Selector","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-170,220)","Comment":"In
-        Alert Trigger & LoS"},"ID":22,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-82.4999847,167.5)","Comment":"InsideAlertTrigger"},"ID":23,"Name":"Compare
-        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsInsideAlertTrigger","IsShared":true,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(109.487793,169.7959)","Comment":"IsPlayerInLoS"},"ID":24,"Name":"Compare
-        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInLoS","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsPlayerInLoS","PropertyMappingOwner":11,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.HasReceivedEvent","NodeData":{"Offset":"(135.10643,220)","Comment":"Received
-        SetAlerted"},"ID":25,"Name":"Has Received Event","Instant":true,"SharedStringeventName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"SetAlerted"}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(270.4751,258.0952)","Comment":"Set
-        Dest to Player"},"ID":26,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BMLAIDestinationSetter"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"ResetTargetToReference"}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(450.640717,255.125244)","Comment":"Stop
-        Swoop Feedbacks"},"ID":27,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":"","GameObjectmValue":12},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"StopFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(647.2997,255.714233)","Comment":"Movment
-        Feedbacks"},"ID":28,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":13},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(817.1421,255.714233)","Comment":"Flap
-        Feedbacks"},"ID":29,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":14},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.SetSharedBool","NodeData":{"Offset":"(979.2065,260.30777)","Comment":"IsAlterted"},"ID":30,"Name":"Set
-        Shared Bool","Instant":true,"SharedBooltargetValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true},"SharedBooltargetVariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":15,"BooleanmValue":false}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(2905.76538,279.425781)","Comment":"Stay
-        Idle"},"ID":31,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Idle","NodeData":{"Offset":"(-3.536396,248.374847)"},"ID":32,"Name":"Idle","Instant":true}]}]}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(271.034882,196.176117)"},"ID":33,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.SetPropertyValue","NodeData":{"Offset":"(-10.91604,174.39978)"},"ID":34,"Name":"Set
-        Property Value","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"Pathfinding.AIPath"},"SharedStringpropertyName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"enabled"},"SharedVariablepropertyValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}},{"Type":"BehaviorDesigner.Runtime.Tasks.SetPropertyValue","NodeData":{"Offset":"(198.417114,174.39978)"},"ID":35,"Name":"Set
-        Property Value","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"UnityEngine.CharacterController"},"SharedStringpropertyName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"enabled"},"SharedVariablepropertyValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}}]}]},"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":16,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedVector3","Name":"KnockbackDirection","IsShared":true,"Vector3mValue":"(0,0,0)"},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsKnockedback","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsInsideAlertTrigger","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerIInLungeTrigger","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedVector3","Name":"LungeDirection","IsShared":true,"Vector3mValue":"(0,0,0)"},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsGrounded","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsActivated","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"LoSOrigin","IsShared":true,"TransformmValue":17},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInLoS","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsPlayerInLoS","PropertyMappingOwner":18,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPathPossible","IsShared":true,"PropertyMapping":"BML.Scripts.Pathfinding.BMLAIPath/IsPathPossible","PropertyMappingOwner":19,"BooleanmValue":false}]}'
+        At Target","Instant":true,"SharedTransform_swoopTransform":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null,"TransformmValue":5},"TransformSceneReference_targetRef":6,"Transform_rotationPivot":7,"SharedFloat_swoopTime":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1.25},"SharedFloat_swoopYOffset":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":-1.25},"SharedBool_isGrounded":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsGrounded","IsShared":true,"BooleanmValue":false},"AnimationCurve_horizontalMoveCurve":{"Keys":[[0,0,0,0],[1,1,2,2]],"PreWrapMode":"ClampForever","PostWrapMode":"ClampForever"},"AnimationCurve_verticalMoveCurve":{"Keys":[[0,0,2,2],[1,1,0,0]],"PreWrapMode":"ClampForever","PostWrapMode":"ClampForever"},"AIBaseai":8},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(819.2647,270.1145)","Comment":"Death
+        feedbacks"},"ID":17,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":9},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(987.3306,266.48645)","Comment":"Self
+        Destruct Feedbacks"},"ID":18,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":10},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.BehaviorTreeReference","NodeData":{"Offset":"(1021.07056,290.357178)","Comment":"Seek
+        Player"},"ID":19,"Name":"Behavior Tree Reference","Instant":true,"ExternalBehavior[]externalBehaviors":[11],"SharedNamedVariable[]variables":[],"Booleancollapsed":false},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(1661.454,269.464874)","Comment":"Set
+        Alerted"},"ID":20,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-233.9817,264.021667)","Comment":"IsActivated"},"ID":21,"Name":"Compare
+        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsActivated","IsShared":true,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-58.3786,256.48645)","Comment":"!IsAlerted"},"ID":22,"Name":"Compare
+        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":12,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":false}},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(105.713989,257.44043)"},"ID":23,"Name":"Selector","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-170,220)","Comment":"In
+        Alert Trigger & LoS"},"ID":24,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-82.4999847,167.5)","Comment":"InsideAlertTrigger"},"ID":25,"Name":"Compare
+        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsInsideAlertTrigger","IsShared":true,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(109.487793,169.7959)","Comment":"IsPlayerInLoS"},"ID":26,"Name":"Compare
+        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInLoS","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsPlayerInLoS","PropertyMappingOwner":13,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.HasReceivedEvent","NodeData":{"Offset":"(135.10643,220)","Comment":"Received
+        SetAlerted"},"ID":27,"Name":"Has Received Event","Instant":true,"SharedStringeventName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"SetAlerted"}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(270.4751,258.0952)","Comment":"Set
+        Dest to Player"},"ID":28,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BMLAIDestinationSetter"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"ResetTargetToReference"}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(450.640717,255.125244)","Comment":"Stop
+        Swoop Feedbacks"},"ID":29,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":"","GameObjectmValue":14},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"StopFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(647.2997,255.714233)","Comment":"Movment
+        Feedbacks"},"ID":30,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":15},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(817.1421,255.714233)","Comment":"Flap
+        Feedbacks"},"ID":31,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":16},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.SetSharedBool","NodeData":{"Offset":"(979.2065,260.30777)","Comment":"IsAlterted"},"ID":32,"Name":"Set
+        Shared Bool","Instant":true,"SharedBooltargetValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true},"SharedBooltargetVariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":17,"BooleanmValue":false}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(2905.76538,279.425781)","Comment":"Stay
+        Idle"},"ID":33,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Idle","NodeData":{"Offset":"(-3.536396,248.374847)"},"ID":34,"Name":"Idle","Instant":true}]}]}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(271.034882,196.176117)"},"ID":35,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.SetPropertyValue","NodeData":{"Offset":"(-10.91604,174.39978)"},"ID":36,"Name":"Set
+        Property Value","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"Pathfinding.AIPath"},"SharedStringpropertyName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"enabled"},"SharedVariablepropertyValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}},{"Type":"BehaviorDesigner.Runtime.Tasks.SetPropertyValue","NodeData":{"Offset":"(198.417114,174.39978)"},"ID":37,"Name":"Set
+        Property Value","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"UnityEngine.CharacterController"},"SharedStringpropertyName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"enabled"},"SharedVariablepropertyValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}}]}]},"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":18,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedVector3","Name":"KnockbackDirection","IsShared":true,"Vector3mValue":"(0,0,0)"},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsKnockedback","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsInsideAlertTrigger","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerIInLungeTrigger","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedVector3","Name":"LungeDirection","IsShared":true,"Vector3mValue":"(0,0,0)"},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsGrounded","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsActivated","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"LoSOrigin","IsShared":true,"TransformmValue":19},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInLoS","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsPlayerInLoS","PropertyMappingOwner":20,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPathPossible","IsShared":true,"PropertyMapping":"BML.Scripts.Pathfinding.BMLAIPath/IsPathPossible","PropertyMappingOwner":21,"BooleanmValue":false}]}'
       objectReference: {fileID: 0}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.size
-      value: 20
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[0]
@@ -12640,39 +12763,39 @@ PrefabInstance:
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[9]
       value: 
-      objectReference: {fileID: 11400000, guid: c0e26a5948bf89f488dbec081a67e4b5, type: 2}
+      objectReference: {fileID: 631910057165537604}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[10]
       value: 
-      objectReference: {fileID: 1289867755587324221}
+      objectReference: {fileID: 1761274078803069344}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[11]
       value: 
-      objectReference: {fileID: 1289867755587324221}
+      objectReference: {fileID: 11400000, guid: c0e26a5948bf89f488dbec081a67e4b5, type: 2}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[12]
       value: 
-      objectReference: {fileID: 6367863434103260797}
+      objectReference: {fileID: 1289867755587324221}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[13]
       value: 
-      objectReference: {fileID: 3420735487386349213}
+      objectReference: {fileID: 1289867755587324221}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[14]
       value: 
-      objectReference: {fileID: 1837583189647018436}
+      objectReference: {fileID: 6367863434103260797}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[15]
       value: 
-      objectReference: {fileID: 1289867755587324221}
+      objectReference: {fileID: 3420735487386349213}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[16]
       value: 
-      objectReference: {fileID: 1289867755587324221}
+      objectReference: {fileID: 1837583189647018436}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[17]
       value: 
-      objectReference: {fileID: 4953371867831992446}
+      objectReference: {fileID: 1289867755587324221}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[18]
       value: 
@@ -12680,7 +12803,7 @@ PrefabInstance:
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[19]
       value: 
-      objectReference: {fileID: 1289867755587324221}
+      objectReference: {fileID: 4953371867831992446}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.data[20]
       value: 
@@ -12719,22 +12842,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
---- !u!114 &385328839015470451 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9058562389903295297, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
-  m_PrefabInstance: {fileID: 8714057318454351410}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1289867755587324221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2309427dc5145afb1d4ed23430b02ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &6524525142201322170 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2478468508831095944, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
-  m_PrefabInstance: {fileID: 8714057318454351410}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1117152532426743521 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
@@ -12762,14 +12869,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3807083870472402562, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
   m_PrefabInstance: {fileID: 8714057318454351410}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &385328839015470451 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9058562389903295297, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 8714057318454351410}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289867755587324221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2309427dc5145afb1d4ed23430b02ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1289867755587324221 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7568311360931372815, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
   m_PrefabInstance: {fileID: 8714057318454351410}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1726156717579843824 stripped
+--- !u!114 &1441323613824105958 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8005718528128544450, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_CorrespondingSourceObject: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
   m_PrefabInstance: {fileID: 8714057318454351410}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -12778,6 +12896,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &631910057165537604 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8082398027954001782, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 8714057318454351410}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1726156717579843824 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8005718528128544450, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 8714057318454351410}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631910057165537604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &6524525142201322170 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2478468508831095944, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 8714057318454351410}
+  m_PrefabAsset: {fileID: 0}
 --- !u!54 &6797718755389477703
 Rigidbody:
   m_ObjectHideFlags: 0

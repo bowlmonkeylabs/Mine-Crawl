@@ -23,14 +23,13 @@ namespace BML.Scripts.Pathfinding
             {
                 node1 = AstarPath.active.GetNearest(transform.position, NNConstraint.Default).node;
                 node2 = AstarPath.active.GetNearest(destination, NNConstraint.Default).node;
+                
+                IsPathPossible =  PathUtilities.IsPathPossible(node1, node2);
             }
             catch (NullReferenceException e)
             {
                 IsPathPossible = false;
-                return;
             }
-            
-            IsPathPossible =  PathUtilities.IsPathPossible(node1, node2);
         }
     }
 }
