@@ -10,7 +10,6 @@ namespace BML.Scripts
 {
     public class Explosive : MonoBehaviour
     {
-        
         [SerializeField] private bool _setOriginTransform;
         [SerializeField, ShowIf("_setOriginTransform")] private Transform _origin;
         [SerializeField] private FloatReference _explosionTime;
@@ -33,6 +32,9 @@ namespace BML.Scripts
         private bool isDeActivated;
         private float activateTime;
         private float currentFuseTime;
+
+        private const float _ExplosionRaycastDistanceThreshold = 0.9f;
+        private const float _ExplosionRaycastDistanceThresholdSquared = _ExplosionRaycastDistanceThreshold * _ExplosionRaycastDistanceThreshold;
 
         public void Activate()
         {
@@ -94,9 +96,13 @@ namespace BML.Scripts
                 Vector3 originToTarget = col.bounds.center - origin;
                 if (Physics.Raycast(origin, originToTarget.normalized, out hit, originToTarget.magnitude, _obstacleMask))
                 {
-                    Debug.Log($"Trying to hit {col.name} but hit {hit.collider.name} instead");
-                    // Continue if hit obstacle
-                    continue;
+                    bool withinThreshold = (hit.point - col.bounds.center).sqrMagnitude <= _ExplosionRaycastDistanceThresholdSquared;
+                    if (!withinThreshold)
+                    {
+                        // Continue if hit obstacle
+                        Debug.Log($"Trying to hit {col.name} but hit {hit.collider.name} instead");
+                        continue;
+                    }
                 }
 
                 Damageable damageable = col.GetComponent<Damageable>();
