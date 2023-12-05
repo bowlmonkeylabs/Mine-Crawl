@@ -45,6 +45,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [ShowIf("@this._projectionBehavior != SpawnPointProjectionBehavior.None")] [SerializeField] private bool _alignToProjectionVector = true;
         [ShowIf("@this._projectionBehavior != SpawnPointProjectionBehavior.None")] [SerializeField] private bool _alignToSurfaceNormal = false;
         [SerializeField] private Vector3 _rotationEulerOffset = Vector3.zero;
+        [SerializeField, MinMaxSlider(-180f, 180f)] private Vector2 _randomRotationRangeAroundUpAxis;
         
         [ShowInInspector, ReadOnly] private Vector3? _projectedPosition = null; 
         [ShowInInspector, ReadOnly] private Quaternion? _projectedRotation = null; 
@@ -198,6 +199,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             var baseRotation = (_doInheritParentRotation
                 ? parentNode?.GameObject?.transform.rotation ?? Quaternion.identity
                 : Quaternion.identity);
+
+            var randomRotationDegrees = Random.Range(_randomRotationRangeAroundUpAxis.x, _randomRotationRangeAroundUpAxis.y);
+            var randomRotation = Quaternion.AngleAxis(randomRotationDegrees, Vector3.up);
             
             Vector3 projectDirection;
             Quaternion rotationOffset = Quaternion.Euler(_rotationEulerOffset);
@@ -206,7 +210,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 default:
                 case SpawnPointProjectionBehavior.None:
                     _projectedPosition = this.transform.position + (Vector3.up * spawnPosOffset);
-                    _projectedRotation = baseRotation * rotationOffset;
+                    _projectedRotation = baseRotation * randomRotation * rotationOffset;
                     return (_projectedPosition, _projectedRotation);
                 case SpawnPointProjectionBehavior.Gravity:
                     projectDirection = Vector3.down;
@@ -261,6 +265,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     _projectedRotation = baseRotation;
                 }
                 _projectedRotation *= rotationOffset;
+                _projectedRotation *= randomRotation;
                 return (_projectedPosition, _projectedRotation);
             }
 
