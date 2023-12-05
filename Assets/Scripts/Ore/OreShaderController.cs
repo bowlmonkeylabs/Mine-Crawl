@@ -49,8 +49,11 @@ namespace BML.Scripts
 
         public void UpdateShaderOnPickaxeInteract(HitInfo hitInfo)
         {
-            var localCritPosition = _critMarkerTransform.position - _renderer.transform.position;
-            _renderer.material.SetVector(CritPosition, localCritPosition);
+            if (_critMarkerTransform.gameObject.activeInHierarchy)
+            {
+                var localCritPosition = _renderer.transform.InverseTransformPoint(_critMarkerTransform.position);
+                _renderer.material.SetVector(CritPosition, localCritPosition);
+            }
 
             float oreDamageFac = 1 - ((float)_health.Value / (float)_health.StartingHealth);
             const int numCracks = 3;
@@ -64,7 +67,7 @@ namespace BML.Scripts
                     var crackPosition0 = _renderer.material.GetVector(CrackPosition0);
                     if (crackPosition0 == Vector4.zero)
                     {
-                        var localHitPosition = hitInfo.HitPositon - _renderer.transform.position;
+                        var localHitPosition = _renderer.transform.InverseTransformPoint(hitInfo.HitPositon);
                         _renderer.material.SetVector(CrackPosition0, localHitPosition);
                     }
                     break;
@@ -72,7 +75,7 @@ namespace BML.Scripts
                     var crackPosition1 = _renderer.material.GetVector(CrackPosition1);
                     if (crackPosition1 == Vector4.zero)
                     {
-                        var localHitPosition = hitInfo.HitPositon - _renderer.transform.position;
+                        var localHitPosition = _renderer.transform.InverseTransformPoint(hitInfo.HitPositon);
                         _renderer.material.SetVector(CrackPosition1, localHitPosition);
                     }
                     break;
@@ -80,7 +83,7 @@ namespace BML.Scripts
                     var crackPosition2 = _renderer.material.GetVector(CrackPosition2);
                     if (crackPosition2 == Vector4.zero)
                     {
-                        var localHitPosition = hitInfo.HitPositon - _renderer.transform.position;
+                        var localHitPosition = _renderer.transform.InverseTransformPoint(hitInfo.HitPositon);
                         _renderer.material.SetVector(CrackPosition2, localHitPosition);
                     }
                     break;

@@ -1088,27 +1088,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.50008726
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.49991274
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.50008726
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.49991274
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -89.98
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -1149,7 +1149,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 764190037039818589, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
 --- !u!114 &2663340801523199170
@@ -1207,12 +1207,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8438481402473190015}
+        m_TargetAssemblyTypeName: BML.Scripts.OreShaderController, BML.Scripts
+        m_MethodName: UpdateShaderOnPickaxeInteract
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _onPickaxeSecondaryInteract:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8537203387600411174}
         m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8438481402473190015}
+        m_TargetAssemblyTypeName: BML.Scripts.OreShaderController, BML.Scripts
+        m_MethodName: UpdateShaderOnPickaxeInteract
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1356,7 +1380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 359972591828912678
+  uniqueID: 9166457781507022210
   updateError: 1
   checkTime: 0.2
 --- !u!114 &8438481402473190015
@@ -1372,6 +1396,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _health: {fileID: 6287322958753863177}
+  _critMarkerTransform: {fileID: 4193293445037692976}
   _renderer: {fileID: 1856003839198373565}
 --- !u!1001 &2413171799035776128
 PrefabInstance:
@@ -2158,6 +2183,10 @@ PrefabInstance:
       propertyPath: m_Tangents.Array.data[14].z
       value: -0.7076672
       objectReference: {fileID: 0}
+    - target: {fileID: 2450872905461499138, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _oreCollider
+      value: 
+      objectReference: {fileID: 6924033394497364990}
     - target: {fileID: 2450872905461499138, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _critMarkerMinMaxAngle.x
       value: 4.6647825
@@ -2952,6 +2981,34 @@ PrefabInstance:
       propertyPath: m_Tangents.Array.data[14].z
       value: -0.7076672
       objectReference: {fileID: 0}
+    - target: {fileID: 8720461623094003360, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8720461623094003360, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8720461623094003360, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 8438481402473190015}
+    - target: {fileID: 8720461623094003360, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8720461623094003360, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: UpdateShaderOnPickaxeInteract
+      objectReference: {fileID: 0}
+    - target: {fileID: 8720461623094003360, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: BML.Scripts.OreShaderController, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 8720461623094003360, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: _onPickaxeInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8885816528984506916, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -3015,6 +3072,11 @@ Transform:
 --- !u!1 &2454297925495668044 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2238584893062115824, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+  m_PrefabInstance: {fileID: 4404071749740678332}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4193293445037692976 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 517902721090737292, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
   m_PrefabInstance: {fileID: 4404071749740678332}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &6438986197002974141 stripped
