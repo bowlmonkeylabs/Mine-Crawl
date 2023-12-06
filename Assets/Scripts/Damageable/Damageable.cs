@@ -1,3 +1,4 @@
+using System;
 using Mono.CSharp;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
@@ -20,15 +21,32 @@ namespace BML.Scripts {
             foreach(DamageableItem di in _damageable){
                 if(di.DamageType.HasFlag(hitInfo.DamageType)) {
                     var damageResult = di.ApplyDamage(hitInfo);
-
-                    int tempHealthBeforeDamage = 0;
+                    var damageRemaining = damageResult.Damage;
+                    bool damagedTempHealth = false;
+                    // int tempHealthBeforeDamage = 0;
+                    //
+                    // if (healthTemporary != null)
+                    // {
+                    //     tempHealthBeforeDamage = healthTemporary.Value;
+                    //     damagedTempHealth = healthTemporary.Damage(damageResult);
+                    // }
+                    // Debug.Log($"damageResult to temp health: {damageResult}");
+                    // Debug.Log($"tempHealthBeforeDamage: {tempHealthBeforeDamage}");
+                    // var remainingDamage = damageResult.Damage -  Mathf.Min(damageResult.Damage, damageResult.Damage - tempHealthBeforeDamage);
+                    // Debug.Log($"damageResult to reg health: {remainingDamage}");
                     if (healthTemporary != null)
                     {
-                        tempHealthBeforeDamage = healthTemporary.Value;
-                        healthTemporary.Damage(damageResult);
+                        var tempHealthDamage = Math.Min(damageRemaining, healthTemporary.Value);
+                        //Debug.Log($"{name} taking {tempHealthDamage} to Health Temp");
+                        damagedTempHealth = healthTemporary.Damage(tempHealthDamage);
+                        if (damagedTempHealth)
+                        {
+                            damageRemaining -= tempHealthDamage;
+                        }
                     }
-                    damageResult.Damage -= Mathf.Min(damageResult.Damage, tempHealthBeforeDamage);
-                    if (!health.Damage(damageResult) && tempHealthBeforeDamage <= 0)
+                    
+                    //Debug.Log($"{name} taking {damageRemaining} to Health");
+                    if (!health.Damage(damageRemaining) && !damagedTempHealth)
                     {
                         di.OnFailDamage.Invoke(hitInfo);
                         continue;
