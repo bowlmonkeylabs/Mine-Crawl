@@ -16,6 +16,7 @@ namespace BML.Scripts
     [SerializeField] [MinMaxSlider(0, 90)] private Vector2 _critMarkerMinMaxAngle = new Vector2(15f, 30f);
     [SerializeField] private float _critMarkerSurfaceOffset = .05f;
     [SerializeField] private TransformSceneReference _playerCamRef;
+    [SerializeField] private LayerMask _critMarkerObstructionLayerMask;
 
     private Vector3 lastHitPos;
     private Vector3 centerToPlayer;
@@ -42,17 +43,56 @@ namespace BML.Scripts
         
         if (!_critMarker.activeSelf) _critMarker.SetActive(true);
 
-        centerToPlayer = _playerCamRef.Value.position - _oreCollider.bounds.center;
+        var playerCamRefPosition = _playerCamRef.Value.position;
+        centerToPlayer = playerCamRefPosition - _oreCollider.bounds.center;
 
-        float randXRot = MathUtils.GetRandomInRangeReflected(_critMarkerMinMaxAngle.x, _critMarkerMinMaxAngle.y);
-        float randYRot = MathUtils.GetRandomInRangeReflected(_critMarkerMinMaxAngle.x, _critMarkerMinMaxAngle.y);
+        Vector3 newCritPoint;
+        bool isNewCritPointValid = false;
+        int attempts = 0;
+        const int MAX_ATTEMPTS = 3;
+        do
+        {
+            attempts++;
+            
+            float randXRot = MathUtils.GetRandomInRangeReflected(_critMarkerMinMaxAngle.x, _critMarkerMinMaxAngle.y);
+            float randYRot = MathUtils.GetRandomInRangeReflected(_critMarkerMinMaxAngle.x, _critMarkerMinMaxAngle.y);
+            Quaternion randomRotation = Quaternion.Euler(randXRot, randYRot, 0f);
 
-        Quaternion randomRotation = Quaternion.Euler(randXRot, randYRot, 0f);
+            newCritPoint = _oreCollider.bounds.center;
+            newCritPoint += randomRotation * centerToPlayer;
+            newCritPoint = _oreCollider.ClosestPoint(newCritPoint);
+            newCritPoint += centerToPlayer.normalized * _critMarkerSurfaceOffset;
 
-        Vector3 newCritPoint = _oreCollider.bounds.center;
-        newCritPoint += randomRotation * centerToPlayer;
-        newCritPoint = _oreCollider.ClosestPoint(newCritPoint);
-        newCritPoint += centerToPlayer.normalized * _critMarkerSurfaceOffset;
+            var checkRay = new Ray(playerCamRefPosition, newCritPoint - playerCamRefPosition);
+            bool didHit = Physics.Raycast(checkRay, out var hitInfo, 10f, _critMarkerObstructionLayerMask);
+            if (!didHit)
+            {
+                isNewCritPointValid = true;
+            }
+            else if (hitInfo.collider == _oreCollider)
+            {
+                isNewCritPointValid = true;
+                newCritPoint = _oreCollider.ClosestPoint(hitInfo.point);
+                newCritPoint += centerToPlayer.normalized * _critMarkerSurfaceOffset;
+            }
+            else if (attempts == MAX_ATTEMPTS)
+            {
+                // If this is the last attempt at re-calculating a crit point, just use the hit position as the crit marker position; hopefully it's at least not-inside whatever collider was hit.
+                newCritPoint = _oreCollider.ClosestPoint(hitInfo.point);
+                newCritPoint += centerToPlayer.normalized * _critMarkerSurfaceOffset;
+            }
+
+            if (!isNewCritPointValid)
+            {
+                Debug.LogError($"Crit marker location invalid, retrying... ({attempts} attempt(s))");
+            }
+        } while (!isNewCritPointValid && attempts < MAX_ATTEMPTS);
+
+        if (!isNewCritPointValid)
+        {
+            Debug.LogError($"Unable to find a valid crit marker location after {attempts} attempt(s)");
+        }
+        
         _critMarker.transform.position = newCritPoint;
     }
     
