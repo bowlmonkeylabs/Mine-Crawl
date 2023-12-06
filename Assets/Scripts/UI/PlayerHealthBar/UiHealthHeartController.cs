@@ -27,12 +27,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
         [SerializeField] private MMF_Player _decrementAnyFeedbacks;
         [SerializeField] private MMF_Player _decrementFeedbacks;
         [SerializeField] private MMF_Player _lowHealthFeedbacks;
-
-        [SerializeField] private Color _heartFill = new Color(242f/255f, 60f/255f, 60f/255f);
-        [SerializeField] private Color _heartOutlineFill = new Color(85f/255f, 25f/255f, 25f/255f);
-        [SerializeField] private Color _heartTempFill = new Color(109f/255f, 168f/255f, 255f/255f);
-        [SerializeField] private Color _heartTempOutlineFill = new Color(25f/255f, 25f/255f, 85f/255f);
-
+        
         [ShowInInspector, ReadOnly] private UiHealthBarControlller _healthBarController;
 
         private ColorSynchronizer _heartHalfLeftSynchronizer, _heartHalfRightSynchronizer, _heartFullSynchronizer, _heartOutlineSynchronizer;
@@ -150,11 +145,13 @@ namespace BML.Scripts.UI.PlayerHealthBar
             var healthTempColor = ColorEntry.UI_Health_Temp_Fill.ToEntryId();
             
             _heartOutlineSynchronizer.SetEntryId(isTemporaryHeart ? healthTempOutlineColor : healthOutlineColor);
+            _heartOutlineSynchronizer.enabled = false;
+            _heartOutlineSynchronizer.enabled = true;
             _heartHalfLeftSynchronizer.SetEntryId(isTemporaryHeart ? healthTempColor : healthColor);
             _heartHalfRightSynchronizer.SetEntryId(isTemporaryHeart ? healthTempColor : healthColor);
             _heartFullSynchronizer.SetEntryId(isTemporaryHeart ? healthTempColor : healthColor);
 
-            Debug.Log($"Heart: {name} | IsTemp: {isTemporaryHeart}");
+            //Debug.Log($"Heart: {name} | IsTemp: {isTemporaryHeart}");
         }
      }
 }
