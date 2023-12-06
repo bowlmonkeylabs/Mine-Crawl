@@ -7,10 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_Ore_Base
-  m_Shader: {fileID: 4800000, guid: aa54248563f1ba6488ee180ee652807b, type: 3}
+  m_Name: Ore_BarrierNew
+  m_Shader: {fileID: 4800000, guid: 835721fa6edc42543a9793e37ba98b5a, type: 3}
   m_ShaderKeywords: 
-  m_LightmapFlags: 4
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -55,41 +55,48 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
-    - _CrackScale: 1.7
-    - _CrackStrengthFactor: 0
+    - _CritCrackSize: 0.05
+    - _CritCrackSizeLarge: 0.05
+    - _CritCrackSizeSmall: 0.05
+    - _CritCracksSpread: 0.04
     - _Cutoff: 0.5
-    - _DebugVertexCrack: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _Float1: 0.2
-    - _Float2: -1.86
-    - _Float3: -9.53
+    - _EdgeLength: 15
+    - _EmissionStrength: 10
+    - _Float2: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MaxCrackStrength: 2.5
-    - _MaxVertexCrackStrength: -1
-    - _Metallic: 0.5
-    - _MinCrackStrength: 0.5
-    - _MinVertexCrackStrength: 0
+    - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Seed: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _VertexCrackScale: 0.36
-    - _VertexCrackStrengthFactor: 0
-    - _VertexCrackThickness: 0.26
+    - _VoronoiScale: 7
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
-    - _Albedo: {r: 0.36792445, g: 0.36792445, b: 0.36792445, a: 1}
-    - _CenterOffset: {r: -0.26, g: -0.81, b: 0, a: 0}
-    - _Color: {r: 0.38679248, g: 0.38679248, b: 0.38679248, a: 1}
-    - _CrackAlbedo: {r: 0.23399994, g: 0.23399994, b: 0.23399994, a: 1}
+    - _Albedo: {r: 0.794, g: 0.7201173, b: 0.642346, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CrackAlbedo: {r: 0.595, g: 0.5367935, b: 0.46565217, a: 1}
+    - _CrackLightness: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+    - _CrackPosition0: {r: 0, g: 0, b: 0, a: 0}
+    - _CrackPosition1: {r: 0, g: 0, b: 0, a: 0}
+    - _CrackPosition2: {r: 0, g: 0, b: 0, a: 0}
+    - _CritPosition: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Vector0: {r: 0, g: 0, b: 0, a: 0}
+    - _Vector1: {r: 0, g: 0, b: 0, a: 0}
+    - _VignetteAlignment: {r: 0, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []

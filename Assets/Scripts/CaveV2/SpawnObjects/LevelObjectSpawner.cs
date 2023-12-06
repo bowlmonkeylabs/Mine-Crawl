@@ -258,7 +258,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                         spawnAt.rotation = spawnAt.rotation ?? cachedTransform.rotation;
                         
                         // Cancel spawn if did not find surface to spawn
-                        if (spawnAtTagParameters.RequireStableSurface && !hitStableSurface)
+                        if (spawnPoint.RequireStableSurface && !hitStableSurface)
                         {
                             if (_caveGenerator.EnableLogs)
                                 Debug.LogWarning($"Failed to spawn {spawnAtTagParameters.Prefab?.name}. No stable " +

@@ -36,11 +36,16 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         private Vector3 _projectionVector = Vector3.down;
         [SerializeField, ShowIf("@this._projectionBehavior == SpawnPointProjectionBehavior.Randomize")] 
         private Vector2 _projectionDirectionRandomnessRangeDegrees = new Vector2(30, 15);
-        [SerializeField] private float _projectionDistance = 45f;
+        [SerializeField, ShowIf("@this._projectionBehavior != SpawnPointProjectionBehavior.None")]
+        private float _projectionDistance = 45f;
+        [SerializeField, ShowIf("@this._projectionBehavior != SpawnPointProjectionBehavior.None")]
+        public bool RequireStableSurface = true;
 
         [SerializeField] private bool _doInheritParentRotation = true;
-        [SerializeField] private bool _rotateTowardsSurfaceNormal = true;
+        [ShowIf("@this._projectionBehavior != SpawnPointProjectionBehavior.None")] [SerializeField] private bool _alignToProjectionVector = true;
+        [ShowIf("@this._projectionBehavior != SpawnPointProjectionBehavior.None")] [SerializeField] private bool _alignToSurfaceNormal = false;
         [SerializeField] private Vector3 _rotationEulerOffset = Vector3.zero;
+        [SerializeField, MinMaxSlider(-180f, 180f)] private Vector2 _randomRotationRangeAroundUpAxis;
         
         [ShowInInspector, ReadOnly] private Vector3? _projectedPosition = null; 
         [ShowInInspector, ReadOnly] private Quaternion? _projectedRotation = null; 
@@ -194,6 +199,9 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             var baseRotation = (_doInheritParentRotation
                 ? parentNode?.GameObject?.transform.rotation ?? Quaternion.identity
                 : Quaternion.identity);
+
+            var randomRotationDegrees = Random.Range(_randomRotationRangeAroundUpAxis.x, _randomRotationRangeAroundUpAxis.y);
+            var randomRotation = Quaternion.AngleAxis(randomRotationDegrees, Vector3.up);
             
             Vector3 projectDirection;
             Quaternion rotationOffset = Quaternion.Euler(_rotationEulerOffset);
@@ -202,7 +210,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 default:
                 case SpawnPointProjectionBehavior.None:
                     _projectedPosition = this.transform.position + (Vector3.up * spawnPosOffset);
-                    _projectedRotation = baseRotation * rotationOffset;
+                    _projectedRotation = baseRotation * randomRotation * rotationOffset;
                     return (_projectedPosition, _projectedRotation);
                 case SpawnPointProjectionBehavior.Gravity:
                     projectDirection = Vector3.down;
@@ -221,23 +229,43 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     break;
             }
 
-            Vector3 hitPos;
+            Vector3 hitPoint, hitNormal;
             bool hitStableSurface = SpawnObjectsUtil.GetPointTowards(
                 this.transform.position, 
                 projectDirection, 
-                out hitPos,
+                out hitPoint,
+                out hitNormal,
                 _projectionLayerMask,
                 _projectionDistance
             );
 
             if (hitStableSurface)
             {
-                _projectedPosition = hitPos + (projectDirection * -spawnPosOffset);
-                _projectedRotation = _rotateTowardsSurfaceNormal
-                    ? Quaternion.LookRotation(this.transform.position - _projectedPosition.Value) *
-                      Quaternion.Euler(90, 0, 0)
-                    : baseRotation;
+                _projectedPosition = hitPoint + (projectDirection * -spawnPosOffset);
+                if (_alignToSurfaceNormal)
+                {
+                    var rhs = Mathf.Approximately(0f, Vector3.Dot(hitNormal, Vector3.up)) ? Vector3.right : Vector3.up;
+                    var perpendicularToHitNormal = Vector3.Cross(hitNormal, rhs);
+                    if (perpendicularToHitNormal != Vector3.zero)
+                    {
+                        _projectedRotation = Quaternion.LookRotation(perpendicularToHitNormal, hitNormal);
+                    }
+                    else
+                    {
+                        _projectedRotation = baseRotation;
+                    }
+                }
+                else if (_alignToProjectionVector)
+                {
+                    _projectedRotation = Quaternion.LookRotation(this.transform.position - _projectedPosition.Value)
+                                         * Quaternion.Euler(90, 0, 0);
+                }
+                else
+                {
+                    _projectedRotation = baseRotation;
+                }
                 _projectedRotation *= rotationOffset;
+                _projectedRotation *= randomRotation;
                 return (_projectedPosition, _projectedRotation);
             }
 
