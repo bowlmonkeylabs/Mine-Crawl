@@ -73,7 +73,9 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Dash")] private SafeFloatValueReference _postDashInvincibilityTime;
         
         [SerializeField, FoldoutGroup("Health")] private Health _healthController;
+        [SerializeField, FoldoutGroup("Health")] private HealthTemporary _healthTemporaryController;
         [SerializeField, FoldoutGroup("Health")] private DynamicGameEvent _tryHeal;
+        [SerializeField, FoldoutGroup("Health")] private DynamicGameEvent _tryHealTemporary;
 
         [SerializeField, FoldoutGroup("Combat State")] private BoolVariable _inCombat;
         [SerializeField, FoldoutGroup("Combat State")] private BoolVariable _anyEnemiesEngaged;
@@ -108,6 +110,7 @@ namespace BML.Scripts.Player
             _combatTimer.SubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
             _tryHeal.Subscribe(Heal);
+            _tryHealTemporary.Subscribe(HealTemporary);
             _isDashActive.Subscribe(OnDashSetActive);
             _playerExperience.Subscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
             
@@ -122,6 +125,7 @@ namespace BML.Scripts.Player
             _combatTimer.UnsubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
             _tryHeal.Unsubscribe(Heal);
+            _tryHealTemporary.Unsubscribe(HealTemporary);
             _isDashActive.Unsubscribe(OnDashSetActive);
             _playerExperience.Unsubscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
         }
@@ -539,10 +543,19 @@ namespace BML.Scripts.Player
         {
             _healthController.Heal(amount);
         }
+        public void HealTemporary(int amount)
+        {
+            _healthTemporaryController.Heal(amount);
+        }
 
         public void Heal(object p, object amount)
         {
             this.Heal((int) amount);
+        }
+        
+        public void HealTemporary(object p, object amount)
+        {
+            this.HealTemporary((int) amount);
         }
 
         private void SetInvincible(bool invincible) {

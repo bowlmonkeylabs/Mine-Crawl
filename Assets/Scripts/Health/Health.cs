@@ -126,6 +126,8 @@ namespace BML.Scripts
             
             lastDamageTime = Time.time;
             StartCoroutine(InvincibilityTimer());
+            
+            Debug.Log($"{name} taking {amount} to Health");
 
             return this.SetHealth(Value - amount, null) < 0;
         }
