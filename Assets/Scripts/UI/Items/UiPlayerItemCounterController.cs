@@ -43,6 +43,8 @@ namespace BML.Scripts.UI.Items
         [SerializeField, ShowIf("@_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable")] private int _inventoryPassiveStackableTreeSlotIndex;
         [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerItem")] private PlayerItem _playerItem;
 
+        [SerializeField] private bool _isStoreDisplay = false;
+
         [ShowInInspector,
          ShowIf("@_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable"),
          ReadOnly]
@@ -311,7 +313,7 @@ namespace BML.Scripts.UI.Items
                 }
             }
             
-            if (itemTimer == null)
+            if (itemTimer == null || _isStoreDisplay)
             {
                 _timerImageController.gameObject.SetActive(false);
             }
@@ -321,29 +323,36 @@ namespace BML.Scripts.UI.Items
                 _timerImageController.gameObject.SetActive(true);
             }
 
-            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
+            if (_isStoreDisplay)
             {
-                // for passive stackable items, instead of 'remaining activations count' it should display the number of upgrades acquired in the respective tree.
-                // _remainingCountTextController.SetVariable(null); // clear prev variable to unsubscribe from its events
-                UpdatePassiveStackableTreeCounts();
+                _remainingCountTextController.gameObject.SetActive(false);
             }
             else
             {
-                var remainingActivationsVariable = Item.ItemEffects.FirstOrDefault(e => e.UseActivationLimit)?.RemainingActivations;
-                if (remainingActivationsVariable == null)
+                if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
                 {
-                    _remainingCountTextController.gameObject.SetActive(false);
+                    // for passive stackable items, instead of 'remaining activations count' it should display the number of upgrades acquired in the respective tree.
+                    // _remainingCountTextController.SetVariable(null); // clear prev variable to unsubscribe from its events
+                    UpdatePassiveStackableTreeCounts();
                 }
                 else
                 {
-                    remainingActivationsVariable.Unsubscribe(OnCountValueChanged);
-                    remainingActivationsVariable.Subscribe(OnCountValueChanged);
-                    _remainingCountTextController.SetVariable(remainingActivationsVariable);
-                    _remainingCountTextController.gameObject.SetActive(true);
+                    var remainingActivationsVariable = Item.ItemEffects.FirstOrDefault(e => e.UseActivationLimit)?.RemainingActivations;
+                    if (remainingActivationsVariable == null)
+                    {
+                        _remainingCountTextController.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        remainingActivationsVariable.Unsubscribe(OnCountValueChanged);
+                        remainingActivationsVariable.Subscribe(OnCountValueChanged);
+                        _remainingCountTextController.SetVariable(remainingActivationsVariable);
+                        _remainingCountTextController.gameObject.SetActive(true);
+                    }
                 }
             }
             
-            _bindingHintText.gameObject.SetActive(Item.Type == ItemType.Active);
+            _bindingHintText.gameObject.SetActive(!_isStoreDisplay && Item.Type == ItemType.Active);
             if (Item.Type == ItemType.Active)
             {
                 _bindingHintText.SetText(ActiveItemBindingHint(_inventoryActiveItemIndex));
