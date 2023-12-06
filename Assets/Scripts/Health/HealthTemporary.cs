@@ -10,7 +10,7 @@ using UnityEngine.Events;
 
 namespace BML.Scripts
 {
-    public class Health : MonoBehaviour
+    public class HealthTemporary : MonoBehaviour
     {
 
         #region Inspector
@@ -19,7 +19,7 @@ namespace BML.Scripts
         [SerializeField, HideIf("_useHealthVariable")] private int _health;
         
         [SerializeField] private bool _hasMaxHealth = false;
-        [SerializeField, ShowIf("_hasMaxHealth")] private IntReference _maxHealthReference;
+        [SerializeField, ShowIf("_hasMaxHealth")] private SafeIntValueReference _maxHealthReference;
 
         [SerializeField] private bool _isInvincible = false;
         [ShowInInspector, ReadOnly] private bool _isInvincibleFrames = false;
