@@ -56,7 +56,7 @@ MonoBehaviour:
       Data: 
   _name: Homing Shot
   _effectDescription: All player projectiles home to nearby enemies
-  _storeDescription: 
+  _storeDescription: (Replaces your current PASSIVE item)
   _useIconColor: 1
   _iconColor: {r: 0.8867924, g: 0.13803846, b: 0.13803846, a: 1}
   _icon: {fileID: 21300000, guid: a3e5b2bb09bf8184b9d7405a25144584, type: 3}
@@ -68,8 +68,14 @@ MonoBehaviour:
     RemainingActivations: {fileID: 0}
     UseActivationCooldownTimer: 0
     ActivationCooldownTimer: {fileID: 0}
-    Time: 0
-    LastTimeCheck: 0
+    RecurringTimerForTrigger: {fileID: 0}
+    RecurringTimerForTriggerConditional:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
     Type: 3
     UsePercentageIncrease: 0
     IsTemporaryStatIncrease: 0
@@ -86,3 +92,13 @@ MonoBehaviour:
     PrefabToInstantiate: {fileID: 0}
     InstantiatePrefabPositionTransform: {fileID: 0}
     InstantiatePrefabContainer: {fileID: 0}
+    RestartTimerVariable: {fileID: 0}
+    ThrowForce:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+    Throwable: {fileID: 0}
