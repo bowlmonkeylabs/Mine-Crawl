@@ -9541,6 +9541,7 @@ GameObject:
   - component: {fileID: 8852799230177401319}
   - component: {fileID: 1578189780}
   - component: {fileID: 1905872712608776435}
+  - component: {fileID: 6164536746581849819}
   - component: {fileID: 3069818814161535491}
   - component: {fileID: 4143845634214050399}
   - component: {fileID: 4099872004446103226}
@@ -10286,9 +10287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _useHealthVariable: 1
   _healthReference: {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
-  _tempHealthReference: {fileID: 11400000, guid: 053503c84e581e449a245d0d72471ad2, type: 2}
   _health: 3
-  _tempHealth: 0
   _hasMaxHealth: 1
   _maxHealthReference:
     UseConstant: 0
@@ -10297,13 +10296,6 @@ MonoBehaviour:
     InstancePath: IntermediateProperties
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: dd02e2953485b9c45a68dbf7feb7fdd4, type: 2}
-  _maxHealthPossibleReference:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: ed55d65f55c70e841bbbbe5c15cbfa63, type: 2}
   _isInvincible: 0
   _invincibilitySeconds:
     ReferenceTypeSelector: 1
@@ -10369,6 +10361,58 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &6164536746581849819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2719825288227953952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4bca4146aa4abd9713362ec1241e4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _useHealthVariable: 1
+  _healthReference: {fileID: 11400000, guid: 053503c84e581e449a245d0d72471ad2, type: 2}
+  _health: 0
+  _hasMaxHealth: 1
+  _maxHealthReference:
+    ReferenceTypeSelector: 4
+    ConstantValue: 0
+    RoundingBehavior: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 11400000, guid: 1e0fc9c536bafdd48aa3a8fa5858c4d0, type: 2}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _isInvincible: 0
+  _invincibilitySeconds:
+    ReferenceTypeSelector: 0
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+  _onHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  _onTakeDamageHitInfo:
+    m_PersistentCalls:
+      m_Calls: []
+  _onTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDeathHitInfo:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  _onRevive:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3069818814161535491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10407,6 +10451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: {fileID: 1905872712608776435}
+  healthTemporary: {fileID: 6164536746581849819}
   _damageable:
   - _damageTypesPreview: Player_Bomb, Enemy_Sentinel_Projectile, Ore_Explosive, Enemy_Bomb_Explosion,
       Trap_Stalactite
@@ -28540,7 +28585,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 92.03705
+  field of view: 100.4893
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -36402,11 +36447,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
---- !u!4 &2163677678157941954 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
-  m_PrefabInstance: {fileID: 5048760685977138667}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5639620639218775163 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 599884813771948432, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
@@ -36418,6 +36458,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &2163677678157941954 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6347296434736609577, guid: 236b0b3714b76b24a91f153efb345cc8, type: 3}
+  m_PrefabInstance: {fileID: 5048760685977138667}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5350706952515162931
 PrefabInstance:
   m_ObjectHideFlags: 0

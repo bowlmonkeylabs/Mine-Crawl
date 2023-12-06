@@ -10,7 +10,7 @@ using UnityEngine.Events;
 
 namespace BML.Scripts
 {
-    public class Health : MonoBehaviour
+    public class HealthTemporary : MonoBehaviour
     {
 
         #region Inspector
@@ -19,7 +19,7 @@ namespace BML.Scripts
         [SerializeField, HideIf("_useHealthVariable")] private int _health;
         
         [SerializeField] private bool _hasMaxHealth = false;
-        [SerializeField, ShowIf("_hasMaxHealth")] private IntReference _maxHealthReference;
+        [SerializeField, ShowIf("_hasMaxHealth")] private SafeIntValueReference _maxHealthReference;
 
         [SerializeField] private bool _isInvincible = false;
         [ShowInInspector, ReadOnly] private bool _isInvincibleFrames = false;
@@ -57,23 +57,23 @@ namespace BML.Scripts
             set {
                 if (_useHealthVariable)
                 {
-                    value = Mathf.Min(MaxHealth, value);
-                    _healthReference.Value = Mathf.Min(value, MaxHealth);
+                    value = Mathf.Min(_maxHealth, value);
+                    _healthReference.Value = Mathf.Min(value, _maxHealth);
                 }
                 else
                 {
-                    value = Mathf.Min(MaxHealth, value);
-                    _health = Mathf.Min(value, MaxHealth);
+                    value = Mathf.Min(_maxHealth, value);
+                    _health = Mathf.Min(value, _maxHealth);
                 }
             }}
+        
+        private int _maxHealth => _hasMaxHealth ? _maxHealthReference.Value : 999;
         
         public int Value {get => _useHealthVariable ? _healthReference.Value: _health;}
         public bool IsDead {get => Value <= 0;}
         public bool IsInvincible => _isInvincible || _isInvincibleFrames;
 
         public int StartingHealth => startingHealth;
-
-        public int MaxHealth => _hasMaxHealth ? _maxHealthReference.Value : 999;
 
         #endregion
         
@@ -142,7 +142,7 @@ namespace BML.Scripts
         
         public int SetHealth(int newValue, HitInfo hitInfo = null)
         {
-            newValue = Mathf.Clamp(newValue, 0, MaxHealth);
+            newValue = Mathf.Clamp(newValue, 0, _maxHealth);
 
             var oldValue = Value;
             _value = newValue;
@@ -166,10 +166,9 @@ namespace BML.Scripts
 
         public void Revive()
         {
-            var reviveHealth = (_hasMaxHealth ? MaxHealth : startingHealth);
-            _onHealthChange?.Invoke(Value, reviveHealth);
-            OnHealthChange?.Invoke(Value, reviveHealth);
-            _value = reviveHealth;
+            _onHealthChange?.Invoke(Value, startingHealth);
+            OnHealthChange?.Invoke(Value, startingHealth);
+            _value = startingHealth;
             _onRevive.Invoke();
             OnRevive?.Invoke();
         }
