@@ -68,6 +68,9 @@ namespace BML.Scripts.Player
 		
 		[Tooltip("Include UI INTERACTABLE states which OVERLAY gameplay (meaning the player has full UI control AND limited player control, but mouse is still LOCKED)")]
 		[SerializeField] private VariableContainer _containerUiMenuStates_InteractableOverlayLockedCursor;
+		
+		[Tooltip("Include UI INTERACTABLE states which OVERLAY spectator gameplay (meaning the player has full UI control AND limited SPECTATOR control, and the mouse is UNLOCKED to interact with the overlays)")]
+		[SerializeField] private VariableContainer _containerUiMenuStates_InteractableOverlaySpectator;
 
 		[Tooltip("Include UI INTERACTABLE states which should FREEZE TIME.")] 
 		[SerializeField] private VariableContainer _containerUiMenuStates_Frozen;
@@ -89,6 +92,7 @@ namespace BML.Scripts.Player
 		[SerializeField] private BoolVariable _isUsingUi_Out_HidePlayerHUD;
 		[SerializeField] private BoolVariable _isUsingUi_Out_InteractableOverlay;
 		[SerializeField] private BoolVariable _isUsingUi_Out_InteractableOverlayLockedCursor;
+		[SerializeField] private BoolVariable _isUsingUi_Out_InteractableOverlaySpectator;
 		
 		private InputAction jumpAction;
 		private InputAction crouchAction;
@@ -124,6 +128,16 @@ namespace BML.Scripts.Player
 			get
 			{
 				return _containerUiMenuStates_InteractableOverlayLockedCursor
+					.GetBoolVariables()
+					.Any(b => (b != null && b.Value));
+			}
+		}
+		
+		private bool IsUsingUi_InteractableOverlaySpectator
+		{
+			get
+			{
+				return _containerUiMenuStates_InteractableOverlaySpectator
 					.GetBoolVariables()
 					.Any(b => (b != null && b.Value));
 			}
@@ -166,6 +180,7 @@ namespace BML.Scripts.Player
 			{
 				return IsUsingUi_InteractableOverlay
 				       || IsUsingUi_InteractableOverlayLockedCursor
+				       || IsUsingUi_InteractableOverlaySpectator
 				       || IsUsingUi_NoPlayerControl
 				       || _isDebugConsoleOpen.Value;
 			}
@@ -191,6 +206,7 @@ namespace BML.Scripts.Player
 			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlayLockedCursor.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
+			_containerUiMenuStates_InteractableOverlaySpectator.GetBoolVariables().ForEach(b => b.Subscribe(ApplyInputState));
 			_isDebugConsoleOpen.Subscribe(ApplyInputState);
 			_isDebugConsoleOpen.Subscribe(OnIsDebugConsoleOpenUpdated);
 
@@ -205,6 +221,7 @@ namespace BML.Scripts.Player
 			_containerUiMenuStates_NoPlayerControl.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlay.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_containerUiMenuStates_InteractableOverlayLockedCursor.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
+			_containerUiMenuStates_InteractableOverlaySpectator.GetBoolVariables().ForEach(b => b.Unsubscribe(ApplyInputState));
 			_isDebugConsoleOpen.Unsubscribe(ApplyInputState);
 			_isDebugConsoleOpen.Unsubscribe(OnIsDebugConsoleOpenUpdated);
 
@@ -536,6 +553,11 @@ namespace BML.Scripts.Player
 				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "UI", "UI_Player");
 				SetCursorState(playerCursorLocked);
 			}
+			else if (IsUsingUi_InteractableOverlaySpectator)
+			{
+				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "UI", "UI_Spectator");
+				SetCursorState(false);
+			}
 			else
 			{
 				SwitchCurrentActionMap(playerInput, true, "Debug_FKeys", "Debug_Extended", "Debug_FKeys", "Player");
@@ -546,6 +568,7 @@ namespace BML.Scripts.Player
 			_isUsingUi_Out_HidePlayerHUD.Value = IsUsingUi_HidePlayerHUD;
 			_isUsingUi_Out_InteractableOverlay.Value = IsUsingUi_InteractableOverlay;
 			_isUsingUi_Out_InteractableOverlayLockedCursor.Value = IsUsingUi_InteractableOverlayLockedCursor;
+			_isUsingUi_Out_InteractableOverlaySpectator.Value = IsUsingUi_InteractableOverlaySpectator;
 			
 			if (_enableLogs) Debug.Log($"ApplyInputState Inputs (NoPlayerControl {IsUsingUi_NoPlayerControl}) (InteractableOverlay {IsUsingUi_InteractableOverlay}) (InteractableOverlayLockedCursor {IsUsingUi_InteractableOverlayLockedCursor}) => updated input state to: (ActionMap {playerInput.currentActionMap.name}) (CursorLocked {Cursor.lockState})");
 		}
