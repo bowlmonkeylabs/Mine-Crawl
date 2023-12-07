@@ -19,7 +19,7 @@ namespace BML.Scripts
         [SerializeField, HideIf("_useHealthVariable")] private int _health;
         
         [SerializeField] private bool _hasMaxHealth = false;
-        [SerializeField, ShowIf("_hasMaxHealth")] private IntReference _maxHealthReference;
+        [SerializeField, ShowIf("_hasMaxHealth")] private SafeIntValueReference _maxHealthReference;
 
         [SerializeField] private bool _isInvincible = false;
         [SerializeField] private bool _useInvincibilityVariable;
@@ -97,12 +97,25 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
-            if (_useHealthVariable) _healthReference.Subscribe(OnHealthReferenceUpdated);
+            
+            {
+                if (_useHealthVariable) _healthReference.Subscribe(OnHealthReferenceUpdated);
+                if (_useInvincibilityVariable)
+                {
+                    _invincibilityTimer.SubscribeStarted(EnableInvincibleFrames);
+                    _invincibilityTimer.SubscribeFinished(DisableInvincibleFrames);
+                }
+            }
         }
 
         private void OnDisable()
         {
             if (_useHealthVariable) _healthReference.Unsubscribe(OnHealthReferenceUpdated);
+            if (_useInvincibilityVariable)
+            {
+                _invincibilityTimer.UnsubscribeStarted(EnableInvincibleFrames);
+                _invincibilityTimer.UnsubscribeFinished(DisableInvincibleFrames);
+            }
         }
 
         #endregion
@@ -128,21 +141,27 @@ namespace BML.Scripts
             
             SetInvincibleFrames(false);
         }
-        
-        public bool Damage(int amount)
+
+        public bool Damage(int amount, bool ignoreInvincibility)
         {
-            if (IsDead || IsInvincible || amount == 0) return false;
+            if (IsDead || (IsInvincible && !ignoreInvincibility) || amount == 0) return false;
             
             lastDamageTime = Time.time;
-            
+
             if (_useInvincibilityVariable)
+            {
                 _invincibilityTimer.RestartTimer();
+                _isInvincibleFrames = true;
+            }
             else
                 StartCoroutine(InvincibilityTimer());
             
-            Debug.Log($"{name} taking {amount} to Health");
-
             return this.SetHealth(Value - amount, null) < 0;
+        }
+        
+        public bool Damage(int amount)
+        {
+            return Damage(amount, false);
         }
         
         public bool Damage(HitInfo hitInfo)
@@ -197,6 +216,15 @@ namespace BML.Scripts
         {
             _isInvincible = isInvincible;
             OnInvincibilityChange?.Invoke(IsInvincible);
+        }
+        private void EnableInvincibleFrames()
+        {
+            SetInvincibleFrames(true);
+        }
+        
+        private void DisableInvincibleFrames()
+        {
+            SetInvincibleFrames(true);
         }
 
         private void SetInvincibleFrames(bool isInvincible)

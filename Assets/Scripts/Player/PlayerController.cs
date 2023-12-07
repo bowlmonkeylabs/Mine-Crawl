@@ -73,7 +73,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Dash")] private SafeFloatValueReference _postDashInvincibilityTime;
         
         [SerializeField, FoldoutGroup("Health")] private Health _healthController;
-        [SerializeField, FoldoutGroup("Health")] private HealthTemporary _healthTemporaryController;
+        [SerializeField, FoldoutGroup("Health")] private Health _healthTemporaryController;
         [SerializeField, FoldoutGroup("Health")] private DynamicGameEvent _tryHeal;
         [SerializeField, FoldoutGroup("Health")] private DynamicGameEvent _tryHealTemporary;
 
