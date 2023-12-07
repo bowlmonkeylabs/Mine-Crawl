@@ -100,7 +100,6 @@ namespace BML.Scripts
                     if (!withinThreshold)
                     {
                         // Continue if hit obstacle
-                        Debug.Log($"Trying to hit {col.name} but hit {hit.collider.name} instead");
                         continue;
                     }
                 }
