@@ -225,7 +225,8 @@ namespace BML.Scripts.Player.Items
         private void OnEnemyKilled(EnemyKilledPayload payload)
         {
             var pickaxeDamageTypes = DamageType.Player_Pickaxe | DamageType.Player_Pickaxe_Secondary;
-            if ((payload.HitInfo.DamageType & pickaxeDamageTypes) > 0)
+            if (payload.HitInfo != null && 
+                (payload.HitInfo.DamageType & pickaxeDamageTypes) > 0)
             {
                 ApplyOnPickaxeKillEnemyEffectsForPassiveItems();
             }

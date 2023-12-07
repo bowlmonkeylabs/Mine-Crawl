@@ -55,8 +55,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
   _name: Escape Hatch
-  _effectDescription: Summon the portal to the next level.
-  _storeDescription: Beware the dark magic takes a toll on its user. ONE TIME USE.
+  _effectDescription: Summon the portal to the next level. ONE TIME USE.
+  _storeDescription: (Replaces your current ACTIVE item)
   _useIconColor: 1
   _iconColor: {r: 0.11814703, g: 0.39231437, b: 0.4245283, a: 1}
   _icon: {fileID: 21300000, guid: 0e280f1a667d1214c80ad4363c24a7c1, type: 3}
@@ -68,8 +68,14 @@ MonoBehaviour:
     RemainingActivations: {fileID: 11400000, guid: 21dde6fe17b88de4e99743c985897fd0, type: 2}
     UseActivationCooldownTimer: 1
     ActivationCooldownTimer: {fileID: 11400000, guid: a606323ec6a46c546a069412938abd80, type: 2}
-    Time: 0
-    LastTimeCheck: -Infinity
+    RecurringTimerForTrigger: {fileID: 0}
+    RecurringTimerForTriggerConditional:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
     Type: 1
     UsePercentageIncrease: 0
     IsTemporaryStatIncrease: 0
@@ -86,3 +92,13 @@ MonoBehaviour:
     PrefabToInstantiate: {fileID: 0}
     InstantiatePrefabPositionTransform: {fileID: 0}
     InstantiatePrefabContainer: {fileID: 0}
+    RestartTimerVariable: {fileID: 0}
+    ThrowForce:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+    Throwable: {fileID: 0}

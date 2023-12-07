@@ -65,6 +65,8 @@ namespace BML.Scripts
 
         public int StartingHealth => startingHealth;
 
+        public int MaxHealth => _hasMaxHealth ? _maxHealthReference.Value : 999;
+
         #endregion
         
         #region Unity Lifecycle
@@ -132,7 +134,7 @@ namespace BML.Scripts
         
         public int SetHealth(int newValue, HitInfo hitInfo = null)
         {
-            newValue = Mathf.Clamp(newValue, 0, _hasMaxHealth ? _maxHealthReference.Value : 999);
+            newValue = Mathf.Clamp(newValue, 0, MaxHealth);
 
             var oldValue = Value;
             _value = newValue;
@@ -156,9 +158,10 @@ namespace BML.Scripts
 
         public void Revive()
         {
-            _onHealthChange?.Invoke(Value, startingHealth);
-            OnHealthChange?.Invoke(Value, startingHealth);
-            _value = startingHealth;
+            var reviveHealth = (_hasMaxHealth ? MaxHealth : startingHealth);
+            _onHealthChange?.Invoke(Value, reviveHealth);
+            OnHealthChange?.Invoke(Value, reviveHealth);
+            _value = reviveHealth;
             _onRevive.Invoke();
             OnRevive?.Invoke();
         }

@@ -10,7 +10,6 @@ namespace BML.Scripts
 {
     public class Explosive : MonoBehaviour
     {
-        
         [SerializeField] private bool _setOriginTransform;
         [SerializeField, ShowIf("_setOriginTransform")] private Transform _origin;
         [SerializeField] private FloatReference _explosionTime;
@@ -23,6 +22,8 @@ namespace BML.Scripts
         [SerializeField] private bool _applyKnockback = true;
         [SerializeField] private bool _useExplosiveRadiusFeedback = true;
         [SerializeField, ShowIf("_useExplosiveRadiusFeedback")] private MMF_Player _explosiveRadiusFeedback;
+        [SerializeField] private float _explosionCueOffsetTime = .25f;
+        [SerializeField] private MMF_Player _explosionCueFeedbacks;
 
         [SerializeField] private UnityEvent _onActivate;
         [SerializeField] private UnityEvent _onExplosion;
@@ -31,6 +32,9 @@ namespace BML.Scripts
         private bool isDeActivated;
         private float activateTime;
         private float currentFuseTime;
+
+        private const float _ExplosionRaycastDistanceThreshold = 0.9f;
+        private const float _ExplosionRaycastDistanceThresholdSquared = _ExplosionRaycastDistanceThreshold * _ExplosionRaycastDistanceThreshold;
 
         public void Activate()
         {
@@ -66,6 +70,10 @@ namespace BML.Scripts
             if (!isActive)
                 return;
 
+            // Feedbacks to cue imminent explosion
+            if (activateTime + currentFuseTime - _explosionCueOffsetTime < Time.time)
+                _explosionCueFeedbacks?.PlayFeedbacks();
+
             if (activateTime + currentFuseTime < Time.time)
                 Explode();
         }
@@ -88,8 +96,13 @@ namespace BML.Scripts
                 Vector3 originToTarget = col.bounds.center - origin;
                 if (Physics.Raycast(origin, originToTarget.normalized, out hit, originToTarget.magnitude, _obstacleMask))
                 {
-                    // Continue if hit obstacle
-                    continue;
+                    bool withinThreshold = (hit.point - col.bounds.center).sqrMagnitude <= _ExplosionRaycastDistanceThresholdSquared;
+                    if (!withinThreshold)
+                    {
+                        // Continue if hit obstacle
+                        Debug.Log($"Trying to hit {col.name} but hit {hit.collider.name} instead");
+                        continue;
+                    }
                 }
 
                 Damageable damageable = col.GetComponent<Damageable>();

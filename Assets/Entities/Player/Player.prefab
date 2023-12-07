@@ -5568,8 +5568,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 0
   serializedVersion: 2
-  m_Size: {x: 3.5, y: 1.5, z: 3.5}
-  m_Center: {x: 0, y: 0, z: 1.75}
+  m_Size: {x: 3.5, y: 1.5, z: 2.5}
+  m_Center: {x: 0, y: 0, z: 1.25}
 --- !u!1 &753813681198287779
 GameObject:
   m_ObjectHideFlags: 0
@@ -9828,6 +9828,7 @@ MonoBehaviour:
   _containerUiMenuStates_NoPlayerControl: {fileID: 11400000, guid: 3946ba753b09bf444a372aa5c5f677d1, type: 2}
   _containerUiMenuStates_InteractableOverlay: {fileID: 11400000, guid: 34d72df9a1b9993479ceccc4738ae1cd, type: 2}
   _containerUiMenuStates_InteractableOverlayLockedCursor: {fileID: 11400000, guid: 320ef8de92518f947a67598a9a9bff9f, type: 2}
+  _containerUiMenuStates_InteractableOverlaySpectator: {fileID: 11400000, guid: abad8f7084f631843a14ef9218886aea, type: 2}
   _containerUiMenuStates_Frozen: {fileID: 11400000, guid: fee0e164099c9bb4abe57719728fd945, type: 2}
   _containerUiMenuStates_HidePlayerHUD: {fileID: 11400000, guid: e13181559aeb2a34f905834f6d6d4973, type: 2}
   _containerUiMenuStates_NonBlocking: {fileID: 11400000, guid: b4b79c3b32459e24d9c0673c360240ff, type: 2}
@@ -9837,6 +9838,7 @@ MonoBehaviour:
   _isUsingUi_Out_HidePlayerHUD: {fileID: 11400000, guid: 049dd567b65e81547a7ebd9532982c5b, type: 2}
   _isUsingUi_Out_InteractableOverlay: {fileID: 11400000, guid: e56a6a71f1ce4f948a45e2c6625e1798, type: 2}
   _isUsingUi_Out_InteractableOverlayLockedCursor: {fileID: 11400000, guid: a11704c89268bd247a865805fe82037e, type: 2}
+  _isUsingUi_Out_InteractableOverlaySpectator: {fileID: 11400000, guid: 002182f88c00ab84e8bc090f7758c100, type: 2}
 --- !u!114 &6318842967923595271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11092,6 +11094,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BoolVariables:
   - {fileID: 11400000, guid: e56a6a71f1ce4f948a45e2c6625e1798, type: 2}
+  - {fileID: 11400000, guid: a11704c89268bd247a865805fe82037e, type: 2}
+  - {fileID: 11400000, guid: 002182f88c00ab84e8bc090f7758c100, type: 2}
   FloatVariables: []
   IntVariables: []
   Vector2Variables: []
@@ -14219,7 +14223,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 0.6
-  m_Range: 25
+  m_Range: 18
   m_SpotAngle: 30
   m_InnerSpotAngle: 3
   m_CookieSize: 10
@@ -14314,6 +14318,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BoolVariables:
   - {fileID: 11400000, guid: e56a6a71f1ce4f948a45e2c6625e1798, type: 2}
+  - {fileID: 11400000, guid: a11704c89268bd247a865805fe82037e, type: 2}
+  - {fileID: 11400000, guid: 002182f88c00ab84e8bc090f7758c100, type: 2}
   FloatVariables: []
   IntVariables: []
   Vector2Variables: []
@@ -28448,6 +28454,8 @@ MonoBehaviour:
   _applyKnockback: 1
   _useExplosiveRadiusFeedback: 0
   _explosiveRadiusFeedback: {fileID: 0}
+  _explosionCueOffsetTime: 0.25
+  _explosionCueFeedbacks: {fileID: 0}
   _onActivate:
     m_PersistentCalls:
       m_Calls: []
@@ -28523,7 +28531,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 92.03622
+  field of view: 92.03705
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -31461,11 +31469,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2321691052871791337, guid: 8debf1c5c331fbb48940ca56bc672b7d, type: 3}
       propertyPath: m_Range
-      value: 9
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2321691052871791337, guid: 8debf1c5c331fbb48940ca56bc672b7d, type: 3}
       propertyPath: m_Intensity
-      value: 0.35
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 7277398886588163508, guid: 8debf1c5c331fbb48940ca56bc672b7d, type: 3}
       propertyPath: m_Layer
