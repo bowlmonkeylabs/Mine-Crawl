@@ -1,3 +1,4 @@
+using System;
 using BML.Scripts.Utils;
 using UnityEngine;
 using MoreMountains.Tools;
@@ -14,12 +15,27 @@ namespace BML.Scripts
         [SerializeField] private LayerMask _playerLayerMask;
         [SerializeField] private string _playerTag;
         [SerializeField] private GameEvent _playerEnteredRopeEvent;
+        [SerializeField] private bool _skipDeploy = false;
 
         public bool IsDeployed {get; private set;}
 
         private bool _playerInRope;
 
-        public void Deploy () {
+        private void Start()
+        {
+            if (_skipDeploy)
+            {
+                IsDeployed = true;
+            }
+        }
+
+        public void Deploy ()
+        {
+            if (IsDeployed)
+            {
+                return;
+            }
+            
             RaycastHit hit;
             
             var scalingTransform = _collider.transform;
