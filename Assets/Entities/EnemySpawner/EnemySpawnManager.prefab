@@ -1905,6 +1905,14 @@ MonoBehaviour:
   _isSpawningPaused: {fileID: 11400000, guid: b4e7a4ec09d24a747b1a8f247eee964d, type: 2}
   _currentEnemyCount: {fileID: 11400000, guid: 6fdcc6ab717b88f4fa6f8ecf81b9db82, type: 2}
   _hasPlayerExitedStartRoom: {fileID: 11400000, guid: 7e64dee33977c4244bc70a927d83e4f2, type: 2}
+  _intensityScore:
+    ReferenceTypeSelector: 0
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
   _onAfterGenerateLevelObjects: {fileID: 11400000, guid: 6b14c457b3e8a0446918006e4929ed06, type: 2}
   _enemySpawnerParams: {fileID: 11400000, guid: 610add04d36c99744b8634adbf223abc, type: 2}
@@ -2002,27 +2010,27 @@ MonoBehaviour:
   _wormSpawnTimer: {fileID: 11400000, guid: 6ce90ebfc6beece4cb0d32bfa065bc41, type: 2}
   _playerHasExitedStartRoom: {fileID: 11400000, guid: 7e64dee33977c4244bc70a927d83e4f2, type: 2}
   _wormMaxStrengthTimer: {fileID: 11400000, guid: 1426a9071e46b2047baec5cf66031a71, type: 2}
-  _spawnRadius: 50
+  _spawnRadius: 30
   _speedCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 10
-      inSlope: -1.4228318
-      outSlope: -1.4228318
+      inSlope: 63.132874
+      outSlope: 63.132874
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.13066347
+      outWeight: 0.030567685
     - serializedVersion: 3
       time: 1
       value: 35
-      inSlope: 44.842594
-      outSlope: 44.842594
+      inSlope: 2.782227
+      outSlope: 2.782227
       tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.04207647
+      weightedMode: 1
+      inWeight: 0.39410478
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -2033,20 +2041,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 9
-      inSlope: -1.71099
-      outSlope: -1.71099
+      inSlope: -26.473495
+      outSlope: -26.473495
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 2
       inWeight: 0.33333334
-      outWeight: 0.12072105
+      outWeight: 0.14519651
     - serializedVersion: 3
       time: 1
       value: 2
-      inSlope: -13.481858
-      outSlope: -13.481858
+      inSlope: -3.574494
+      outSlope: -3.574494
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.027612865
+      inWeight: 0.11681223
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -2063,5 +2071,5 @@ MonoBehaviour:
     Feedback: {fileID: 6676880402962278586}
   _wormActivatedFeedback: {fileID: 6929418385190707709}
   _wormPrefab: {fileID: 8742083633597919030, guid: 0f648f933ac990044b4aedcd81f1ff54, type: 3}
-  _playerRef: {fileID: 11400000, guid: 0a3164266f381ad4ca02410613c2a122, type: 2}
+  _mainCamera: {fileID: 11400000, guid: 4f3c154bd5d34bd4e8e4d93472fefad9, type: 2}
   _enableDebug: 0

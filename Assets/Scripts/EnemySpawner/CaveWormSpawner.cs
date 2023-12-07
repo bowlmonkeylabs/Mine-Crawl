@@ -4,12 +4,12 @@ using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.Scripts.CaveV2;
 using BML.Scripts.Enemy;
+using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts
@@ -29,7 +29,7 @@ namespace BML.Scripts
         [SerializeField, TitleGroup("Feedback")] private MMF_Player _wormActivatedFeedback;
 
         [SerializeField, TitleGroup("References")] private GameObject _wormPrefab;
-        [SerializeField, TitleGroup("References")] private TransformSceneReference _playerRef;
+        [SerializeField, TitleGroup("References")] private TransformSceneReference _mainCamera;
 
         [SerializeField, FoldoutGroup("Debug")] private bool _enableDebug;
 
@@ -38,6 +38,9 @@ namespace BML.Scripts
         private float currentSpawnDelay;
         private float currentSpeed;
         private GameObject spawnedWorm;
+        private bool isFirstAttack = true;
+
+        private List<WormBait.WormBait> wormBaits = new List<WormBait.WormBait>();
 
         // Debug
         private bool killHimAndDontComeBack;
@@ -59,6 +62,7 @@ namespace BML.Scripts
             _wormSpawnTimer.ResetTimer();
             _wormSpawnTimer.SubscribeFinished(ActivateWorm);
             _playerHasExitedStartRoom.Subscribe(StartWormTimer);
+            wormBaits.Clear();
         }
 
         private void OnDisable()
@@ -113,19 +117,46 @@ namespace BML.Scripts
             if (lastWormSpawnTime + currentSpawnDelay > Time.time)
                 return;
 
-            Vector3 spawnPoint = _playerRef.Value.position + Random.onUnitSphere * _spawnRadius;
-            Quaternion facePlayerDir = Quaternion.LookRotation((_playerRef.Value.position - spawnPoint).normalized);
+            Vector3 playerForwardFlat = _mainCamera.Value.forward.xoz().normalized;
+            Vector3 spawnDir;
+
+            if (isFirstAttack)
+            {
+                spawnDir = playerForwardFlat;
+                isFirstAttack = false;
+            }
+            else
+            {
+                Random.InitState(SeedManager.Instance.GetSteppedSeed("WormSpawner"));
+                spawnDir = Random.value > .5f ? playerForwardFlat : Vector3.up;
+            }
+            
+            Vector3 spawnPoint, targetPoint;
+            if (wormBaits.Count > 0)
+            {
+                targetPoint = wormBaits[0].transform.position;
+                UnRegisterWormBait(wormBaits[0]);
+                spawnDir = Vector3.up;
+            }
+            else
+            {
+                targetPoint = _mainCamera.Value.position;
+            }
+
+            spawnPoint = targetPoint + spawnDir * _spawnRadius;
+            Quaternion wormFaceDir = Quaternion.LookRotation(-spawnDir.normalized);
             
             if (spawnedWorm == null)
                 spawnedWorm = GameObject.Instantiate(_wormPrefab);
 
             spawnedWorm.transform.position = spawnPoint;
-            spawnedWorm.transform.rotation = facePlayerDir;
+            spawnedWorm.transform.rotation = wormFaceDir;
             
             WormController wormController = spawnedWorm.GetComponent<WormController>();
-            wormController.Respawn(currentSpeed);
+            wormController.Respawn(currentSpeed, targetPoint);
             
             lastWormSpawnTime = Time.time;
+            SeedManager.Instance.UpdateSteppedSeed("WormSpawner");
         }
 
         private void ActivateWorm()
@@ -177,6 +208,15 @@ namespace BML.Scripts
             }
         }
 
+        public void RegisterWormBait(WormBait.WormBait wormBait)
+        {
+            wormBaits.Add(wormBait);
+        }
+        
+        public void UnRegisterWormBait(WormBait.WormBait wormBait)
+        {
+            wormBaits.Remove(wormBait);
+        }
         #endregion
         
     }
