@@ -14,6 +14,9 @@ namespace BML.Scripts {
         [SerializeField] private List<DamageableItem> _damageable;
         [SerializeField, PropertySpace(10f, 0f)] private UnityEvent<HitInfo> _onDamage;
 
+        public Health Health => health;
+        public Health HealthTemporary => healthTemporary;
+
         // public Dictionary<DamageType, DamageableItem> Value { get {return _value;}}
 
         public void TakeDamage(HitInfo hitInfo)
@@ -23,30 +26,23 @@ namespace BML.Scripts {
                     var damageResult = di.ApplyDamage(hitInfo);
                     var damageRemaining = damageResult.Damage;
                     bool damagedTempHealth = false;
-                    // int tempHealthBeforeDamage = 0;
-                    //
-                    // if (healthTemporary != null)
-                    // {
-                    //     tempHealthBeforeDamage = healthTemporary.Value;
-                    //     damagedTempHealth = healthTemporary.Damage(damageResult);
-                    // }
-                    // Debug.Log($"damageResult to temp health: {damageResult}");
-                    // Debug.Log($"tempHealthBeforeDamage: {tempHealthBeforeDamage}");
-                    // var remainingDamage = damageResult.Damage -  Mathf.Min(damageResult.Damage, damageResult.Damage - tempHealthBeforeDamage);
-                    // Debug.Log($"damageResult to reg health: {remainingDamage}");
+
                     if (healthTemporary != null)
                     {
                         var tempHealthDamage = Math.Min(damageRemaining, healthTemporary.Value);
-                        //Debug.Log($"{name} taking {tempHealthDamage} to Health Temp");
+                        Debug.Log(healthTemporary.IsInvincible);
                         damagedTempHealth = healthTemporary.Damage(tempHealthDamage);
+                        if (damagedTempHealth) Debug.Log($"{name} taking {tempHealthDamage} to Health Temp {healthTemporary.IsInvincible}");
                         if (damagedTempHealth)
                         {
                             damageRemaining -= tempHealthDamage;
                         }
                     }
-                    
-                    //Debug.Log($"{name} taking {damageRemaining} to Health");
-                    if (!health.Damage(damageRemaining) && !damagedTempHealth)
+
+                    Debug.Log(health.IsInvincible);
+                    bool dealtDamageToMainHealth = health.Damage(damageRemaining, damagedTempHealth);
+                    if (dealtDamageToMainHealth) Debug.Log($"{name} taking {damageRemaining} to Health {health.IsInvincible}");
+                    if (!dealtDamageToMainHealth && !damagedTempHealth)
                     {
                         di.OnFailDamage.Invoke(hitInfo);
                         continue;

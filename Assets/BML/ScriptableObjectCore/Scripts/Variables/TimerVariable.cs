@@ -381,6 +381,16 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             Variable?.Unsubscribe(callback);
         }
         
+        public void SubscribeStarted(OnStarted_ callback)
+        {
+            Variable?.SubscribeStarted(callback);
+        }
+
+        public void UnsubscribeStarted(OnStarted_ callback)
+        {
+            Variable?.UnsubscribeStarted(callback);
+        }
+        
         public void SubscribeFinished(OnFinished_ callback)
         {
             Variable?.SubscribeFinished(callback);

@@ -13,11 +13,11 @@ namespace BML.Scripts.UI.PlayerHealthBar
     {
         #region Inspector
         
-        [SerializeField] private TransformSceneReference _healthTransformSceneReference;
+        [SerializeField] private TransformSceneReference _damageableTransformSceneReference;
         [ShowInInspector, ReadOnly] private Health _health;
-        [ShowInInspector, ReadOnly] private HealthTemporary _healthTemporary;
+        [ShowInInspector, ReadOnly] private Health _healthTemporary;
         public Health Health => _health;
-        public HealthTemporary HealthTemporary => _healthTemporary;
+        public Health HealthTemporary => _healthTemporary;
 
         [SerializeField] private IntReference _healthMaxValue;
         [SerializeField] private IntReference _healthMaxPossibleValue;
@@ -43,10 +43,11 @@ namespace BML.Scripts.UI.PlayerHealthBar
         private void Awake()
         {
             _finishedInitChildren = false;
-            _health = _healthTransformSceneReference.Value.GetComponent<Health>();
-            _healthTemporary = _healthTransformSceneReference.Value.GetComponent<HealthTemporary>();
+            Damageable damageable = _damageableTransformSceneReference.Value.GetComponent<Damageable>();
+            _health = damageable.Health;
+            _healthTemporary = damageable.HealthTemporary;
             _heartChildren = new List<UiHealthHeartController>();
-        }
+            }
 
         private void OnEnable()
         {
