@@ -53,11 +53,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 541999808759209597, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: m_Name
-      value: Pickup_TemporaryHealth_FullHeart Variant
+      value: Pickup_TemporaryHealth_FullHeart
       objectReference: {fileID: 0}
     - target: {fileID: 1357049817723190694, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: conditionPreview
-      value: '-  Player_ Health Total  <   Player_ Max Health Possible
+      value: '-  Player_ Health Slots Available  >  0
 
 '
       objectReference: {fileID: 0}
@@ -74,12 +74,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: ed55d65f55c70e841bbbbe5c15cbfa63, type: 2}
     - target: {fileID: 1357049817723190694, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: SafeFloatConditions.Array.data[0].comparator
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1357049817723190694, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: OnSuccess.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 11400000, guid: ef6369dc0d6f7f143a09b4e34c2d4405, type: 2}
     - target: {fileID: 1357049817723190694, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: SafeFloatConditions.Array.data[0].value.ReferenceTypeSelector
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1357049817723190694, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: OnSuccess.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
@@ -96,14 +100,60 @@ PrefabInstance:
     - target: {fileID: 1357049817723190694, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: SafeFloatConditions.Array.data[0].targetParameter.ReferenceValue_FunctionVariable
       value: 
-      objectReference: {fileID: 11400000, guid: 224c3aec14560914f9fa58ddf4adce94, type: 2}
+      objectReference: {fileID: 11400000, guid: 8d0342306e283b14ca5521aa570c11ab, type: 2}
+    - target: {fileID: 4046026932992656867, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: conditionPreview
+      value: '-  Player_ Health Slots Available  >  0
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4046026932992656867, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: IntConditions.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4046026932992656867, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: SafeFloatConditions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4046026932992656867, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: SafeFloatConditions.Array.data[0].comparator
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4046026932992656867, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: SafeFloatConditions.Array.data[0].value.ReferenceTypeSelector
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4046026932992656867, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: SafeFloatConditions.Array.data[0].value.ReferenceValue_IntVariable
+      value: 
+      objectReference: {fileID: 11400000, guid: ed55d65f55c70e841bbbbe5c15cbfa63, type: 2}
+    - target: {fileID: 4046026932992656867, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: SafeFloatConditions.Array.data[0].targetParameter.ReferenceTypeSelector
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4046026932992656867, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: SafeFloatConditions.Array.data[0].targetParameter.ReferenceValue_FunctionVariable
+      value: 
+      objectReference: {fileID: 11400000, guid: 8d0342306e283b14ca5521aa570c11ab, type: 2}
     - target: {fileID: 5781847919391900184, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 5e6ff13c8ce30a941803339003271362, type: 2}
+    - target: {fileID: 6556778218400057615, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: IntVariables.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6556778218400057615, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: FunctionVariables.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6556778218400057615, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: FunctionVariables.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 224c3aec14560914f9fa58ddf4adce94, type: 2}
     - target: {fileID: 8403688512749844403, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: conditionPreview
-      value: '-  Player_ Health Total  <   Player_ Max Health Possible
+      value: '-  Player_ Health Slots Available  >  0
 
 '
       objectReference: {fileID: 0}
@@ -116,8 +166,12 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8403688512749844403, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      propertyPath: SafeFloatConditions.Array.data[0].comparator
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8403688512749844403, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: SafeFloatConditions.Array.data[0].value.ReferenceTypeSelector
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8403688512749844403, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: SafeFloatConditions.Array.data[0].value.ReferenceValue_IntVariable
@@ -130,6 +184,6 @@ PrefabInstance:
     - target: {fileID: 8403688512749844403, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
       propertyPath: SafeFloatConditions.Array.data[0].targetParameter.ReferenceValue_FunctionVariable
       value: 
-      objectReference: {fileID: 11400000, guid: 224c3aec14560914f9fa58ddf4adce94, type: 2}
+      objectReference: {fileID: 11400000, guid: 8d0342306e283b14ca5521aa570c11ab, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}

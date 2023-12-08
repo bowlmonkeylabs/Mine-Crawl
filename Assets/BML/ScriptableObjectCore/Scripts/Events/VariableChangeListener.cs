@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,7 +15,8 @@ namespace BML.ScriptableObjectCore.Scripts.Events
         [SerializeField] private List<IntVariable> IntVariables = new List<IntVariable>();
         [SerializeField] private List<Vector2Variable> Vector2Variables = new List<Vector2Variable>();
         [SerializeField] private List<Vector3Variable> Vector3Variables = new List<Vector3Variable>();
-        
+        [SerializeField] private List<FunctionVariable> FunctionVariables = new List<FunctionVariable>();
+
         public UnityEvent OnIncrease;
         public UnityEvent OnDecrease;
         
@@ -40,6 +42,10 @@ namespace BML.ScriptableObjectCore.Scripts.Events
             {
                 vector3Variable.Subscribe(ChangedVector3);
             }
+            foreach (var functionVariable in FunctionVariables)
+            {
+                functionVariable.Subscribe(ChangedFloat);
+            }
         }
 
         private void ChangedBool(bool previousValue, bool currentValue)
@@ -53,7 +59,7 @@ namespace BML.ScriptableObjectCore.Scripts.Events
             if (currentValue > previousValue) OnIncrease?.Invoke();
             else if (currentValue < previousValue) OnDecrease?.Invoke();
         }
-        
+
         private void ChangedInt(int previousValue, int currentValue)
         {
             if (currentValue > previousValue) OnIncrease?.Invoke();
