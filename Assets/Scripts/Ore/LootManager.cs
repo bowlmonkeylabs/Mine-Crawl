@@ -15,7 +15,7 @@ namespace BML.Scripts
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
         [Required, SerializeField] private GameEvent _onAfterGenerateLevelObjects;
         
-        #endregion 
+        #endregion
         
         #region Unity lifecycle
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.CaveV2.MudBun;
@@ -32,6 +33,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         [SerializeField] private GameEvent _onAfterSeparateMudbunMesh;
         [SerializeField] private GameEvent _onAfterGenerateLevelObjects;
+        [SerializeField] private BoolReference _levelObjectsGenerated;
         
         [Required, SerializeField] private CaveGenComponentV2 _caveGenerator;
         
@@ -130,6 +132,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
             
             _onAfterGenerateLevelObjects.Raise();
+            _levelObjectsGenerated.Value = true;
         }
 
         [PropertyOrder(-1)]

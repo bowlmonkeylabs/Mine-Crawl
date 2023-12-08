@@ -1264,7 +1264,13 @@ MonoBehaviour:
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
+  _onTakeDamageHitInfo:
+    m_PersistentCalls:
+      m_Calls: []
   _onTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDeathHitInfo:
     m_PersistentCalls:
       m_Calls: []
   _onDeath:
@@ -1310,6 +1316,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lootTableVariable: {fileID: 11400000, guid: 78f9745940256e64c9a384f7788d72ad, type: 2}
+  _levelObjectsGenerated:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 9cccc0a113213314291480e8368de680, type: 2}
   _onDrop:
     m_PersistentCalls:
       m_Calls:
@@ -2071,9 +2084,33 @@ MonoBehaviour:
       Enemy_Snake_Projectile, Player_Pickaxe_Secondary, Enemy_Bomb_Explosion, Trap_Spike
     _damageType: 7679
     _damageModifierType: 3
-    _damageMultiplier: 1
-    _damageResistance: 0
-    _damageOverride: 0
+    _damageMultiplier:
+      ReferenceTypeSelector: 0
+      ConstantValue: 1
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageResistance:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageOverride:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     _onDamage:
       m_PersistentCalls:
         m_Calls: []
@@ -3730,10 +3767,12 @@ MonoBehaviour:
   _quantity:
     ReferenceTypeSelector: 0
     ConstantValue: 1
+    RoundingBehavior: 0
     ReferenceValue_FloatVariable: {fileID: 0}
-    RoundingBehavior_FloatVariable: 0
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
   _forceMode: 1
   _direction:
     UseConstant: 0
@@ -3863,6 +3902,8 @@ MonoBehaviour:
   _applyKnockback: 1
   _useExplosiveRadiusFeedback: 1
   _explosiveRadiusFeedback: {fileID: 5745527008557815035}
+  _explosionCueOffsetTime: 0.25
+  _explosionCueFeedbacks: {fileID: 0}
   _onActivate:
     m_PersistentCalls:
       m_Calls: []

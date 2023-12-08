@@ -84,13 +84,13 @@ namespace BML.Scripts
 
             if (!isNewCritPointValid)
             {
-                Debug.LogError($"Crit marker location invalid, retrying... ({attempts} attempt(s))");
+                Debug.Log($"Crit marker location invalid, retrying... ({attempts} attempt(s))");
             }
         } while (!isNewCritPointValid && attempts < MAX_ATTEMPTS);
 
         if (!isNewCritPointValid)
         {
-            Debug.LogError($"Unable to find a valid crit marker location after {attempts} attempt(s)");
+            Debug.Log($"Unable to find a valid crit marker location after {attempts} attempt(s)");
         }
         
         _critMarker.transform.position = newCritPoint;
