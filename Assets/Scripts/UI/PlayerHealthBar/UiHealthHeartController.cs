@@ -107,7 +107,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
             if (_invincible)
             {
                 _invincibleFeedbacks.StopFeedbacks();
-                _invincibleFeedbacks.Initialization();
+                _invincibleFeedbacks.ResetFeedbacks();
                 _invincibleFeedbacks.PlayFeedbacks();
             }
             else if (_incrementFeedbacks.gameObject.activeInHierarchy)
@@ -151,7 +151,8 @@ namespace BML.Scripts.UI.PlayerHealthBar
             _heartHalfRightSynchronizer.SetEntryId(isTemporaryHeart ? healthTempColor : healthColor);
             _heartFullSynchronizer.SetEntryId(isTemporaryHeart ? healthTempColor : healthColor);
 
-            //Debug.Log($"Heart: {name} | IsTemp: {isTemporaryHeart}");
+            // Init invincibility feedback to store new outline color
+            _invincibleFeedbacks.Initialization();
         }
      }
 }

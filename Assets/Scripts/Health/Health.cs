@@ -91,7 +91,7 @@ namespace BML.Scripts
             if (_useInvincibilityVariable)
             {
                 _invincibilityTimer.UpdateTime();
-                SetInvincibleFrames(_invincibilityTimer.IsStarted && !_invincibilityTimer.IsFinished);
+                //SetInvincibleFrames(_invincibilityTimer.IsStarted && !_invincibilityTimer.IsFinished);
             }
         }
 
@@ -150,8 +150,8 @@ namespace BML.Scripts
 
             if (_useInvincibilityVariable)
             {
+                // Starting this timer triggers OnStarted event which enabled invincibility
                 _invincibilityTimer.RestartTimer();
-                _isInvincibleFrames = true;
             }
             else
                 StartCoroutine(InvincibilityTimer());
@@ -224,7 +224,7 @@ namespace BML.Scripts
         
         private void DisableInvincibleFrames()
         {
-            SetInvincibleFrames(true);
+            SetInvincibleFrames(false);
         }
 
         private void SetInvincibleFrames(bool isInvincible)
