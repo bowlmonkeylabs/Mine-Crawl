@@ -198,6 +198,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         #endregion
         
         #region Interface
+        
+        public delegate void OnUpdateDelta(int previousValue, int currentValue);
+        protected event OnUpdateDelta _OnUpdateDelta;
 
         public int Value
         {
@@ -209,47 +212,20 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                 {
                     case IntReferenceTypes.FloatVariable:
                         if (ReferenceValue_FloatVariable == null)
-                        {
                             return 0;
-                        }
-                        switch (RoundingBehavior)
-                        {
-                            default:
-                            case IntRoundingBehavior.Truncate:
-                                return (int) Math.Truncate(ReferenceValue_FloatVariable.Value);
-                            case IntRoundingBehavior.Round:
-                                return Mathf.RoundToInt(ReferenceValue_FloatVariable.Value);
-                        }
+                        return FloatToInt(ReferenceValue_FloatVariable.Value);
                     case IntReferenceTypes.IntVariable:
                         return ReferenceValue_IntVariable?.Value ?? 0;
                     case IntReferenceTypes.BoolVariable:
                         return ReferenceValue_BoolVariable.Value ? 1 : 0;
                     case IntReferenceTypes.FunctionVariable:
                         if (ReferenceValue_FunctionVariable == null)
-                        {
                             return 0;
-                        }
-                        switch (RoundingBehavior)
-                        {
-                            default:
-                            case IntRoundingBehavior.Truncate:
-                                return (int) Math.Truncate(ReferenceValue_FunctionVariable.Value);
-                            case IntRoundingBehavior.Round:
-                                return Mathf.RoundToInt(ReferenceValue_FunctionVariable.Value);
-                        }
+                        return FloatToInt(ReferenceValue_FunctionVariable.Value);
                     case IntReferenceTypes.EvaluateCurveVariable:
                         if (ReferenceValue_EvaluateCurveVariable == null)
-                        {
                             return 0;
-                        }
-                        switch (RoundingBehavior)
-                        {
-                            default:
-                            case IntRoundingBehavior.Truncate:
-                                return (int) Math.Truncate(ReferenceValue_EvaluateCurveVariable.Value);
-                            case IntRoundingBehavior.Round:
-                                return Mathf.RoundToInt(ReferenceValue_EvaluateCurveVariable.Value);
-                        }
+                        return FloatToInt(ReferenceValue_EvaluateCurveVariable.Value);
                     default:
                         Debug.LogError($"Trying to access Int variable but none set in inspector!");
                         return default(int);
@@ -355,6 +331,11 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
             }
         }
 
+        public void Subscribe(OnUpdateDelta callback)
+        {
+            _OnUpdateDelta += callback;
+        }
+
         public void Unsubscribe(OnUpdate callback)
         {
             switch (ReferenceTypeSelector)
@@ -375,6 +356,11 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                     ReferenceValue_EvaluateCurveVariable?.Unsubscribe(callback);
                     break;
             }
+        }
+        
+        public void Unsubscribe(OnUpdateDelta callback)
+        {
+            _OnUpdateDelta -= callback;
         }
 
         // [PropertyTooltip("Create an Instance SO")]
@@ -405,5 +391,27 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
         // }
 
         #endregion
+        
+        private int FloatToInt(float value)
+        {
+            switch (RoundingBehavior)
+            {
+                default:
+                case IntRoundingBehavior.Truncate:
+                    return (int) Math.Truncate(value);
+                case IntRoundingBehavior.Round:
+                    return Mathf.RoundToInt(value);
+            }
+        }
+
+        private int BoolToInt(bool value)
+        {
+            return value ? 1 : 0;
+        }
+
+        private void SubscribeUpdateFloat(float prev, float curr)
+        {
+            _OnUpdateDelta.Invoke(FloatToInt(prev), FloatToInt(curr));
+        }
     }
 }

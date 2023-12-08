@@ -119,6 +119,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
 #region Interface
 
+        public delegate void OnUpdateDelta(float previousValue, float currentValue);
+        protected event OnUpdateDelta _OnUpdateDelta;
+
         public float Value => _result;
 
         public string GetName() => name;
@@ -130,10 +133,19 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         {
             this.OnUpdate += callback;
         }
+        public void Subscribe(OnUpdateDelta callback)
+        {
+            this._OnUpdateDelta += callback;
+        }
 
         public void Unsubscribe(OnUpdate callback)
         {
             this.OnUpdate -= callback;
+        }
+        
+        public void Unsubscribe(OnUpdateDelta callback)
+        {
+            this._OnUpdateDelta -= callback;
         }
         
         public bool Save(string folderPath, string name = "")
@@ -159,12 +171,14 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [Button]
         private void Recalculate()
         {
+            var _prev = _result;
             _result = Operations.Aggregate(0f, (accumulator, op) =>
             {
                 var operation = op.op.AsFunction();
                 return operation(accumulator, op.value.Value);
             });
             OnUpdate?.Invoke();
+            _OnUpdateDelta?.Invoke(_prev, _result);
         }
 
         private string Equation
