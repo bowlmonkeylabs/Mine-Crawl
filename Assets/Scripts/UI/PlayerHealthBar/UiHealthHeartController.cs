@@ -71,19 +71,22 @@ namespace BML.Scripts.UI.PlayerHealthBar
                 _decrementFeedbacks.Initialization();
                 _decrementFeedbacks.PlayFeedbacks();
             }
+        }
+
+        public void OnTotalHealthChange(float prevTotalHealth, float currentTotalHealth)
+        {
+            float delta = currentTotalHealth - prevTotalHealth;
             
-            if (!totalHealthDelta.HasValue)
-            {
-                // do nothing
-            }
-            else if (totalHealthDelta < 0)
+            if (delta < 0)
             {
                 _decrementAnyFeedbacks.Initialization();
+                _decrementAnyFeedbacks.ResetFeedbacks();
                 _decrementAnyFeedbacks.PlayFeedbacks();
             }
-            else if (totalHealthDelta > 0)
+            else if (delta > 0)
             {
                 _incrementAnyFeedbacks.Initialization();
+                _incrementAnyFeedbacks.ResetFeedbacks();
                 _incrementAnyFeedbacks.PlayFeedbacks();
             }
             
@@ -93,7 +96,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
                 _lowHealthFeedbacks.Initialization();
                 _lowHealthFeedbacks.PlayFeedbacks();
             }
-            else if (totalHealthDelta > 0 && _lowHealthFeedbacks.gameObject.activeInHierarchy)
+            else if (delta > 0 && _lowHealthFeedbacks.gameObject.activeInHierarchy)
             {
                 _lowHealthFeedbacks.StopFeedbacks();
                 _lowHealthFeedbacks.Initialization();

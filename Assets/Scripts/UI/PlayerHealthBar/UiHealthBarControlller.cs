@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
         [SerializeField] private IntReference _healthMaxValue;
         [SerializeField] private IntReference _healthMaxPossibleValue;
         [SerializeField] private IntReference _healthTempValue;
+        [SerializeField] private FunctionVariable _totalHealth;
 
         [SerializeField] private float _initAnimateSeconds;
 
@@ -63,6 +65,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
             _healthTemporary.OnHealthChange += UpdateHeartsTemporaryFill;
             _healthMaxValue.Subscribe(OnMaxHealthChanged);
             _health.OnInvincibilityChange += UpdateInvincibility;
+            _totalHealth.Subscribe(OnTotalHealthChanged);
         }
 
         private void OnDisable()
@@ -71,6 +74,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
             _healthTemporary.OnHealthChange -= UpdateHeartsTemporaryFill;
             _healthMaxValue.Unsubscribe(OnMaxHealthChanged);
             _health.OnInvincibilityChange -= UpdateInvincibility;
+            _totalHealth.Unsubscribe(OnTotalHealthChanged);
         }
 
         #endregion
@@ -158,6 +162,14 @@ namespace BML.Scripts.UI.PlayerHealthBar
             var maxPossibleTempHearts = _healthMaxPossibleValue.Value - _healthMaxValue.Value;
             _healthTempValue.Value = Mathf.Max(0, 
                 Mathf.Min(_healthTempValue.Value, maxPossibleTempHearts));
+        }
+
+        private void OnTotalHealthChanged(float prevTotalHealth, float currentTotalHealth)
+        {
+            foreach (var heartController in _heartChildren)
+            {
+                heartController.OnTotalHealthChange(prevTotalHealth, currentTotalHealth);
+            }
         }
 
         private void UpdateHeartsFill(int prevHealth, int currentHealth)
