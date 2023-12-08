@@ -19,6 +19,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         CommonOre = 1 << 3,
         CommonOre2 = 1 << 4,
         RareOre = 1 << 5,
+        Bomb = 1 << 6,
     }
     
     [Serializable]
