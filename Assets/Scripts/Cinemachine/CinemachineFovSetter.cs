@@ -20,6 +20,7 @@ namespace BML.Scripts
         private void OnEnable()
         {
             _fovValue.Subscribe(SetCinemachineCameraFov);
+            // TODO need to update FOV whenever the camera aspect ratio changes (when the application is first opened, or when the display resolution is changed)
         }
         
         private void OnDisable()
