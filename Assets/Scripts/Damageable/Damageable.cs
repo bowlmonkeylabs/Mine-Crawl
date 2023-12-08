@@ -19,8 +19,10 @@ namespace BML.Scripts {
             foreach(DamageableItem di in _damageable){
                 if(di.DamageType.HasFlag(hitInfo.DamageType)) {
                     var damageResult = di.ApplyDamage(hitInfo);
+                    Debug.Log($"{name} taking damage {damageResult.Damage}");
                     if (!health.Damage(damageResult))
                     {
+                        Debug.Log($"FFAAAIIILLLLL {name} taking damage {damageResult.Damage}");
                         di.OnFailDamage.Invoke(hitInfo);
                         continue;
                     }

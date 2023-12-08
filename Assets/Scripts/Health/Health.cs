@@ -124,6 +124,7 @@ namespace BML.Scripts
         
         public bool Damage(HitInfo hitInfo)
         {
+            Debug.Log($"IsInvincbile: {_isInvincible} IsDead: {IsDead}| ");
             if (IsDead || IsInvincible || hitInfo.Damage == 0) return false;
             
             lastDamageTime = Time.time;

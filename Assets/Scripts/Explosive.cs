@@ -103,6 +103,8 @@ namespace BML.Scripts
                         continue;
                     }
                 }
+                
+                Debug.Log($"Hit: {col.name}");
 
                 Damageable damageable = col.GetComponent<Damageable>();
                 if (damageable == null)
@@ -114,6 +116,7 @@ namespace BML.Scripts
                     (col.transform.position - origin).normalized);
                 
                 if(damageable != null) {
+                    Debug.Log($"damageable: {hitInfo.Damage}");
                     damageable.TakeDamage(hitInfo);
                 }
                 
