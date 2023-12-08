@@ -1194,6 +1194,217 @@ Transform:
   m_Father: {fileID: 490814181461812071}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 26.529, y: 0.152, z: 52.115}
+--- !u!1 &1204510872573442042
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1373312605045727364}
+  - component: {fileID: 8038517622200130819}
+  m_Layer: 10
+  m_Name: DropResourceFeedbacks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1373312605045727364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204510872573442042}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6524525142201322170}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8038517622200130819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204510872573442042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Feedbacks: []
+  InitializationMode: 2
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  ForceTimescaleMode: 0
+  ForcedTimescaleMode: 1
+  DurationMultiplier: 1
+  RandomizeDuration: 0
+  RandomDurationMultiplier: {x: 0.5, y: 1.5}
+  DisplayFullDurationDetails: 0
+  PlayerTimescaleMode: 1
+  OnlyPlayIfWithinRange: 0
+  RangeCenter: {fileID: 0}
+  RangeDistance: 5
+  UseRangeFalloff: 0
+  RangeFalloff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapRangeFalloff: {x: 0, y: 1}
+  IgnoreRangeEvents: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlay: 1
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRevert:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  FeedbacksList:
+  - id: 0
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  ForceStopFeedbacksOnDisable: 1
+  references:
+    version: 1
+    00000000:
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: 548373142
+        Label: Unity Events
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        Owner: {fileID: 8038517622200130819}
+        DebugActive: 0
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 4636399703202130992}
+              m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
+              m_MethodName: Launch
+              m_Mode: 2
+              m_Arguments:
+                m_ObjectArgument: {fileID: 2593184574423224280, guid: 031888ecd2537c742b2ebfda7fc8fa7d, type: 3}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
 --- !u!1 &1562118354735840353
 GameObject:
   m_ObjectHideFlags: 0
@@ -12135,14 +12346,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
---- !u!4 &4474356323377271879 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
-  m_PrefabInstance: {fileID: 5090758608909321582}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4471702249194623281 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8694388726828291167, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
+  m_PrefabInstance: {fileID: 5090758608909321582}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4474356323377271879 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8700420826838700329, guid: ab74fd2f6e036fc4a87bf46a8c3a4306, type: 3}
   m_PrefabInstance: {fileID: 5090758608909321582}
   m_PrefabAsset: {fileID: 0}
 --- !u!198 &4380147914521632417 stripped
@@ -12251,6 +12462,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+--- !u!1 &3124417065529508874 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8523473334324716175, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
+  m_PrefabInstance: {fileID: 6707369555988997765}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3124417065529213354 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8523473334325208879, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
@@ -12259,11 +12475,6 @@ Transform:
 --- !u!198 &3124417065513976126 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 8523473334340380603, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
-  m_PrefabInstance: {fileID: 6707369555988997765}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &3124417065529508874 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8523473334324716175, guid: 0bed8cbcca7b2c64885210e7a27d7a6a, type: 3}
   m_PrefabInstance: {fileID: 6707369555988997765}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &2939941581251005037
@@ -12323,7 +12534,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -12842,28 +13053,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
---- !u!114 &1117152532426743521 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
-  m_PrefabInstance: {fileID: 8714057318454351410}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1289867755587324221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8203031633842827809 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
-  m_PrefabInstance: {fileID: 8714057318454351410}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1289867755587324221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &5493255106901909680 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3807083870472402562, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
@@ -12885,6 +13074,22 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7568311360931372815, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
   m_PrefabInstance: {fileID: 8714057318454351410}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1726156717579843824 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8005718528128544450, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 8714057318454351410}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631910057165537604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &631910057165537604 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8082398027954001782, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 8714057318454351410}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1441323613824105958 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
@@ -12896,20 +13101,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &631910057165537604 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8082398027954001782, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
-  m_PrefabInstance: {fileID: 8714057318454351410}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1726156717579843824 stripped
+--- !u!114 &1117152532426743521 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8005718528128544450, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
   m_PrefabInstance: {fileID: 8714057318454351410}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 631910057165537604}
+  m_GameObject: {fileID: 1289867755587324221}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8203031633842827809 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 8714057318454351410}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289867755587324221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &6524525142201322170 stripped
@@ -13005,7 +13216,19 @@ MonoBehaviour:
         m_Calls: []
     _onDeath:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 8038517622200130819}
+          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+          m_MethodName: PlayFeedbacks
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   _onDamage:
     m_PersistentCalls:
       m_Calls:
