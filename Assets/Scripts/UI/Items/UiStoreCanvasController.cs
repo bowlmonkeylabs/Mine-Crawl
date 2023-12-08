@@ -349,6 +349,7 @@ namespace BML.Scripts.UI.Items
             {
                 lastSelected =
                     buttonList.FirstOrDefault(buttonController => buttonController.ItemToPurchase == (PlayerItem)playerItem);
+                int lastSelectedIndex = buttonList.IndexOf(lastSelected);
                 SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
                 GenerateStoreItems();
                 if (_enableLogs) Debug.Log($"UiStoreCanvasController OnBuy (Last selected {lastSelected} (ActiveSelf {lastSelected?.gameObject?.activeSelf}) (ActiveInHierarchy {lastSelected?.gameObject?.activeInHierarchy}))");
@@ -356,6 +357,13 @@ namespace BML.Scripts.UI.Items
                 {
                     lastSelected.SetStoreItemToSelected();
                     lastSelected.Button.Select();
+                }
+                else if (lastSelectedIndex >= 1)
+                {
+                    // select default?
+                    var selectPrev = buttonList[lastSelectedIndex - 1];
+                    selectPrev.SetStoreItemToSelected();
+                    selectPrev.Button.Select();
                 }
             }
         }
