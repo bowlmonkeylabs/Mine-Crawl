@@ -53,6 +53,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public bool PlayerVisitedAdjacent { get; set; }
         [ShowInInspector] public bool PlayerVisitedAllAdjacent { get; set; }
         [ShowInInspector] public bool PlayerOccupied { get; set; }
+        [ShowInInspector] public bool PlayerOccupiedAdjacentNodeOrConnection { get; set; }
         [ShowInInspector] public int TorchRequirement { get; set; }
         [ShowInInspector] public float TorchInfluence { get; set; }
         [ShowInInspector] public float PlayerInfluence { get; set; }

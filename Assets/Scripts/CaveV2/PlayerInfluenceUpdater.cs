@@ -76,6 +76,7 @@ namespace BML.Scripts.CaveV2
                         foreach (var caveNodeConnectionData in _caveGenerator.CaveGraph.AdjacentEdges(caveNodeData))
                         {
                             caveNodeConnectionData.PlayerVisitedAdjacent = true;
+                            caveNodeConnectionData.PlayerOccupiedAdjacentNodeOrConnection = true;
                             UpdatePlayerVisitedAllAdjacent(caveNodeConnectionData);
                         }
                         UpdatePlayerVisitedAllAdjacent(caveNodeData);
@@ -106,6 +107,8 @@ namespace BML.Scripts.CaveV2
                         caveNodeConnectionData.Source.PlayerVisitedAdjacent = true;
                         caveNodeConnectionData.Target.PlayerVisitedAdjacent = true;
                         caveNodeConnectionData.PlayerOccupied = true;
+                        caveNodeConnectionData.Source.PlayerOccupiedAdjacentNodeOrConnection = true;
+                        caveNodeConnectionData.Target.PlayerOccupiedAdjacentNodeOrConnection = true;
                         UpdatePlayerVisitedAllAdjacent(caveNodeConnectionData);
                         UpdatePlayerVisitedAllAdjacent(caveNodeConnectionData.Source);
                         UpdatePlayerVisitedAllAdjacent(caveNodeConnectionData.Target);
@@ -134,6 +137,10 @@ namespace BML.Scripts.CaveV2
                     if (_enableLogs) Debug.Log($"PlayerInfluenceUpdater OnTriggerExit: Player left {_influenceState._currentNodes[other].LocalPosition}");
                     
                     _influenceState._currentNodes[other].PlayerOccupied = false;
+                    foreach (var caveNodeConnectionData in _caveGenerator.CaveGraph.AdjacentEdges(_influenceState._currentNodes[other]))
+                    {
+                        caveNodeConnectionData.PlayerOccupiedAdjacentNodeOrConnection = false;
+                    }
                     _influenceState._currentNodes.Remove(other);
                     _caveGenerator?.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
                 }
@@ -142,6 +149,8 @@ namespace BML.Scripts.CaveV2
                     if (_enableLogs) Debug.Log($"PlayerInfluenceUpdater OnTriggerExit: Player left {_influenceState._currentNodeConnections[other].Source.LocalPosition} <-> {_influenceState._currentNodeConnections[other].Target.LocalPosition}");
                     
                     _influenceState._currentNodeConnections[other].PlayerOccupied = false;
+                    _influenceState._currentNodeConnections[other].Source.PlayerOccupiedAdjacentNodeOrConnection = false;
+                    _influenceState._currentNodeConnections[other].Target.PlayerOccupiedAdjacentNodeOrConnection = false;
                     _influenceState._currentNodeConnections.Remove(other);
                     _caveGenerator?.UpdatePlayerDistance(_influenceState._currentNodes.Values.AsEnumerable());
                 }
