@@ -38,7 +38,6 @@ namespace BML.Scripts {
                         }
                     }
 
-                    Debug.Log(health.IsInvincible);
                     bool dealtDamageToMainHealth = health.Damage(damageRemaining, damagedTempHealth);
                     if (!dealtDamageToMainHealth && !damagedTempHealth)
                     {

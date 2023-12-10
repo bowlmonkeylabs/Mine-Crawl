@@ -64,7 +64,8 @@ namespace BML.Scripts.Player
 		[SerializeField, FoldoutGroup("Knockback")] float KnockbackDuration = .2f;
 		[SerializeField, FoldoutGroup("Knockback")] AnimationCurve KnockbackHorizontalForceCurve;
 
-		[SerializeField, FoldoutGroup("Dash"), Tooltip("Dash speed of the character in m/s")] private SafeFloatValueReference DashSpeed;
+		[SerializeField, FoldoutGroup("Dash"), Tooltip("Dash speed of the character in m/s")] private SafeFloatValueReference DashMaxSpeed;
+		[SerializeField, FoldoutGroup("Dash"), Tooltip("Dash speed of the character in m/s")] private CurveVariable DashSpeedCurve;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Dash duration, in seconds")] private SafeFloatValueReference DashTime;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Player Currently Dashing")] private BoolVariable DashActive;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Player Dash In Cooldown")] private BoolVariable DashInCooldown;
@@ -279,8 +280,10 @@ namespace BML.Scripts.Player
                 {
                     _speed = targetSpeed;
                 }
-            } else {
-                _speed = DashSpeed.Value;
+            } else
+            {
+	            var dashPercentComplete = (Time.time - _startDashTime) / DashTime.Value;
+	            _speed = DashMaxSpeed.Value *  DashSpeedCurve.Value.Evaluate(dashPercentComplete);
             }
 
             Vector3 inputDirection;
