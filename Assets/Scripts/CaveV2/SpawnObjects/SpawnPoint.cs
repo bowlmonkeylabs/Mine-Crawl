@@ -58,6 +58,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [ShowInInspector, ReadOnly] private bool _previousSpawnWasDespawned = false;
         [SerializeField, Tooltip("Guarantees this spawn point will be populated as soon as it becomes active.")] 
         private bool _guaranteeSpawnIfInRange = false;
+        [SerializeField, Tooltip("Player distance guaranteed spawns will check against."), MinValue(0), MaxValue(1)] 
+        private int _guaranteedSpawnRange = 1;
         [SerializeField, Tooltip("Prevents more than one enemy from spawning here at a time. No other enemy can spawn until the occupier either dies or despawns.")] 
         private bool _limitToOneSpawnAtATime = false;
         [SerializeField, Tooltip("Limit the number of enemies this spawner can produce for it's lifetime.")] 
@@ -102,6 +104,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         
         [FoldoutGroup("Current state"), ShowInInspector, ReadOnly] public bool SpawnImmediate => ((_guaranteeSpawnIfInRange && (_spawnLimit <= -1 || _spawnLimit > _spawnCount)) 
                                                                    || (_persistSpawns && _previousSpawnWasDespawned));
+        [FoldoutGroup("Current state"), ShowInInspector, ReadOnly] public int SpawnImmediateRange { get {return _guaranteedSpawnRange;} }
         [FoldoutGroup("Current state"), ShowInInspector, ReadOnly] public float EnemySpawnWeight { get; set; } = 1f;
 
         #endregion

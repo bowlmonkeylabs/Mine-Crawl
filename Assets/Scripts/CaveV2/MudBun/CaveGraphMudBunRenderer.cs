@@ -380,7 +380,9 @@ namespace BML.Scripts.CaveV2.MudBun
 
                 if (caveNodeConnectionData.IsBlocked)
                 {
-                    newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelWithBarrierPrefab, mudRenderer.transform);
+                    var sourceOrTargetIsChallengeRoom = source.NodeType == CaveNodeType.Challenge || target.NodeType == CaveNodeType.Challenge;
+                    var tunnelPrefab = sourceOrTargetIsChallengeRoom ? _caveGraphRenderParams.TunnelWithSlidingBarrierPrefab : _caveGraphRenderParams.TunnelWithBarrierPrefab;
+                    newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, tunnelPrefab, mudRenderer.transform);
                     #warning TODO find tunnel barrier game object
                     // caveNodeConnectionData.Barrier = ;
                 }
