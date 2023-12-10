@@ -32,7 +32,6 @@ namespace BML.Scripts {
                         var tempHealthDamage = Math.Min(damageRemaining, healthTemporary.Value);
                         Debug.Log(healthTemporary.IsInvincible);
                         damagedTempHealth = healthTemporary.Damage(tempHealthDamage);
-                        if (damagedTempHealth) Debug.Log($"{name} taking {tempHealthDamage} to Health Temp {healthTemporary.IsInvincible}");
                         if (damagedTempHealth)
                         {
                             damageRemaining -= tempHealthDamage;
@@ -41,7 +40,6 @@ namespace BML.Scripts {
 
                     Debug.Log(health.IsInvincible);
                     bool dealtDamageToMainHealth = health.Damage(damageRemaining, damagedTempHealth);
-                    if (dealtDamageToMainHealth) Debug.Log($"{name} taking {damageRemaining} to Health {health.IsInvincible}");
                     if (!dealtDamageToMainHealth && !damagedTempHealth)
                     {
                         di.OnFailDamage.Invoke(hitInfo);
