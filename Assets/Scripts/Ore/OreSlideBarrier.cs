@@ -32,8 +32,6 @@ public class OreSlideBarrier : MonoBehaviour
     }
 
     private void OnPlayerVisited(object o, EventArgs e) {
-        Debug.Log("PLAAAAYYYERRE");
-        Debug.Log(transform.position);
         _slideFeedback.PlayFeedbacks();
     }
 }
