@@ -46,6 +46,12 @@ namespace BML.VisualStateMachine.Scripts.Events
         [Required] [HideReferenceObjectPicker] 
         [OnValueChanged("InitConditions")] [FoldoutGroup("Conditions")]
         [SerializeField] private List<FloatCondition> FloatConditions = new List<FloatCondition>();
+        
+        [Tooltip("Transition only valid if ALL of these SafeFloat condition are met")] [ListDrawerSettings(DraggableItems = false)]
+        [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)] [GUIColor(.9f, .95f, 1f)]
+        [Required] [HideReferenceObjectPicker] 
+        [OnValueChanged("InitConditions")] [FoldoutGroup("Conditions")]
+        [SerializeField] private List<SafeFloatCondition> SafeFloatConditions = new List<SafeFloatCondition>();
 
         [Tooltip("Transition only valid if ALL of these Int condition are met")] [ListDrawerSettings(DraggableItems = false)]
         [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)] [GUIColor(.9f, .95f, 1f)]
@@ -98,6 +104,7 @@ namespace BML.VisualStateMachine.Scripts.Events
             allConditions.Clear();
             allConditions = allConditions.Union(BoolConditions).ToList();
             allConditions = allConditions.Union(FloatConditions).ToList();
+            allConditions = allConditions.Union(SafeFloatConditions).ToList();
             allConditions = allConditions.Union(IntConditions).ToList();
             allConditions = allConditions.Union(TimerConditions).ToList();
             allConditions = allConditions.Union(Vector2Conditions).ToList();
