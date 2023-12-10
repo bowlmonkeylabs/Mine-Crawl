@@ -1440,6 +1440,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 3439596409321352460}
         DebugActive: 0
+        useSettingsReference: 1
+        BmlSoundManagerSettings: {fileID: 11400000, guid: 99dd1140881099d458000b524b9587f0, type: 2}
         Sfx: {fileID: 8300000, guid: b0a379a68b982f340aa87e4ff3c1feb5, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -1505,6 +1507,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 0
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 20
         MaxDistance: 70
 --- !u!1 &4527372079232408137
@@ -2783,6 +2792,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: {fileID: 6948240474995140366}
+  healthTemporary: {fileID: 0}
   _damageable:
   - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
       Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile, Player_Pickaxe_Secondary,
@@ -3753,6 +3763,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 7410978461008245931}
         DebugActive: 0
+        useSettingsReference: 1
+        BmlSoundManagerSettings: {fileID: 11400000, guid: 99dd1140881099d458000b524b9587f0, type: 2}
         Sfx: {fileID: 8300000, guid: 2a4c5c281111d63408680ba5adc37fce, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -3818,6 +3830,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 1
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 5
         MaxDistance: 30
 --- !u!1 &7410978461684822679
@@ -4127,6 +4146,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 7410978461684822676}
         DebugActive: 0
+        useSettingsReference: 1
+        BmlSoundManagerSettings: {fileID: 11400000, guid: 99dd1140881099d458000b524b9587f0, type: 2}
         Sfx: {fileID: 8300000, guid: c677de223bc2fd84aa34712e29717dea, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -4192,6 +4213,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 1
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 5
         MaxDistance: 30
     00000002:
@@ -5269,6 +5297,22 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3454127850065686866, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].useSettingsReference
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454127850065686866, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BmlSoundManagerSettings
+      value: 
+      objectReference: {fileID: 11400000, guid: 99dd1140881099d458000b524b9587f0, type: 2}
+    - target: {fileID: 3454127851599513215, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].useSettingsReference
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454127851599513215, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+      propertyPath: FeedbacksList.Array.data[0].BmlSoundManagerSettings
+      value: 
+      objectReference: {fileID: 11400000, guid: 99dd1140881099d458000b524b9587f0, type: 2}
     - target: {fileID: 3500951128602947210, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: m_Mesh
       value: 

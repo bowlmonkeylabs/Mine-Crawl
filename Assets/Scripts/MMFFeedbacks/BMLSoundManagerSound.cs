@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
+using MMFFeedbacks;
 using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -51,7 +53,14 @@ namespace BML.Scripts.MMFFeedbacks
         /// the duration of this feedback is the duration of the clip being played
         public override float FeedbackDuration { get { return GetDuration(); } }
         
+        [MMFInspectorGroup("Settings Reference", true, 2, true)]
+        
+        public bool useSettingsReference;
+        [MMFCondition("useSettingsReference", true)]
+        public BMLSoundManagerSettings BmlSoundManagerSettings;
+        
         [MMFInspectorGroup("Sound", true, 14, true)]
+        
         /// the sound clip to play
         [Tooltip("the sound clip to play")]
         public AudioClip Sfx;
@@ -157,6 +166,7 @@ namespace BML.Scripts.MMFFeedbacks
         public float PanStereo;
         /// Sets how much this AudioSource is affected by 3D spatialisation calculations (attenuation, doppler etc). 0.0 makes the sound full 2D, 1.0 makes it full 3D.
         [Tooltip("Sets how much this AudioSource is affected by 3D spatialisation calculations (attenuation, doppler etc). 0.0 makes the sound full 2D, 1.0 makes it full 3D.")]
+        [MMFCondition("useSettingsReference", true, true)]
         [Range(0f,1f)]
         public float SpatialBlend;
         
@@ -182,6 +192,7 @@ namespace BML.Scripts.MMFFeedbacks
         [MMFInspectorGroup("3D Sound Settings", true, 37)]
         /// Sets the Doppler scale for this AudioSource.
         [Tooltip("Sets the Doppler scale for this AudioSource.")]
+        [MMFCondition("useSettingsReference", true, true)]
         [Range(0f,5f)]
         public float DopplerLevel = 1f;
         /// Sets the spread angle (in degrees) of a 3d stereo or multichannel sound in speaker space.
@@ -190,12 +201,22 @@ namespace BML.Scripts.MMFFeedbacks
         public int Spread = 0;
         /// Sets/Gets how the AudioSource attenuates over distance.
         [Tooltip("Sets/Gets how the AudioSource attenuates over distance.")]
+        [MMFCondition("useSettingsReference", true, true)]
         public AudioRolloffMode RolloffMode = AudioRolloffMode.Logarithmic;
+        /// Sets/Gets how the AudioSource attenuates over distance.
+        [Tooltip("Sets/Gets how the AudioSource attenuates over distance.")]
+        [MMFCondition("useSettingsReference", true, true)]
+        public bool UseCustomRolloffCurve = false;
+        [Tooltip("The curve to use for custom volume rolloff if UseCustomRolloffCurve is true")]
+        [MMFCondition("useSettingsReference", true, true)]
+        public AnimationCurve CustomRolloffCurve;
         /// Within the Min distance the AudioSource will cease to grow louder in volume.
         [Tooltip("Within the Min distance the AudioSource will cease to grow louder in volume.")]
+        [MMFCondition("useSettingsReference", true, true)]
         public float MinDistance = 1f;
         /// (Logarithmic rolloff) MaxDistance is the distance a sound stops attenuating at.
         [Tooltip("(Logarithmic rolloff) MaxDistance is the distance a sound stops attenuating at.")]
+        [MMFCondition("useSettingsReference", true, true)]
         public float MaxDistance = 500f;
 
         protected AudioClip _randomClip;
@@ -339,7 +360,7 @@ namespace BML.Scripts.MMFFeedbacks
             _options.Pitch = pitch;
             _options.PlaybackTime = _randomPlaybackTime;
             _options.PanStereo = PanStereo;
-            _options.SpatialBlend = SpatialBlend;
+            _options.SpatialBlend = useSettingsReference ? BmlSoundManagerSettings.SpatialBlend : SpatialBlend;
             _options.SoloSingleTrack = SoloSingleTrack;
             _options.SoloAllTracks = SoloAllTracks;
             _options.AutoUnSoloOnEnd = AutoUnSoloOnEnd;
@@ -348,11 +369,13 @@ namespace BML.Scripts.MMFFeedbacks
             _options.BypassReverbZones = BypassReverbZones;
             _options.Priority = Priority;
             _options.ReverbZoneMix = ReverbZoneMix;
-            _options.DopplerLevel = DopplerLevel;
-            _options.Spread = Spread;
-            _options.RolloffMode = RolloffMode;
-            _options.MinDistance = MinDistance;
-            _options.MaxDistance = MaxDistance;
+            _options.DopplerLevel = useSettingsReference ? BmlSoundManagerSettings.DopplerLevel : DopplerLevel;
+            _options.Spread = useSettingsReference ? BmlSoundManagerSettings.Spread : Spread;
+            _options.RolloffMode = useSettingsReference ? BmlSoundManagerSettings.RolloffMode : RolloffMode;
+            _options.UseCustomRolloffCurve = useSettingsReference ? BmlSoundManagerSettings.UseCustomRolloffCurve : UseCustomRolloffCurve;
+            _options.CustomRolloffCurve = useSettingsReference ? BmlSoundManagerSettings.CustomRolloffCurve : CustomRolloffCurve;
+            _options.MinDistance = useSettingsReference ? BmlSoundManagerSettings.MinDistance : MinDistance;
+            _options.MaxDistance = useSettingsReference ? BmlSoundManagerSettings.MaxDistance : MaxDistance;
 
             _playedAudioSource = MMSoundManagerSoundPlayEvent.Trigger(sfx, _options);
         }

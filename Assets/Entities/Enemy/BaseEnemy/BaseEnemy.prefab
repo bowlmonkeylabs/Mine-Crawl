@@ -303,6 +303,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 4393302721342948871}
         DebugActive: 0
+        useSettingsReference: 1
+        BmlSoundManagerSettings: {fileID: 11400000, guid: 99dd1140881099d458000b524b9587f0, type: 2}
         Sfx: {fileID: 8300000, guid: 96bbf34d7aee725449bb8a5f1a46bfbb, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -368,6 +370,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 0
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 10
         MaxDistance: 20
 --- !u!1 &4245249631717701578
@@ -422,21 +431,28 @@ MonoBehaviour:
   _health: 3
   _hasMaxHealth: 0
   _maxHealthReference:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
-  _isInvincible: 0
-  _invincibilitySeconds:
     ReferenceTypeSelector: 0
     ConstantValue: 0
+    RoundingBehavior: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     ReferenceValue_BoolVariable: {fileID: 0}
     ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _isInvincible: 0
+  _useInvincibilityVariable: 0
+  _invincibilityTimer:
+    UseConstant: 0
+    ConstantDuration:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+    Variable: {fileID: 0}
+  _invincibilitySeconds: 0
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
