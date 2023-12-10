@@ -17,10 +17,23 @@ namespace BML.Scripts.QuantumConsoleExtensions
             _playerController.SetHealth(health);
         }
         
+        [Command("health-temporary", "Sets player temporary health.")]
+        private void SetHealthTemporary(int health)
+        {
+            _playerController.SetHealthTemporary(health);
+        }
+        
         [Command("revive", "Sets player health back to the starting value.")]
         private void Revive()
         {
             _playerController.Revive();
+        }
+
+        [Command("full-heal", "Heals the player's health and temporary health to max.")]
+        private void FullHeal()
+        {
+            _playerController.Heal(999);
+            _playerController.HealTemporary(999);
         }
         
         [Command("pickaxe_distance", "Sets player pickaxe interact range.")]

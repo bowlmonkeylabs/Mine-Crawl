@@ -533,6 +533,11 @@ namespace BML.Scripts.Player
         {
             return _healthController.SetHealth(value);
         }
+        
+        public int SetHealthTemporary(int value)
+        {
+            return _healthTemporaryController.SetHealth(value);
+        }
 
         public void Revive()
         {
