@@ -97,7 +97,6 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
-            
             {
                 if (_useHealthVariable) _healthReference.Subscribe(OnHealthReferenceUpdated);
                 if (_useInvincibilityVariable)

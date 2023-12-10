@@ -20,9 +20,11 @@ namespace BML.Scripts.UI.PlayerHealthBar
         public Health Health => _health;
         public Health HealthTemporary => _healthTemporary;
 
+        [Tooltip("Health stat, Number of red hearts (empty or full) player has")]
         [SerializeField] private IntReference _healthMaxValue;
+        [Tooltip("Max possible health the player can get")]
         [SerializeField] private IntReference _healthMaxPossibleValue;
-        [SerializeField] private IntReference _healthTempValue;
+        [Tooltip("Player's current total health (filled red hearts + temp hearts")]
         [SerializeField] private FunctionVariable _totalHealth;
 
         [SerializeField] private float _initAnimateSeconds;
@@ -100,7 +102,8 @@ namespace BML.Scripts.UI.PlayerHealthBar
             {
                 var heartController = _heartChildren[i];
                 int heartHealth;
-                if (i < _lastHeartIndex)
+                bool isTemporaryHealth = i >= _lastHeartIndex;
+                if (!isTemporaryHealth)
                 {
                     heartHealth = 2 * i;
                 
@@ -111,7 +114,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
                 else
                 {
                     heartHealth = 2 * i - _healthMaxValue.Value;
-                    heartController.gameObject.SetActive(heartHealth < _healthTempValue.Value);
+                    heartController.gameObject.SetActive(heartHealth < _healthTemporary.Value);
                     heartController.SetValue(_healthTemporary.Value - heartHealth, 0,
                         true);
                 }
@@ -158,10 +161,10 @@ namespace BML.Scripts.UI.PlayerHealthBar
                 }
             }
 
-            // Reduce temp hearts if truncated
+            // Truncate temp hearts past the max possible hearts
             var maxPossibleTempHearts = _healthMaxPossibleValue.Value - _healthMaxValue.Value;
-            _healthTempValue.Value = Mathf.Max(0, 
-                Mathf.Min(_healthTempValue.Value, maxPossibleTempHearts));
+            _healthTemporary.SetHealth(Mathf.Max(0, 
+                Mathf.Min(_healthTemporary.Value, maxPossibleTempHearts)));
         }
 
         private void OnTotalHealthChanged(float prevTotalHealth, float currentTotalHealth)
@@ -181,7 +184,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
                 int heartHealth = 2 * i;
                 var heartValue = currentHealth - heartHealth;
                 
-                heartController.gameObject.SetActive(heartHealth < _healthMaxValue.Value + _healthTempValue.Value);
+                heartController.gameObject.SetActive(heartHealth < _healthMaxValue.Value + _healthTemporary.Value);
                 heartController.SetValue(heartValue, delta,
                     false);
             }
