@@ -17,6 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 38f386e05e25e3d4cb2b2f211cd6f035, type: 2}
+    - {fileID: 11400000, guid: 78f9745940256e64c9a384f7788d72ad, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -54,35 +55,60 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: _itemEffects
+      Entry: 7
+      Data: 2|System.Collections.Generic.List`1[[BML.Scripts.Player.Items.ItemEffect,
+        BML.Scripts]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 3|BML.Scripts.Player.Items.ItemEffects.ChangeLootTableItemEffect, BML.Scripts
+    - Name: _trigger
+      Entry: 3
+      Data: 0
+    - Name: _useActivationLimit
+      Entry: 5
+      Data: false
+    - Name: _remainingActivations
+      Entry: 6
+      Data: 
+    - Name: _useActivationCooldownTimer
+      Entry: 5
+      Data: false
+    - Name: _activationCooldownTimer
+      Entry: 6
+      Data: 
+    - Name: _recurringTimerForTrigger
+      Entry: 6
+      Data: 
+    - Name: _recurringTimerForTriggerCondition
+      Entry: 6
+      Data: 
+    - Name: LootTableVariable
+      Entry: 10
+      Data: 1
+    - Name: LootTableKey
+      Entry: 3
+      Data: 16
+    - Name: LootTableAddAmount
+      Entry: 4
+      Data: 0.05
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   _name: Ore Extractor
-  _effectDescription: 50% chance to drop an extra piece of ore
+  _effectDescription: 50% chance to drop an extra piece of ore from common rocks.
   _storeDescription: 
   _useIconColor: 1
   _iconColor: {r: 0.1981132, g: 0.019624421, b: 0.019624421, a: 1}
   _icon: {fileID: 21300000, guid: 53d9ae00267088d489ad3ab24ea10b93, type: 3}
   PassiveStackableTreeStartNode: {fileID: 7395606790405979272, guid: 21df0c8f4e7486b4c8b29c4e86b50133, type: 2}
-  _itemType: 0
-  _itemEffects:
-  - Trigger: 0
-    UseActivationLimit: 0
-    RemainingActivations: {fileID: 0}
-    UseActivationCooldownTimer: 0
-    ActivationCooldownTimer: {fileID: 0}
-    Time: 0
-    LastTimeCheck: 0
-    Type: 2
-    UsePercentageIncrease: 0
-    IsTemporaryStatIncrease: 0
-    TemporaryStatIncreaseTime: 0
-    FloatStat: {fileID: 0}
-    IntStat: {fileID: 0}
-    StatIncreaseAmount: 0
-    StatIncreasePercent: 0
-    ProjectilePrefab: {fileID: 0}
-    LootTableVariable: {fileID: 11400000, guid: 78f9745940256e64c9a384f7788d72ad, type: 2}
-    LootTableKey: 16
-    LootTableAddAmount: 0
-    BoolVariableToToggle: {fileID: 0}
-    PrefabToInstantiate: {fileID: 0}
-    InstantiatePrefabPositionTransform: {fileID: 0}
-    InstantiatePrefabContainer: {fileID: 0}
+  _itemType: 1

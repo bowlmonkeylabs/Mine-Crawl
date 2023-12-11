@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using BML.Scripts.Player.Items;
 using Sirenix.Utilities;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.UI.Items
 {
@@ -22,8 +23,7 @@ namespace BML.Scripts.UI.Items
         [SerializeField] private Button _button;
         
         [SerializeField] private TMPro.TMP_Text _costText;
-        [SerializeField] private UiStoreItemIconController _storeItemIcon;
-        [SerializeField] private UiPlayerItemCounterController _uiItemIconController;
+        [SerializeField] private UiPlayerItemCounterController _uiPlayerItemIconController;
         [SerializeField] private UiStoreItemDetailController _uiStoreItemDetailController;
         
         [SerializeField] private BoolVariable _isGodModeEnabled;
@@ -63,8 +63,7 @@ namespace BML.Scripts.UI.Items
                 _itemToPurchase.OnAffordabilityChanged -= UpdateInteractable;
             }
             _itemToPurchase = itemToPurchase;
-            _storeItemIcon.Init(_itemToPurchase);
-            _uiItemIconController.Item = itemToPurchase;
+            _uiPlayerItemIconController.Item = itemToPurchase;
             if (!skipUiUpdate)
             {
                 SetButtonText();

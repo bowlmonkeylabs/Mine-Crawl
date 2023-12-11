@@ -28,8 +28,7 @@ namespace BML.Scripts.UI.Items
     public class StoreItemPool
     {
         public StoreItemPoolType StoreItemPoolType;
-        public List<PlayerItem> ActiveItemPool;
-        public List<PlayerItem> PassiveItemPool;
+        public List<PlayerItem> ItemPool;
     }
     
     public class UiStoreCanvasController : MonoBehaviour
@@ -93,12 +92,12 @@ namespace BML.Scripts.UI.Items
             
             UpdateButtons();
             
-            _onPurchaseEvent.Subscribe(OnBuy);
+            _onPurchaseEvent.Subscribe(OnBuyDynamic);
         }
 
         void OnDisable()
         {
-            _onPurchaseEvent.Unsubscribe(OnBuy);
+            _onPurchaseEvent.Unsubscribe(OnBuyDynamic);
         }
 
         private void OnDestroy()
@@ -133,10 +132,11 @@ namespace BML.Scripts.UI.Items
                     return new List<PlayerItem>();
                 }
                 
-                itemPool = new List<PlayerItem>(storeItemPool.ActiveItemPool
-                    .Where(activeItem => activeItem != _playerInventory.SwappableActiveItem)
+                itemPool = new List<PlayerItem>(storeItemPool.ItemPool
+                    .Except(_playerInventory.ActiveItems.Items)
+                    .Except(_playerInventory.PassiveItems.Items)
+                    .Except(_playerInventory.PassiveStackableItems.Items)
                     .ToList());
-                itemPool.AddRange(storeItemPool.PassiveItemPool.Where(passiveItem => passiveItem != _playerInventory.PassiveItem).ToList());
             }
             return itemPool;
         }
@@ -149,6 +149,8 @@ namespace BML.Scripts.UI.Items
             if (_enableLogs) Debug.Log($"GenerateStoreItems ({this.gameObject.name})");
 
             List<PlayerItem> shownStoreItems = GetItemPool();
+            
+            if (_enableLogs) Debug.Log($" ({shownStoreItems.Count} items available in pool)");
 
             if (shownStoreItems.Count == 0)
             {
@@ -341,14 +343,22 @@ namespace BML.Scripts.UI.Items
             }
         }
 
-        protected void OnBuy(object prevStoreItem, object playerItem)
+        private void OnBuyDynamic(object prevItem, object currItem)
         {
-            if (_enableLogs) Debug.Log($"UiStoreCanvasController OnBuy ({playerItem}) (Buttons: {buttonList.Count})");
-            if (_useGraph) _itemTreeGraph.MarkItemAsObtained((PlayerItem)playerItem);
+            OnBuy(currItem as PlayerItem);
+        }
+
+        private void OnBuy(PlayerItem item)
+        {
+            if (_enableLogs) Debug.Log($"UiStoreCanvasController OnBuy ({item}) (Buttons: {buttonList.Count})");
+            if (_useGraph)
+            {
+                _itemTreeGraph.MarkItemAsObtained(item);
+            }
             if (_randomizeStore)
             {
                 lastSelected =
-                    buttonList.FirstOrDefault(buttonController => buttonController.ItemToPurchase == (PlayerItem)playerItem);
+                    buttonList.FirstOrDefault(buttonController => buttonController.ItemToPurchase == (PlayerItem)item);
                 int lastSelectedIndex = buttonList.IndexOf(lastSelected);
                 SeedManager.Instance.UpdateSteppedSeed("UpgradeStore");
                 GenerateStoreItems();

@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Enemy;
-using BML.Scripts.Utils;
+using BML.Scripts.Player.Items.ItemEffects;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -34,27 +33,24 @@ namespace BML.Scripts.Player.Items
         
         [SerializeField, FoldoutGroup("Throwable")] private TransformSceneReference ThrowableContainer;
 
-        private List<PlayerItem> PassiveItems {
-            get {
-                var passiveItems = new List<PlayerItem>();
-                passiveItems.AddRange(_playerInventory.PassiveStackableItems);
-                if(_playerInventory.PassiveItem != null) {
-                    passiveItems.Add(_playerInventory.PassiveItem);
-                }
-                return passiveItems;
+        private List<PlayerItem> PassiveItems 
+        {
+            get
+            {
+                var items = new List<PlayerItem>(_playerInventory.PassiveStackableItems.Items);
+                items.AddRange(_playerInventory.PassiveItems.Items);
+                return items;
             }
         }
         
-        private List<PlayerItem> AllItems {
+        private List<PlayerItem> AllItems 
+        {
             get 
             {
-                var allItems = new List<PlayerItem>();
-                allItems.AddRange(_playerInventory.PassiveStackableItems);
-                allItems.AddRange(_playerInventory.ActiveItems.Where(i => i != null));
-                if(_playerInventory.PassiveItem != null) {
-                    allItems.Add(_playerInventory.PassiveItem);
-                }
-                return allItems;
+                var items = new List<PlayerItem>(_playerInventory.PassiveStackableItems.Items);
+                items.AddRange(_playerInventory.PassiveItems.Items);
+                items.AddRange(_playerInventory.ActiveItems.Items);
+                return items;
             }
         }
 
@@ -65,99 +61,71 @@ namespace BML.Scripts.Player.Items
         private void Start()
         {
             // This needs to run AFTER ScriptableObjectResetManager, which runs on Start (early)
-            this.ApplyWhenAcquiredOrActivatedEffectsForPassiveItems();
+            this.Apply_Passives_OnAcquired();
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             RepopulateEffectsTimersList();
 
-            _playerInventory.OnAnyItemAdded += CheckEffectsTimersListOnItemAdded;
-            _playerInventory.OnAnyItemRemoved += CheckEffectsTimersListOnItemRemoved;
+            _playerInventory.OnAnyPlayerItemAdded += CheckEffectsTimersListOnPlayerItemAdded;
+            _playerInventory.OnAnyPlayerItemRemoved += CheckEffectsTimersListOnPlayerItemRemoved;
             
-            _playerInventory.OnActiveItemChanged += RepopulateEffectsTimersList;
-            _playerInventory.OnPassiveStackableItemChanged += RepopulateEffectsTimersList;
-            _playerInventory.OnPassiveStackableItemTreeChanged += RepopulateEffectsTimersList;
+            _playerInventory.ActiveItems.OnAnyItemChangedInInspector += RepopulateEffectsTimersList;
+            _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector += RepopulateEffectsTimersList;
+            _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector += RepopulateEffectsTimersList;
             
-            _playerInventory.OnPassiveStackableItemAdded += ApplyWhenAcquiredOrActivatedEffects;
-            _playerInventory.OnPassiveStackableItemRemoved += UnApplyWhenAcquiredOrActivatedEffects;
-            _playerInventory.OnPassiveItemAdded += ApplyWhenAcquiredOrActivatedEffects;
-            _playerInventory.OnPassiveItemRemoved += UnApplyWhenAcquiredOrActivatedEffects;
+            _playerInventory.PassiveStackableItems.OnItemAdded += Apply_OnAcquired;
+            _playerInventory.PassiveStackableItems.OnItemRemoved += Unapply_OnAcquired;
+            _playerInventory.PassiveItems.OnItemAdded += Apply_OnAcquired;
+            _playerInventory.PassiveItems.OnItemRemoved += Unapply_OnAcquired;
+            _playerInventory.ConsumableItems.OnItemAdded += Apply_OnAcquired;
+            _playerInventory.ConsumableItems.OnItemRemoved += Unapply_OnAcquired;
 
             _inDash.Subscribe(OnInDashChange);
             
-            _onSwingPickaxe.Subscribe(ApplyOnPickaxeSwingEffectsForPassiveItems);
-            _onSwingPickaxeHit.Subscribe(ApplyOnPickaxeSwingHitEffectsForPassiveItems);
-            _onSweepPickaxe.Subscribe(ApplyOnPickaxeSweepEffectsForPassiveItems);
-            _onSweepPickaxeHit.Subscribe(ApplyOnPickaxeSweepHitEffectsForPassiveItems);
-            _onSwingPickaxeCrit.Subscribe(ApplyOnPickaxeSwingCritEffectsForPassiveItems);
+            _onSwingPickaxe.Subscribe(Apply_Passives_OnPickaxeSwing);
+            _onSwingPickaxeHit.Subscribe(Apply_Passives_OnPickaxeSwingHit);
+            _onSweepPickaxe.Subscribe(Apply_Passives_OnPickaxeSweep);
+            _onSweepPickaxeHit.Subscribe(Apply_Passives_OnPickaxeSweepHit);
+            _onSwingPickaxeCrit.Subscribe(Apply_Passives_OnPickaxeSwingCrit);
             
             _onEnemyKilled.Subscribe(OnEnemyKilledDynamic);
         }
 
-        void OnDisable() {
-            this.UnApplyWhenAcquiredOrActivatedEffectsForPassiveItems();
+        private void OnDisable() 
+        {
+            this.Unapply_Passives_OnAcquired();
             
             _effectActivationCooldownTimersToUpdate.Clear();
 
-            _playerInventory.OnAnyItemAdded -= CheckEffectsTimersListOnItemAdded;
-            _playerInventory.OnAnyItemRemoved -= CheckEffectsTimersListOnItemRemoved;
+            _playerInventory.OnAnyPlayerItemAdded -= CheckEffectsTimersListOnPlayerItemAdded;
+            _playerInventory.OnAnyPlayerItemRemoved -= CheckEffectsTimersListOnPlayerItemRemoved;
             
-            _playerInventory.OnActiveItemChanged -= RepopulateEffectsTimersList;
-            _playerInventory.OnPassiveStackableItemChanged -= RepopulateEffectsTimersList;
-            _playerInventory.OnPassiveStackableItemTreeChanged -= RepopulateEffectsTimersList;
+            _playerInventory.ActiveItems.OnAnyItemChangedInInspector -= RepopulateEffectsTimersList;
+            _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector -= RepopulateEffectsTimersList;
+            _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector -= RepopulateEffectsTimersList;
             
-            _playerInventory.OnPassiveStackableItemAdded -= ApplyWhenAcquiredOrActivatedEffects;
-            _playerInventory.OnPassiveStackableItemRemoved -= UnApplyWhenAcquiredOrActivatedEffects;
-            _playerInventory.OnPassiveItemAdded -= ApplyWhenAcquiredOrActivatedEffects;
-            _playerInventory.OnPassiveItemRemoved -= UnApplyWhenAcquiredOrActivatedEffects;
+            _playerInventory.PassiveStackableItems.OnItemAdded -= Apply_OnAcquired;
+            _playerInventory.PassiveStackableItems.OnItemRemoved -= Unapply_OnAcquired;
+            _playerInventory.PassiveItems.OnItemAdded -= Apply_OnAcquired;
+            _playerInventory.PassiveItems.OnItemRemoved -= Unapply_OnAcquired;
+            _playerInventory.ConsumableItems.OnItemAdded -= Apply_OnAcquired;
+            _playerInventory.ConsumableItems.OnItemRemoved -= Unapply_OnAcquired;
 
             _inDash.Unsubscribe(OnInDashChange);
 
-            _onSwingPickaxe.Unsubscribe(ApplyOnPickaxeSwingEffectsForPassiveItems);
-            _onSwingPickaxeHit.Unsubscribe(ApplyOnPickaxeSwingHitEffectsForPassiveItems);
-            _onSweepPickaxe.Unsubscribe(ApplyOnPickaxeSweepEffectsForPassiveItems);
-            _onSweepPickaxeHit.Unsubscribe(ApplyOnPickaxeSweepHitEffectsForPassiveItems);
-            _onSwingPickaxeCrit.Unsubscribe(ApplyOnPickaxeSwingCritEffectsForPassiveItems);
+            _onSwingPickaxe.Unsubscribe(Apply_Passives_OnPickaxeSwing);
+            _onSwingPickaxeHit.Unsubscribe(Apply_Passives_OnPickaxeSwingHit);
+            _onSweepPickaxe.Unsubscribe(Apply_Passives_OnPickaxeSweep);
+            _onSweepPickaxeHit.Unsubscribe(Apply_Passives_OnPickaxeSweepHit);
+            _onSwingPickaxeCrit.Unsubscribe(Apply_Passives_OnPickaxeSwingCrit);
             
             _onEnemyKilled.Unsubscribe(OnEnemyKilledDynamic);
         }
 
         void Update() 
         {
-            AllItems.ForEach(item => item.ItemEffects.ForEach(itemEffect => {
-                if (itemEffect.Trigger == ItemEffectTrigger.RecurringTimer) 
-                {
-                    if (!itemEffect.RecurringTimerForTriggerConditional) 
-                    {
-                        if (itemEffect.RecurringTimerForTrigger.IsStarted &&
-                            !itemEffect.RecurringTimerForTrigger.IsStopped &&
-                            !itemEffect.RecurringTimerForTrigger.IsFinished)
-                        {
-                            itemEffect.RecurringTimerForTrigger.StopTimer();
-                        }
-                        return;
-                    }
-                    else if (!itemEffect.RecurringTimerForTrigger.IsStarted || itemEffect.RecurringTimerForTrigger.IsStopped)
-                    {
-                        itemEffect.RecurringTimerForTrigger.StartTimer();
-                    }
-                    itemEffect.RecurringTimerForTrigger.UpdateTime();
-                    if (itemEffect.RecurringTimerForTrigger.IsFinished) 
-                    {
-                        this.ApplyEffect(itemEffect);
-                        if (itemEffect.RecurringTimerForTriggerConditional)
-                        {
-                            itemEffect.RecurringTimerForTrigger.RestartTimer();
-                        }
-                        else
-                        {
-                            itemEffect.RecurringTimerForTrigger.ResetTimer();
-                        }
-                    }
-                }
-            }));
-
             UpdateEffectsTimers();
         }
 
@@ -167,33 +135,41 @@ namespace BML.Scripts.Player.Items
         
         private void OnUseActiveItem1(InputValue value)
         {
-            if (value.isPressed && _playerInventory.ActiveItems.Count >= 1 && _playerInventory.ActiveItems[0] != null)
+            if (value.isPressed && _playerInventory.ActiveItems.ItemCount >= 1 && _playerInventory.ActiveItems[0] != null)
             {
-                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(0);
+                Apply_Active_OnActivated(0);
             }
         }
         
         private void OnUseActiveItem2(InputValue value)
         {
-            if (value.isPressed && _playerInventory.ActiveItems.Count >= 2 && _playerInventory.ActiveItems[1] != null)
+            if (value.isPressed && _playerInventory.ActiveItems.ItemCount >= 2 && _playerInventory.ActiveItems[1] != null)
             {
-                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(1);
+                Apply_Active_OnActivated(1);
             }
         }
 
         private void OnUseActiveItem3(InputValue value)
         {
-            if (value.isPressed && _playerInventory.ActiveItems.Count >= 3 && _playerInventory.ActiveItems[2] != null)
+            if (value.isPressed && _playerInventory.ActiveItems.ItemCount >= 3 && _playerInventory.ActiveItems[2] != null)
             {
-                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(2);
+                Apply_Active_OnActivated(2);
             }
         }
 
         private void OnUseActiveItem4(InputValue value)
         {
-            if (value.isPressed && _playerInventory.ActiveItems.Count >= 4 && _playerInventory.ActiveItems[3] != null)
+            if (value.isPressed && _playerInventory.ActiveItems.ItemCount >= 4 && _playerInventory.ActiveItems[3] != null)
             {
-                ApplyWhenAcquiredOrActivatedEffectsForActiveItem(3);
+                Apply_Active_OnActivated(3);
+            }
+        }
+
+        private void OnUseConsumable1(InputValue value)
+        {
+            if (value.isPressed && _playerInventory.ConsumableItems.ItemCount >= 1 && _playerInventory.ConsumableItems[0] != null)
+            {
+                Apply_Consumable_OnActivated(0);
             }
         }
 
@@ -206,7 +182,7 @@ namespace BML.Scripts.Player.Items
             bool enteringDash = (!prevInDash && currInDash);
             if (enteringDash)
             {
-                ApplyOnDashEffectsForPassiveItems();
+                Apply_Passives_OnDash();
             }
         }
 
@@ -228,7 +204,7 @@ namespace BML.Scripts.Player.Items
             if (payload.HitInfo != null && 
                 (payload.HitInfo.DamageType & pickaxeDamageTypes) > 0)
             {
-                ApplyOnPickaxeKillEnemyEffectsForPassiveItems();
+                Apply_Passives_OnPickaxeKillEnemy();
             }
         }
 
@@ -237,33 +213,73 @@ namespace BML.Scripts.Player.Items
         #region Effects timers
 
         private List<TimerVariable> _effectActivationCooldownTimersToUpdate;
+        private Dictionary<TimerVariable, HashSet<ItemEffect>> _effectRecurringTimersForTriggersToUpdate;
+        
+        private IEnumerable<TimerVariable> GetActivationCooldownTimers(IEnumerable<PlayerItem> playerItems)
+        {
+            return playerItems.SelectMany(i =>
+                i.ItemEffects
+                    .Where(e => e.UseActivationCooldownTimer)
+                    .Select(e => e.ActivationCooldownTimer));
+        }
+        
+        private Dictionary<TimerVariable, HashSet<ItemEffect>> GetRecurringTimerTriggers(IEnumerable<PlayerItem> playerItems)
+        {
+            var itemEffectsWithRecurringTimers = playerItems.SelectMany(item => item.ItemEffects
+                .Where(e => e.Trigger == ItemEffectTrigger.RecurringTimer));
+            return itemEffectsWithRecurringTimers
+                .GroupBy(e => e.RecurringTimerForTrigger, e => e)
+                .ToDictionary(g => g.Key, g => new HashSet<ItemEffect>(g));
+        }
 
         private void RepopulateEffectsTimersList()
         {
             _effectActivationCooldownTimersToUpdate = new List<TimerVariable>();
-            _effectActivationCooldownTimersToUpdate.AddRange(_playerInventory.ActiveItems.SelectMany(i => i?.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer) ?? new List<TimerVariable>()));
-            if (_playerInventory.PassiveItem)
-            {
-                _effectActivationCooldownTimersToUpdate.AddRange(_playerInventory.PassiveItem.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer));
-            }
-            _effectActivationCooldownTimersToUpdate.AddRange(_playerInventory.PassiveStackableItems.SelectMany(i => i?.ItemEffects.Where(e => e.UseActivationCooldownTimer).Select(e => e.ActivationCooldownTimer) ?? new List<TimerVariable>()));
+            _effectActivationCooldownTimersToUpdate.AddRange(
+                GetActivationCooldownTimers(_playerInventory.ActiveItems));
+            _effectActivationCooldownTimersToUpdate.AddRange(
+                GetActivationCooldownTimers(_playerInventory.PassiveItems));
+            _effectActivationCooldownTimersToUpdate.AddRange(
+                GetActivationCooldownTimers(_playerInventory.PassiveStackableItems));
             _effectActivationCooldownTimersToUpdate = _effectActivationCooldownTimersToUpdate.Distinct().ToList();
+
+            _effectRecurringTimersForTriggersToUpdate = GetRecurringTimerTriggers(AllItems);
         }
 
-        private void CheckEffectsTimersListOnItemAdded(PlayerItem playerItem)
+        private void CheckEffectsTimersListOnPlayerItemAdded(PlayerItem playerItem)
         {
-            var itemActivationTimers = playerItem.ItemEffects
-                .Where(e => e.UseActivationCooldownTimer)
-                .Select(e => e.ActivationCooldownTimer)
-                .ToList();
-            if (itemActivationTimers.Any())
             {
-                _effectActivationCooldownTimersToUpdate.AddRange(itemActivationTimers);
-                _effectActivationCooldownTimersToUpdate = _effectActivationCooldownTimersToUpdate.Distinct().ToList();
+                var itemActivationCooldownTimers = playerItem.ItemEffects
+                    .Where(e => e.UseActivationCooldownTimer)
+                    .Select(e => e.ActivationCooldownTimer)
+                    .ToList();
+                if (itemActivationCooldownTimers.Any())
+                {
+                    _effectActivationCooldownTimersToUpdate.AddRange(itemActivationCooldownTimers);
+                    _effectActivationCooldownTimersToUpdate =
+                        _effectActivationCooldownTimersToUpdate.Distinct().ToList();
+                }
+            }
+
+            {
+                var itemEffectsWithRecurringTimers = playerItem.ItemEffects
+                    .Where(e => e.Trigger == ItemEffectTrigger.RecurringTimer)
+                    .ToList();
+                foreach (var itemEffect in itemEffectsWithRecurringTimers)
+                {
+                    if (_effectRecurringTimersForTriggersToUpdate.ContainsKey(itemEffect.RecurringTimerForTrigger))
+                    {
+                        _effectRecurringTimersForTriggersToUpdate[itemEffect.RecurringTimerForTrigger].Add(itemEffect);
+                    }
+                    else
+                    {
+                        _effectRecurringTimersForTriggersToUpdate.Add(itemEffect.RecurringTimerForTrigger, new HashSet<ItemEffect>(new List<ItemEffect> { itemEffect }));
+                    }
+                }
             }
         }
         
-        private void CheckEffectsTimersListOnItemRemoved(PlayerItem playerItem)
+        private void CheckEffectsTimersListOnPlayerItemRemoved(PlayerItem playerItem)
         {
             RepopulateEffectsTimersList();
         }
@@ -274,176 +290,178 @@ namespace BML.Scripts.Player.Items
             {
                 timer.UpdateTime();
             }
+            
+            foreach (var kv in _effectRecurringTimersForTriggersToUpdate)
+            {
+                var timer = kv.Key;
+
+                bool anyConditionFailing = kv.Value.Any(e => !e.RecurringTimerForTriggerCondition);
+                
+                if (anyConditionFailing) 
+                {
+                    if (timer.IsStarted && !timer.IsStopped && !timer.IsFinished)
+                    {
+                        timer.StopTimer();
+                    }
+                    continue;
+                }
+                else if (!timer.IsStarted || timer.IsStopped)
+                {
+                    timer.StartTimer();
+                }
+                timer.UpdateTime();
+                if (timer.IsFinished) 
+                {
+                    foreach (var itemEffect in kv.Value)
+                    {
+                        this.ApplyEffect(itemEffect);
+                    }
+                    anyConditionFailing = kv.Value.Any(e => !e.RecurringTimerForTriggerCondition);
+                    if (!anyConditionFailing)
+                    {
+                        timer.RestartTimer();
+                    }
+                    else
+                    {
+                        timer.ResetTimer();
+                    }
+                }
+            }
+        }
+
+        #endregion
+        
+        #region Apply/Unapply effects callbacks
+        
+        #region Consumable item effects
+        
+        private void Apply_Consumable_OnActivated(int index) {
+            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItems[index], ItemEffectTrigger.OnActivated, true);
+        }
+        
+        #endregion
+        
+        #region Active item effects
+        
+        private void Apply_Active_OnActivated(int index) {
+            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItems[index], ItemEffectTrigger.OnActivated, true);
+        }
+        
+        #endregion
+
+        #region Passive and Passive stackable item effects
+        
+        private void Apply_Passives_OnAcquired() {
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnAcquired, true);
+        }
+
+        private void Unapply_Passives_OnAcquired() {
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnAcquired, false);
+        }
+
+        private void Apply_Passives_OnDash() {
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnDash, true);
+        }
+        
+        private void Apply_Passives_OnPickaxeSwing() {
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSwing, true);
+        }
+        
+        private void Apply_Passives_OnPickaxeSwingHit(object previousValue, object hitPosition) {
+            _pickaxeHitPosition = (Vector3) hitPosition;
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSwingHit, true);
+            _pickaxeHitPosition = Vector3.negativeInfinity;
+        }
+        
+        private void Apply_Passives_OnPickaxeSwingCrit(object previousValue, object hitPosition)
+        {
+            _pickaxeHitPosition = (Vector3) hitPosition;
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSwingCrit, true);
+            _pickaxeHitPosition = Vector3.negativeInfinity;
+        }
+        
+        private void Apply_Passives_OnPickaxeSweep() {
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSweep, true);
+        }
+        
+        private void Apply_Passives_OnPickaxeSweepHit() {
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSweepHit, true);
+        }
+        
+        private void Apply_Passives_OnPickaxeKillEnemy() {
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeKillEnemy, true);
         }
 
         #endregion
 
-        private void ApplyWhenAcquiredOrActivatedEffectsForActiveItem(int index) {
-            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItems[index], ItemEffectTrigger.WhenAcquiredOrActivated, true);
+        #region Any item effects
+        
+        private void Apply_OnAcquired(PlayerItem playerItem) {
+            this.ApplyOrUnApplyEffectsForTrigger(playerItem, ItemEffectTrigger.OnAcquired, true);
         }
 
-        private void UnApplyWhenAcquiredOrActivatedEffectsActive(int index) {
-            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItems[index], ItemEffectTrigger.WhenAcquiredOrActivated, false);
+        private void Unapply_OnAcquired(PlayerItem playerItem) {
+            this.ApplyOrUnApplyEffectsForTrigger(playerItem, ItemEffectTrigger.OnAcquired, false);
         }
         
-        private void ApplyOnDashEffectsForPassiveItems() {
-            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnDash, true));
-        }
-
-        private void ApplyOnPickaxeSwingEffectsForPassiveItems() {
-            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeSwing, true));
-        }
-
-        private void ApplyOnPickaxeSwingHitEffectsForPassiveItems(object previousValue, object hitPosition) {
-            _pickaxeHitPosition = (Vector3) hitPosition;
-            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeSwingHit, true));
-            _pickaxeHitPosition = Vector3.negativeInfinity;
-        }
-
-        private void ApplyOnPickaxeSwingCritEffectsForPassiveItems(object previousValue, object hitPosition)
+        private void ApplyOrUnApplyEffectsForTrigger(PlayerItem playerItem, ItemEffectTrigger itemEffectTrigger, bool apply = true)
         {
-            _pickaxeHitPosition = (Vector3) hitPosition;
-            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeSwingCrit, true));
-            _pickaxeHitPosition = Vector3.negativeInfinity;
+            var applyAction = (apply ? (Action<ItemEffect>)this.ApplyEffect : this.UnApplyEffect);
+            var itemEffectsForTrigger = playerItem.ItemEffects.Where(e => e.Trigger == itemEffectTrigger);
+            foreach (var itemEffect in itemEffectsForTrigger)
+            {
+                applyAction(itemEffect);
+            }
         }
-
-        private void ApplyOnPickaxeSweepEffectsForPassiveItems() {
-            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeSweep, true));
-        }
-
-        private void ApplyOnPickaxeSweepHitEffectsForPassiveItems() {
-            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeSweepHit, true));
-        }
-
-        private void ApplyOnPickaxeKillEnemyEffectsForPassiveItems() {
-            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.OnPickaxeKillEnemy, true));
-        }
-
-        private void ApplyWhenAcquiredOrActivatedEffectsForPassiveItems() {
-            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.WhenAcquiredOrActivated, true));
-        }
-
-        private void UnApplyWhenAcquiredOrActivatedEffectsForPassiveItems() {
-            PassiveItems.ForEach(pi => this.ApplyOrUnApplyEffectsForTrigger(pi, ItemEffectTrigger.WhenAcquiredOrActivated, false));
-        }
-
-        private void ApplyWhenAcquiredOrActivatedEffects(PlayerItem playerItem) {
-            this.ApplyOrUnApplyEffectsForTrigger(playerItem, ItemEffectTrigger.WhenAcquiredOrActivated, true);
-        }
-
-        private void UnApplyWhenAcquiredOrActivatedEffects(PlayerItem playerItem) {
-            this.ApplyOrUnApplyEffectsForTrigger(playerItem, ItemEffectTrigger.WhenAcquiredOrActivated, false);
-        }
-
-        private void ApplyOrUnApplyEffectsForTrigger(PlayerItem playerItem, ItemEffectTrigger itemEffectTrigger, bool apply = true) {
-            playerItem.ItemEffects.ForEach(itemEffect => {
-                if(itemEffect.Trigger == itemEffectTrigger) {
-                    if(apply) {
-                        this.ApplyEffect(itemEffect);
-                    } else {
-                        this.UnApplyEffect(itemEffect);
-                    }
+        
+        private void ApplyOrUnApplyEffectsForTrigger(IEnumerable<PlayerItem> items, ItemEffectTrigger itemEffectTrigger, bool apply = true)
+        {
+            var applyAction = (apply ? (Action<ItemEffect>)this.ApplyEffect : this.UnApplyEffect);
+            foreach (var item in items)
+            {
+                var itemEffectsForTrigger = item.ItemEffects.Where(e => e.Trigger == itemEffectTrigger);
+                foreach (var itemEffect in itemEffectsForTrigger)
+                {
+                    applyAction(itemEffect);
                 }
-            });
+            }
         }
 
+        #endregion
+        
+        #endregion
+        
         private void ApplyEffect(ItemEffect itemEffect)
         {
-            try {
-                if (itemEffect.UseActivationLimit && itemEffect.RemainingActivations.Value <= 0 && !_inGodMode.Value)
+            try 
+            {
+                // Handle any special cases that need "priming" with additional arguments
+                if (itemEffect is InstantiatePrefabItemEffect asInstantiatePrefabItemEffect)
                 {
-                    return;
+                    asInstantiatePrefabItemEffect.PrimeEffect(_pickaxeHitPosition, this.transform);
+                }
+                else if (itemEffect is FireProjectileItemEffect asFireProjectileItemEffect)
+                {
+                    asFireProjectileItemEffect.PrimeEffect(MainCameraRef.Value.transform);
+                }
+                else if (itemEffect is ThrowItemEffect asThrowItemEffect)
+                {
+                    asThrowItemEffect.PrimeEffect(MainCameraRef.Value.transform);
                 }
                 
-                if (itemEffect.UseActivationCooldownTimer && !_inGodMode.Value)
-                {
-                    if (itemEffect.ActivationCooldownTimer.IsStarted && !itemEffect.ActivationCooldownTimer.IsFinished)
-                    {
-                        return;
-                    }
-                    itemEffect.ActivationCooldownTimer.RestartTimer();
-                }
-                
-                if (itemEffect.UseActivationLimit && !_inGodMode.Value)
-                {
-                    itemEffect.RemainingActivations.Value -= 1;
-                }
-                
-                if(itemEffect.Type == ItemEffectType.StatIncrease) {
-                    if(itemEffect.UsePercentageIncrease) {
-                        itemEffect.FloatStat.Value += itemEffect.FloatStat.DefaultValue * (itemEffect.StatIncreasePercent / 100f);
-                    } else {
-                        itemEffect.IntStat.Value += itemEffect.StatIncreaseAmount;
-                    }
+                itemEffect.ApplyEffect(_inGodMode.Value);
 
-                    if(itemEffect.IsTemporaryStatIncrease) {
-                        LeanTween.value(0f, 1f, itemEffect.TemporaryStatIncreaseTime)
-                            .setOnComplete(_ => this.UnApplyEffect(itemEffect));
-                    }   
-                }
-
-                if(itemEffect.Type == ItemEffectType.FireProjectile) {
-                    var projectile = GameObjectUtils.SafeInstantiate(true, itemEffect.ProjectilePrefab, ProjectileContainer.Value);
-                    var mainCamera = MainCameraRef.Value.transform;
-                    projectile.transform.SetPositionAndRotation(mainCamera.position, mainCamera.rotation);
-                }
-
-                if(itemEffect.Type == ItemEffectType.ChangeLootTable) {
-                    itemEffect.LootTableVariable.Value.ModifyProbability(itemEffect.LootTableKey, itemEffect.LootTableAddAmount);
-                }
-
-                if(itemEffect.Type == ItemEffectType.SetBoolVariable) {
-                    itemEffect.BoolVariableToToggle.Value = true;
-                }
-
-                if(itemEffect.Type == ItemEffectType.InstantiatePrefab) {
-                    var gameObject = GameObjectUtils.SafeInstantiate(true, itemEffect.PrefabToInstantiate, itemEffect.InstantiatePrefabContainer?.Value);
-                    var position = itemEffect.InstantiatePrefabPositionTransform?.Value.position ?? (_pickaxeHitPosition != Vector3.negativeInfinity ? _pickaxeHitPosition : transform.position);
-                    var rotation = itemEffect.InstantiatePrefabPositionTransform?.Value.rotation ?? transform.rotation;
-                    gameObject.transform.SetPositionAndRotation(position, rotation);
-                }
-
-                if(itemEffect.Type == ItemEffectType.RestartTimerVariable) {
-                    itemEffect.RestartTimerVariable.RestartTimer();
-                }
-
-                if (itemEffect.Type == ItemEffectType.Throw)
-                {
-                    // Calculate throw
-                    var throwDir = _mainCamera.forward;
-                    var throwForce = throwDir * itemEffect.ThrowForce.Value;
-                    
-                    // Instantiate throwable
-                    var newGameObject = GameObjectUtils.SafeInstantiate(true, itemEffect.Throwable, ThrowableContainer.Value);
-                    newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
-                    var throwable = newGameObject.GetComponentInChildren<Throwable>();
-                    throwable.DoThrow(throwForce);
-                }
-                
             } 
             catch(Exception exception) 
             {
-                Debug.LogError($"Item effect failed to apply ({itemEffect.Type}, {itemEffect.Trigger}): {exception.Message} | {exception.InnerException}");
+                Debug.LogError($"Item effect failed to apply ({itemEffect.GetType().Name}, {itemEffect.Trigger}): {exception.Message} | {exception.InnerException}");
             }
         }
 
-        private void UnApplyEffect(ItemEffect itemEffect) {
-            if (itemEffect.UseActivationCooldownTimer)
-            {
-                itemEffect.ActivationCooldownTimer.ResetTimer();
-            }
-            
-            if(itemEffect.Type == ItemEffectType.StatIncrease) {
-                if(itemEffect.UsePercentageIncrease) {
-                    itemEffect.FloatStat.Value -= itemEffect.FloatStat.DefaultValue * (itemEffect.StatIncreasePercent / 100f);
-                } else {
-                    itemEffect.IntStat.Value -= itemEffect.StatIncreaseAmount;
-                }
-            }
-
-            if(itemEffect.Type == ItemEffectType.SetBoolVariable) {
-               itemEffect.BoolVariableToToggle.Value = false;
-            }
+        private void UnApplyEffect(ItemEffect itemEffect)
+        {
+            itemEffect.UnapplyEffect();
         }
+        
     }
 }

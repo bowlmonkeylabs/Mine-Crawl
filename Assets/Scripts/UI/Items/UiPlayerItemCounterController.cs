@@ -28,9 +28,8 @@ namespace BML.Scripts.UI.Items
         [TitleGroup("Item")]
         [SerializeField, OnValueChanged("UpdateAssignedItem")] private ItemSource _itemSource;
         [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerInventory")] private ItemType _inventoryItemType;
-        [FormerlySerializedAs("_inventoryActiveSlotIndex")] [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Active")] private int _inventoryActiveItemIndex;
-        [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerInventory")] 
-        private PlayerInventory _playerInventory;
+        [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerInventory")] private int _inventoryItemSlotIndex;
+        [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerInventory")] private PlayerInventory _playerInventory;
         [ShowIf("@_itemSource == ItemSource.PlayerInventory")]
         public PlayerInventory PlayerInventory
         {
@@ -40,8 +39,7 @@ namespace BML.Scripts.UI.Items
                 _playerInventory = value;
             }
         }
-        [SerializeField, ShowIf("@_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable")] private int _inventoryPassiveStackableTreeSlotIndex;
-        [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerItem")] private PlayerItem _playerItem;
+        [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerItem")] private PlayerItem _item;
 
         [SerializeField] private bool _isStoreDisplay = false;
 
@@ -54,12 +52,12 @@ namespace BML.Scripts.UI.Items
             {
                 if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
                 {
-                    if (_playerInventory == null || _inventoryPassiveStackableTreeSlotIndex >=
-                        _playerInventory.PassiveStackableItemTrees.Count)
+                    if (_playerInventory == null || _inventoryItemSlotIndex >=
+                        _playerInventory.PassiveStackableItemTrees.ItemCount)
                     {
                         return null;
                     }
-                    var passiveStackableTree =  _playerInventory.PassiveStackableItemTrees[_inventoryPassiveStackableTreeSlotIndex];
+                    var passiveStackableTree =  _playerInventory.PassiveStackableItemTrees[_inventoryItemSlotIndex];
                     return passiveStackableTree;
                 }
                 return null;
@@ -73,21 +71,33 @@ namespace BML.Scripts.UI.Items
                 switch (_itemSource)
                 {
                     case ItemSource.PlayerItem:
-                        return _playerItem;
+                        return _item;
                         break;
                     default:
                     case ItemSource.PlayerInventory:
                         switch (_inventoryItemType)
                         {
                             case ItemType.Active:
-                                if (_playerInventory == null || _inventoryActiveItemIndex >=
-                                    _playerInventory.ActiveItems.Count)
+                                if (_playerInventory == null || _inventoryItemSlotIndex >=
+                                    _playerInventory.ActiveItems.ItemCount)
                                 {
                                     return null;
                                 }
-                                return _playerInventory.ActiveItems[_inventoryActiveItemIndex];
+                                return _playerInventory.ActiveItems[_inventoryItemSlotIndex];
+                            case ItemType.Consumable:
+                                if (_playerInventory == null || _inventoryItemSlotIndex >=
+                                    _playerInventory.ConsumableItems.ItemCount)
+                                {
+                                    return null;
+                                }
+                                return _playerInventory.ConsumableItems[_inventoryItemSlotIndex];
                             case ItemType.Passive:
-                                return _playerInventory?.PassiveItem;
+                                if (_playerInventory == null || _inventoryItemSlotIndex >=
+                                    _playerInventory.PassiveItems.ItemCount)
+                                {
+                                    return null;
+                                }
+                                return _playerInventory.PassiveItems[_inventoryItemSlotIndex];
                             case ItemType.PassiveStackable:
                                 // TODO we probably want to have the representative information defined on the tree start node, but for now it's easier to just display the first item in the tree
                                 return InventoryPassiveStackableTreeStartNode?.FirstItemInTree;
@@ -100,7 +110,7 @@ namespace BML.Scripts.UI.Items
             }
             set
             {
-                _playerItem = value;
+                _item = value;
                 _itemSource = ItemSource.PlayerItem;
             }
         }
@@ -108,7 +118,7 @@ namespace BML.Scripts.UI.Items
         public void SetDisplayPassiveStackableTreeSlotFromInventory(int passiveStackableTreeSlotIndex)
         {
             _inventoryItemType = ItemType.PassiveStackable;
-            _inventoryPassiveStackableTreeSlotIndex = passiveStackableTreeSlotIndex;
+            _inventoryItemSlotIndex = passiveStackableTreeSlotIndex;
             _itemSource = ItemSource.PlayerInventory;
         }
 
@@ -146,20 +156,20 @@ namespace BML.Scripts.UI.Items
         {
             UpdatePassiveStackableTreeCounts();
             
-            _playerInventory.OnActiveItemAdded += OnActiveItemChanged;
-            _playerInventory.OnActiveItemRemoved += OnActiveItemChanged;
-            _playerInventory.OnActiveItemChanged += OnActiveItemListChanged;
+            _playerInventory.ActiveItems.OnItemAdded += OnActiveItemChanged;
+            _playerInventory.ActiveItems.OnItemRemoved += OnActiveItemChanged;
+            _playerInventory.ActiveItems.OnAnyItemChangedInInspector += OnActiveItemListChangedInInspector;
             
-            _playerInventory.OnPassiveItemAdded += OnPassiveItemChanged;
-            _playerInventory.OnPassiveItemRemoved += OnPassiveItemChanged;
+            _playerInventory.PassiveItems.OnItemAdded += OnPassiveItemChanged;
+            _playerInventory.PassiveItems.OnItemRemoved += OnPassiveItemChanged;
             
-            _playerInventory.OnPassiveStackableItemAdded += OnPassiveStackableItemAdded;
-            _playerInventory.OnPassiveStackableItemRemoved += OnPassiveStackableItemRemoved;
-            _playerInventory.OnPassiveStackableItemChanged += OnPassiveStackableItemChanged;
+            _playerInventory.PassiveStackableItems.OnItemAdded += OnPassiveStackableItemAdded;
+            _playerInventory.PassiveStackableItems.OnItemRemoved += OnPassiveStackableItemRemoved;
+            _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector += OnPassiveStackableItemChangedInInspector;
 
-            _playerInventory.OnPassiveStackableItemTreeAdded += OnPassiveStackableItemTreeAdded;
-            _playerInventory.OnPassiveStackableItemTreeRemoved += OnPassiveStackableItemTreeRemoved;
-            _playerInventory.OnPassiveStackableItemTreeChanged += OnPassiveStackableItemTreeChanged;
+            _playerInventory.PassiveStackableItemTrees.OnItemAdded += OnPassiveStackableItemTreeAdded;
+            _playerInventory.PassiveStackableItemTrees.OnItemRemoved += OnPassiveStackableItemTreeRemoved;
+            _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector += OnPassiveStackableItemTreeChangedInInspector;
             
             _timerImageController?.Timer?.Subscribe(OnItemActivationTimerUpdated);
             _timerImageController?.Timer?.SubscribeFinished(OnItemActivationTimerUpdated);
@@ -169,20 +179,20 @@ namespace BML.Scripts.UI.Items
 
         private void OnDisable()
         {
-            _playerInventory.OnActiveItemAdded -= OnActiveItemChanged;
-            _playerInventory.OnActiveItemRemoved -= OnActiveItemChanged;
-            _playerInventory.OnActiveItemChanged -= OnActiveItemListChanged;
+            _playerInventory.ActiveItems.OnItemAdded -= OnActiveItemChanged;
+            _playerInventory.ActiveItems.OnItemRemoved -= OnActiveItemChanged;
+            _playerInventory.ActiveItems.OnAnyItemChangedInInspector -= OnActiveItemListChangedInInspector;
             
-            _playerInventory.OnPassiveItemAdded -= OnPassiveItemChanged;
-            _playerInventory.OnPassiveItemRemoved -= OnPassiveItemChanged;
+            _playerInventory.PassiveItems.OnItemAdded -= OnPassiveItemChanged;
+            _playerInventory.PassiveItems.OnItemRemoved -= OnPassiveItemChanged;
             
-            _playerInventory.OnPassiveStackableItemAdded -= OnPassiveStackableItemAdded;
-            _playerInventory.OnPassiveStackableItemRemoved -= OnPassiveStackableItemRemoved;
-            _playerInventory.OnPassiveStackableItemChanged -= OnPassiveStackableItemChanged;
+            _playerInventory.PassiveStackableItems.OnItemAdded -= OnPassiveStackableItemAdded;
+            _playerInventory.PassiveStackableItems.OnItemRemoved -= OnPassiveStackableItemRemoved;
+            _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector -= OnPassiveStackableItemChangedInInspector;
             
-            _playerInventory.OnPassiveStackableItemTreeAdded -= OnPassiveStackableItemTreeAdded;
-            _playerInventory.OnPassiveStackableItemTreeRemoved -= OnPassiveStackableItemTreeRemoved;
-            _playerInventory.OnPassiveStackableItemTreeChanged -= OnPassiveStackableItemTreeChanged;
+            _playerInventory.PassiveStackableItemTrees.OnItemAdded -= OnPassiveStackableItemTreeAdded;
+            _playerInventory.PassiveStackableItemTrees.OnItemRemoved -= OnPassiveStackableItemTreeRemoved;
+            _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector -= OnPassiveStackableItemTreeChangedInInspector;
             
             _timerImageController?.Timer?.Unsubscribe(OnItemActivationTimerUpdated);
             _timerImageController?.Timer?.UnsubscribeFinished(OnItemActivationTimerUpdated);
@@ -204,7 +214,7 @@ namespace BML.Scripts.UI.Items
             }
         }
 
-        private void OnActiveItemChanged(PlayerItem playerItem)
+        private void OnActiveItemChanged(PlayerItem item)
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Active)
             {
@@ -212,7 +222,7 @@ namespace BML.Scripts.UI.Items
             }
         }
         
-        private void OnActiveItemListChanged()
+        private void OnActiveItemListChangedInInspector()
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Active)
             {
@@ -220,7 +230,7 @@ namespace BML.Scripts.UI.Items
             }
         }
         
-        private void OnPassiveItemChanged(PlayerItem playerItem)
+        private void OnPassiveItemChanged(PlayerItem item)
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Passive)
             {
@@ -228,23 +238,23 @@ namespace BML.Scripts.UI.Items
             }
         }
         
-        private void OnPassiveStackableItemAdded(PlayerItem playerItem)
+        private void OnPassiveStackableItemAdded(PlayerItem item)
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
             {
-                UpdatePassiveStackableTreeCounts(playerItem.PassiveStackableTreeStartNode, 1);
+                UpdatePassiveStackableTreeCounts(item.PassiveStackableTreeStartNode, 1);
             }
         }
         
-        private void OnPassiveStackableItemRemoved(PlayerItem playerItem)
+        private void OnPassiveStackableItemRemoved(PlayerItem item)
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
             {
-                UpdatePassiveStackableTreeCounts(playerItem.PassiveStackableTreeStartNode, -1);
+                UpdatePassiveStackableTreeCounts(item.PassiveStackableTreeStartNode, -1);
             }
         }
         
-        private void OnPassiveStackableItemChanged()
+        private void OnPassiveStackableItemChangedInInspector()
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
             {
@@ -268,7 +278,7 @@ namespace BML.Scripts.UI.Items
             }
         }
         
-        private void OnPassiveStackableItemTreeChanged()
+        private void OnPassiveStackableItemTreeChangedInInspector()
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
             {
@@ -279,23 +289,25 @@ namespace BML.Scripts.UI.Items
         #endregion
         
         private static string ActiveItemBindingHint(int index) => $"<style=Player/UseActiveItem{index + 1}>";
+        private static string ConsumableItemBindingHint(int index) => $"<style=Player/UseConsumableItem{index + 1}>";
         
         private void UpdateAssignedItem()
         {
-            if (Item == null)
+            var item = Item;
+            if (item == null)
             {
                 _uiRoot.SetActive(false);
                 return;
             }
             
-            _imageIcon.sprite = Item.Icon;
-            _imageIcon.color = (Item.UseIconColor ? Item.IconColor : Color.white);
+            _imageIcon.sprite = item.Icon;
+            _imageIcon.color = (item.UseIconColor ? item.IconColor : Color.white);
 
+            TimerVariable itemTimer = null;
             // 'Recurring Timer' will take priority display; if null, then 'Activation Cooldown Timer' will be shown. This works with our current requirements, but may need to change in the future.
-            var recurringTimer = Item.ItemEffects
+            var recurringTimer = item.ItemEffects
                 .FirstOrDefault(e => e.Trigger == ItemEffectTrigger.RecurringTimer)
                 ?.RecurringTimerForTrigger;
-            TimerVariable itemTimer = null;
             if (recurringTimer != null)
             {
                 _timerDisplayMode = ItemEffectTimerDisplayMode.RecurringTimer;
@@ -303,7 +315,7 @@ namespace BML.Scripts.UI.Items
             }
             else
             {
-                var activationCooldownTimer = Item.ItemEffects
+                var activationCooldownTimer = item.ItemEffects
                     .FirstOrDefault(e => e.UseActivationCooldownTimer)
                     ?.ActivationCooldownTimer;
                 if (activationCooldownTimer != null)
@@ -312,7 +324,6 @@ namespace BML.Scripts.UI.Items
                     itemTimer = activationCooldownTimer;
                 }
             }
-            
             if (itemTimer == null || _isStoreDisplay)
             {
                 _timerImageController.gameObject.SetActive(false);
@@ -337,7 +348,7 @@ namespace BML.Scripts.UI.Items
                 }
                 else
                 {
-                    var remainingActivationsVariable = Item.ItemEffects.FirstOrDefault(e => e.UseActivationLimit)?.RemainingActivations;
+                    var remainingActivationsVariable = item.ItemEffects.FirstOrDefault(e => e.UseActivationLimit)?.RemainingActivations;
                     if (remainingActivationsVariable == null)
                     {
                         _remainingCountTextController.gameObject.SetActive(false);
@@ -352,14 +363,17 @@ namespace BML.Scripts.UI.Items
                 }
             }
             
-            _bindingHintText.gameObject.SetActive(!_isStoreDisplay && Item.Type == ItemType.Active);
-            if (Item.Type == ItemType.Active)
+            _bindingHintText.gameObject.SetActive(!_isStoreDisplay && (_inventoryItemType == ItemType.Active || _inventoryItemType == ItemType.Consumable));
+            if (_inventoryItemType == ItemType.Active)
             {
-                _bindingHintText.SetText(ActiveItemBindingHint(_inventoryActiveItemIndex));
+                _bindingHintText.SetText(ActiveItemBindingHint(_inventoryItemSlotIndex));
+            } else if (_inventoryItemType == ItemType.Consumable)
+            {
+                _bindingHintText.SetText(ConsumableItemBindingHint(_inventoryItemSlotIndex));
             }
 
-            // _itemTypeText.text = Item.Type.ToString().ToUpper();
-            // _itemTypeText.gameObject.SetActive(Item.Type == ItemType.Passive);
+            // _itemTypeText.text = item.Type.ToString().ToUpper();
+            // _itemTypeText.gameObject.SetActive(item.Type == ItemType.Passive);
             _itemTypeText.gameObject.SetActive(false);
             
             _uiRoot.SetActive(true);
