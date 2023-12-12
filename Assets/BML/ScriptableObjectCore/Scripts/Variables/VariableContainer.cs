@@ -28,7 +28,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
     [CreateAssetMenu(fileName = "VariableContainer", menuName = "BML/Variables/VariableContainer", order = 0)]
     public class VariableContainer : ScriptableObject
     {
-        private enum ContainerPopulateMode
+        protected enum ContainerPopulateMode
         {
             Manual = 0,
             Folder = 1,
@@ -36,12 +36,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         }
         
         [TitleGroup("Populate Container"), PropertyOrder(-3)]
-        [SerializeField] private ContainerPopulateMode _populateMode = ContainerPopulateMode.Manual;
+        [SerializeField] protected ContainerPopulateMode _populateMode = ContainerPopulateMode.Manual;
         
         [TitleGroup("Populate Container"), ShowIf("@_populateMode == ContainerPopulateMode.Folder")]
         [FolderPath (RequireExistingPath = true), PropertyOrder(-2)]
         [InlineButton("SetThisFolder", "This Folder"), PropertyTooltip("Sets 'Folder Path' for auto-population to the folder where this container is located.")]
-        [SerializeField] private string FolderPath;
+        [SerializeField] protected string FolderPath;
 
 #if UNITY_EDITOR
         // [PropertyTooltip("Sets 'Folder Path' for auto-population to the folder where this container is located.")]
@@ -53,10 +53,10 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 #endif
         
         [TitleGroup("Populate Container"), ShowIf("@_populateMode == ContainerPopulateMode.Folder")]
-        [SerializeField] private bool IncludeSubdirectories = false;
+        [SerializeField] protected bool IncludeSubdirectories = false;
 
         [TitleGroup("Populate Container"), ShowIf("@_populateMode == ContainerPopulateMode.ContainerKey")]
-        [SerializeField] private VariableContainerKey ContainerKey;
+        [SerializeField] protected VariableContainerKey ContainerKey;
 
         [TextArea (5, 10)] public String Description;
         
