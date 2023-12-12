@@ -63,6 +63,7 @@ namespace BML.Scripts.Player.Items
         public Dictionary<PlayerResource, int> ItemCost => _itemCost;
         public ItemType Type => _itemType;
         public List<ItemEffect> ItemEffects => _itemEffects;
+        public int? RemainingActivations => _itemEffects.FirstOrDefault(e => e.UseActivationLimit)?.RemainingActivations.Value;
 
         #endregion
         

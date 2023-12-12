@@ -53,6 +53,7 @@ namespace BML.Scripts.Player.Items
             }
         }
 
+        [Button("Update")]
         private void OnSlotsChangedInInspector()
         {
             OnAnyItemChangedInInspector?.Invoke();
@@ -132,14 +133,25 @@ namespace BML.Scripts.Player.Items
         {
             // TODO is this right?
             var itemSlot = _slots.FirstOrDefault(s => s.Item.Equals(item)); // Checking only for REFERENCE equality.
+            return TryRemoveItemFromSlot(itemSlot);
+        }
+
+        public bool TryRemoveItem(int index)
+        {
+            var itemSlot = _slots[index];
+            return TryRemoveItemFromSlot(itemSlot);
+        }
+
+        private bool TryRemoveItemFromSlot(ItemSlot<T> itemSlot)
+        {
             if (itemSlot != null)
             {
                 var prevItem = itemSlot.Item;
+                itemSlot.Item = default(T);
                 if (prevItem != null)
                 {
                     OnItemRemoved?.Invoke(prevItem);
                 }
-                itemSlot.Item = default(T);
                 return true;
             }
             return false;

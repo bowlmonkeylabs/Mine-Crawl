@@ -133,6 +133,12 @@ namespace BML.Scripts.Player.Items
             return didRemove;
         }
 
+        public bool TryRemoveConsumable(int index)
+        {
+            bool didRemove = ConsumableItems.TryRemoveItem(index);
+            return didRemove;
+        }
+
         public void ResetScriptableObject()
         {
             this.ActiveItems.ForEach(p => p?.ResetScriptableObject());
@@ -153,11 +159,11 @@ namespace BML.Scripts.Player.Items
         public event IResettableScriptableObject.OnResetScriptableObject OnReset;
         
         public delegate void OnPlayerItemChanged<PlayerItem>(PlayerItem item);
-        public delegate void OnPlayerItemChanged();
+        // public delegate void OnPlayerItemChanged();
 
         public event OnPlayerItemChanged<PlayerItem> OnAnyPlayerItemAdded;      // PlayerItem is the item that was ADDED
         public event OnPlayerItemChanged<PlayerItem> OnAnyPlayerItemRemoved;    // PlayerItem is the item that was REMOVED
-        public event OnPlayerItemChanged OnAnyPlayerItemChangedInInspector;     // When changes happen through the inspector, we don't know which specific item changed
+        // public event OnPlayerItemChanged OnAnyPlayerItemChangedInInspector;     // When changes happen through the inspector, we don't know which specific item changed
 
         #endregion
 

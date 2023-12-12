@@ -160,6 +160,10 @@ namespace BML.Scripts.UI.Items
             _playerInventory.ActiveItems.OnItemRemoved += OnActiveItemChanged;
             _playerInventory.ActiveItems.OnAnyItemChangedInInspector += OnActiveItemListChangedInInspector;
             
+            _playerInventory.ConsumableItems.OnItemAdded += OnConsumableItemChanged;
+            _playerInventory.ConsumableItems.OnItemRemoved += OnConsumableItemChanged;
+            _playerInventory.ConsumableItems.OnAnyItemChangedInInspector += OnConsumableItemListChangedInInspector;
+            
             _playerInventory.PassiveItems.OnItemAdded += OnPassiveItemChanged;
             _playerInventory.PassiveItems.OnItemRemoved += OnPassiveItemChanged;
             
@@ -170,6 +174,8 @@ namespace BML.Scripts.UI.Items
             _playerInventory.PassiveStackableItemTrees.OnItemAdded += OnPassiveStackableItemTreeAdded;
             _playerInventory.PassiveStackableItemTrees.OnItemRemoved += OnPassiveStackableItemTreeRemoved;
             _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector += OnPassiveStackableItemTreeChangedInInspector;
+
+            // _playerInventory.OnAnyPlayerItemChangedInInspector += UpdateAssignedItem;
             
             _timerImageController?.Timer?.Subscribe(OnItemActivationTimerUpdated);
             _timerImageController?.Timer?.SubscribeFinished(OnItemActivationTimerUpdated);
@@ -183,6 +189,10 @@ namespace BML.Scripts.UI.Items
             _playerInventory.ActiveItems.OnItemRemoved -= OnActiveItemChanged;
             _playerInventory.ActiveItems.OnAnyItemChangedInInspector -= OnActiveItemListChangedInInspector;
             
+            _playerInventory.ConsumableItems.OnItemAdded -= OnConsumableItemChanged;
+            _playerInventory.ConsumableItems.OnItemRemoved -= OnConsumableItemChanged;
+            _playerInventory.ConsumableItems.OnAnyItemChangedInInspector -= OnConsumableItemListChangedInInspector;
+            
             _playerInventory.PassiveItems.OnItemAdded -= OnPassiveItemChanged;
             _playerInventory.PassiveItems.OnItemRemoved -= OnPassiveItemChanged;
             
@@ -193,6 +203,8 @@ namespace BML.Scripts.UI.Items
             _playerInventory.PassiveStackableItemTrees.OnItemAdded -= OnPassiveStackableItemTreeAdded;
             _playerInventory.PassiveStackableItemTrees.OnItemRemoved -= OnPassiveStackableItemTreeRemoved;
             _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector -= OnPassiveStackableItemTreeChangedInInspector;
+
+            // _playerInventory.OnAnyPlayerItemChangedInInspector -= UpdateAssignedItem;
             
             _timerImageController?.Timer?.Unsubscribe(OnItemActivationTimerUpdated);
             _timerImageController?.Timer?.UnsubscribeFinished(OnItemActivationTimerUpdated);
@@ -225,6 +237,22 @@ namespace BML.Scripts.UI.Items
         private void OnActiveItemListChangedInInspector()
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Active)
+            {
+                UpdateAssignedItem();
+            }
+        }
+        
+        private void OnConsumableItemChanged(PlayerItem item)
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Consumable)
+            {
+                UpdateAssignedItem();
+            }
+        }
+        
+        private void OnConsumableItemListChangedInInspector()
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Consumable)
             {
                 UpdateAssignedItem();
             }

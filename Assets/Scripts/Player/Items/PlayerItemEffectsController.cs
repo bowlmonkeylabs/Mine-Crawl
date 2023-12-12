@@ -167,7 +167,7 @@ namespace BML.Scripts.Player.Items
             }
         }
 
-        private void OnUseConsumable1(InputValue value)
+        private void OnUseConsumableItem1(InputValue value)
         {
             if (value.isPressed && _playerInventory.ConsumableItems.ItemCount >= 1 && _playerInventory.ConsumableItems[0] != null)
             {
@@ -337,12 +337,19 @@ namespace BML.Scripts.Player.Items
         
         #region Consumable item effects
         
-        private void Apply_Consumable_OnActivated(int index) {
-            this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItems[index], ItemEffectTrigger.OnActivated, true);
+        private void Apply_Consumable_OnActivated(int index)
+        {
+            var consumableItem = _playerInventory.ConsumableItems[index];
+            this.ApplyOrUnApplyEffectsForTrigger(consumableItem, ItemEffectTrigger.OnActivated, true);
+            
+            // Remove consumable if used-up
+            if ((consumableItem.RemainingActivations ?? 0) <= 0)
+            {
+                _playerInventory.TryRemoveConsumable(index);
+            }
         }
 
-        private void Apply_Consumable_OnAcquired()
-        {
+        private void Apply_Consumable_OnAcquired() {
             ApplyOrUnApplyEffectsForTrigger(_playerInventory.OnAcquiredConsumableQueue, ItemEffectTrigger.OnAcquired,
                 true);
             _playerInventory.OnAcquiredConsumableQueue.Clear();
