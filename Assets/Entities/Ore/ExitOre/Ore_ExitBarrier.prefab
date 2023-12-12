@@ -1128,14 +1128,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
---- !u!1 &198481471302895464 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
-  m_PrefabInstance: {fileID: 1008889919471139385}
-  m_PrefabAsset: {fileID: 0}
 --- !u!23 &1856003839198373565 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
+  m_PrefabInstance: {fileID: 1008889919471139385}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &198481471302895464 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b735b187c3daa21469dd9edb1342f1c4, type: 3}
   m_PrefabInstance: {fileID: 1008889919471139385}
   m_PrefabAsset: {fileID: 0}
 --- !u!64 &6924033394497364990
@@ -1259,6 +1259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: {fileID: 6287322958753863177}
+  healthTemporary: {fileID: 0}
   _damageable:
   - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
       Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile, Player_Pickaxe_Secondary,
@@ -2669,27 +2670,27 @@ PrefabInstance:
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1070838779823517863}
+      objectReference: {fileID: 951888049764755913}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 1070838779823517863}
+      objectReference: {fileID: 951888049764755913}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 1070838779823517863}
+      objectReference: {fileID: 951888049764755913}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[4].m_Target
       value: 
-      objectReference: {fileID: 1070838779823517863}
+      objectReference: {fileID: 951888049764755913}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[5].m_Target
       value: 
-      objectReference: {fileID: 1070838779823517863}
+      objectReference: {fileID: 951888049764755913}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[6].m_Target
       value: 
-      objectReference: {fileID: 1070838779823517863}
+      objectReference: {fileID: 951888049764755913}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[7].m_Target
       value: 
@@ -2720,27 +2721,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: Launch
+      value: SpawnItemPickup
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: Launch
+      value: SpawnItemPickup
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
-      value: Launch
+      value: SpawnItemPickup
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[4].m_MethodName
-      value: Launch
+      value: SpawnItemPickup
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[5].m_MethodName
-      value: Launch
+      value: SpawnItemPickup
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[6].m_MethodName
-      value: Launch
+      value: SpawnItemPickup
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[7].m_MethodName
@@ -2748,27 +2749,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: BML.Scripts.RigidBodyLauncher, BML.Scripts
+      value: BML.Scripts.ItemPickupSpawner, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: BML.Scripts.RigidBodyLauncher, BML.Scripts
+      value: BML.Scripts.ItemPickupSpawner, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
-      value: BML.Scripts.RigidBodyLauncher, BML.Scripts
+      value: BML.Scripts.ItemPickupSpawner, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[4].m_TargetAssemblyTypeName
-      value: BML.Scripts.RigidBodyLauncher, BML.Scripts
+      value: BML.Scripts.ItemPickupSpawner, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[5].m_TargetAssemblyTypeName
-      value: BML.Scripts.RigidBodyLauncher, BML.Scripts
+      value: BML.Scripts.ItemPickupSpawner, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[6].m_TargetAssemblyTypeName
-      value: BML.Scripts.RigidBodyLauncher, BML.Scripts
+      value: BML.Scripts.ItemPickupSpawner, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[7].m_TargetAssemblyTypeName
@@ -2777,54 +2778,54 @@ PrefabInstance:
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+      objectReference: {fileID: 11400000, guid: 4cc5f7224fad16b4398b31828e20a7da, type: 2}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+      objectReference: {fileID: 11400000, guid: 4cc5f7224fad16b4398b31828e20a7da, type: 2}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+      objectReference: {fileID: 11400000, guid: 4cc5f7224fad16b4398b31828e20a7da, type: 2}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+      objectReference: {fileID: 11400000, guid: 4cc5f7224fad16b4398b31828e20a7da, type: 2}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[5].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
+      objectReference: {fileID: 11400000, guid: 4cc5f7224fad16b4398b31828e20a7da, type: 2}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[6].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 541999808759209597, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
+      objectReference: {fileID: 11400000, guid: 9dfef5c1fb824b843afbc8f5c7ef47cd, type: 2}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[7].m_Arguments.m_ObjectArgument
       value: 
       objectReference: {fileID: 541999808759209597, guid: 49e883f773eaa794c9dd1847804e37d1, type: 3}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: BML.Scripts.Player.Items.PlayerItem, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: BML.Scripts.Player.Items.PlayerItem, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: BML.Scripts.Player.Items.PlayerItem, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: BML.Scripts.Player.Items.PlayerItem, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[5].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: BML.Scripts.Player.Items.PlayerItem, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[6].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: BML.Scripts.Player.Items.PlayerItem, BML.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 7664960571339365045, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[7].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -3019,6 +3020,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3454127850225854731, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
   m_PrefabInstance: {fileID: 4404071749740678332}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6889627277849608047 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7098438743458149331, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+  m_PrefabInstance: {fileID: 4404071749740678332}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb817c89909b4b2095d4fc1a3f8f2a5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1365119649539987299 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3454127850101988319, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
@@ -3087,15 +3099,15 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7225383730169331457, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
   m_PrefabInstance: {fileID: 4404071749740678332}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6889627277849608047 stripped
+--- !u!114 &951888049764755913 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7098438743458149331, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3471060143520261493, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
   m_PrefabInstance: {fileID: 4404071749740678332}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb817c89909b4b2095d4fc1a3f8f2a5f, type: 3}
+  m_Script: {fileID: 11500000, guid: badd9f866037432798fe2414edc757da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &7463206702865767283

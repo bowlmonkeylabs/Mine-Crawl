@@ -633,6 +633,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 2716511331988814758}
         DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
         Sfx: {fileID: 8300000, guid: e2ffd2853fa56514f94ef48893ca48bb, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -698,6 +700,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 1
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 5
         MaxDistance: 30
     00000006:
@@ -889,6 +898,7 @@ MonoBehaviour:
       ConstantValue: 1
       Variable: {fileID: 0}
   FloatConditions: []
+  SafeFloatConditions: []
   IntConditions: []
   TimerConditions: []
   Vector2Conditions: []
@@ -1246,21 +1256,28 @@ MonoBehaviour:
   _health: 5
   _hasMaxHealth: 0
   _maxHealthReference:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
-  _isInvincible: 0
-  _invincibilitySeconds:
     ReferenceTypeSelector: 0
     ConstantValue: 0
+    RoundingBehavior: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     ReferenceValue_BoolVariable: {fileID: 0}
     ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _isInvincible: 0
+  _useInvincibilityVariable: 0
+  _invincibilityTimer:
+    UseConstant: 0
+    ConstantDuration:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+    Variable: {fileID: 0}
+  _invincibilitySeconds: 0
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -1315,20 +1332,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce7e5df4f8b64359914f082ef13f0f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lootTableVariable: {fileID: 11400000, guid: 78f9745940256e64c9a384f7788d72ad, type: 2}
-  _levelObjectsGenerated:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 9cccc0a113213314291480e8368de680, type: 2}
+  _lootTable: {fileID: 11400000, guid: 239a56d7ca3df9f478957f0aa4edc3ea, type: 2}
   _onDrop:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2265493856839925122}
-        m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
-        m_MethodName: Launch
+      - m_Target: {fileID: 1740679438155746277}
+        m_TargetAssemblyTypeName: BML.Scripts.ItemPickupSpawner, BML.Scripts
+        m_MethodName: SpawnItemPickup
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1338,6 +1348,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _levelObjectsGenerated:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 9cccc0a113213314291480e8368de680, type: 2}
 --- !u!1 &5507788027060987501
 GameObject:
   m_ObjectHideFlags: 0
@@ -2078,6 +2095,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: {fileID: 472639286291875359}
+  healthTemporary: {fileID: 0}
   _damageable:
   - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Slime_Contact, Enemy_Bat_Contact,
       Enemy_Sentinel_Projectile, Enemy_Zombie_Contact, Enemy_Mimic_Projectile, Ore_Explosive,
@@ -2577,6 +2595,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 1633981547498171809}
         DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
         Sfx: {fileID: 0}
         RandomSfx:
         - {fileID: 8300000, guid: 27a37e8e24eeb4d4d96f77612a2d20a1, type: 3}
@@ -2643,6 +2663,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 1
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 5
         MaxDistance: 30
 --- !u!114 &6578201279297809007
@@ -3350,6 +3377,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3953987353532094227}
   - component: {fileID: 2012392423824498523}
+  - component: {fileID: 1740679438155746277}
   - component: {fileID: 2265493856839925122}
   m_Layer: 0
   m_Name: DeathFeedbacks
@@ -3613,6 +3641,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 2012392423824498523}
         DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
         Sfx: {fileID: 8300000, guid: f9cc188357ad8a84aa6fe3f934af03bb, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -3678,6 +3708,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 1
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 5
         MaxDistance: 30
     00000002:
@@ -3750,6 +3787,35 @@ MonoBehaviour:
         DebugActive: 0
         TargetGameObject: {fileID: 4474856344138851638}
         Mode: 0
+--- !u!114 &1740679438155746277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7588269548864807786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: badd9f866037432798fe2414edc757da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSpawnPickup:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2265493856839925122}
+        m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
+        m_MethodName: Launch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _basePickupPrefab: {fileID: 8097470616027808229, guid: 403e8b8ea52f6ce4caab8a3ff49a1ae1, type: 3}
+  _pickupContainer: {fileID: 0}
 --- !u!114 &2265493856839925122
 MonoBehaviour:
   m_ObjectHideFlags: 0

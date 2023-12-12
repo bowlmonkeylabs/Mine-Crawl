@@ -462,6 +462,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5005311190447278692}
+  - component: {fileID: 531478825949212177}
   - component: {fileID: 5005311190447278695}
   - component: {fileID: 7774109262641024096}
   m_Layer: 0
@@ -485,6 +486,35 @@ Transform:
   m_Father: {fileID: 5005311191792496384}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &531478825949212177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5005311190447278693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: badd9f866037432798fe2414edc757da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSpawnPickup:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5005311190447278695}
+        m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
+        m_MethodName: Launch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _basePickupPrefab: {fileID: 8097470616027808229, guid: 403e8b8ea52f6ce4caab8a3ff49a1ae1, type: 3}
+  _pickupContainer: {fileID: 0}
 --- !u!114 &5005311190447278695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1287,20 +1317,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce7e5df4f8b64359914f082ef13f0f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lootTableVariable: {fileID: 11400000, guid: 5164deea58cef63459fa0d0dd58b0e90, type: 2}
-  _levelObjectsGenerated:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 9cccc0a113213314291480e8368de680, type: 2}
+  _lootTable: {fileID: 11400000, guid: 7154a160fd864e84cbe0944e2cc81154, type: 2}
   _onDrop:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5005311190447278695}
-        m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
-        m_MethodName: Launch
+      - m_Target: {fileID: 531478825949212177}
+        m_TargetAssemblyTypeName: BML.Scripts.ItemPickupSpawner, BML.Scripts
+        m_MethodName: SpawnItemPickup
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1310,6 +1333,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _levelObjectsGenerated:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 9cccc0a113213314291480e8368de680, type: 2}
 --- !u!114 &6299139080613359169
 MonoBehaviour:
   m_ObjectHideFlags: 0

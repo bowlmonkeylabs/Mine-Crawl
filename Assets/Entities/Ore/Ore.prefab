@@ -379,6 +379,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 3454127850065686866}
         DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
         Sfx: {fileID: 0}
         RandomSfx:
         - {fileID: 8300000, guid: 27a37e8e24eeb4d4d96f77612a2d20a1, type: 3}
@@ -445,6 +447,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 1
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 5
         MaxDistance: 30
     00000001:
@@ -819,6 +828,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: {fileID: 7664960571339365045}
+  healthTemporary: {fileID: 0}
   _damageable:
   - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
       Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile, Player_Pickaxe_Secondary,
@@ -986,6 +996,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3454127851599513212}
   - component: {fileID: 3454127851599513215}
+  - component: {fileID: 3471060143520261493}
   - component: {fileID: 3729549894264273947}
   m_Layer: 6
   m_Name: DeathFeedbacks
@@ -1167,6 +1178,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 3454127851599513215}
         DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
         Sfx: {fileID: 8300000, guid: f9cc188357ad8a84aa6fe3f934af03bb, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -1232,6 +1245,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 1
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 5
         MaxDistance: 30
     00000001:
@@ -1302,6 +1322,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 3454127851599513215}
         DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
         Sfx: {fileID: 8300000, guid: 26f177614d723164d81a1eed2e52cfc6, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -1367,6 +1389,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 1
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 5
         MaxDistance: 30
     00000002:
@@ -1568,6 +1597,35 @@ MonoBehaviour:
         NestParticles: 1
         ApplyRotation: 0
         ApplyScale: 0
+--- !u!114 &3471060143520261493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454127851599513213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: badd9f866037432798fe2414edc757da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSpawnPickup:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3729549894264273947}
+        m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
+        m_MethodName: Launch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _basePickupPrefab: {fileID: 8097470616027808229, guid: 403e8b8ea52f6ce4caab8a3ff49a1ae1, type: 3}
+  _pickupContainer: {fileID: 0}
 --- !u!114 &3729549894264273947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1753,21 +1811,28 @@ MonoBehaviour:
   _health: 5
   _hasMaxHealth: 0
   _maxHealthReference:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
-  _isInvincible: 0
-  _invincibilitySeconds:
     ReferenceTypeSelector: 0
     ConstantValue: 0
+    RoundingBehavior: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     ReferenceValue_BoolVariable: {fileID: 0}
     ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _isInvincible: 0
+  _useInvincibilityVariable: 0
+  _invincibilityTimer:
+    UseConstant: 0
+    ConstantDuration:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+    Variable: {fileID: 0}
+  _invincibilitySeconds: 0
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -1795,13 +1860,14 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 3729549894264273947}
-        m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
-        m_MethodName: Launch
+      - m_Target: {fileID: 3471060143520261493}
+        m_TargetAssemblyTypeName: BML.Scripts.ItemPickupSpawner, BML.Scripts
+        m_MethodName: SpawnItemPickup
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 8097470616027808229, guid: 612b042d6f2e9bb4895895fd61e63677, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: 4cc5f7224fad16b4398b31828e20a7da, type: 2}
+          m_ObjectArgumentAssemblyTypeName: BML.Scripts.Player.Items.PlayerItem,
+            BML.Scripts
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4288,7 +4354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 7374409249846527154
+  uniqueID: 2122466370005274782
   updateError: 1
   checkTime: 0.2
 --- !u!114 &1281332912521561773
@@ -4414,6 +4480,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: {fileID: 7664960571339365045}
+  healthTemporary: {fileID: 0}
   _damageable:
   - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
       Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile, Player_Pickaxe_Secondary,
