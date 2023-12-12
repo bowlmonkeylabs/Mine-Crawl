@@ -55,6 +55,9 @@ namespace BML.Scripts.Player.Items
         [BoxGroup("Consumable Items"), InlineProperty, HideLabel]
         [PropertySpace(SpaceAfter = PROPERTY_SPACING)]
         public ItemSlotType<PlayerItem> ConsumableItems;
+        
+        [NonSerialized]
+        public Queue<PlayerItem> OnAcquiredConsumableQueue = new Queue<PlayerItem>();
 
         #endregion
         
@@ -87,7 +90,12 @@ namespace BML.Scripts.Player.Items
                     didAdd = ActiveItems.TryAddItem(item);
                     break;
                 case ItemType.Consumable:
-                    didAdd = ConsumableItems.TryAddItem(item);
+                    OnAcquiredConsumableQueue.Enqueue(item);
+                    bool anyEffectsOtherThanOnAcquire = item.ItemEffects.Any(e => e.Trigger != ItemEffectTrigger.OnAcquired);
+                    if (anyEffectsOtherThanOnAcquire)
+                    {
+                        didAdd = ConsumableItems.TryAddItem(item);
+                    }
                     break;
             }
             if (didAdd)

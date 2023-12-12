@@ -126,6 +126,8 @@ namespace BML.Scripts.Player.Items
 
         void Update() 
         {
+            Apply_Consumable_OnAcquired();
+            
             UpdateEffectsTimers();
         }
 
@@ -337,6 +339,13 @@ namespace BML.Scripts.Player.Items
         
         private void Apply_Consumable_OnActivated(int index) {
             this.ApplyOrUnApplyEffectsForTrigger(_playerInventory.ActiveItems[index], ItemEffectTrigger.OnActivated, true);
+        }
+
+        private void Apply_Consumable_OnAcquired()
+        {
+            ApplyOrUnApplyEffectsForTrigger(_playerInventory.OnAcquiredConsumableQueue, ItemEffectTrigger.OnAcquired,
+                true);
+            _playerInventory.OnAcquiredConsumableQueue.Clear();
         }
         
         #endregion
