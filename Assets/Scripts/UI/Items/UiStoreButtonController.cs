@@ -41,7 +41,7 @@ namespace BML.Scripts.UI.Items
         {
             if (_itemToPurchase != null)
             {
-                _itemToPurchase.OnAffordabilityChanged -= UpdateInteractable;
+                _itemToPurchase.OnBuyabilityChanged -= UpdateInteractable;
             }
         }
 
@@ -60,7 +60,7 @@ namespace BML.Scripts.UI.Items
         {
             if (_itemToPurchase != null)
             {
-                _itemToPurchase.OnAffordabilityChanged -= UpdateInteractable;
+                _itemToPurchase.OnBuyabilityChanged -= UpdateInteractable;
             }
             _itemToPurchase = itemToPurchase;
             _uiPlayerItemIconController.Item = itemToPurchase;
@@ -70,7 +70,7 @@ namespace BML.Scripts.UI.Items
                 UpdateInteractable();
             }
 
-            _itemToPurchase.OnAffordabilityChanged += UpdateInteractable;
+            _itemToPurchase.OnBuyabilityChanged += UpdateInteractable;
         }
 
         public void Raise()
@@ -94,16 +94,10 @@ namespace BML.Scripts.UI.Items
         {
             if (_enableLogs) Debug.Log($"UpdateInteractable ({_button.gameObject.name})");
             
-            if(_isGodModeEnabled.Value)
+            bool canBuyItem = _itemToPurchase.CheckIfCanBuy();
+            if (_button.interactable != canBuyItem)
             {
-                _button.interactable = true;
-                return;
-            }
-
-            bool canAffordItem = _itemToPurchase.CheckIfCanAfford();
-            if (_button.interactable != canAffordItem)
-            {
-                _button.interactable = canAffordItem;
+                _button.interactable = canBuyItem;
             }
         }
 

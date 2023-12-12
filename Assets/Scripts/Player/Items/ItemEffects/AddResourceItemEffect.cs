@@ -10,10 +10,10 @@ namespace BML.Scripts.Player.Items.ItemEffects
         [SerializeField] private int _addAmount;
         
         #endregion
-        
+
         protected override bool ApplyEffectInternal()
         {
-            if (_resource.IsAtAmountLimit)
+            if (!CanAddResource())
             {
                 return false;
             }
@@ -25,6 +25,13 @@ namespace BML.Scripts.Player.Items.ItemEffects
         protected override bool UnapplyEffectInternal()
         {
             return false;
+        }
+
+        public PlayerResource Resource => _resource;
+
+        public bool CanAddResource()
+        {
+            return !_resource.IsAtAmountLimit;
         }
         
     }

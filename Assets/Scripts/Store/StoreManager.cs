@@ -37,8 +37,8 @@ namespace BML.Scripts
         {
             if (!_isGodModeEnabled.Value)
             {
-                var canAffordItem = item.CheckIfCanAfford();
-                if (!canAffordItem)
+                var canBuyItem = item.CheckIfCanBuy();
+                if (!canBuyItem)
                 {
                     _onStoreFailOpenEvent.Raise();
                     return;

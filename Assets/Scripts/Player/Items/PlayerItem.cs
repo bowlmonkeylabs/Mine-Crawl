@@ -4,6 +4,7 @@ using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Managers;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.ItemTreeGraph;
+using BML.Scripts.Player.Items.ItemEffects;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -35,7 +36,7 @@ namespace BML.Scripts.Player.Items
         public ItemTreeGraphStartNode PassiveStackableTreeStartNode;
         
         [SerializeField, FoldoutGroup("Pickup"), PreviewField(100, ObjectFieldAlignment.Left), AssetsOnly] private GameObject _objectPrefab;
-        [SerializeField, FoldoutGroup("Pickup")] private SafeBoolValueReference _allowPickupCondition;
+        [SerializeField, FoldoutGroup("Pickup")] private PlayerInventory _playerInventory;
         
         [FormerlySerializedAs("_storeCost")]
         [SerializeField]
@@ -59,7 +60,6 @@ namespace BML.Scripts.Player.Items
         public Color IconColor => _iconColor;
         public Sprite Icon => _icon;
         public GameObject ObjectPrefab => _objectPrefab;
-        public SafeBoolValueReference AllowPickupCondition => _allowPickupCondition;
         public Dictionary<PlayerResource, int> ItemCost => _itemCost;
         public ItemType Type => _itemType;
         public List<ItemEffect> ItemEffects => _itemEffects;
@@ -69,17 +69,61 @@ namespace BML.Scripts.Player.Items
         
         #region Unity lifecycle
         
-        private void OnEnable() 
+        private void OnEnable()
         {
+            switch (_itemType)
+            {
+                case ItemType.PassiveStackable:
+                    _playerInventory.PassiveStackableItems.OnItemAdded += OnInventoryUpdated;
+                    _playerInventory.PassiveStackableItems.OnItemRemoved += OnInventoryUpdated;
+                    break;
+                case ItemType.Passive:
+                    _playerInventory.PassiveItems.OnItemAdded += OnInventoryUpdated;
+                    _playerInventory.PassiveItems.OnItemRemoved += OnInventoryUpdated;
+                    break;
+                case ItemType.Active:
+                    _playerInventory.ActiveItems.OnItemAdded += OnInventoryUpdated;
+                    _playerInventory.ActiveItems.OnItemRemoved += OnInventoryUpdated;
+                    break;
+                case ItemType.Consumable:
+                    _itemEffects.Where(e => e is AddResourceItemEffect)
+                        .ForEach(e =>
+                            (e as AddResourceItemEffect).Resource.OnAmountChanged += InvokeOnPickupabilityChanged);
+                    break;
+            }
+            
+            OnPickupabilityChanged += InvokeOnBuyabilityChanged;
             _itemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => {
-                entry.Key.OnAmountChanged += InvokeOnAffordabilityChanged;
+                entry.Key.OnAmountChanged += InvokeOnBuyabilityChanged;
             });
         }
 
-        private void OnDisable() 
+        private void OnDisable()
         {
+            switch (_itemType)
+            {
+                case ItemType.PassiveStackable:
+                    _playerInventory.PassiveStackableItems.OnItemAdded -= OnInventoryUpdated;
+                    _playerInventory.PassiveStackableItems.OnItemRemoved -= OnInventoryUpdated;
+                    break;
+                case ItemType.Passive:
+                    _playerInventory.PassiveItems.OnItemAdded -= OnInventoryUpdated;
+                    _playerInventory.PassiveItems.OnItemRemoved -= OnInventoryUpdated;
+                    break;
+                case ItemType.Active:
+                    _playerInventory.ActiveItems.OnItemAdded -= OnInventoryUpdated;
+                    _playerInventory.ActiveItems.OnItemRemoved -= OnInventoryUpdated;
+                    break;
+                case ItemType.Consumable:
+                    _itemEffects.Where(e => e is AddResourceItemEffect)
+                        .ForEach(e =>
+                            (e as AddResourceItemEffect).Resource.OnAmountChanged -= InvokeOnPickupabilityChanged);
+                    break;
+            }
+            
+            OnPickupabilityChanged -= InvokeOnBuyabilityChanged;
             _itemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => {
-                entry.Key.OnAmountChanged -= InvokeOnAffordabilityChanged;
+                entry.Key.OnAmountChanged -= InvokeOnBuyabilityChanged;
             });
         }
         
@@ -87,16 +131,61 @@ namespace BML.Scripts.Player.Items
         
         #region Affordability/Store interface
 
-        public delegate void _OnAffordabilityChanged();
-        public event _OnAffordabilityChanged OnAffordabilityChanged;
+        public delegate void _OnPickupStatusChanged();
+        public event _OnPickupStatusChanged OnBuyabilityChanged;
+        public event _OnPickupStatusChanged OnPickupabilityChanged;
         
-        private void InvokeOnAffordabilityChanged()
+        private void OnInventoryUpdated(PlayerItem playerItem)
         {
-            OnAffordabilityChanged?.Invoke();
+            InvokeOnBuyabilityChanged();
+        }
+        
+        private void InvokeOnBuyabilityChanged()
+        {
+            OnBuyabilityChanged?.Invoke();
+        }
+        
+        private void InvokeOnPickupabilityChanged()
+        {
+            OnPickupabilityChanged?.Invoke();
+        }
+
+        public bool CheckIfCanBuy()
+        {
+            return CheckIfCanAfford() && CheckIfCanPickup();
+        }
+
+        public bool CheckIfCanPickup()
+        {
+            // return AllowPickupCondition.Value;
+            
+            // TODO use inventory to check if can hold
+            bool canPickup = true;
+            switch (_itemType)
+            {
+                case ItemType.PassiveStackable:
+                    // prevent if the player already holds this item
+                    break;
+                case ItemType.Passive:
+                    break;
+                case ItemType.Active:
+                    break;
+                case ItemType.Consumable:
+                    // if it grants a resource, ensure there is space
+                    var addResourceEffects = _itemEffects.Where(e => e is AddResourceItemEffect);
+                    if (addResourceEffects.Any())
+                    {
+                        // Allow pickup if the item grants ANY resources that the player has room to hold
+                        canPickup = addResourceEffects.Any(e => (e as AddResourceItemEffect).CanAddResource());
+                    }
+                    break;
+            }
+
+            return canPickup;
         }
 
         //TODO: return what resources you're short on
-        public bool CheckIfCanAfford() 
+        private bool CheckIfCanAfford() 
         {
             return _itemCost.All((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount >= entry.Value);
         }

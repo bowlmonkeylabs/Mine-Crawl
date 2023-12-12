@@ -90,11 +90,14 @@ namespace BML.Scripts.Player.Items
                     didAdd = ActiveItems.TryAddItem(item);
                     break;
                 case ItemType.Consumable:
+                    // TODO what to do if it gets queued, but fails to get added to the inventory?
                     OnAcquiredConsumableQueue.Enqueue(item);
+                    didAdd = true;
                     bool anyEffectsOtherThanOnAcquire = item.ItemEffects.Any(e => e.Trigger != ItemEffectTrigger.OnAcquired);
                     if (anyEffectsOtherThanOnAcquire)
                     {
-                        didAdd = ConsumableItems.TryAddItem(item);
+                        // didAdd = ConsumableItems.TryAddItem(item);
+                        ConsumableItems.TryAddItem(item);
                     }
                     break;
             }

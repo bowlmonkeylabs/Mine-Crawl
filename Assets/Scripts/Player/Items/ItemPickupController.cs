@@ -32,16 +32,19 @@ namespace BML.Scripts.Player.Items
         {
             if (_item != null)
             {
-                _item.AllowPickupCondition.Unsubscribe(UpdateActivated);
+                _item.OnPickupabilityChanged -= UpdateActivated;
             }
             _item = item;
+            if (_item != null)
+            {
+                _item.OnPickupabilityChanged += UpdateActivated;
+            }
             UpdateAssignedItem();
         }
 
         public void TryActivatePickup()
         {
-            bool allowPickup = _item?.AllowPickupCondition.Value ?? false;
-            if (allowPickup)
+            if (_item.CheckIfCanPickup())
             {
                 _activateFeedbacks.PlayFeedbacks();
             }
@@ -49,8 +52,7 @@ namespace BML.Scripts.Player.Items
 
         public void TryReceivePickup()
         {
-            bool allowPickup = _item?.AllowPickupCondition.Value ?? false;
-            if (allowPickup)
+            if (_item.CheckIfCanPickup())
             {
                 _idleFeedbacks.StopFeedbacks();
                 _receiveFeedbacks.PlayFeedbacks();
@@ -66,6 +68,14 @@ namespace BML.Scripts.Player.Items
         {
             // TODO does this really need to run on awake?
             UpdateAssignedItem();
+        }
+
+        private void OnDestroy()
+        {
+            if (_item != null)
+            {
+                _item.OnPickupabilityChanged -= UpdateActivated;
+            }
         }
 
         #endregion
@@ -88,8 +98,7 @@ namespace BML.Scripts.Player.Items
 
         private void UpdateActivated()
         {
-            bool allowPickup = _item?.AllowPickupCondition.Value ?? false;
-            if (allowPickup)
+            if (_item.CheckIfCanPickup())
             {
                 _activateTrigger.SetActive(true);
             }
