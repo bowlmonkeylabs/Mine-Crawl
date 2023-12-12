@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Managers;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.ItemTreeGraph;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -28,10 +29,13 @@ namespace BML.Scripts.Player.Items
         [SerializeField, FoldoutGroup("Descriptors"), TextArea] private string _effectDescription;
         [SerializeField, FoldoutGroup("Descriptors"), TextArea] private string _storeDescription;
         [SerializeField, FoldoutGroup("Descriptors")] private bool _useIconColor;
-        [SerializeField, FoldoutGroup("Descriptors"), ShowIf("_useIconColor")] private Color _iconColor;
+        [SerializeField, FoldoutGroup("Descriptors"), ShowIf("_useIconColor")] private Color _iconColor = Color.white;
         [SerializeField, FoldoutGroup("Descriptors"), PreviewField(100, ObjectFieldAlignment.Left)] private Sprite _icon;
         [SerializeField, FoldoutGroup("Descriptors"), ReadOnly, ShowIf("@_itemType == ItemType.PassiveStackable")]
         public ItemTreeGraphStartNode PassiveStackableTreeStartNode;
+        
+        [SerializeField, FoldoutGroup("Pickup"), PreviewField(100, ObjectFieldAlignment.Left), AssetsOnly] private GameObject _objectPrefab;
+        [SerializeField, FoldoutGroup("Pickup")] private SafeBoolValueReference _allowPickupCondition;
         
         [FormerlySerializedAs("_storeCost")]
         [SerializeField]
@@ -54,6 +58,8 @@ namespace BML.Scripts.Player.Items
         public bool UseIconColor => _useIconColor;
         public Color IconColor => _iconColor;
         public Sprite Icon => _icon;
+        public GameObject ObjectPrefab => _objectPrefab;
+        public SafeBoolValueReference AllowPickupCondition => _allowPickupCondition;
         public Dictionary<PlayerResource, int> ItemCost => _itemCost;
         public ItemType Type => _itemType;
         public List<ItemEffect> ItemEffects => _itemEffects;
