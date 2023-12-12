@@ -292,7 +292,7 @@ namespace BML.Scripts.UI.Items
         }
 
         private void SetNavigationOrder() {
-            this.SetNavigationOrder(false, false);
+            this.SetNavigationOrder(false, true);
         }
 
         private void SetNavigationOrder(bool includeInactive = false, bool includeNonInteractable = false)
