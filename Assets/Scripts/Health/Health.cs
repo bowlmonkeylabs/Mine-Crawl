@@ -195,6 +195,11 @@ namespace BML.Scripts
 
         public void Revive()
         {
+            if (_hasMaxHealth && _maxHealthReference.Value <= 0)
+            {
+                _maxHealthReference.Value = 2;
+            }
+            
             var reviveHealth = (_hasMaxHealth ? MaxHealth : startingHealth);
             _onHealthChange?.Invoke(Value, reviveHealth);
             OnHealthChange?.Invoke(Value, reviveHealth);
