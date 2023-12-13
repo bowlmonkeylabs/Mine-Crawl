@@ -31,7 +31,8 @@ namespace BML.Scripts.Player.Items.ItemEffects
 
         public bool CanAddResource()
         {
-            return !_resource.IsAtAmountLimit;
+            var hypotheticalAmount = (_resource.PlayerAmount + _addAmount);
+            return hypotheticalAmount >= 0 && hypotheticalAmount <= _resource.PlayerAmountLimit;
         }
         
     }
