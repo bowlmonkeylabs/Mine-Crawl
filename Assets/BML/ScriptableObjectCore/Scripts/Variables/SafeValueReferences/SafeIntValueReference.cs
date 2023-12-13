@@ -269,8 +269,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
                             ReferenceValue_FloatVariable.Value = value;
                         break;
                     case IntReferenceTypes.IntVariable:
-                        if (ReferenceValue_FloatVariable != null)
-                            ReferenceValue_FloatVariable.Value = Mathf.FloorToInt(value);
+                        if (ReferenceValue_IntVariable != null)
+                            ReferenceValue_IntVariable.Value = Mathf.FloorToInt(value);
                         break;
                     case IntReferenceTypes.BoolVariable:
                         if (ReferenceValue_BoolVariable != null)
