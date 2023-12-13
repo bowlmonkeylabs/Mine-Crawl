@@ -35,7 +35,7 @@ namespace BML.Scripts.Player.Items
             set
             {
                 var newAmount = value;
-                if (_playerAmountLimit.Value != 0)
+                if (_playerAmountLimit.Value >= 0)
                 {
                     newAmount = Mathf.Min(_playerAmountLimit.Value, newAmount);
                 }
@@ -58,11 +58,13 @@ namespace BML.Scripts.Player.Items
         private void OnEnable()
         {
             _playerAmount.Subscribe(InvokeOnAmountChanged);
+            _playerAmountLimit.Subscribe(OnAmountLimitChanged);
         }
 
         private void OnDisable()
         {
             _playerAmount.Unsubscribe(InvokeOnAmountChanged);
+            _playerAmountLimit.Unsubscribe(OnAmountLimitChanged);
         }
         
         private void InvokeOnAmountChanged()
@@ -71,6 +73,11 @@ namespace BML.Scripts.Player.Items
         }
 
         #endregion
+
+        private void OnAmountLimitChanged()
+        {
+            PlayerAmount = PlayerAmount; // update amount to force re-check of the limits
+        }
         
     }
 }
