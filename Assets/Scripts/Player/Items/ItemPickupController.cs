@@ -1,8 +1,10 @@
 using System;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.Player.Items
 {
@@ -15,8 +17,11 @@ namespace BML.Scripts.Player.Items
         // [SerializeField, Tooltip("This default mesh is only used when the item has no ObjectPrefab assigned.")] 
         // private PickupShaderController _pickupShaderControllerForDefaultMesh;
         
-        [SerializeField, Tooltip("This default mesh is only used when the item has no ObjectPrefab assigned.")]
-        private DefaultPickupVisualController _defaultPickupVisualController;
+        [FormerlySerializedAs("_defaultPickupVisualController")] [SerializeField, Tooltip("This default mesh is only used when the item has no ObjectPrefab assigned.")]
+        private DefaultItemVisualController defaultItemVisualController;
+
+        [SerializeField] private Transform _pickupVisualParent;
+        
         [SerializeField] private MMF_Player _idleFeedbacks;
         [SerializeField] private MMF_Player _activateFeedbacks;
         [SerializeField] private MMF_Player _receiveFeedbacks;
@@ -89,10 +94,16 @@ namespace BML.Scripts.Player.Items
             bool useDefault3dObject = (_item.ObjectPrefab == null);
             // _pickupShaderControllerForDefaultMesh.SetItem(_item);
             // _pickupShaderControllerForDefaultMesh.gameObject.SetActive(useDefault3dObject);
-            _defaultPickupVisualController.SetItem(_item);
-            _defaultPickupVisualController.gameObject.SetActive(useDefault3dObject);
+            defaultItemVisualController.SetItem(_item);
+            defaultItemVisualController.gameObject.SetActive(useDefault3dObject);
 
-            // TODO assign 3d representation
+            if (!useDefault3dObject)
+            {
+                var newVisualGameObject = GameObjectUtils.SafeInstantiate(true, _item.ObjectPrefab, _pickupVisualParent);
+                var newVisualController = newVisualGameObject.GetComponent<ItemVisualController>();
+                newVisualController.SetItem(_item);
+            }
+
             // TODO assign pickup sound overrides?
         }
 
