@@ -60,48 +60,101 @@ namespace BML.Scripts.UI.PlayerHealthBar
             _value = clampedNewValue;
             
             UpdateUi(isTemporaryHeart);
-            
-            if (delta > 0)
+
+            if ((totalHealthDelta ?? 0) != 0 && _value > 0) // only if this section of health was affected by the increase
             {
-                _incrementFeedbacks.Initialization();
-                _incrementFeedbacks.PlayFeedbacks();
-            }
-            else if (delta < 0)
-            {
-                _decrementFeedbacks.Initialization();
-                _decrementFeedbacks.PlayFeedbacks();
+                if (delta > 0)
+                {
+                    _incrementFeedbacks.Initialization();
+                    _incrementFeedbacks.PlayFeedbacks();
+                }
+                else if (delta < 0)
+                {
+                    _decrementFeedbacks.Initialization();
+                    _decrementFeedbacks.PlayFeedbacks();
+                }
             }
         }
 
+        private LTDescr _lowHealthFeedbacksStartTween;
+        private void StartLowHealthFeedbacksTween(float duration)
+        {
+            if (_healthBarController.IsLowHealth)
+            {
+                if (_lowHealthFeedbacksStartTween != null)
+                {
+                    LeanTween.cancel(this.gameObject, _lowHealthFeedbacksStartTween.uniqueId, false);
+                }
+                _lowHealthFeedbacksStartTween =
+                    LeanTween.value(this.gameObject, 0, 1, duration)
+                        .setOnComplete(() =>
+                        {
+                            // this flickers the same image as 'increment/decrement any', so it needs to wait until that is done to play without interfering.
+                            // if (_healthBarController.IsLowHealth && !_lowHealthFeedbacks.IsPlaying && !_incrementAnyFeedbacks.IsPlaying && !_decrementAnyFeedbacks.IsPlaying)
+                            if (_healthBarController.IsLowHealth && !_lowHealthFeedbacks.IsPlaying)
+                            {
+                                if (_decrementAnyFeedbacks.IsPlaying)
+                                {
+                                    _decrementAnyFeedbacks.StopFeedbacks();
+                                }
+                                if (_incrementAnyFeedbacks.IsPlaying)
+                                {
+                                    _incrementAnyFeedbacks.StopFeedbacks();
+                                }
+                                _decrementAnyFeedbacks.ResetFeedbacks();
+                                
+                                _lowHealthFeedbacks.PlayFeedbacks();
+                            }
+                        });
+            }
+        } 
+            
         public void OnTotalHealthChange(float prevTotalHealth, float currentTotalHealth)
         {
+            if (_value <= 0)
+            {
+                return;
+            }
+            
             float delta = currentTotalHealth - prevTotalHealth;
+
+            if (!_healthBarController.IsLowHealth && delta > 0 && _lowHealthFeedbacks.IsPlaying)
+            {
+                _lowHealthFeedbacks.StopFeedbacks();
+                _lowHealthFeedbacks.ResetFeedbacks();
+            }
             
             if (delta < 0)
             {
+                if (_lowHealthFeedbacks.IsPlaying)
+                {
+                    _lowHealthFeedbacks.StopFeedbacks();
+                    _lowHealthFeedbacks.ResetFeedbacks();
+                }
+                
                 _decrementAnyFeedbacks.Initialization();
-                _decrementAnyFeedbacks.ResetFeedbacks();
                 _decrementAnyFeedbacks.PlayFeedbacks();
+                var duration = _decrementAnyFeedbacks.TotalDuration;
+                StartLowHealthFeedbacksTween(duration);
             }
             else if (delta > 0)
             {
+                if (_lowHealthFeedbacks.IsPlaying)
+                {
+                    _lowHealthFeedbacks.StopFeedbacks();
+                    _lowHealthFeedbacks.ResetFeedbacks();
+                }
+                
                 _incrementAnyFeedbacks.Initialization();
-                _incrementAnyFeedbacks.ResetFeedbacks();
                 _incrementAnyFeedbacks.PlayFeedbacks();
+                var duration = _incrementAnyFeedbacks.TotalDuration;
+                StartLowHealthFeedbacksTween(duration);
+            }
+            else
+            {
+                StartLowHealthFeedbacksTween(0);
             }
             
-            if (_healthBarController.IsLowHealth)
-            {
-                _lowHealthFeedbacks.StopFeedbacks();
-                _lowHealthFeedbacks.Initialization();
-                _lowHealthFeedbacks.PlayFeedbacks();
-            }
-            else if (delta > 0 && _lowHealthFeedbacks.gameObject.activeInHierarchy)
-            {
-                _lowHealthFeedbacks.StopFeedbacks();
-                _lowHealthFeedbacks.Initialization();
-                _lowHealthFeedbacks.ResetFeedbacks();
-            }
         }
 
         public void SetInvincible(bool invincible)
@@ -120,10 +173,30 @@ namespace BML.Scripts.UI.PlayerHealthBar
             }
         }
 
+        public void TryRestartInvincibleFeedbacks()
+        {
+            if (_invincible)
+            {
+                _invincibleFeedbacks.StopFeedbacks();
+                _invincibleFeedbacks.ResetFeedbacks();
+                _invincibleFeedbacks.PlayFeedbacks();
+            }
+            else if (_incrementFeedbacks.gameObject.activeInHierarchy)
+            {
+                _invincibleFeedbacks.StopFeedbacks();
+                _invincibleFeedbacks.ResetFeedbacks();
+            }
+        }
+
         #endregion
 
         private void UpdateUi(bool isTemporaryHeart)
         {
+            _lowHealthFeedbacks.StopFeedbacks();
+            _lowHealthFeedbacks.ResetFeedbacks();
+            _invincibleFeedbacks.StopFeedbacks();
+            _invincibleFeedbacks.ResetFeedbacks();
+            
             switch (_value)
             {
                 case 0:
@@ -154,8 +227,9 @@ namespace BML.Scripts.UI.PlayerHealthBar
             _heartHalfRightSynchronizer.SetEntryId(isTemporaryHeart ? healthTempColor : healthColor);
             _heartFullSynchronizer.SetEntryId(isTemporaryHeart ? healthTempColor : healthColor);
 
-            // Init invincibility feedback to store new outline color
+            // Init feedbacks to store the new colors
             _invincibleFeedbacks.Initialization();
+            _lowHealthFeedbacks.Initialization();
         }
      }
 }

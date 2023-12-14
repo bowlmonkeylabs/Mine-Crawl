@@ -30,7 +30,9 @@ namespace BML.Scripts.UI.PlayerHealthBar
         [SerializeField] private float _initAnimateSeconds;
 
         [SerializeField] private int _lowHealthWarningThreshold = 2;
-        public bool IsLowHealth => _health.Value + _healthTemporary.Value <= _lowHealthWarningThreshold;
+        private int _effectiveLowHealthWarningThreshold =>
+            (_healthMaxValue.Value > _lowHealthWarningThreshold) ? _lowHealthWarningThreshold : 1;
+        public bool IsLowHealth => _health.Value + _healthTemporary.Value <= _effectiveLowHealthWarningThreshold;
         
         // Index of the last permanent heart as child of healthbar
         private int _lastHeartIndex => Mathf.Min(_heartChildren.Count, Mathf.CeilToInt(_healthMaxValue.Value/2f));
@@ -172,6 +174,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
             foreach (var heartController in _heartChildren)
             {
                 heartController.OnTotalHealthChange(prevTotalHealth, currentTotalHealth);
+                heartController.TryRestartInvincibleFeedbacks();
             }
         }
 
