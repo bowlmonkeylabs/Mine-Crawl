@@ -203,7 +203,7 @@ namespace BML.Scripts
             bool inRangeOfPlayer = (spawnPoint.ParentNode.PlayerDistance >= _minMaxSpawnPlayerDistance.x
                 && spawnPoint.ParentNode.PlayerDistance <= _minMaxSpawnPlayerDistance.y
                 && !spawnPoint.ParentNode.PlayerOccupiedAdjacentNodeOrConnection);
-            bool spawnImmediate = (spawnPoint.SpawnImmediate && spawnPoint.ParentNode.PlayerDistance <= spawnPoint.SpawnImmediateRange);
+            bool spawnImmediate = (spawnPoint.SpawnImmediate && spawnPoint.ParentNode.PlayerDistance <= 1);
             bool isExitChallengeActive = (_isExitChallengeActive.Value);
             bool isCurrentRoom = (spawnPoint.ParentNode.PlayerDistance == 0);
 
