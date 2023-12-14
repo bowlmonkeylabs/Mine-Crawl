@@ -11,9 +11,8 @@ namespace BML.Scripts
 {
     public class ItemLootRandomizer : MonoBehaviour
     {
-        [FormerlySerializedAs("_lootTable")] [SerializeField] private LootTableVariable lootTableVariable;
-        [SerializeField] private BoolReference _levelObjectsGenerated;
-        [SerializeField] private UnityEvent<GameObject> _onDrop;
+        [SerializeField] private ItemLootTableVariable _lootTable;
+        [SerializeField] private UnityEvent<PlayerItem> _onDrop;
         [SerializeField] private UnityEvent _onNothingDrop;
 
         [ShowInInspector] private float _randomRoll;
@@ -48,12 +47,13 @@ namespace BML.Scripts
         
         public void Drop()
         {
-            var lootTableEntry = lootTableVariable.Value.Evaluate(_randomRoll);
+            var lootTableEntry = _lootTable.Value.Evaluate(_randomRoll);
+            
             if(lootTableEntry.Key == LootTableKey.Nothing) {
                 _onNothingDrop.Invoke();
                 return;
             }
-            
+
             foreach (var itemDeal in lootTableEntry.Drops)
             {
                 _onDrop?.Invoke(itemDeal);
