@@ -566,6 +566,7 @@ namespace BML.Scripts.Player
         private void SetInvincible(bool invincible) {
             invincible = invincible || _isGodModeEnabled.Value;
             _healthController.SetInvincible(invincible);
+            _healthTemporaryController.SetInvincible(invincible);
         }
         
         #endregion

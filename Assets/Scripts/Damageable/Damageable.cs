@@ -30,7 +30,6 @@ namespace BML.Scripts {
                     if (healthTemporary != null)
                     {
                         var tempHealthDamage = Math.Min(damageRemaining, healthTemporary.Value);
-                        Debug.Log(healthTemporary.IsInvincible);
                         damagedTempHealth = healthTemporary.Damage(tempHealthDamage);
                         if (damagedTempHealth)
                         {
