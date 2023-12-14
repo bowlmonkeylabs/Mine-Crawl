@@ -31,6 +31,8 @@ namespace BML.Scripts.UI.PlayerHealthBar
         [ShowInInspector, ReadOnly] private UiHealthBarControlller _healthBarController;
 
         private ColorSynchronizer _heartHalfLeftSynchronizer, _heartHalfRightSynchronizer, _heartFullSynchronizer, _heartOutlineSynchronizer;
+
+        [NonSerialized, ShowInInspector, ReadOnly] private bool _isTemporaryHeart;
         
         #endregion
 
@@ -53,26 +55,28 @@ namespace BML.Scripts.UI.PlayerHealthBar
         {
             SetValue(newValue, null, false);
         }
-        public void SetValue(int newValue, int? totalHealthDelta, bool isTemporaryHeart)
+        public void SetValue(int newValue, int? totalHealthDelta, bool isTemporaryHeart, bool playChangeFeedbacks = false)
         {
             int clampedNewValue = Mathf.Clamp(newValue, 0, 2);
             int delta = clampedNewValue - _value;
+            if (_isTemporaryHeart != isTemporaryHeart)
+            {
+                delta = 0;
+            }
             _value = clampedNewValue;
-            
+
+            _isTemporaryHeart = isTemporaryHeart;
             UpdateUi(isTemporaryHeart);
 
-            if ((totalHealthDelta ?? 0) != 0 && _value > 0) // only if this section of health was affected by the increase
+            if (delta > 0 || playChangeFeedbacks)
             {
-                if (delta > 0)
-                {
-                    _incrementFeedbacks.Initialization();
-                    _incrementFeedbacks.PlayFeedbacks();
-                }
-                else if (delta < 0)
-                {
-                    _decrementFeedbacks.Initialization();
-                    _decrementFeedbacks.PlayFeedbacks();
-                }
+                _incrementFeedbacks.Initialization();
+                _incrementFeedbacks.PlayFeedbacks();
+            }
+            else if (delta < 0)
+            {
+                _decrementFeedbacks.Initialization();
+                _decrementFeedbacks.PlayFeedbacks();
             }
         }
 
