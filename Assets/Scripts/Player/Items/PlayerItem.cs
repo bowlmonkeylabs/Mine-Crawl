@@ -26,7 +26,7 @@ namespace BML.Scripts.Player.Items
     {
         #region Inspector
         
-        [SerializeField, FoldoutGroup("Descriptors")] private string _name;
+        [SerializeField, FoldoutGroup("Descriptors")] protected string _name;
         [SerializeField, FoldoutGroup("Descriptors"), TextArea] private string _effectDescription;
         [SerializeField, FoldoutGroup("Descriptors"), TextArea] private string _storeDescription;
         [SerializeField, FoldoutGroup("Descriptors")] private bool _useIconColor;
@@ -53,7 +53,7 @@ namespace BML.Scripts.Player.Items
         
         #region Public interface
         
-        public string Name => _name;
+        public virtual string Name => _name;
         public string EffectDescription => _effectDescription;
         public string StoreDescription => _storeDescription;
         public bool UseIconColor => _useIconColor;
@@ -64,6 +64,11 @@ namespace BML.Scripts.Player.Items
         public ItemType Type => _itemType;
         public List<ItemEffect> ItemEffects => _itemEffects;
         public int? RemainingActivations => _itemEffects.FirstOrDefault(e => e.UseActivationLimit)?.RemainingActivations.Value;
+
+        public virtual void OnAfterApplyEffect()
+        {
+            
+        }
 
         #endregion
         

@@ -424,9 +424,16 @@ namespace BML.Scripts.Player.Items
         {
             var applyAction = (apply ? (Action<ItemEffect>)this.ApplyEffect : this.UnApplyEffect);
             var itemEffectsForTrigger = playerItem.ItemEffects.Where(e => e.Trigger == itemEffectTrigger);
+            bool anyApplied = false;
             foreach (var itemEffect in itemEffectsForTrigger)
             {
                 applyAction(itemEffect);
+                anyApplied = true;
+            }
+
+            if (anyApplied)
+            {
+                playerItem.OnAfterApplyEffect();
             }
         }
         
@@ -436,9 +443,16 @@ namespace BML.Scripts.Player.Items
             foreach (var item in items)
             {
                 var itemEffectsForTrigger = item.ItemEffects.Where(e => e.Trigger == itemEffectTrigger);
+                bool anyApplied = false;
                 foreach (var itemEffect in itemEffectsForTrigger)
                 {
                     applyAction(itemEffect);
+                    anyApplied = true;
+                }
+
+                if (anyApplied)
+                {
+                    item.OnAfterApplyEffect();
                 }
             }
         }
@@ -466,7 +480,6 @@ namespace BML.Scripts.Player.Items
                 }
                 
                 itemEffect.ApplyEffect(_inGodMode.Value);
-
             } 
             catch(Exception exception) 
             {
