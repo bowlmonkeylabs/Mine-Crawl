@@ -31,11 +31,11 @@ namespace BML.Scripts.Player.Items
         [SerializeField, FoldoutGroup("Descriptors"), TextArea] private string _storeDescription;
         [SerializeField, FoldoutGroup("Descriptors")] private bool _useIconColor;
         [SerializeField, FoldoutGroup("Descriptors"), ShowIf("_useIconColor")] private Color _iconColor = Color.white;
-        [SerializeField, FoldoutGroup("Descriptors"), PreviewField(100, ObjectFieldAlignment.Left)] private Sprite _icon;
+        [SerializeField, FoldoutGroup("Descriptors"), PreviewField(100, ObjectFieldAlignment.Left)] protected Sprite _icon;
         [SerializeField, FoldoutGroup("Descriptors"), ReadOnly, ShowIf("@_itemType == ItemType.PassiveStackable")]
         public ItemTreeGraphStartNode PassiveStackableTreeStartNode;
         
-        [SerializeField, FoldoutGroup("Pickup"), PreviewField(100, ObjectFieldAlignment.Left), AssetsOnly] private GameObject _objectPrefab;
+        [SerializeField, FoldoutGroup("Pickup"), PreviewField(100, ObjectFieldAlignment.Left), AssetsOnly] protected GameObject _objectPrefab;
         [SerializeField, FoldoutGroup("Pickup")] private PlayerInventory _playerInventory;
         
         [FormerlySerializedAs("_storeCost")]
