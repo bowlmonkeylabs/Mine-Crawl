@@ -97,19 +97,17 @@ namespace BML.Scripts
 
         private void OnEnable()
         {
+            if (_useHealthVariable) _healthReference.Subscribe(AfterHealthValueChanged);
+            if (_useInvincibilityVariable)
             {
-                if (_useHealthVariable) _healthReference.Subscribe(OnHealthReferenceUpdated);
-                if (_useInvincibilityVariable)
-                {
-                    _invincibilityTimer.SubscribeStarted(EnableInvincibleFrames);
-                    _invincibilityTimer.SubscribeFinished(DisableInvincibleFrames);
-                }
+                _invincibilityTimer.SubscribeStarted(EnableInvincibleFrames);
+                _invincibilityTimer.SubscribeFinished(DisableInvincibleFrames);
             }
         }
 
         private void OnDisable()
         {
-            if (_useHealthVariable) _healthReference.Unsubscribe(OnHealthReferenceUpdated);
+            if (_useHealthVariable) _healthReference.Unsubscribe(AfterHealthValueChanged);
             if (_useInvincibilityVariable)
             {
                 _invincibilityTimer.UnsubscribeStarted(EnableInvincibleFrames);
@@ -172,33 +170,36 @@ namespace BML.Scripts
 
             return this.SetHealth(Value - hitInfo.Damage, hitInfo) < 0;
         }
-        
+
+        private HitInfo _cachedHitInfo;
         public int SetHealth(int newValue, HitInfo hitInfo = null)
         {
             newValue = Mathf.Clamp(newValue, 0, MaxHealth);
 
+            _cachedHitInfo = hitInfo;
+
             var oldValue = Value;
             _value = newValue;
             var delta = Value - oldValue;
-            
-            _onHealthChange?.Invoke(oldValue, Value);
-            OnHealthChange?.Invoke(oldValue, Value);
-            if (delta < 0)
+
+            if (!_useHealthVariable)
             {
-                _onTakeDamageHitInfo?.Invoke(hitInfo);
-                _onTakeDamage?.Invoke();
+                // if _useHealthVariable is true, this will instead be called by the subscription to that variable updating.
+                AfterHealthValueChanged(oldValue, _value);
             }
-            
-            if (Value <= 0)
-            {
-                Death(hitInfo);
-            }
+
+            _cachedHitInfo = null;
 
             return delta;
         }
 
         public void Revive()
         {
+            if (_hasMaxHealth && _maxHealthReference.Value <= 0)
+            {
+                _maxHealthReference.Value = 2;
+            }
+            
             var reviveHealth = (_hasMaxHealth ? MaxHealth : startingHealth);
             _onHealthChange?.Invoke(Value, reviveHealth);
             OnHealthChange?.Invoke(Value, reviveHealth);
@@ -242,7 +243,7 @@ namespace BML.Scripts
             OnDeath?.Invoke();
         }
 
-        private void OnHealthReferenceUpdated(int previousValue, int currentValue)
+        private void AfterHealthValueChanged(int previousValue, int currentValue)
         {
             int delta = currentValue - previousValue;
             if (delta < 0)
@@ -257,6 +258,12 @@ namespace BML.Scripts
             }
             _onHealthChange.Invoke(previousValue, currentValue);
             OnHealthChange?.Invoke(previousValue, currentValue);
+            
+            if (currentValue <= 0)
+            {
+                Death(_cachedHitInfo);
+            }
+            
         }
     }
 }
