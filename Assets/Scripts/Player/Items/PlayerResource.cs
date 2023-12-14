@@ -1,8 +1,9 @@
 using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.Player.Items
 {
@@ -12,31 +13,64 @@ namespace BML.Scripts.Player.Items
     [CreateAssetMenu(fileName = "PlayerResource", menuName = "BML/Player/PlayerResource", order = 0)]
     public class PlayerResource : ScriptableObject
     {
+        #region Inspector
+        
         [SerializeField, FoldoutGroup("Descriptors")] private string _name;
         [SerializeField, FoldoutGroup("Descriptors"), TextArea (7, 10)] private string _description;
         [SerializeField, FoldoutGroup("Descriptors")] private string _iconText;
         [SerializeField, FoldoutGroup("Descriptors"), PreviewField(100, ObjectFieldAlignment.Left)] private Sprite _icon;
+        
+        [FormerlySerializedAs("_playerCount")] [SerializeField, FoldoutGroup("Player")] IntVariable _playerAmount;
+        [SerializeField, FoldoutGroup("Player")] private SafeIntValueReference _playerAmountLimit;
 
-        [SerializeField, FoldoutGroup("Player")] IntVariable _playerCount;
+        #endregion
+
+        #region Public interface
+        
+        public string IconText => _iconText;
+
+        public int PlayerAmount 
+        {
+            get => _playerAmount.Value;
+            set
+            {
+                var newAmount = value;
+                if (_playerAmountLimit.Value != 0)
+                {
+                    newAmount = Mathf.Min(_playerAmountLimit.Value, newAmount);
+                }
+                newAmount = Mathf.Max(0, newAmount);
+                _playerAmount.Value = newAmount;
+            }
+        }
+
+        public int? PlayerAmountLimit => _playerAmountLimit?.Value;
+
+        public bool IsAtAmountLimit =>
+            ((_playerAmountLimit?.Value ?? 0) != 0) && (_playerAmount.Value == _playerAmountLimit.Value);
 
         public event OnAmountChanged OnAmountChanged;
 
-        void OnEnable() {
-            _playerCount.Subscribe(InvokeOnAmountChanged);
+        #endregion
+
+        #region Unity lifecycle
+
+        private void OnEnable()
+        {
+            _playerAmount.Subscribe(InvokeOnAmountChanged);
         }
 
-        void OnDisable() {
-            _playerCount.Unsubscribe(InvokeOnAmountChanged);
+        private void OnDisable()
+        {
+            _playerAmount.Unsubscribe(InvokeOnAmountChanged);
         }
-
-        private void InvokeOnAmountChanged() {
+        
+        private void InvokeOnAmountChanged()
+        {
             OnAmountChanged?.Invoke();
         }
 
-        public int PlayerCount {
-            get => _playerCount.Value;
-            set => _playerCount.Value = Mathf.Max(0, value);
-        }
-        public string IconText { get => _iconText; }
+        #endregion
+        
     }
 }

@@ -23,15 +23,15 @@ namespace BML.Scripts.UI.Items
         {
             // GenerateTreeSlotsTable();
             // TODO do we need to do this on generate? the slots should be dynamically referencing the inventory anyway.
-            
-            _playerInventory.OnPassiveStackableItemAdded += OnPassiveStackableItemAdded;
-            _playerInventory.OnPassiveStackableItemRemoved += OnPassiveStackabkeItemRemoved;
+
+            _playerInventory.PassiveStackableItems.OnItemAdded += OnPassiveStackableItemAdded;
+            _playerInventory.PassiveStackableItems.OnItemRemoved += OnPassiveStackabkeItemRemoved;
         }
         
         private void OnDisable()
         {
-            _playerInventory.OnPassiveStackableItemAdded -= OnPassiveStackableItemAdded;
-            _playerInventory.OnPassiveStackableItemRemoved -= OnPassiveStackabkeItemRemoved;
+            _playerInventory.PassiveStackableItems.OnItemAdded -= OnPassiveStackableItemAdded;
+            _playerInventory.PassiveStackableItems.OnItemRemoved -= OnPassiveStackabkeItemRemoved;
         }
 
         #endregion

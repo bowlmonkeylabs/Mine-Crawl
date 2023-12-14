@@ -17,6 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 38f386e05e25e3d4cb2b2f211cd6f035, type: 2}
+    - {fileID: 11400000, guid: f00d0caa0c04b95448db19d7dde9c078, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -54,6 +55,49 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: _itemEffects
+      Entry: 7
+      Data: 2|System.Collections.Generic.List`1[[BML.Scripts.Player.Items.ItemEffect,
+        BML.Scripts]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 3|BML.Scripts.Player.Items.ItemEffects.SetBoolVariableItemEffect, BML.Scripts
+    - Name: _trigger
+      Entry: 3
+      Data: 0
+    - Name: _useActivationLimit
+      Entry: 5
+      Data: false
+    - Name: _remainingActivations
+      Entry: 6
+      Data: 
+    - Name: _useActivationCooldownTimer
+      Entry: 5
+      Data: false
+    - Name: _activationCooldownTimer
+      Entry: 6
+      Data: 
+    - Name: _recurringTimerForTrigger
+      Entry: 6
+      Data: 
+    - Name: _recurringTimerForTriggerCondition
+      Entry: 6
+      Data: 
+    - Name: BoolVariable
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   _name: Deflect
   _effectDescription: Hitting enemy projectiles casts them back towards whence they
     came
@@ -62,28 +106,13 @@ MonoBehaviour:
   _iconColor: {r: 0.25342646, g: 0.8018868, b: 0.2598226, a: 1}
   _icon: {fileID: 21300000, guid: 2c79352baf502b64aaa771ee8083a22f, type: 3}
   PassiveStackableTreeStartNode: {fileID: 6810362929777685439, guid: 21df0c8f4e7486b4c8b29c4e86b50133, type: 2}
-  _itemType: 0
-  _itemEffects:
-  - Trigger: 0
-    UseActivationLimit: 0
-    RemainingActivations: {fileID: 0}
-    UseActivationCooldownTimer: 0
-    ActivationCooldownTimer: {fileID: 0}
-    Time: 0
-    LastTimeCheck: 0
-    Type: 3
-    UsePercentageIncrease: 0
-    IsTemporaryStatIncrease: 0
-    TemporaryStatIncreaseTime: 0
-    FloatStat: {fileID: 0}
-    IntStat: {fileID: 0}
-    StatIncreaseAmount: 0
-    StatIncreasePercent: 0
-    ProjectilePrefab: {fileID: 0}
-    LootTableVariable: {fileID: 0}
-    LootTableKey: 0
-    LootTableAddAmount: 0
-    BoolVariableToToggle: {fileID: 11400000, guid: f00d0caa0c04b95448db19d7dde9c078, type: 2}
-    PrefabToInstantiate: {fileID: 0}
-    InstantiatePrefabPositionTransform: {fileID: 0}
-    InstantiatePrefabContainer: {fileID: 0}
+  _objectPrefab: {fileID: 0}
+  _allowPickupCondition:
+    ReferenceTypeSelector: 0
+    ConstantValue: 0
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+  _playerInventory: {fileID: 11400000, guid: 9356dfe23cfc20041850028b69aa7e4c, type: 2}
+  _itemType: 1

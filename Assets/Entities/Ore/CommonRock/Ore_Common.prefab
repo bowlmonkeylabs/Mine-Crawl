@@ -246,15 +246,15 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7225383730169331457, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
   m_PrefabInstance: {fileID: 6078468993030459640}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7465009430006410467 stripped
+--- !u!114 &7237462273030370701 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3729549894264273947, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3471060143520261493, guid: ecf6c3d1754d244429e5217073d71ff5, type: 3}
   m_PrefabInstance: {fileID: 6078468993030459640}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2f680a7afde40b49d9741bdbc7aa5bd, type: 3}
+  m_Script: {fileID: 11500000, guid: badd9f866037432798fe2414edc757da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &7506490879479299817
@@ -269,20 +269,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce7e5df4f8b64359914f082ef13f0f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lootTableVariable: {fileID: 11400000, guid: 78f9745940256e64c9a384f7788d72ad, type: 2}
-  _levelObjectsGenerated:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 11400000, guid: 9cccc0a113213314291480e8368de680, type: 2}
+  _lootTable: {fileID: 11400000, guid: 239a56d7ca3df9f478957f0aa4edc3ea, type: 2}
   _onDrop:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7465009430006410467}
-        m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
-        m_MethodName: Launch
+      - m_Target: {fileID: 7237462273030370701}
+        m_TargetAssemblyTypeName: BML.Scripts.ItemPickupSpawner, BML.Scripts
+        m_MethodName: SpawnItemPickup
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -292,3 +285,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _levelObjectsGenerated:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 9cccc0a113213314291480e8368de680, type: 2}

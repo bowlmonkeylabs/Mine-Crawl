@@ -35,33 +35,49 @@ namespace BML.Scripts
 
         #endregion
 
-        public void Launch(GameObject prefab)
+        public void LaunchAndInstantiate(GameObject prefab)
         {
             for (int i = 0; i < _quantity.Value; i++)
             {
-                LaunchObject(prefab);
+                Launch(prefab, true);
             }
         }
 
-        private void LaunchObject(GameObject prefab)
+        public void Launch(GameObject gameObject)
+        {
+            for (int i = 0; i < _quantity.Value; i++)
+            {
+                Launch(gameObject, false);
+            }
+        }
+
+        private void Launch(GameObject gameObject, bool instantiate = true)
         {
             var position = (!_firePoint.SafeIsUnityNull() ? _firePoint.position : this.transform.position);
             var parent = (_container.Value != null ? _container.Value : this.transform);
-            
-            var newGameObject = GameObjectUtils.SafeInstantiate(_instantiateAsPrefab, prefab, parent);
-            newGameObject.transform.SetPositionAndRotation(position, Quaternion.identity);
-            newGameObject.SetActive(true);
-            
-            var newRigidBody = newGameObject.GetComponent<Rigidbody>();
-            if (newRigidBody != null)
+
+            GameObject launchedGameObject;
+            if (instantiate)
+            {
+                launchedGameObject = GameObjectUtils.SafeInstantiate(_instantiateAsPrefab, gameObject, parent);
+            }
+            else
+            {
+                launchedGameObject = gameObject;
+            }
+            launchedGameObject.transform.SetPositionAndRotation(position, Quaternion.identity);
+            launchedGameObject.SetActive(true);
+
+            var attachedRigidBody = launchedGameObject.GetComponent<Rigidbody>();
+            if (attachedRigidBody != null)
             {
                 // Calculate initial force and direction
                 var directionVariance = new Vector3(
-                    Random.Range(-1, 1) *  _directionVariance.Value.x,
-                    Random.Range(-1, 1) *  _directionVariance.Value.y,
-                    Random.Range(-1, 1) *  _directionVariance.Value.z
+                    Random.Range(-1, 1) * _directionVariance.Value.x,
+                    Random.Range(-1, 1) * _directionVariance.Value.y,
+                    Random.Range(-1, 1) * _directionVariance.Value.z
                 );
-                var forceVariance = Random.Range(-1, 1) *  _forceVariance.Value;
+                var forceVariance = Random.Range(-1, 1) * _forceVariance.Value;
                 var force = (_force.Value + forceVariance) * (_direction.Value.normalized + directionVariance);
 
                 // Calculate initial torque
@@ -71,10 +87,10 @@ namespace BML.Scripts
                     Random.Range(-1, 1) * _torqueVariance.Value.z
                 );
                 var torque = _torque.Value + torqueVariance;
-                
+
                 // Apply force and torque
-                newRigidBody.AddForce(force, _forceMode);
-                newRigidBody.AddTorque(torque, _forceMode);
+                attachedRigidBody.AddForce(force, _forceMode);
+                attachedRigidBody.AddTorque(torque, _forceMode);
             }
         }
     }

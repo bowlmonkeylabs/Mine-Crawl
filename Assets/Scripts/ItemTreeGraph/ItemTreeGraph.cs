@@ -35,26 +35,26 @@ namespace BML.Scripts.Player.Items
         {
             UpdateTreeFromInventory();
             
-            _playerInventory.OnPassiveStackableItemAdded += UpdateTreeFromInventory;
-            _playerInventory.OnPassiveStackableItemRemoved += UpdateTreeFromInventory;
-            _playerInventory.OnPassiveStackableItemChanged += UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItems.OnItemAdded += UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItems.OnItemRemoved += UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector += UpdateTreeFromInventory;
             
-            _playerInventory.OnPassiveStackableItemTreeAdded += UpdateTreeFromInventory;
-            _playerInventory.OnPassiveStackableItemTreeRemoved += UpdateTreeFromInventory;
-            _playerInventory.OnPassiveStackableItemTreeChanged += UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItemTrees.OnItemAdded += UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItemTrees.OnItemRemoved += UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector += UpdateTreeFromInventory;
 
             _playerInventory.OnReset += UpdateTreeFromInventory;
         }
 
         private void OnDisable()
         {
-            _playerInventory.OnPassiveStackableItemAdded -= UpdateTreeFromInventory;
-            _playerInventory.OnPassiveStackableItemRemoved -= UpdateTreeFromInventory;
-            _playerInventory.OnPassiveStackableItemChanged -= UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItems.OnItemAdded -= UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItems.OnItemRemoved -= UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector -= UpdateTreeFromInventory;
             
-            _playerInventory.OnPassiveStackableItemTreeAdded -= UpdateTreeFromInventory;
-            _playerInventory.OnPassiveStackableItemTreeRemoved -= UpdateTreeFromInventory;
-            _playerInventory.OnPassiveStackableItemTreeChanged -= UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItemTrees.OnItemAdded -= UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItemTrees.OnItemRemoved -= UpdateTreeFromInventory;
+            _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector -= UpdateTreeFromInventory;
 
             _playerInventory.OnReset -= UpdateTreeFromInventory;
         }
@@ -87,7 +87,7 @@ namespace BML.Scripts.Player.Items
 
             var startNodes = this.nodes.OfType<ItemTreeGraphStartNode>();
             // var slottedStartNodes = startNodes.Where(node => (node as ItemTreeGraphStartNode).Slotted);
-            var slottedStartNodes = _playerInventory.PassiveStackableItemTrees;
+            var slottedStartNodes = _playerInventory.PassiveStackableItemTrees.Items;
             
             if(slottedStartNodes.Count >= _maxSlottedTrees.Value) {
                 startNodes = slottedStartNodes;

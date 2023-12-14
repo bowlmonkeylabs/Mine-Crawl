@@ -7,6 +7,7 @@ using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.CaveV2;
 using BML.Scripts.CaveV2.Objects;
+using BML.Scripts.Player.Items;
 using BML.Scripts.UI;
 using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
@@ -85,6 +86,9 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
         [SerializeField, FoldoutGroup("Store")] private DynamicGameEvent _onPurchaseEvent;
 
+        [SerializeField, FoldoutGroup("Pickup")] private DynamicGameEvent _onReceivePickup;
+        [SerializeField, FoldoutGroup("Pickup")] private PlayerInventory _playerInventory;
+
         [SerializeField, FoldoutGroup("Experience")] private IntReference _playerExperience;
         [SerializeField, FoldoutGroup("Experience")] private CurveVariable _levelExperienceCurve;
         [SerializeField, FoldoutGroup("Experience")] private IntReference _playerCurrentLevel;
@@ -113,6 +117,7 @@ namespace BML.Scripts.Player
             _tryHealTemporary.Subscribe(HealTemporary);
             _isDashActive.Subscribe(OnDashSetActive);
             _playerExperience.Subscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
+            _onReceivePickup.Subscribe(ReceivePickupDynamic);
             
             SetGodMode();
             primaryAction = playerInput.actions.FindAction("Primary");
@@ -128,6 +133,7 @@ namespace BML.Scripts.Player
             _tryHealTemporary.Unsubscribe(HealTemporary);
             _isDashActive.Unsubscribe(OnDashSetActive);
             _playerExperience.Unsubscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
+            _onReceivePickup.Unsubscribe(ReceivePickupDynamic);
         }
 
         private void Update()
@@ -394,6 +400,20 @@ namespace BML.Scripts.Player
         {
             _inCombat.Value = false;
             _combatTimer.ResetTimer();
+        }
+        
+        #endregion
+        
+        #region Pickup
+
+        private void ReceivePickupDynamic(object prev, object curr)
+        {
+            ReceivePickup(curr as PlayerItem);
+        }
+
+        private void ReceivePickup(PlayerItem item)
+        {
+            _playerInventory.TryAddItem(item);
         }
         
         #endregion

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.ScriptableObjectCore.Scripts.Variables;
-using BML.Scripts.Player;
 using BML.Scripts.Player.Items;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -21,54 +20,43 @@ namespace BML.Scripts
 
         private void Awake()
         {
-            _onPurchaseEvent.Subscribe(AttemptPurchase);
+            _onPurchaseEvent.Subscribe(AttemptPurchaseDynamic);
         }
 
         private void OnDestroy()
         {
-            _onPurchaseEvent.Unsubscribe(AttemptPurchase);
+            _onPurchaseEvent.Unsubscribe(AttemptPurchaseDynamic);
         }
 
-        private void AttemptPurchase(object prev, object storeItemObj)
+        private void AttemptPurchaseDynamic(object prev, object item)
         {
-            PlayerItem storeItem = (PlayerItem) storeItemObj;
+            AttemptPurchase(item as PlayerItem);
+        }
 
+        private void AttemptPurchase(PlayerItem item)
+        {
             if (!_isGodModeEnabled.Value)
             {
-                var canAffordItem = storeItem.CheckIfCanAfford();
-                if (!canAffordItem)
+                var canBuyItem = item.CheckIfCanBuy();
+                if (!canBuyItem)
                 {
                     _onStoreFailOpenEvent.Raise();
                     return;
                 }
             
-                storeItem.DeductCosts();    
+                item.DeductCosts();
             }
 
-            DoPurchase(storeItem);
+            DoPurchase(item);
         }
 
-        private void DoPurchase(PlayerItem playerItem)
+        private void DoPurchase(PlayerItem item)
         {
-            switch(playerItem.Type) {
-                case ItemType.PassiveStackable:
-                    _playerInventory.AddPassiveStackableItemTree(playerItem.PassiveStackableTreeStartNode);
-                    _playerInventory.AddPassiveStackableItem(playerItem);
-                    break;
-
-                case ItemType.Passive:
-                    _playerInventory.PassiveItem = playerItem;
-                    break;
-
-                case ItemType.Active:
-                    _playerInventory.SwappableActiveItem = playerItem;
-                    break;
-
-                default:
-                    Debug.LogError($"Store Manager Does Not Support Item Type: {playerItem.Type}");
-                    break;
+            var didAddItem = _playerInventory.TryAddItem(item);
+            if (!didAddItem)
+            {
+                throw new Exception("Purchase failed.");
             }
-            
             _onPurchaseItem.Invoke();
         }
     }

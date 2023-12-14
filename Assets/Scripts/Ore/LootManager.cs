@@ -38,7 +38,7 @@ namespace BML.Scripts
             Random.InitState(SeedManager.Instance.GetSteppedSeed("LootTable"));
             
             // Roll all loot randomizers
-            var lootRandomizers = _caveGenerator.GetComponentsInChildren<LootRandomizer>();
+            var lootRandomizers = _caveGenerator.GetComponentsInChildren<ItemLootRandomizer>();
             foreach (var lootRandomizer in lootRandomizers)
             {
                 lootRandomizer.SetRandomRoll(Random.value);

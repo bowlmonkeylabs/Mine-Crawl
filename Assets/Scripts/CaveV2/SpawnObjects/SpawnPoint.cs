@@ -150,6 +150,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     Gizmos.color = Color.grey;
                     DrawDebugMesh(_projectedPosition.Value);
                     Gizmos.DrawLine(position, _projectedPosition.Value);
+                    Gizmos.color = Color.blue;
+                    var projectedForward = Vector3.forward;
+                    if (_projectedRotation.HasValue)
+                    {
+                        projectedForward = _projectedRotation.Value * projectedForward;
+                    }
+                    Gizmos.DrawLine(_projectedPosition.Value, _projectedPosition.Value + projectedForward);
                 }
                 else
                 {
@@ -197,7 +204,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             Random.InitState(thisSeed);
             
             var baseRotation = (_doInheritParentRotation
-                ? parentNode?.GameObject?.transform.rotation ?? Quaternion.identity
+                ? this.transform.rotation
                 : Quaternion.identity);
 
             var randomRotationDegrees = Random.Range(_randomRotationRangeAroundUpAxis.x, _randomRotationRangeAroundUpAxis.y);
