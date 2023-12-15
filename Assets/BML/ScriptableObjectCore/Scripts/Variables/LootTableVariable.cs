@@ -22,6 +22,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         RareOre = 1 << 5,
         Bomb = 1 << 6,
         HealthTemp = 1 << 7,
+        HealthTemp2 = 1 << 8,
+        WormBait = 1 << 9,
     }
     
     [Serializable]

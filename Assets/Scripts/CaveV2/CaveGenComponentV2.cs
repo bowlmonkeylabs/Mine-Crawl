@@ -749,6 +749,7 @@ namespace BML.Scripts.CaveV2
                         );
                     if (!hasBranch) continue;
                     
+                    var allEdgesNotTowardStartBlocked = true;
                     foreach (var nodeB in caveGraph.AdjacentVertices(nodeA))
                     {
                         bool nodeBIsTowardsStart = (nodeB.StartDistance <= nodeA.StartDistance);
@@ -758,7 +759,10 @@ namespace BML.Scripts.CaveV2
                             bool nodeBHasBranch = caveGraph.AdjacentVertices(nodeB)
                                 .Any(v => v != nodeA && v.MainPathDistance != 0);
 
-                            if (nodeBHasBranch) continue;
+                            if (nodeBHasBranch) {
+                                allEdgesNotTowardStartBlocked = false;
+                                continue;
+                            }
                         }
 
                         caveGraph.TryGetEdge(nodeA, nodeB, out var edge);
@@ -766,6 +770,10 @@ namespace BML.Scripts.CaveV2
                         {
                             edge.IsBlocked = !nodeBIsTowardsStart;
                         }
+                    }
+                    
+                    if(allEdgesNotTowardStartBlocked) {
+                        nodeA.NodeType = CaveNodeType.Challenge;
                     }
                 }
             }

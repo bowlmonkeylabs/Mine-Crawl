@@ -8,6 +8,7 @@
         Large = 3,
         Start = 4,
         End = 5,
-        Merchant = 6
+        Merchant = 6,
+        Challenge = 7
     }
 }
