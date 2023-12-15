@@ -21,8 +21,8 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         CommonOre2 = 1 << 4,
         RareOre = 1 << 5,
         Bomb = 1 << 6,
-        HealthTemp2 = 1 << 7,
-        HealthTemp = 1 << 8,
+        HealthTemp = 1 << 7,
+        HealthTemp2 = 1 << 8,
         WormBait = 1 << 9,
     }
     
