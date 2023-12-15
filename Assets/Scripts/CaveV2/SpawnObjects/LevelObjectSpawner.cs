@@ -272,6 +272,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                         var newGameObject =
                             GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
                         newGameObject.transform.SetPositionAndRotation(spawnAt.position.Value, spawnAt.rotation.Value);
+                        
                         var spawnedObjectCaveNodeData = newGameObject.GetComponent<SpawnedObjectCaveNodeData>();
                         if(spawnedObjectCaveNodeData != null) {
                             spawnedObjectCaveNodeData.CaveNode = spawnPoint.ParentNode;

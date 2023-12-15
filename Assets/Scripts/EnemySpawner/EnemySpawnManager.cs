@@ -531,6 +531,11 @@ namespace BML.Scripts
                 enemySpawnable.SpawnPoint = spawnPoint;
             }
 
+            var spawnedObjectCaveNodeData = newGameObject.GetComponent<SpawnedObjectCaveNodeData>();
+            if(spawnedObjectCaveNodeData != null) {
+                spawnedObjectCaveNodeData.CaveNode = spawnPoint.ParentNode;
+            }
+
             // Log and update enemy count
             if (_enableLogs) Debug.Log($"SpawnEnemy {enemy.Prefab.name} {position}");
             _currentEnemyCount.Value = _enemyContainer.Cast<Transform>().Count(t => t.gameObject.activeSelf);
