@@ -7,47 +7,56 @@ using BML.Scripts.Player.Items;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
-namespace BML.Scripts
+namespace BML.Scripts.Player.Items.Store
 {
+    public class TryPurchaseEventPayload
+    {
+        public PlayerItem Item;
+        public Action<bool> DidPurchaseCallback;
+    }
+    
     public class StoreManager : MonoBehaviour
     {
         [SerializeField] private BoolVariable _isGodModeEnabled;
         [SerializeField] private PlayerInventory _playerInventory;
-        [SerializeField] private DynamicGameEvent _onPurchaseEvent;
+        [FormerlySerializedAs("_onPurchaseEvent")] [SerializeField] private DynamicGameEvent _onTryPurchaseEvent;
         [SerializeField] private GameEvent _onStoreFailOpenEvent;
         [SerializeField] private UnityEvent _onPurchaseItem;
 
         private void Awake()
         {
-            _onPurchaseEvent.Subscribe(AttemptPurchaseDynamic);
+            _onTryPurchaseEvent.Subscribe(AttemptPurchaseDynamic);
         }
 
         private void OnDestroy()
         {
-            _onPurchaseEvent.Unsubscribe(AttemptPurchaseDynamic);
+            _onTryPurchaseEvent.Unsubscribe(AttemptPurchaseDynamic);
         }
 
-        private void AttemptPurchaseDynamic(object prev, object item)
+        private void AttemptPurchaseDynamic(object prev, object payload)
         {
-            AttemptPurchase(item as PlayerItem);
+            TryPurchase(payload as TryPurchaseEventPayload);
         }
 
-        private void AttemptPurchase(PlayerItem item)
+        private void TryPurchase(TryPurchaseEventPayload payload)
         {
             if (!_isGodModeEnabled.Value)
             {
-                var canBuyItem = item.CheckIfCanBuy();
+                var canBuyItem = payload.Item.CheckIfCanBuy();
                 if (!canBuyItem)
                 {
                     _onStoreFailOpenEvent.Raise();
                     return;
                 }
             
-                item.DeductCosts();
+                payload.Item.DeductCosts();
             }
 
-            DoPurchase(item);
+            DoPurchase(payload.Item);
+
+            payload.DidPurchaseCallback(true);
         }
 
         private void DoPurchase(PlayerItem item)
