@@ -3,6 +3,7 @@ using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Player.Items
 {
@@ -32,10 +33,15 @@ namespace BML.Scripts.Player.Items
         private ItemEffectTrigger _trigger;
 
         [SerializeField] private bool _useActivationLimit = false;
-        [SerializeField, ShowIf("UseActivationLimit")] private IntVariable _remainingActivations;
+        [SerializeField, ShowIf("_useActivationLimit")] private IntVariable _remainingActivations;
         
         [SerializeField] private bool _useActivationCooldownTimer = false;
-        [SerializeField, ShowIf("UseActivationCooldownTimer")] private TimerVariable _activationCooldownTimer;
+        [SerializeField, ShowIf("_useActivationCooldownTimer")] private TimerVariable _activationCooldownTimer;
+
+        [SerializeField] private bool _useActivationChance;
+        [SerializeField, ShowIf("_useActivationChance"), Range(0, 1)] private float _minActivationChance;
+        [SerializeField, ShowIf("_useActivationChance")] private IntVariable _playerLuckStat;
+        [SerializeField, ShowIf("_useActivationChance"), Range(0, 20)] private int _luckForMaxActivationChance;
 
         [SerializeField, ShowIf("@this.Trigger == ItemEffectTrigger.RecurringTimer")] 
         private TimerVariable _recurringTimerForTrigger;
@@ -52,6 +58,9 @@ namespace BML.Scripts.Player.Items
         public IntVariable RemainingActivations => _remainingActivations;
         public bool UseActivationCooldownTimer => _useActivationCooldownTimer;
         public TimerVariable ActivationCooldownTimer => _activationCooldownTimer;
+        public float ActivationChance => !_useActivationChance
+            ? 1f
+            : (_minActivationChance + ((float)_playerLuckStat.Value / _luckForMaxActivationChance) * (1 - _minActivationChance));
         public TimerVariable RecurringTimerForTrigger => _recurringTimerForTrigger;
         public bool RecurringTimerForTriggerCondition => _recurringTimerForTriggerCondition.Value;
 
@@ -68,6 +77,19 @@ namespace BML.Scripts.Player.Items
                 {
                     return false;
                 }
+            }
+
+            if (_useActivationChance && !isGodMode)
+            {
+                float randomRoll = Random.value; // TODO use seed??? how?
+                if (randomRoll > ActivationChance)
+                {
+                    return false;
+                }
+            }
+
+            if (_useActivationCooldownTimer && !isGodMode)
+            {
                 _activationCooldownTimer.RestartTimer();
             }
 

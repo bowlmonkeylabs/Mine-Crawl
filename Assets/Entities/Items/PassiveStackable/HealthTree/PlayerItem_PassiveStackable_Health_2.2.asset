@@ -17,9 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 38f386e05e25e3d4cb2b2f211cd6f035, type: 2}
-    - {fileID: 11400000, guid: 752416676525f3e4ebaa08cd016770d4, type: 2}
-    - {fileID: 11400000, guid: 835c6582f76a280459a3da6451935c50, type: 2}
-    - {fileID: 11400000, guid: 8939129328fbbcd42961aece96f6edaf, type: 2}
+    - {fileID: 11400000, guid: f9d313f010ad20147ac53139851efec9, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -66,10 +64,10 @@ MonoBehaviour:
       Data: 1
     - Name: 
       Entry: 7
-      Data: 3|BML.Scripts.Player.Items.ItemEffects.StatIncreaseItemEffect, BML.Scripts
+      Data: 3|BML.Scripts.Player.Items.ItemEffects.AddResourceItemEffect, BML.Scripts
     - Name: _trigger
       Entry: 3
-      Data: 2
+      Data: 0
     - Name: _useActivationLimit
       Entry: 5
       Data: false
@@ -82,55 +80,30 @@ MonoBehaviour:
     - Name: _activationCooldownTimer
       Entry: 6
       Data: 
+    - Name: _useActivationChance
+      Entry: 5
+      Data: false
+    - Name: _minActivationChance
+      Entry: 4
+      Data: 0
+    - Name: _playerLuckStat
+      Entry: 6
+      Data: 
+    - Name: _luckForMaxActivationChance
+      Entry: 3
+      Data: 0
     - Name: _recurringTimerForTrigger
+      Entry: 6
+      Data: 
+    - Name: _recurringTimerForTriggerCondition
+      Entry: 6
+      Data: 
+    - Name: _resource
       Entry: 10
       Data: 1
-    - Name: _recurringTimerForTriggerCondition
-      Entry: 7
-      Data: 4|BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences.SafeBoolValueReference,
-        ScriptableObjectSystem
-    - Name: ReferenceTypeSelector
+    - Name: _addAmount
       Entry: 3
       Data: 4
-    - Name: ConstantValue
-      Entry: 5
-      Data: false
-    - Name: ReferenceValue_BoolVariable
-      Entry: 6
-      Data: 
-    - Name: ReferenceValue_FloatVariable
-      Entry: 6
-      Data: 
-    - Name: ReferenceValue_IntVariable
-      Entry: 6
-      Data: 
-    - Name: ReferenceValue_FunctionVariable
-      Entry: 10
-      Data: 2
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: UsePercentageIncrease
-      Entry: 5
-      Data: false
-    - Name: IsTemporaryStatIncrease
-      Entry: 5
-      Data: false
-    - Name: TemporaryStatIncreaseTime
-      Entry: 4
-      Data: 0
-    - Name: FloatStat
-      Entry: 6
-      Data: 
-    - Name: IntStat
-      Entry: 10
-      Data: 3
-    - Name: StatIncreaseAmount
-      Entry: 3
-      Data: 1
-    - Name: StatIncreasePercent
-      Entry: 4
-      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -141,7 +114,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   _name: Blood Sapphire
-  _effectDescription: Regenerate half a heart every minute
+  _effectDescription: +2 Blue Hearts
   _storeDescription: 
   _useIconColor: 1
   _iconColor: {r: 0.3490566, g: 0.0115254605, b: 0.0115254605, a: 1}
