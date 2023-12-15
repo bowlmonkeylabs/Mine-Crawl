@@ -364,7 +364,11 @@ namespace BML.Scripts.Player
 		public void OnToggleUpgradeStore()
 		{
 			// Do nothing if blocking menu is already open
-			if (!_isUpgradeStoreOpen.Value && (IsUsingUi_Blocking || _upgradesAvailable.Value <= 0))
+			if (IsUsingUi_Blocking && !(_isGodModeEnabled.Value && _isUpgradeStoreOpen.Value)) // the upgrade store can block even ITSELF from closing.
+			{
+				return;
+			}
+			if (!_isUpgradeStoreOpen.Value && _upgradesAvailable.Value <= 0 && !_isGodModeEnabled.Value)
 			{
 				return;
 			}

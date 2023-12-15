@@ -28,8 +28,13 @@ namespace BML.Scripts.Player.Items.Mushroom
                 .OrderBy(v => Random.value).ToList();
             for (int i = 0; i < _mushroomItems.Count; i++)
             {
+                // Reset "is known" (because the items are scriptable objects, they can't reset on their own)
+                _mushroomItems[i].ResetScriptableObject();
+                
+                // Assign random visual
                 _mushroomItems[i].MushroomItemVisual = randomlyOrderedVisuals[i];
             }
         }
+        
     }
 }

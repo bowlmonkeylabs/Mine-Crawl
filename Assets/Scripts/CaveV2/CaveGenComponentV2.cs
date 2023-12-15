@@ -101,12 +101,13 @@ namespace BML.Scripts.CaveV2
         [HideInInspector] public bool EnableLogs => _enableLogs;
         
         [SerializeField] private bool _showTraversabilityCheck = false;
-
-#if UNITY_EDITOR
+        
+// TODO we probably DON'T need to include these in release builds, but I allowed them for now because they're useful for debugging.
+// #if UNITY_EDITOR
         [SerializeField] private bool _generateDebugObjects = true;
-#else
-        private bool _generateDebugObjects = false;
-#endif
+// #else
+//         private bool _generateDebugObjects = false;
+// #endif
         [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
         
         [SerializeField] private bool _generateMinimap = true;
@@ -950,10 +951,6 @@ namespace BML.Scripts.CaveV2
 
         private void GenerateCaveGraphDebugObjects()
         {
-#if !UNITY_EDITOR
-            return;
-#else
-            
             if (EnableLogs) Debug.Log("Cave Graph: Generating debug objects");
             
             if (!_generateDebugObjects || _debugObjectsContainer == null || !IsGenerated || _caveGraph == null) return;
@@ -970,7 +967,9 @@ namespace BML.Scripts.CaveV2
                 var sphereOuter = newGameObject.AddComponent<Shapes.Sphere>();
                 sphereOuter.Color = DebugNodeColor_Default;
                 sphereOuter.BlendMode = ShapesBlendMode.Additive;
+#if UNITY_EDITOR
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(sphereOuter, false);
+#endif
                 
                 // Add shape renderer component for secondary node indicator
                 GameObject newGameObjectInner = new GameObject("Indicator");
@@ -979,7 +978,9 @@ namespace BML.Scripts.CaveV2
                 var sphereInner = newGameObjectInner.AddComponent<Shapes.Sphere>();
                 sphereInner.Color = DebugNodeColor_Default;
                 sphereInner.Radius = sphereOuter.Radius * 2 / 3;
+#if UNITY_EDITOR
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(sphereInner, false);
+#endif
                 
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeDataDebugComponent>();
@@ -987,8 +988,9 @@ namespace BML.Scripts.CaveV2
                 debugComponent.CaveGenerator = this;
                 debugComponent.InnerRenderer = sphereInner;
                 debugComponent.OuterRenderer = sphereOuter;
-
+#if UNITY_EDITOR
                 UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
+#endif
             }
             
             // Spawn debug object on each edge to ensure nodes are connected
@@ -1018,17 +1020,19 @@ namespace BML.Scripts.CaveV2
                 shapeLineComponent.Start = LocalToWorld(caveNodeConnectionData.Source.LocalPosition);
                 shapeLineComponent.End = LocalToWorld(caveNodeConnectionData.Target.LocalPosition);
                 shapeLineComponent.Color = DebugNodeColor_Default;
+#if UNITY_EDITOR
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(shapeLineComponent, false);
+#endif
                 
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
                 debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
                 debugComponent.CaveGenerator = this;
-                
+#if UNITY_EDITOR
                 UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
+#endif
             }
             
-#endif
         }
         
         #endregion
