@@ -1,4 +1,5 @@
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.Scripts.ScriptableObjectVariables;
 using Sirenix.OdinInspector;
 
 namespace BML.Scripts.Player.Items.ItemEffects
@@ -7,7 +8,7 @@ namespace BML.Scripts.Player.Items.ItemEffects
     {
         #region Inspector
 
-        public LootTableVariable LootTableVariable;
+        public ItemLootTableVariable LootTableVariable;
         
         private bool _lootTableKeyDoesNotExist => LootTableVariable != null && LootTableVariable.Value != null && !LootTableVariable.Value.HasKey(LootTableKey);
         [InfoBox("Key does not exist in selected loot table.", InfoMessageType.Error, visibleIfMemberName:"_lootTableKeyDoesNotExist")]
