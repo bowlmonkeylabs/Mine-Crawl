@@ -1,5 +1,6 @@
 using System;
 using BML.ScriptableObjectCore.Scripts.Events;
+using BML.ScriptableObjectCore.Scripts.Managers;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace BML.Scripts.Player.Items.Mushroom
     
     [InlineEditor()]
     [CreateAssetMenu(fileName = "MushroomItem", menuName = "BML/Player/MushroomItem", order = 0)]
-    public class MushroomItem : PlayerItem
+    public class MushroomItem : PlayerItem, IResettableScriptableObject
     {
         [SerializeField] private DynamicGameEvent _onItemDiscovered;
         
@@ -44,5 +45,19 @@ namespace BML.Scripts.Player.Items.Mushroom
                 _icon = _mushroomItemVisual.Sprite;
             }
         }
+        
+        #region IResettableScriptableObject
+        
+        public event IResettableScriptableObject.OnResetScriptableObject OnReset;
+
+        public new void ResetScriptableObject()
+        {
+            _isKnown = false;
+            
+            base.ResetScriptableObject();
+        }
+        
+        #endregion
+        
     }
 }
