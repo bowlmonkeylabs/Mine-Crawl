@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 namespace BML.Scripts.Player.Items.ItemEffects
@@ -31,8 +32,7 @@ namespace BML.Scripts.Player.Items.ItemEffects
 
         public bool CanAddResource()
         {
-            var hypotheticalAmount = (_resource.PlayerAmount + _addAmount);
-            return hypotheticalAmount >= 0 && (_resource.PlayerAmountLimit < 0 || hypotheticalAmount <= _resource.PlayerAmountLimit);
+            return _resource.CanAddResource(_addAmount);
         }
         
     }
