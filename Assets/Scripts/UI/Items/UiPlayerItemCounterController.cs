@@ -112,6 +112,7 @@ namespace BML.Scripts.UI.Items
             {
                 _item = value;
                 _itemSource = ItemSource.PlayerItem;
+                UpdateAssignedItem();
             }
         }
 

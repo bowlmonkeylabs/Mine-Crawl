@@ -44,12 +44,20 @@ namespace BML.Scripts.Player.Items
             }
         }
 
-        public int? PlayerAmountLimit => _playerAmountLimit?.Value;
+        public bool UseAmountLimit => (_playerAmountLimit.Value >= 0);
+        public int? PlayerAmountLimit => (UseAmountLimit ? (int?)_playerAmountLimit.Value : null);
 
-        public bool IsAtAmountLimit =>
-            ((_playerAmountLimit?.Value ?? 0) != 0) && (_playerAmount.Value == _playerAmountLimit.Value);
+        public bool IsAtAmountLimit => (UseAmountLimit && (_playerAmount.Value >= _playerAmountLimit.Value));
 
         public event OnAmountChanged OnAmountChanged;
+
+        public bool CanAddResource(int addAmount)
+        {
+            var requestedHypotheticalAmount = (PlayerAmount + addAmount);
+            var clampedHypotheticalAmount = Mathf.Max(0, Mathf.Min((PlayerAmountLimit ?? requestedHypotheticalAmount), requestedHypotheticalAmount));
+            var hypotheticalDelta = (clampedHypotheticalAmount - PlayerAmount);
+            return (hypotheticalDelta != 0);
+        }
 
         #endregion
 

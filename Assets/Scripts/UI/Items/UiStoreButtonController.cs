@@ -15,9 +15,7 @@ namespace BML.Scripts.UI.Items
     {
         #region Inspector
 
-        [SerializeField] public UiStoreCanvasController ParentStoreCanvasController;
-        
-        [SerializeField] private DynamicGameEvent _onPurchaseEvent;
+        [SerializeField] public UiItemStoreController ParentItemStoreController;
 
         [HideInInspector] public Button Button => _button;
         [SerializeField] private Button _button;
@@ -31,7 +29,7 @@ namespace BML.Scripts.UI.Items
         [SerializeField] private PlayerItem _itemToPurchase;
         public PlayerItem ItemToPurchase => _itemToPurchase;
 
-        private bool _enableLogs => ParentStoreCanvasController?.EnableLogs ?? false;
+        private bool _enableLogs => ParentItemStoreController?.EnableLogs ?? false;
         
         #endregion
 
@@ -70,12 +68,15 @@ namespace BML.Scripts.UI.Items
                 UpdateInteractable();
             }
 
-            _itemToPurchase.OnBuyabilityChanged += UpdateInteractable;
+            if (_itemToPurchase != null)
+            {
+                _itemToPurchase.OnBuyabilityChanged += UpdateInteractable;
+            }
         }
 
-        public void Raise()
+        public void TryPurchase()
         {
-            _onPurchaseEvent.Raise(_itemToPurchase);
+            ParentItemStoreController.TryPurchase(_itemToPurchase);
         }
 
         public void SetStoreItemToSelected()
@@ -94,7 +95,7 @@ namespace BML.Scripts.UI.Items
         {
             if (_enableLogs) Debug.Log($"UpdateInteractable ({_button.gameObject.name})");
             
-            bool canBuyItem = _itemToPurchase.CheckIfCanBuy();
+            bool canBuyItem = _itemToPurchase?.CheckIfCanBuy() ?? false;
             if (_button.interactable != canBuyItem)
             {
                 _button.interactable = canBuyItem;
@@ -105,7 +106,7 @@ namespace BML.Scripts.UI.Items
         {
             if (!_costText.SafeIsUnityNull())
             {
-                _costText.text = _itemToPurchase.FormatCostsAsText();
+                _costText.text = _itemToPurchase?.FormatCostsAsText() ?? "";
             }
         }
         

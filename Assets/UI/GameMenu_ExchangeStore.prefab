@@ -338,7 +338,7 @@ PrefabInstance:
     - target: {fileID: 1708447233922511500, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
       propertyPath: OnSuccess.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2444694171194741158}
+      objectReference: {fileID: 0}
     - target: {fileID: 1708447233922511500, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
       propertyPath: OnFailure.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ClearSelectedStoreItem
@@ -599,6 +599,22 @@ PrefabInstance:
       propertyPath: _itemToPurchase
       value: 
       objectReference: {fileID: 11400000, guid: d922b4ac6017e304787305c9aa327fd9, type: 2}
+    - target: {fileID: 4348729967358701529, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: _cancelButton
+      value: 
+      objectReference: {fileID: 2039202403019568246}
+    - target: {fileID: 4348729967358701529, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: _storeInventory
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4348729967358701529, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: _isStoreMenuOpen
+      value: 
+      objectReference: {fileID: 11400000, guid: 2d4bb91fdd2f4474782d5fc27857d121, type: 2}
+    - target: {fileID: 4348729967358701529, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: _onOpenStoreInventory
+      value: 
+      objectReference: {fileID: 11400000, guid: fd06c8a5fb12ca149a521edeb02f6be7, type: 2}
     - target: {fileID: 4413252496394026973, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -623,6 +639,10 @@ PrefabInstance:
       propertyPath: _timer.Variable
       value: 
       objectReference: {fileID: 11400000, guid: a606323ec6a46c546a069412938abd80, type: 2}
+    - target: {fileID: 4591996089100856408, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: _storeId
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5243632502227432884, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
       propertyPath: PropagateCancel
       value: 
@@ -1247,6 +1267,26 @@ PrefabInstance:
       propertyPath: _itemToPurchase
       value: 
       objectReference: {fileID: 11400000, guid: dabe4d793a1ea5446ba33995c5a3b9f2, type: 2}
+    - target: {fileID: 8819755511007822190, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: _cancelButton
+      value: 
+      objectReference: {fileID: 2039202403019568246}
+    - target: {fileID: 8819755511007822190, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: _buttonNavRight
+      value: 
+      objectReference: {fileID: 2039202403019568246}
+    - target: {fileID: 8819755511007822190, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: _storeInventory
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8819755511007822190, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: _isStoreMenuOpen
+      value: 
+      objectReference: {fileID: 11400000, guid: 2d4bb91fdd2f4474782d5fc27857d121, type: 2}
+    - target: {fileID: 8819755511007822190, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+      propertyPath: _onOpenStoreInventory
+      value: 
+      objectReference: {fileID: 11400000, guid: fd06c8a5fb12ca149a521edeb02f6be7, type: 2}
     - target: {fileID: 8926014292494930201, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -1265,6 +1305,8 @@ PrefabInstance:
     - {fileID: 8063408638337011854, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
     - {fileID: 6337804492094676961, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
     - {fileID: 5895518985195771841, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+    - {fileID: 4591996089100856408, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
+    - {fileID: 8604466774910246168, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
 --- !u!1 &2444694170274437347 stripped
 GameObject:
@@ -1287,17 +1329,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4059333025001019258, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
   m_PrefabInstance: {fileID: 6477677400295843879}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2444694171194741158 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8649190722826828161, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
-  m_PrefabInstance: {fileID: 6477677400295843879}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0be986638f2f4172a046a859c42ff1c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &2444694171086517944 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8649190722918014623, guid: 8ef6683c04663884ba383f9a74f1ce6b, type: 3}
@@ -1351,7 +1382,7 @@ MonoBehaviour:
     unityEvent:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 2444694171194741158}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: BML.Scripts.UI.Items.UiStoreCanvasController,
             BML.Scripts
           m_MethodName: Init

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Managers;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.ItemTreeGraph;
 using BML.Scripts.Player.Items.ItemEffects;
@@ -43,7 +44,9 @@ namespace BML.Scripts.Player.Items
         [FoldoutGroup("Store")]
         [DictionaryDrawerSettings(KeyLabel = "Resource", ValueLabel = "Amount", DisplayMode = DictionaryDisplayOptions.ExpandedFoldout)]
         private Dictionary<PlayerResource, int> _itemCost = new Dictionary<PlayerResource, int>();
-
+        [SerializeField, FoldoutGroup("Store"), LabelText("Is Player God Mode")] private BoolVariable _isPlayerGodModeVariable;
+        private bool _isPlayerGodMode => _isPlayerGodModeVariable?.Value ?? false;
+        
         [SerializeField, FoldoutGroup("Effect")] private ItemType _itemType = ItemType.PassiveStackable;
         [SerializeField, FoldoutGroup("Effect")]
         // [HideReferenceObjectPicker]
@@ -98,6 +101,7 @@ namespace BML.Scripts.Player.Items
             }
             
             OnPickupabilityChanged += InvokeOnBuyabilityChanged;
+            _isPlayerGodModeVariable?.Subscribe(InvokeOnBuyabilityChanged);
             _itemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => {
                 entry.Key.OnAmountChanged += InvokeOnBuyabilityChanged;
             });
@@ -127,6 +131,7 @@ namespace BML.Scripts.Player.Items
             }
             
             OnPickupabilityChanged -= InvokeOnBuyabilityChanged;
+            _isPlayerGodModeVariable?.Unsubscribe(InvokeOnBuyabilityChanged);
             _itemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => {
                 entry.Key.OnAmountChanged -= InvokeOnBuyabilityChanged;
             });
@@ -192,12 +197,15 @@ namespace BML.Scripts.Player.Items
         //TODO: return what resources you're short on
         private bool CheckIfCanAfford() 
         {
-            return _itemCost.All((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount >= entry.Value);
+            return _isPlayerGodMode || _itemCost.All((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount >= entry.Value);
         }
 
         public void DeductCosts()
         {
-            _itemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount -= entry.Value);
+            if (!_isPlayerGodMode)
+            {
+                _itemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount -= entry.Value);
+            }
         }
 
         public string FormatCostsAsText() 
