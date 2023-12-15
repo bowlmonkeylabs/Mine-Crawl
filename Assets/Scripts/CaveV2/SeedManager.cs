@@ -1,3 +1,4 @@
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using BML.ScriptableObjectCore.Scripts.Variables;
@@ -42,7 +43,7 @@ namespace BML.Scripts.CaveV2
             _seedHistory.UpdateRandomSeed(logSeedHist);
         }
 
-        private void InitSteppedSeed(string key) {
+        private void TryInitSteppedSeed(string key) {
             if(baseSteppedSeed != Seed) {
                 steppedSeeds.Clear();
                 baseSteppedSeed = Seed;
@@ -54,13 +55,29 @@ namespace BML.Scripts.CaveV2
             }
         }
 
+        /// <summary>
+        /// The public initialize method should let the user know if the key they requested already exists for something else.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public void InitSteppedSeed(string key)
+        {
+            if (steppedSeeds.ContainsKey(key))
+            {
+                throw new Exception($"Key collision! Stepped seed '{key}' has already been initialized.");
+                return;
+            }
+            
+            TryInitSteppedSeed(key);
+        }
+
         public int GetSteppedSeed(string key) {
-            InitSteppedSeed(key);
+            TryInitSteppedSeed(key);
             return steppedSeeds[key];
         }
 
         public void UpdateSteppedSeed(string key, object val = null) {
-            InitSteppedSeed(key);
+            TryInitSteppedSeed(key);
             if(val != null) {
                 steppedSeeds[key] = (int) val;
                 return;
