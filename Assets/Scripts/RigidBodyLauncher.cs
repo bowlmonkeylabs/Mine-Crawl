@@ -54,7 +54,7 @@ namespace BML.Scripts
         private void Launch(GameObject gameObject, bool instantiate = true)
         {
             var position = (!_firePoint.SafeIsUnityNull() ? _firePoint.position : this.transform.position);
-            var parent = (_container.Value != null ? _container.Value : this.transform);
+            var parent = (_container?.Value != null ? _container.Value : this.transform);
 
             GameObject launchedGameObject;
             if (instantiate)

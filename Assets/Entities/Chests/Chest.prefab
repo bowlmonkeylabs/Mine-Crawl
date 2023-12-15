@@ -515,6 +515,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5005311190447278692}
   - component: {fileID: 531478825949212177}
+  - component: {fileID: 3901666396614730477}
   - component: {fileID: 7774109262641024096}
   m_Layer: 0
   m_Name: OpeningFeedbacks
@@ -552,7 +553,7 @@ MonoBehaviour:
   _onSpawnPickup:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 3901666396614730477}
         m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
         m_MethodName: Launch
         m_Mode: 0
@@ -566,6 +567,75 @@ MonoBehaviour:
         m_CallState: 2
   _basePickupPrefab: {fileID: 8097470616027808229, guid: 403e8b8ea52f6ce4caab8a3ff49a1ae1, type: 3}
   _pickupContainer: {fileID: 0}
+--- !u!114 &3901666396614730477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5005311190447278693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f680a7afde40b49d9741bdbc7aa5bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _firePoint: {fileID: 5005311190846523059}
+  _container: {fileID: 0}
+  _quantity:
+    ReferenceTypeSelector: 0
+    ConstantValue: 1
+    RoundingBehavior: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _forceMode: 1
+  _direction:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 1, z: 0}
+    Variable: {fileID: 0}
+  _directionVariance:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 0}
+  _force:
+    ReferenceTypeSelector: 0
+    ConstantValue: 3
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+  _forceVariance:
+    ReferenceTypeSelector: 0
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+  _torque:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 0}
+  _torqueVariance:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 0}
+  _instantiateAsPrefab: 1
 --- !u!114 &7774109262641024096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1848,14 +1918,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 36bdc02b23d9ca94d93bd715c0cca5c0, type: 3}
---- !u!198 &4276110960493872451 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 19877600, guid: 36bdc02b23d9ca94d93bd715c0cca5c0, type: 3}
-  m_PrefabInstance: {fileID: 4276110960508996515}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4276110960509149859 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 420096, guid: 36bdc02b23d9ca94d93bd715c0cca5c0, type: 3}
+  m_PrefabInstance: {fileID: 4276110960508996515}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &4276110960493872451 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 19877600, guid: 36bdc02b23d9ca94d93bd715c0cca5c0, type: 3}
   m_PrefabInstance: {fileID: 4276110960508996515}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5351683724234934771
@@ -1915,14 +1985,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8779ede8e198275448455eed693b448e, type: 3}
---- !u!1 &5081632886408246434 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8779ede8e198275448455eed693b448e, type: 3}
-  m_PrefabInstance: {fileID: 5351683724234934771}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5606496116120890904 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8779ede8e198275448455eed693b448e, type: 3}
+  m_PrefabInstance: {fileID: 5351683724234934771}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5081632886408246434 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8779ede8e198275448455eed693b448e, type: 3}
   m_PrefabInstance: {fileID: 5351683724234934771}
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &350521504437055002
