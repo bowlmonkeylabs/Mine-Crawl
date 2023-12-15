@@ -15,6 +15,11 @@ namespace BML.Scripts
         [SerializeField] private SafeFloatValueReference _duration;
         [SerializeField] private UnityEvent _onFinished;
 
+        public float Duration
+        {
+            get => _duration.Value;
+            set => _duration.SetConstantValue(value);
+        }
         public float RemainingTime => remainingTime;
         public float ElapsedTime => _duration.Value - (remainingTime);
         public bool IsFinished => isFinished;

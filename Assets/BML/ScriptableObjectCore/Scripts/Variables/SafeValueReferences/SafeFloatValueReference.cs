@@ -239,6 +239,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences
             }
         }
 
+        public void SetConstantValue(float value)
+        {
+            this.ReferenceTypeSelector = FloatReferenceTypes.Constant;
+            this.ConstantValue = value;
+        }
+
         public String Name
         {
             get

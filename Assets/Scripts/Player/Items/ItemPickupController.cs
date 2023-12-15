@@ -21,7 +21,8 @@ namespace BML.Scripts.Player.Items
         private DefaultItemVisualController defaultItemVisualController;
 
         [SerializeField] private Transform _pickupVisualParent;
-        
+
+        [SerializeField] private Timer _pickupDelayTimer;
         [SerializeField] private MMF_Player _idleFeedbacks;
         [SerializeField] private MMF_Player _activateFeedbacks;
         [SerializeField] private MMF_Player _receiveFeedbacks;
@@ -45,6 +46,13 @@ namespace BML.Scripts.Player.Items
                 _item.OnPickupabilityChanged += UpdateActivated;
             }
             UpdateAssignedItem();
+        }
+
+        public void SetPickupDelay(float timeSeconds)
+        {
+            _pickupDelayTimer.Duration = timeSeconds;
+            _pickupDelayTimer.ResetTimer();
+            _pickupDelayTimer.StartTimer();
         }
 
         public void TryActivatePickup()
