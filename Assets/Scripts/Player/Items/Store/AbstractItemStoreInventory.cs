@@ -29,25 +29,34 @@ namespace BML.Scripts.Player.Items.Store
         #region Inspector
 
         [SerializeField] private StoreId _storeId;
+        [ShowInInspector, ReadOnly]
+        private string SteppedSeedKey => $"ItemStoreController_{_storeId.ToString()}"; // this should be unique to this instance of store, but also deterministic, meaning it should work out the same for the same seed.
 
         [SerializeField] private int _numAvailableItems = 5;
         [NonSerialized, ShowInInspector, ReadOnly] private List<PlayerItem> _availableItems; // TODO enforce length11
 
         [SerializeField] private ItemPoolBehavior _buyBehavior;
 
-        [ShowInInspector, ReadOnly]
-        private string SteppedSeedKey => $"ItemStoreController_{_storeId.ToString()}"; // this should be unique to this instance of store, but also deterministic, meaning it should work out the same for the same seed.
+        [SerializeField, Tooltip("This event is needed in order to update the stepped seed at the start of each level the player visits.")] private GameEvent _onAfterGenerateLevelObjects;
 
         #endregion
 
-        #region Unity lifecycle
-
-        private void Start()
+        private void RefreshStoreForLevel()
         {
-            SeedManager.Instance.InitSteppedSeed(SteppedSeedKey);
-            
             ReplaceAllItems();
             OnAvailableItemsChanged?.Invoke();
+        }
+
+        #region Unity lifecycle
+
+        private void Awake()
+        {
+            _onAfterGenerateLevelObjects.Subscribe(RefreshStoreForLevel);
+        }
+
+        private void OnDestroy()
+        {
+            _onAfterGenerateLevelObjects.Subscribe(RefreshStoreForLevel);
         }
 
         #endregion
@@ -113,7 +122,7 @@ namespace BML.Scripts.Player.Items.Store
 
         private void ReplaceAllItems()
         {
-            _availableItems = GetItemPoolRandomized().Take(_numAvailableItems).ToList();
+            _availableItems = GetItemPoolRandomized(true).Take(_numAvailableItems).ToList();
             // TODO what to do if _availableItems.Length < _numAvailableItems ?? not enough items left in the pool
         }
 

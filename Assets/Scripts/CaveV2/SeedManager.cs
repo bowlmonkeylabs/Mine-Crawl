@@ -55,22 +55,6 @@ namespace BML.Scripts.CaveV2
             }
         }
 
-        /// <summary>
-        /// The public initialize method should let the user know if the key they requested already exists for something else.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public void InitSteppedSeed(string key)
-        {
-            if (steppedSeeds.ContainsKey(key))
-            {
-                throw new Exception($"Key collision! Stepped seed '{key}' has already been initialized.");
-                return;
-            }
-            
-            TryInitSteppedSeed(key);
-        }
-
         public int GetSteppedSeed(string key) {
             TryInitSteppedSeed(key);
             return steppedSeeds[key];
