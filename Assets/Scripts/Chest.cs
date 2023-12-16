@@ -3,14 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts;
+using BML.Scripts.Player.Items;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class Chest : MonoBehaviour
 {
     [SerializeField] private BoolVariable _isGodMode;
-    [SerializeField] private IntVariable _resourceCount;
+    [SerializeField] private PlayerResource _resource;
+    [SerializeField] private TMP_Text _resourceLabelText;
 
     [SerializeField] private bool _limitOpens = true;
     [SerializeField, HideIf("_limitOpens")] private int _resourceCost = 5;
@@ -22,11 +25,15 @@ public class Chest : MonoBehaviour
 
     private int _opensCount = 0;
 
+    void Awake() {
+        this.setResourceLabelText();
+    }
+
     public void TryOpen() {
         int resourceCost = getCurrentResourceCost();
 
-        if(_resourceCount.Value >= resourceCost || _isGodMode.Value) {
-            if(!_isGodMode.Value) _resourceCount.Value -= resourceCost;
+        if(_resource.PlayerAmount >= resourceCost || _isGodMode.Value) {
+            if(!_isGodMode.Value) _resource.PlayerAmount -= resourceCost;
         
             _opensCount++;
 
@@ -36,11 +43,19 @@ public class Chest : MonoBehaviour
                 this.gameObject.layer = LayerMask.NameToLayer("Default");
                 _onAllOpensUsed.Invoke();
             }
+
+            this.setResourceLabelText();
             
             return;
         }
 
         _onFailOpen.Invoke();
+    }
+
+    private void setResourceLabelText() {
+        int resourceCost = getCurrentResourceCost();
+
+        _resourceLabelText.text = $"{resourceCost} {_resource.IconText}";
     }
 
     private int getCurrentResourceCost() {
