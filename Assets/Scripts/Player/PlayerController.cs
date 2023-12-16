@@ -103,6 +103,7 @@ namespace BML.Scripts.Player
         private InputAction primaryAction;
         private InputAction secondaryAction;
         private bool secondaryInputHeld = false;
+        private PickaxeInteractionReceiver hoveredInteractionReceiver = null;
 
         #endregion
 
@@ -512,6 +513,17 @@ namespace BML.Scripts.Player
                 if (interactionReceiver != null)
                 {
                     _uiAimReticle.SetReticleHover(true);
+                    
+                    if(hoveredInteractionReceiver == null) {
+                        hoveredInteractionReceiver = interactionReceiver;
+                        interactionReceiver.ReceiveHoverInteraction();
+                    } else if(interactionReceiver != hoveredInteractionReceiver) {
+                        hoveredInteractionReceiver.ReceiveUnHoverInteraction();
+
+                        hoveredInteractionReceiver = interactionReceiver;
+                        interactionReceiver.ReceiveHoverInteraction();
+                    }
+
                     return;
                 }
             }
@@ -523,11 +535,27 @@ namespace BML.Scripts.Player
                 if (interactionReceiver != null)
                 {
                     _uiAimReticle.SetReticleHover(true);
+
+                    if(hoveredInteractionReceiver == null) {
+                        hoveredInteractionReceiver = interactionReceiver;
+                        interactionReceiver.ReceiveHoverInteraction();
+                    } else if(interactionReceiver != hoveredInteractionReceiver) {
+                        hoveredInteractionReceiver.ReceiveUnHoverInteraction();
+
+                        hoveredInteractionReceiver = interactionReceiver;
+                        interactionReceiver.ReceiveHoverInteraction();
+                    }
+
                     return;
                 }
             }
 
             _uiAimReticle.SetReticleHover(false);
+
+            if(hoveredInteractionReceiver != null) {
+                hoveredInteractionReceiver.ReceiveUnHoverInteraction();
+                hoveredInteractionReceiver = null;
+            }
         }
 
         private void HandleReticleScaling()
