@@ -133,6 +133,7 @@ namespace BML.Scripts.UI.Items
         [FormerlySerializedAs("_root")] [TitleGroup("UI"), SerializeField] private GameObject _uiRoot;
         [TitleGroup("UI"), SerializeField] private Image _imageIcon;
         
+        [TitleGroup("UI"), SerializeField] private MMF_Player _itemChangedFeedbacks;
         [TitleGroup("UI"), ShowInInspector, ReadOnly] private ItemEffectTimerDisplayMode _timerDisplayMode;
         [TitleGroup("UI"), SerializeField] private UiTimerImageController _timerImageController;
         [TitleGroup("UI"), SerializeField] private UiTextIntFormatter _remainingCountTextController;
@@ -232,6 +233,7 @@ namespace BML.Scripts.UI.Items
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Active)
             {
                 UpdateAssignedItem();
+                TryPlayItemChangedFeedbacks(item);
             }
         }
         
@@ -248,6 +250,7 @@ namespace BML.Scripts.UI.Items
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Consumable)
             {
                 UpdateAssignedItem();
+                TryPlayItemChangedFeedbacks(item);
             }
         }
         
@@ -264,6 +267,7 @@ namespace BML.Scripts.UI.Items
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Passive)
             {
                 UpdateAssignedItem();
+                TryPlayItemChangedFeedbacks(item);
             }
         }
         
@@ -272,6 +276,7 @@ namespace BML.Scripts.UI.Items
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
             {
                 UpdatePassiveStackableTreeCounts(item.PassiveStackableTreeStartNode, 1);
+                TryPlayItemChangedFeedbacks(item);
             }
         }
         
@@ -280,6 +285,7 @@ namespace BML.Scripts.UI.Items
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
             {
                 UpdatePassiveStackableTreeCounts(item.PassiveStackableTreeStartNode, -1);
+                TryPlayItemChangedFeedbacks(item);
             }
         }
         
@@ -455,5 +461,14 @@ namespace BML.Scripts.UI.Items
                 }
             }
         }
+
+        private void TryPlayItemChangedFeedbacks(PlayerItem item)
+        {
+            if (item == Item) // this check won't work correctly on item removal, but for now we only care about playing this feedback on additions anyway
+            {
+                _itemChangedFeedbacks.PlayFeedbacks();
+            }
+        }
+        
     }
 }
