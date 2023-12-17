@@ -1348,6 +1348,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onNothingDrop:
+    m_PersistentCalls:
+      m_Calls: []
   _levelObjectsGenerated:
     UseConstant: 0
     EnableInstanceOptions: 0
@@ -2066,6 +2069,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onHoverInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  _onUnHoverInteract:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &9113385687671369341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2816,13 +2825,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a669466ff3d4689a736dbc661973973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CollisionRadius:
+  UseColliderReference: 0
+  Radius:
     UseConstant: 1
     EnableInstanceOptions: 0
-    InstanceName: '{I} '
+    InstanceName: 
     InstancePath: IntermediateProperties
     ConstantValue: 0.75
     Variable: {fileID: 0}
+  ColliderReference: {fileID: 0}
   CollisionMask:
     serializedVersion: 2
     m_Bits: 525504
@@ -3816,6 +3827,7 @@ MonoBehaviour:
         m_CallState: 2
   _basePickupPrefab: {fileID: 8097470616027808229, guid: 403e8b8ea52f6ce4caab8a3ff49a1ae1, type: 3}
   _pickupContainer: {fileID: 0}
+  _pickupDelaySetting: -1
 --- !u!114 &2265493856839925122
 MonoBehaviour:
   m_ObjectHideFlags: 0

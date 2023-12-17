@@ -9,7 +9,9 @@ namespace BML.Scripts
 {
     public class CollisionChecker : MonoBehaviour
     {
-        [SerializeField] private FloatReference CollisionRadius;
+        [SerializeField] private bool UseColliderReference;
+        [SerializeField, HideIf("UseColliderReference")] private FloatReference Radius;
+        [SerializeField, ShowIf("UseColliderReference")] private SphereCollider ColliderReference;
         [SerializeField] private LayerMask CollisionMask;
 
         [SerializeField] private bool ignoreTriggers = true;
@@ -31,12 +33,13 @@ namespace BML.Scripts
 
         private void CheckCollisions()
         {
+            var radius = UseColliderReference ? ColliderReference.radius : Radius.Value;
             var triggerInteraction =
                 ignoreTriggers ? QueryTriggerInteraction.Ignore : QueryTriggerInteraction.UseGlobal;
             List<Collider> colliderList =
-                Physics.OverlapSphere(transform.position, CollisionRadius.Value, CollisionMask, triggerInteraction).ToList();
+                Physics.OverlapSphere(transform.position, radius, CollisionMask, triggerInteraction).ToList();
 
-            RaycastHit[] hits = Physics.SphereCastAll(previousPosition, CollisionRadius.Value,
+            RaycastHit[] hits = Physics.SphereCastAll(previousPosition, radius,
                 (transform.position - previousPosition).normalized,
                 Vector3.Distance(previousPosition, transform.position), CollisionMask,
                 triggerInteraction);
@@ -44,6 +47,7 @@ namespace BML.Scripts
             foreach (var hit in hits)
             {
                 colliderList.Add(hit.collider);
+                Debug.Log($"Hit {hit.collider.name}");
             }
 
             HandleCollisions.Invoke(colliderList);
@@ -52,7 +56,7 @@ namespace BML.Scripts
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, CollisionRadius.Value);
+            Gizmos.DrawWireSphere(transform.position, ColliderReference.radius);
         }
     }
 }
