@@ -118,6 +118,7 @@ namespace BML.Scripts.Player.Items
                 if (prevItem != null)
                 {
                     OnItemRemoved?.Invoke(prevItem);
+                    OnItemReplaced?.Invoke(prevItem, item);
                 }
                 firstUnlockedSlot.Item = item;
                 if (item != null)
@@ -168,9 +169,11 @@ namespace BML.Scripts.Player.Items
 
         public delegate void OnSlotItemChanged<T>(T item);
         public delegate void OnSlotItemChanged();
+        public delegate void OnSlotItemReplaced<T>(T oldItem, T newItem);
         
-        public event OnSlotItemChanged<T> OnItemAdded;                  // T is the item that was ADDED
-        public event OnSlotItemChanged<T> OnItemRemoved;                // T is the item that was REMOVED
+        public event OnSlotItemChanged<T> OnItemAdded;
+        public event OnSlotItemChanged<T> OnItemRemoved;
+        public event OnSlotItemReplaced<T> OnItemReplaced;
         public event OnSlotItemChanged OnAnyItemChangedInInspector;     // When changes happen through the inspector, we don't know which specific item changed
 
         #endregion

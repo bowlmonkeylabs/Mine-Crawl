@@ -101,10 +101,6 @@ namespace BML.Scripts.Player.Items
                     }
                     break;
             }
-            if (didAdd)
-            {
-                OnAnyPlayerItemAdded?.Invoke(item);
-            }
 
             return didAdd;
         }
@@ -127,10 +123,6 @@ namespace BML.Scripts.Player.Items
                 case ItemType.Consumable:
                     didRemove = ConsumableItems.TryRemoveItem(item);
                     break;
-            }
-            if (didRemove)
-            {
-                OnAnyPlayerItemRemoved?.Invoke(item);
             }
             
             return didRemove;
@@ -156,17 +148,77 @@ namespace BML.Scripts.Player.Items
         }
 
         #endregion
+        
+        #region Unity lifecycle
+
+        private void OnEnable()
+        {
+            PassiveStackableItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
+            PassiveStackableItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
+            PassiveStackableItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
+            
+            ActiveItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
+            ActiveItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
+            ActiveItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
+
+            PassiveItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
+            PassiveItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
+            PassiveItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
+
+            ConsumableItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
+            ConsumableItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
+            ConsumableItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
+        }
+
+        private void OnDisable()
+        {
+            PassiveStackableItems.OnItemAdded -= InvokeOnAnyPlayerItemAdded;
+            PassiveStackableItems.OnItemRemoved -= InvokeOnAnyPlayerItemRemoved;
+            PassiveStackableItems.OnItemReplaced -= InvokeOnAnyPlayerItemReplaced;
+            
+            PassiveItems.OnItemAdded -= InvokeOnAnyPlayerItemAdded;
+            PassiveItems.OnItemRemoved -= InvokeOnAnyPlayerItemRemoved;
+            PassiveItems.OnItemReplaced -= InvokeOnAnyPlayerItemReplaced;
+            
+            ActiveItems.OnItemAdded -= InvokeOnAnyPlayerItemAdded;
+            ActiveItems.OnItemRemoved -= InvokeOnAnyPlayerItemRemoved;
+            ActiveItems.OnItemReplaced -= InvokeOnAnyPlayerItemReplaced;
+            
+            ConsumableItems.OnItemAdded -= InvokeOnAnyPlayerItemAdded;
+            ConsumableItems.OnItemRemoved -= InvokeOnAnyPlayerItemRemoved;
+            ConsumableItems.OnItemReplaced -= InvokeOnAnyPlayerItemReplaced;
+        }
+
+        #endregion
 
         #region Events
         
         public event IResettableScriptableObject.OnResetScriptableObject OnReset;
         
-        public delegate void OnPlayerItemChanged<PlayerItem>(PlayerItem item);
+        public delegate void OnPlayerItemChanged(PlayerItem item);
+
+        public delegate void OnPlayerItemReplaced(PlayerItem item);
         // public delegate void OnPlayerItemChanged();
 
-        public event OnPlayerItemChanged<PlayerItem> OnAnyPlayerItemAdded;      // PlayerItem is the item that was ADDED
-        public event OnPlayerItemChanged<PlayerItem> OnAnyPlayerItemRemoved;    // PlayerItem is the item that was REMOVED
+        public event ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem> OnAnyPlayerItemAdded;
+        public event ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem> OnAnyPlayerItemRemoved;
+        public event ItemSlotType<PlayerItem>.OnSlotItemReplaced<PlayerItem> OnAnyPlayerItemReplaced;
         // public event OnPlayerItemChanged OnAnyPlayerItemChangedInInspector;     // When changes happen through the inspector, we don't know which specific item changed
+
+        private void InvokeOnAnyPlayerItemAdded(PlayerItem item)
+        {
+            OnAnyPlayerItemAdded?.Invoke(item);
+        }
+        
+        private void InvokeOnAnyPlayerItemRemoved(PlayerItem item)
+        {
+            OnAnyPlayerItemRemoved?.Invoke(item);
+        }
+        
+        private void InvokeOnAnyPlayerItemReplaced(PlayerItem oldItem, PlayerItem newItem)
+        {
+            OnAnyPlayerItemReplaced?.Invoke(oldItem, newItem);
+        }
 
         #endregion
 
