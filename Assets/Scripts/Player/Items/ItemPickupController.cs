@@ -120,7 +120,8 @@ namespace BML.Scripts.Player.Items
         {
             if (_playerInventory.CheckIfCanAddItem(_item) && _pickupDelayTimer.IsFinished)
             {
-                _activateTrigger.SetActive(true);
+                // _activateTrigger.SetActive(true);
+                // actually it seems better if activation is only turned on on trigger enter
             }
             else
             {
