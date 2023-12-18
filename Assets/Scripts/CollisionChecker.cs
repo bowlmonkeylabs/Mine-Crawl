@@ -11,6 +11,9 @@ namespace BML.Scripts
     {
         [SerializeField] private bool UseColliderReference;
         [SerializeField, HideIf("UseColliderReference")] private FloatReference Radius;
+        [Tooltip("Move movement in a single tick that will still check for collisions. To prevent collision check" +
+                 "when being teleported to far location.")]
+        [SerializeField, HideIf("UseColliderReference")] private float MaxSqrDistForCollision = 10f;
         [SerializeField, ShowIf("UseColliderReference")] private SphereCollider ColliderReference;
         [SerializeField] private LayerMask CollisionMask;
 
@@ -27,7 +30,10 @@ namespace BML.Scripts
 
         private void Update()
         {
-            CheckCollisions();
+            // Don't check for collision if moved a large distance (Ex. teleported)
+            if (Vector3.SqrMagnitude(transform.position - previousPosition) <= MaxSqrDistForCollision)
+                CheckCollisions();
+            
             previousPosition = transform.position;
         }
 

@@ -14,5 +14,10 @@ namespace BML.Scripts.WormBait
             caveWormSpawner = _enemySpawnManagerRef.Value.GetComponent<CaveWormSpawner>();
             caveWormSpawner.RegisterWormBait(this);
         }
+
+        public void UnregisterWormBait()
+        {
+            caveWormSpawner.UnRegisterWormBait(this);
+        }
     }
 }
