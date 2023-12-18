@@ -1,4 +1,5 @@
 ﻿using BML.Scripts.CaveV2.SpawnObjects;
+using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,11 +13,18 @@ namespace BML.Scripts
 
         [SerializeField] public bool DoCountForSpawnCap = true;
         [SerializeField, ReadOnly] public EnemySpawnPoint SpawnPoint;
+        [SerializeField] public MMF_Player SpawnDelayFeedbacks;
         [SerializeField] private UnityEvent _onDespawn;
         
         #endregion
 
         #region Public interface
+
+        public void ActivateSpawnDelay()
+        {
+            SpawnDelayFeedbacks.Initialization();
+            SpawnDelayFeedbacks.PlayFeedbacks();
+        }
         
         public void Despawn()
         {

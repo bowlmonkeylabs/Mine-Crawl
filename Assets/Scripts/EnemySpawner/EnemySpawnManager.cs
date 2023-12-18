@@ -419,8 +419,15 @@ namespace BML.Scripts
             }
 
             // Spawn chosen enemy at chosen spawn point
-            var newEnemy = SpawnEnemy((Vector3)spawnPos.position, (Quaternion)spawnPos.rotation, randomEnemyParams, randomSpawnPoint, randomSpawnPoint.ParentNode,
-                !randomSpawnPoint.IgnoreGlobalSpawnCap);
+            var newEnemy = SpawnEnemy(
+                (Vector3)spawnPos.position, 
+                (Quaternion)spawnPos.rotation, 
+                randomEnemyParams, 
+                randomSpawnPoint, 
+                randomSpawnPoint.ParentNode,
+                !randomSpawnPoint.IgnoreGlobalSpawnCap,
+                true
+            );
 
             EnemyState enemyState = newEnemy.GetComponent<EnemyState>();
             if (enemyState != null)
@@ -493,8 +500,15 @@ namespace BML.Scripts
                         }
 
                         // Spawn chosen enemy at chosen spawn point
-                        var newEnemy = SpawnEnemy((Vector3)spawnPos.position, (Quaternion)spawnPos.rotation, enemySpawnParams, spawnPoint, spawnPoint.ParentNode,
-                            !spawnPoint.IgnoreGlobalSpawnCap);
+                        var newEnemy = SpawnEnemy(
+                            (Vector3)spawnPos.position, 
+                            (Quaternion)spawnPos.rotation, 
+                            enemySpawnParams, 
+                            spawnPoint, 
+                            spawnPoint.ParentNode,
+                            !spawnPoint.IgnoreGlobalSpawnCap,
+                            true
+                        );
 
                         if (!spawnPoint.IgnoreGlobalSpawnCap)
                         {
@@ -511,7 +525,7 @@ namespace BML.Scripts
         }
         
         private GameObject SpawnEnemy(Vector3 position, Quaternion rotation, EnemySpawnParams enemy, EnemySpawnPoint spawnPoint,
-            ICaveNodeData caveNodeData, bool doCountForSpawnCap)
+            ICaveNodeData caveNodeData, bool doCountForSpawnCap, bool spawnDelay)
         {
             // Instantiate new enemy game object
             var newGameObject = GameObjectUtils.SafeInstantiate(true, enemy.Prefab, _enemyContainer);
@@ -528,6 +542,7 @@ namespace BML.Scripts
             {
                 enemySpawnable.DoCountForSpawnCap = doCountForSpawnCap;
                 enemySpawnable.SpawnPoint = spawnPoint;
+                if (spawnDelay) enemySpawnable.ActivateSpawnDelay();
             }
 
             var spawnedObjectCaveNodeData = newGameObject.GetComponent<SpawnedObjectCaveNodeData>();
@@ -552,7 +567,15 @@ namespace BML.Scripts
                 throw new ArgumentException($"EnemySpawnManager: '{enemyName}' Enemy not found in spawner list");
             }
 
-            return SpawnEnemy(position, Quaternion.identity, enemy, null, null, doCountForSpawnCap);
+            return SpawnEnemy(
+                position, 
+                Quaternion.identity, 
+                enemy, 
+                null, 
+                null, 
+                doCountForSpawnCap,
+                false
+            );
         }
 
         private void OnEnemyKilled(object prevValue, object currValue)
