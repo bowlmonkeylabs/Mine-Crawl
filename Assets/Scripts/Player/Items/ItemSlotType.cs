@@ -98,8 +98,6 @@ namespace BML.Scripts.Player.Items
 
         public (bool canAdd, T willReplaceItem) CheckIfCanAddItem(T item)
         {
-            if (_itemReplacementCooldownTween != null) return (false, default(T));
-            
             var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
             if (firstEmptySlot != null)
             {
@@ -114,6 +112,10 @@ namespace BML.Scripts.Player.Items
             var firstUnlockedSlot = _slots.FirstOrDefault(s => !s.Lock);
             if (firstUnlockedSlot != null)
             {
+                if (_itemReplacementCooldownTween != null)
+                {
+                    return (false, default(T));
+                }
                 return (true, firstUnlockedSlot.Item);
             }
             return (false, default(T));
@@ -121,14 +123,17 @@ namespace BML.Scripts.Player.Items
 
         public bool TryAddItem(T item)
         {
-            if (_itemReplacementCooldownTween != null) return false;
-            
             var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
             if (firstEmptySlot != null)
             {
                 firstEmptySlot.Item = item;
                 if (item != null)
                 {
+                    if (_itemReplacementCooldownTween != null)
+                    {
+                        LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
+                        _itemReplacementCooldownTween = null;
+                    }
                     _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
                     {
                         _itemReplacementCooldownTween = null;
@@ -149,6 +154,11 @@ namespace BML.Scripts.Player.Items
             var firstUnlockedSlot = _slots.FirstOrDefault(s => !s.Lock);
             if (firstUnlockedSlot != null)
             {
+                if (_itemReplacementCooldownTween != null)
+                {
+                    return false;
+                }
+
                 var prevItem = firstUnlockedSlot.Item;
                 // TODO drop the prev item on the ground?
                 if (prevItem != null)
@@ -159,6 +169,11 @@ namespace BML.Scripts.Player.Items
                 firstUnlockedSlot.Item = item;
                 if (item != null)
                 {
+                    if (_itemReplacementCooldownTween != null)
+                    {
+                        LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
+                        _itemReplacementCooldownTween = null;
+                    }
                     _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
                     {
                         _itemReplacementCooldownTween = null;
