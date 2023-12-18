@@ -193,6 +193,12 @@ namespace BML.Scripts.Player.Items
                 itemSlot.Item = default(T);
                 if (prevItem != null)
                 {
+                    if (_itemReplacementCooldownTween != null)
+                    {
+                        LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
+                        _itemReplacementCooldownTween = null;
+                        OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+                    }
                     OnItemRemoved?.Invoke(prevItem);
                 }
                 return true;
