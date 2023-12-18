@@ -27,21 +27,15 @@ namespace BML.Scripts
                 return;
             }
             
-            Debug.Log($"AttemptDamage {other.name}");
-            
             GameObject otherObj = other.gameObject;
             if (!otherObj.IsInLayerMask(_damageMask)) return;
             
-            Debug.Log($"InMask {other.name}");
-
             if (!_dealDamageToTriggers && other.isTrigger) return;
 
             Damageable damageable = otherObj.GetComponent<Damageable>();
 
             if (damageable == null && other.attachedRigidbody != null)
                 damageable = other.attachedRigidbody.GetComponent<Damageable>();
-            
-            Debug.Log($"damageable {damageable}");
             
             if (damageable != null) {
                 damageable.TakeDamage(new HitInfo(_damageType, _damage, (other.transform.position - transform.position).normalized));
