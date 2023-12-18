@@ -70,7 +70,7 @@ namespace BML.Scripts.Player.Items
 
         #region Public interface
 
-        public bool CheckIfCanAddItem(PlayerItem item)
+        public bool CheckIfCanAddItem(PlayerItem item, bool ignoreReplacementCooldown = false)
         {
             // TODO implement pickup timer, for any timer that will replace an item in the inventory slot
             switch (item.Type)
@@ -79,10 +79,10 @@ namespace BML.Scripts.Player.Items
                     return true;
                     break;
                 case ItemType.Passive:
-                    return PassiveItems.CheckIfCanAddItem(item).canAdd;
+                    return PassiveItems.CheckIfCanAddItem(item, ignoreReplacementCooldown).canAdd;
                     break;
                 case ItemType.Active:
-                    return ActiveItems.CheckIfCanAddItem(item).canAdd;
+                    return ActiveItems.CheckIfCanAddItem(item, ignoreReplacementCooldown).canAdd;
                     break;
                 case ItemType.Consumable:
                     // Allow pickup if the item grants ANY resources that the player has room to hold
@@ -94,7 +94,7 @@ namespace BML.Scripts.Player.Items
                     var effectsNotOnAcquired = item.ItemEffects.Where(e => e.Trigger != ItemEffectTrigger.OnAcquired);
                     if (canGrantAnyResourcesOnAcquired || effectsNotOnAcquired.Any())
                     {
-                        return ConsumableItems.CheckIfCanAddItem(item).canAdd;
+                        return ConsumableItems.CheckIfCanAddItem(item, ignoreReplacementCooldown).canAdd;
                     }
                     return false;
                     break;
@@ -108,7 +108,7 @@ namespace BML.Scripts.Player.Items
             return _isPlayerGodMode.Value || item.ItemCost.All((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount >= entry.Value);
         }
 
-        public bool CheckIfCanBuy(PlayerItem item)
+        public bool CheckIfCanBuy(PlayerItem item, bool ignoreReplacementCooldown = false)
         {
             return CheckIfCanAffordItem(item) && CheckIfCanAddItem(item);
         }
@@ -118,7 +118,7 @@ namespace BML.Scripts.Player.Items
             item.ItemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount -= entry.Value);
         }
 
-        public bool TryAddItem(PlayerItem item)
+        public bool TryAddItem(PlayerItem item, bool ignoreReplacementCooldown = false)
         {
             bool didAdd = false;
             
@@ -128,19 +128,19 @@ namespace BML.Scripts.Player.Items
                     bool hasTree = PassiveStackableItemTrees.Contains(item.PassiveStackableTreeStartNode);
                     if (!hasTree)
                     {
-                        bool didAddTree = PassiveStackableItemTrees.TryAddItem(item.PassiveStackableTreeStartNode);
+                        bool didAddTree = PassiveStackableItemTrees.TryAddItem(item.PassiveStackableTreeStartNode, ignoreReplacementCooldown);
                         hasTree = didAddTree;
                     }
                     if (hasTree)
                     {
-                        didAdd = PassiveStackableItems.TryAddItem(item);
+                        didAdd = PassiveStackableItems.TryAddItem(item, ignoreReplacementCooldown);
                     }
                     break;
                 case ItemType.Passive:
-                    didAdd = PassiveItems.TryAddItem(item);
+                    didAdd = PassiveItems.TryAddItem(item, ignoreReplacementCooldown);
                     break;
                 case ItemType.Active:
-                    didAdd = ActiveItems.TryAddItem(item);
+                    didAdd = ActiveItems.TryAddItem(item, ignoreReplacementCooldown);
                     break;
                 case ItemType.Consumable:
                     // TODO what to do if it gets queued, but fails to get added to the inventory?
@@ -149,8 +149,8 @@ namespace BML.Scripts.Player.Items
                     bool anyEffectsOtherThanOnAcquire = item.ItemEffects.Any(e => e.Trigger != ItemEffectTrigger.OnAcquired);
                     if (anyEffectsOtherThanOnAcquire)
                     {
-                        // didAdd = ConsumableItems.TryAddItem(item);
-                        ConsumableItems.TryAddItem(item);
+                        // didAdd = ConsumableItems.TryAddItem(item, ignoreReplacementCooldown);
+                        ConsumableItems.TryAddItem(item, ignoreReplacementCooldown);
                     }
                     break;
             }

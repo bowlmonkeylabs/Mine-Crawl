@@ -96,7 +96,7 @@ namespace BML.Scripts.Player.Items
 
         private LTDescr _itemReplacementCooldownTween;
 
-        public (bool canAdd, T willReplaceItem) CheckIfCanAddItem(T item)
+        public (bool canAdd, T willReplaceItem) CheckIfCanAddItem(T item, bool ignoreReplacementCooldown = false)
         {
             var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
             if (firstEmptySlot != null)
@@ -112,7 +112,7 @@ namespace BML.Scripts.Player.Items
             var firstUnlockedSlot = _slots.FirstOrDefault(s => !s.Lock);
             if (firstUnlockedSlot != null)
             {
-                if (_itemReplacementCooldownTween != null)
+                if (_itemReplacementCooldownTween != null && !ignoreReplacementCooldown)
                 {
                     return (false, default(T));
                 }
@@ -121,7 +121,7 @@ namespace BML.Scripts.Player.Items
             return (false, default(T));
         }
 
-        public bool TryAddItem(T item)
+        public bool TryAddItem(T item, bool ignoreReplacementCooldown = false)
         {
             var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
             if (firstEmptySlot != null)
@@ -129,18 +129,24 @@ namespace BML.Scripts.Player.Items
                 firstEmptySlot.Item = item;
                 if (item != null)
                 {
-                    if (_itemReplacementCooldownTween != null)
+                    if (!ignoreReplacementCooldown)
                     {
-                        LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
-                        _itemReplacementCooldownTween = null;
+                        if (_itemReplacementCooldownTween != null)
+                        {
+                            LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
+                            _itemReplacementCooldownTween = null;
+                        }
+                        _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
+                        {
+                            _itemReplacementCooldownTween = null;
+                            OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+                        });
                     }
-                    _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
-                    {
-                        _itemReplacementCooldownTween = null;
-                        OnReplacementCooldownTimerStartedOrFinished?.Invoke();
-                    });
                     OnItemAdded?.Invoke(item);
-                    OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+                    if (!ignoreReplacementCooldown)
+                    {
+                        OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+                    }
                 }
                 return true;
             }
@@ -169,18 +175,24 @@ namespace BML.Scripts.Player.Items
                 firstUnlockedSlot.Item = item;
                 if (item != null)
                 {
-                    if (_itemReplacementCooldownTween != null)
+                    if (!ignoreReplacementCooldown)
                     {
-                        LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
-                        _itemReplacementCooldownTween = null;
+                        if (_itemReplacementCooldownTween != null)
+                        {
+                            LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
+                            _itemReplacementCooldownTween = null;
+                        }
+                        _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
+                        {
+                            _itemReplacementCooldownTween = null;
+                             OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+                        });
                     }
-                    _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
-                    {
-                        _itemReplacementCooldownTween = null;
-                         OnReplacementCooldownTimerStartedOrFinished?.Invoke();
-                    });
                     OnItemAdded?.Invoke(item);
-                    OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+                    if (!ignoreReplacementCooldown)
+                    {
+                        OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+                    }
                 }
                 return true;
             }

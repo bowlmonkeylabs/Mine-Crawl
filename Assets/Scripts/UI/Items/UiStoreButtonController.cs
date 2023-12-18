@@ -95,7 +95,7 @@ namespace BML.Scripts.UI.Items
         {
             if (_enableLogs) Debug.Log($"UpdateInteractable ({_button.gameObject.name})");
 
-            bool canBuyItem = _itemToPurchase != null && _playerInventory.CheckIfCanBuy(_itemToPurchase);
+            bool canBuyItem = _itemToPurchase != null && _playerInventory.CheckIfCanBuy(_itemToPurchase, true);
             if (_button.interactable != canBuyItem)
             {
                 _button.interactable = canBuyItem;
