@@ -29,6 +29,9 @@ namespace BML.Scripts.Player.Items
         }
         
         #region Inspector
+
+        [SerializeField]
+        private float _itemReplacementCooldown = 2.5f;
         
         [SerializeField]
         // [OnValueChanged("OnSlotsLimitChangedInInspector")]
@@ -91,8 +94,12 @@ namespace BML.Scripts.Player.Items
 
         #endregion
 
+        private LTDescr _itemReplacementCooldownTween;
+
         public (bool canAdd, T willReplaceItem) CheckIfCanAddItem(T item)
         {
+            if (_itemReplacementCooldownTween != null) return (false, default(T));
+            
             var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
             if (firstEmptySlot != null)
             {
@@ -114,13 +121,21 @@ namespace BML.Scripts.Player.Items
 
         public bool TryAddItem(T item)
         {
+            if (_itemReplacementCooldownTween != null) return false;
+            
             var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
             if (firstEmptySlot != null)
             {
                 firstEmptySlot.Item = item;
                 if (item != null)
                 {
+                    _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
+                    {
+                        _itemReplacementCooldownTween = null;
+                        OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+                    });
                     OnItemAdded?.Invoke(item);
+                    OnReplacementCooldownTimerStartedOrFinished?.Invoke();
                 }
                 return true;
             }
@@ -144,7 +159,13 @@ namespace BML.Scripts.Player.Items
                 firstUnlockedSlot.Item = item;
                 if (item != null)
                 {
+                    _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
+                    {
+                        _itemReplacementCooldownTween = null;
+                         OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+                    });
                     OnItemAdded?.Invoke(item);
+                    OnReplacementCooldownTimerStartedOrFinished?.Invoke();
                 }
                 return true;
             }
@@ -196,6 +217,7 @@ namespace BML.Scripts.Player.Items
         public event OnSlotItemChanged<T> OnItemRemoved;
         public event OnSlotItemReplaced<T> OnItemReplaced;
         public event OnSlotItemChanged OnAnyItemChangedInInspector;     // When changes happen through the inspector, we don't know which specific item changed
+        public event OnSlotItemChanged OnReplacementCooldownTimerStartedOrFinished;
 
         #endregion
     }

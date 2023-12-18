@@ -273,12 +273,15 @@ namespace BML.Scripts.Player.Items
             OnAnyPlayerItemReplaced?.Invoke(oldItem, newItem);
         }
 
-        [NonSerialized] private Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem>> _itemOnInventoryUpdatedCallbacks 
+        [NonSerialized] private Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem>> _itemOnInventoryItemUpdatedCallbacks 
             = new Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem>>();
+        [NonSerialized] private Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem>.OnSlotItemChanged> _itemOnInventoryUpdatedCallbacks 
+            = new Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem>.OnSlotItemChanged>();
         [NonSerialized] private Dictionary<(PlayerItem, Action), OnAmountChanged> _itemOnCostAmountChangedCalledbacks 
             = new Dictionary<(PlayerItem, Action), OnAmountChanged>();
         [NonSerialized] private Dictionary<(PlayerItem, Action), OnUpdate> _itemOnGodModeChangedCallbacks 
             = new Dictionary<(PlayerItem, Action), OnUpdate>();
+        
         public void SubscribeOnBuyabilityChanged(PlayerItem item, Action callback)
         {
             if (_itemOnCostAmountChangedCalledbacks.ContainsKey((item, callback)))
@@ -346,59 +349,72 @@ namespace BML.Scripts.Player.Items
 
         public void SubscribeOnPickupabilityChanged(PlayerItem item, Action callback)
         {
-            if (_itemOnInventoryUpdatedCallbacks.ContainsKey((item, callback)))
+            if (_itemOnInventoryItemUpdatedCallbacks.ContainsKey((item, callback)))
             {
                 UnsubscribeOnPickupabilityChanged(item, callback);
             }
-            ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem> onInventoryUpdated = (PlayerItem playerItem) => callback();
+            ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem> onInventoryItemUpdated = (PlayerItem playerItem) => callback();
+            _itemOnInventoryItemUpdatedCallbacks[(item, callback)] = onInventoryItemUpdated;
+
+            ItemSlotType<PlayerItem>.OnSlotItemChanged onInventoryUpdated = () => callback();
             _itemOnInventoryUpdatedCallbacks[(item, callback)] = onInventoryUpdated;
-            
+
             switch (item.Type)
             {
                 case ItemType.PassiveStackable:
-                    PassiveStackableItems.OnItemAdded += onInventoryUpdated;
-                    PassiveStackableItems.OnItemRemoved += onInventoryUpdated;
+                    PassiveStackableItems.OnItemAdded += onInventoryItemUpdated;
+                    PassiveStackableItems.OnItemRemoved += onInventoryItemUpdated;
+                    PassiveStackableItems.OnReplacementCooldownTimerStartedOrFinished += onInventoryUpdated;
                     break;
                 case ItemType.Passive:
-                    PassiveItems.OnItemAdded += onInventoryUpdated;
-                    PassiveItems.OnItemRemoved += onInventoryUpdated;
+                    PassiveItems.OnItemAdded += onInventoryItemUpdated;
+                    PassiveItems.OnItemRemoved += onInventoryItemUpdated;
+                    PassiveItems.OnReplacementCooldownTimerStartedOrFinished += onInventoryUpdated;
                     break;
                 case ItemType.Active:
-                    ActiveItems.OnItemAdded += onInventoryUpdated;
-                    ActiveItems.OnItemRemoved += onInventoryUpdated;
+                    ActiveItems.OnItemAdded += onInventoryItemUpdated;
+                    ActiveItems.OnItemRemoved += onInventoryItemUpdated;
+                    ActiveItems.OnReplacementCooldownTimerStartedOrFinished += onInventoryUpdated;
                     break;
                 case ItemType.Consumable:
-                    ConsumableItems.OnItemAdded += onInventoryUpdated;
-                    ConsumableItems.OnItemRemoved += onInventoryUpdated;
+                    ConsumableItems.OnItemAdded += onInventoryItemUpdated;
+                    ConsumableItems.OnItemRemoved += onInventoryItemUpdated;
+                    ConsumableItems.OnReplacementCooldownTimerStartedOrFinished += onInventoryUpdated;
                     break;
             }
         }
 
         public void UnsubscribeOnPickupabilityChanged(PlayerItem item, Action callback)
         {
-            bool keyExists = _itemOnInventoryUpdatedCallbacks.TryGetValue((item, callback), out var onInventoryUpdated);
+            bool keyExists = _itemOnInventoryItemUpdatedCallbacks.TryGetValue((item, callback), out var onInventoryItemUpdated);
             if (!keyExists)
             {
                 return;
             }
+
+            ItemSlotType<PlayerItem>.OnSlotItemChanged onInventoryUpdated = _itemOnInventoryUpdatedCallbacks[(item, callback)];
             
             switch (item.Type)
             {
                 case ItemType.PassiveStackable:
-                    PassiveStackableItems.OnItemAdded -= onInventoryUpdated;
-                    PassiveStackableItems.OnItemRemoved -= onInventoryUpdated;
+                    PassiveStackableItems.OnItemAdded -= onInventoryItemUpdated;
+                    PassiveStackableItems.OnItemRemoved -= onInventoryItemUpdated;
+                    PassiveStackableItems.OnReplacementCooldownTimerStartedOrFinished -= onInventoryUpdated;
                     break;
                 case ItemType.Passive:
-                    PassiveItems.OnItemAdded -= onInventoryUpdated;
-                    PassiveItems.OnItemRemoved -= onInventoryUpdated;
+                    PassiveItems.OnItemAdded -= onInventoryItemUpdated;
+                    PassiveItems.OnItemRemoved -= onInventoryItemUpdated;
+                    PassiveItems.OnReplacementCooldownTimerStartedOrFinished -= onInventoryUpdated;
                     break;
                 case ItemType.Active:
-                    ActiveItems.OnItemAdded -= onInventoryUpdated;
-                    ActiveItems.OnItemRemoved -= onInventoryUpdated;
+                    ActiveItems.OnItemAdded -= onInventoryItemUpdated;
+                    ActiveItems.OnItemRemoved -= onInventoryItemUpdated;
+                    ActiveItems.OnReplacementCooldownTimerStartedOrFinished -= onInventoryUpdated;
                     break;
                 case ItemType.Consumable:
-                    ConsumableItems.OnItemAdded -= onInventoryUpdated;
-                    ConsumableItems.OnItemRemoved -= onInventoryUpdated;
+                    ConsumableItems.OnItemAdded -= onInventoryItemUpdated;
+                    ConsumableItems.OnItemRemoved -= onInventoryItemUpdated;
+                    ConsumableItems.OnReplacementCooldownTimerStartedOrFinished -= onInventoryUpdated;
                     break;
             }
         }
