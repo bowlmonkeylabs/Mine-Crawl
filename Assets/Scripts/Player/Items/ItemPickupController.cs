@@ -17,8 +17,10 @@ namespace BML.Scripts.Player.Items
         // [SerializeField, Tooltip("This default mesh is only used when the item has no ObjectPrefab assigned.")] 
         // private PickupShaderController _pickupShaderControllerForDefaultMesh;
         
-        [FormerlySerializedAs("_defaultPickupVisualController")] [SerializeField, Tooltip("This default mesh is only used when the item has no ObjectPrefab assigned.")]
-        private DefaultItemVisualController defaultItemVisualController;
+        [FormerlySerializedAs("defaultItemVisualController")] [FormerlySerializedAs("_defaultPickupVisualController")] [SerializeField, Tooltip("This default mesh is only used when the item has no ObjectPrefab assigned.")]
+        private DefaultItemVisualController _defaultItemVisualController;
+
+        [NonSerialized] private ItemVisualController _itemVisualController;
 
         [SerializeField] private Transform _pickupVisualParent;
 
@@ -103,14 +105,14 @@ namespace BML.Scripts.Player.Items
             bool useDefault3dObject = (_item.ObjectPrefab == null);
             // _pickupShaderControllerForDefaultMesh.SetItem(_item);
             // _pickupShaderControllerForDefaultMesh.gameObject.SetActive(useDefault3dObject);
-            defaultItemVisualController.SetItem(_item);
-            defaultItemVisualController.gameObject.SetActive(useDefault3dObject);
+            _defaultItemVisualController.SetItem(_item);
+            _defaultItemVisualController.gameObject.SetActive(useDefault3dObject);
 
             if (!useDefault3dObject)
             {
                 var newVisualGameObject = GameObjectUtils.SafeInstantiate(true, _item.ObjectPrefab, _pickupVisualParent);
-                var newVisualController = newVisualGameObject.GetComponent<ItemVisualController>();
-                newVisualController.SetItem(_item);
+                _itemVisualController = newVisualGameObject.GetComponent<ItemVisualController>();
+                _itemVisualController.SetItem(_item);
             }
 
             // TODO assign pickup sound overrides?
