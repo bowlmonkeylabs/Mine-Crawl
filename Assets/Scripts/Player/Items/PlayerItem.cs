@@ -37,15 +37,12 @@ namespace BML.Scripts.Player.Items
         public ItemTreeGraphStartNode PassiveStackableTreeStartNode;
         
         [SerializeField, FoldoutGroup("Pickup"), PreviewField(100, ObjectFieldAlignment.Left), AssetsOnly] protected GameObject _objectPrefab;
-        [SerializeField, FoldoutGroup("Pickup")] private PlayerInventory _playerInventory;
         
         [FormerlySerializedAs("_storeCost")]
         [SerializeField]
         [FoldoutGroup("Store")]
         [DictionaryDrawerSettings(KeyLabel = "Resource", ValueLabel = "Amount", DisplayMode = DictionaryDisplayOptions.ExpandedFoldout)]
         private Dictionary<PlayerResource, int> _itemCost = new Dictionary<PlayerResource, int>();
-        [SerializeField, FoldoutGroup("Store"), LabelText("Is Player God Mode")] private BoolVariable _isPlayerGodModeVariable;
-        private bool _isPlayerGodMode => _isPlayerGodModeVariable?.Value ?? false;
         
         [SerializeField, FoldoutGroup("Effect")] private ItemType _itemType = ItemType.PassiveStackable;
         [SerializeField, FoldoutGroup("Effect")]
@@ -74,146 +71,11 @@ namespace BML.Scripts.Player.Items
         }
 
         #endregion
-        
-        #region Unity lifecycle
-        
-        private void OnEnable()
-        {
-            switch (_itemType)
-            {
-                case ItemType.PassiveStackable:
-                    _playerInventory.PassiveStackableItems.OnItemAdded += OnInventoryUpdated;
-                    _playerInventory.PassiveStackableItems.OnItemRemoved += OnInventoryUpdated;
-                    break;
-                case ItemType.Passive:
-                    _playerInventory.PassiveItems.OnItemAdded += OnInventoryUpdated;
-                    _playerInventory.PassiveItems.OnItemRemoved += OnInventoryUpdated;
-                    break;
-                case ItemType.Active:
-                    _playerInventory.ActiveItems.OnItemAdded += OnInventoryUpdated;
-                    _playerInventory.ActiveItems.OnItemRemoved += OnInventoryUpdated;
-                    break;
-                case ItemType.Consumable:
-                    _itemEffects.Where(e => e is AddResourceItemEffect)
-                        .ForEach(e =>
-                            (e as AddResourceItemEffect).Resource.OnAmountChanged += InvokeOnPickupabilityChanged);
-                    break;
-            }
-            
-            OnPickupabilityChanged += InvokeOnBuyabilityChanged;
-            _isPlayerGodModeVariable?.Subscribe(InvokeOnBuyabilityChanged);
-            _itemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => {
-                entry.Key.OnAmountChanged += InvokeOnBuyabilityChanged;
-            });
-        }
-
-        private void OnDisable()
-        {
-            switch (_itemType)
-            {
-                case ItemType.PassiveStackable:
-                    _playerInventory.PassiveStackableItems.OnItemAdded -= OnInventoryUpdated;
-                    _playerInventory.PassiveStackableItems.OnItemRemoved -= OnInventoryUpdated;
-                    break;
-                case ItemType.Passive:
-                    _playerInventory.PassiveItems.OnItemAdded -= OnInventoryUpdated;
-                    _playerInventory.PassiveItems.OnItemRemoved -= OnInventoryUpdated;
-                    break;
-                case ItemType.Active:
-                    _playerInventory.ActiveItems.OnItemAdded -= OnInventoryUpdated;
-                    _playerInventory.ActiveItems.OnItemRemoved -= OnInventoryUpdated;
-                    break;
-                case ItemType.Consumable:
-                    _itemEffects.Where(e => e is AddResourceItemEffect)
-                        .ForEach(e =>
-                            (e as AddResourceItemEffect).Resource.OnAmountChanged -= InvokeOnPickupabilityChanged);
-                    break;
-            }
-            
-            OnPickupabilityChanged -= InvokeOnBuyabilityChanged;
-            _isPlayerGodModeVariable?.Unsubscribe(InvokeOnBuyabilityChanged);
-            _itemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => {
-                entry.Key.OnAmountChanged -= InvokeOnBuyabilityChanged;
-            });
-        }
-        
-        #endregion
-        
-        #region Affordability/Store interface
-
-        public delegate void _OnPickupStatusChanged();
-        public event _OnPickupStatusChanged OnBuyabilityChanged;
-        public event _OnPickupStatusChanged OnPickupabilityChanged;
-        
-        private void OnInventoryUpdated(PlayerItem playerItem)
-        {
-            InvokeOnBuyabilityChanged();
-        }
-        
-        private void InvokeOnBuyabilityChanged()
-        {
-            OnBuyabilityChanged?.Invoke();
-        }
-        
-        private void InvokeOnPickupabilityChanged()
-        {
-            OnPickupabilityChanged?.Invoke();
-        }
-
-        public bool CheckIfCanBuy()
-        {
-            return CheckIfCanAfford() && CheckIfCanPickup();
-        }
-
-        public bool CheckIfCanPickup()
-        {
-            // return AllowPickupCondition.Value;
-            
-            // TODO use inventory to check if can hold
-            bool canPickup = true;
-            switch (_itemType)
-            {
-                case ItemType.PassiveStackable:
-                    // prevent if the player already holds this item
-                    break;
-                case ItemType.Passive:
-                    break;
-                case ItemType.Active:
-                    break;
-                case ItemType.Consumable:
-                    // if it grants a resource, ensure there is space
-                    var addResourceEffects = _itemEffects.Where(e => e is AddResourceItemEffect);
-                    if (addResourceEffects.Any())
-                    {
-                        // Allow pickup if the item grants ANY resources that the player has room to hold
-                        canPickup = addResourceEffects.Any(e => (e as AddResourceItemEffect).CanAddResource());
-                    }
-                    break;
-            }
-
-            return canPickup;
-        }
-
-        //TODO: return what resources you're short on
-        private bool CheckIfCanAfford() 
-        {
-            return _isPlayerGodMode || _itemCost.All((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount >= entry.Value);
-        }
-
-        public void DeductCosts()
-        {
-            if (!_isPlayerGodMode)
-            {
-                _itemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount -= entry.Value);
-            }
-        }
 
         public string FormatCostsAsText() 
         {
             return String.Join(" + ", _itemCost.Select((KeyValuePair<PlayerResource, int> entry) => $"{entry.Value}{entry.Key.IconText}"));
         }
-        
-        #endregion
         
         #region IResettableScriptableObject
         

@@ -29,6 +29,7 @@ namespace BML.Scripts.Player.Items
         [SerializeField] private GameObject _activateTrigger;
         
         [SerializeField] private DynamicGameEvent _onReceivePickup;
+        [SerializeField] private PlayerInventory _playerInventory;
 
         #endregion
         
@@ -38,12 +39,12 @@ namespace BML.Scripts.Player.Items
         {
             if (_item != null)
             {
-                _item.OnPickupabilityChanged -= UpdateActivated;
+                _playerInventory.UnsubscribeOnPickupabilityChanged(_item, UpdateActivated);
             }
             _item = item;
             if (_item != null)
             {
-                _item.OnPickupabilityChanged += UpdateActivated;
+                _playerInventory.SubscribeOnPickupabilityChanged(_item, UpdateActivated);
             }
             UpdateAssignedItem();
         }
@@ -57,7 +58,7 @@ namespace BML.Scripts.Player.Items
 
         public void TryActivatePickup()
         {
-            if (_item.CheckIfCanPickup())
+            if (_playerInventory.CheckIfCanAddItem(_item))
             {
                 _activateFeedbacks.PlayFeedbacks();
             }
@@ -65,7 +66,7 @@ namespace BML.Scripts.Player.Items
 
         public void TryReceivePickup()
         {
-            if (_item.CheckIfCanPickup())
+            if (_playerInventory.CheckIfCanAddItem(_item))
             {
                 _idleFeedbacks.StopFeedbacks();
                 _receiveFeedbacks.PlayFeedbacks();
@@ -87,7 +88,7 @@ namespace BML.Scripts.Player.Items
         {
             if (_item != null)
             {
-                _item.OnPickupabilityChanged -= UpdateActivated;
+                _playerInventory.UnsubscribeOnPickupabilityChanged(_item, UpdateActivated);
             }
         }
 
@@ -117,7 +118,7 @@ namespace BML.Scripts.Player.Items
 
         private void UpdateActivated()
         {
-            if (_item.CheckIfCanPickup())
+            if (_playerInventory.CheckIfCanAddItem(_item) && _pickupDelayTimer.IsFinished)
             {
                 _activateTrigger.SetActive(true);
             }

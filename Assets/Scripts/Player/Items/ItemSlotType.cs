@@ -91,6 +91,27 @@ namespace BML.Scripts.Player.Items
 
         #endregion
 
+        public (bool canAdd, T willReplaceItem) CheckIfCanAddItem(T item)
+        {
+            var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
+            if (firstEmptySlot != null)
+            {
+                return (true, default(T));
+            }
+
+            if (_slotsLimit.Value == 0)
+            {
+                return (true, default(T));
+            }
+            
+            var firstUnlockedSlot = _slots.FirstOrDefault(s => !s.Lock);
+            if (firstUnlockedSlot != null)
+            {
+                return (true, firstUnlockedSlot.Item);
+            }
+            return (false, default(T));
+        }
+
         public bool TryAddItem(T item)
         {
             var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
