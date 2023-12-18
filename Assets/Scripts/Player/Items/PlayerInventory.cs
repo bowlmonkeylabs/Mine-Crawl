@@ -190,9 +190,12 @@ namespace BML.Scripts.Player.Items
         public void ResetScriptableObject()
         {
             this.ActiveItems.ForEach(p => p?.ResetScriptableObject());
+            this.ConsumableItems.ForEach(p => p?.ResetScriptableObject());
             this.PassiveItems.ForEach(p => p?.ResetScriptableObject());
             this.PassiveStackableItems.ForEach(p => p?.ResetScriptableObject());
 
+            this.ActiveItems.Clear();
+            this.ConsumableItems.Clear();
             this.PassiveItems.Clear();
             this.PassiveStackableItems.Clear();
             this.PassiveStackableItemTrees.Clear();
