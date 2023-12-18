@@ -10,20 +10,31 @@ using UnityEngine.Events;
 
 namespace BML.ScriptableObjectCore.Scripts.Variables
 {
-    [Flags]
     public enum LootTableKey
     {
-        None = 0,
-        Nothing = 1 << 0,
-        Health = 1 << 1,
-        Health2 = 1 << 2,
-        CommonOre = 1 << 3,
-        CommonOre2 = 1 << 4,
-        RareOre = 1 << 5,
-        Bomb = 1 << 6,
-        HealthTemp = 1 << 7,
-        HealthTemp2 = 1 << 8,
-        WormBait = 1 << 9,
+        Nothing = 0,
+        CommonOre = 1,
+        CommonOre2 = 2,
+        RareOre = 3,
+        RareOre2 = 4,
+        
+        Health = 10,
+        Health2 = 11,
+        Health3 = 12,
+        
+        Bomb = 15,
+        Bomb2 = 16,
+        
+        Consumable = 20,
+        Consumable2 = 21,
+        Consumable3 = 22,
+        Consumable4 = 23,
+        Consumable5 = 24,
+        Consumable6 = 25,
+        Consumable7 = 26,
+        Consumable8 = 27,
+        Consumable9 = 28,
+        Consumable10 = 29,
     }
     
     [Serializable]
