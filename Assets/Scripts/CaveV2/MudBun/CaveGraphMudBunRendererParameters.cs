@@ -17,8 +17,6 @@ namespace BML.Scripts.CaveV2.MudBun
     {
         #region Inspector
 
-        [SerializeField] public Color CaveColor;
-
         /// <summary>
         /// Randomizes room rotation around the transform.up axis.
         /// </summary>
