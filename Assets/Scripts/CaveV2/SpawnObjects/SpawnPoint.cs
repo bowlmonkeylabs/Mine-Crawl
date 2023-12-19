@@ -151,7 +151,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 if (_projectedPosition != null && _projectedPosition != position)
                 {
                     Gizmos.color = Color.grey;
-                    DrawDebugMesh(_projectedPosition.Value);
+                    DrawDebugMesh(_projectedPosition.Value, _projectedRotation ?? Quaternion.identity);
                     Gizmos.DrawLine(position, _projectedPosition.Value);
                     Gizmos.color = Color.blue;
                     var projectedForward = Vector3.forward;
@@ -164,7 +164,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 else
                 {
                     Gizmos.color = Color.grey;
-                    DrawDebugMesh(position);
+                    DrawDebugMesh(position, Quaternion.identity);
                 }
 
                 var style = new GUIStyle
@@ -319,7 +319,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             }
         }
 
-        private void DrawDebugMesh(Vector3 position)
+        private void DrawDebugMesh(Vector3 position, Quaternion rotation)
         {
             if (_debugPrefab == null)
             {
@@ -334,13 +334,12 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             Quaternion rotationOffset = Quaternion.Euler(_rotationEulerOffset);
             foreach (var meshFilter in meshFilters)
             {
-                Quaternion rotation = rotationOffset * meshFilter.transform.rotation;
-                
-                Gizmos.DrawMesh(meshFilter.sharedMesh,
-                (position + meshFilter.transform.localPosition)
-                    .RotatePointAroundPivot(_projectedPosition.Value, rotationOffset), 
-                rotation, 
-                meshFilter.transform.lossyScale);
+                Gizmos.DrawMesh(
+                    meshFilter.sharedMesh,
+                (position + meshFilter.transform.localPosition).RotatePointAroundPivot(_projectedPosition.Value, rotation), 
+                rotation * meshFilter.transform.rotation,
+                    meshFilter.transform.lossyScale
+                );
             }
         }
     }

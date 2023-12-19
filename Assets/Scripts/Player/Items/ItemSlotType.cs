@@ -96,6 +96,20 @@ namespace BML.Scripts.Player.Items
 
         private LTDescr _itemReplacementCooldownTween;
 
+        private void RestartItemReplacementCooldown()
+        {
+            if (_itemReplacementCooldownTween != null)
+            {
+                LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
+                _itemReplacementCooldownTween = null;
+            }
+            _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
+            {
+                _itemReplacementCooldownTween = null;
+                OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+            });
+        }
+
         public (bool canAdd, T willReplaceItem) CheckIfCanAddItem(T item, bool ignoreReplacementCooldown = false)
         {
             var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
@@ -129,24 +143,9 @@ namespace BML.Scripts.Player.Items
                 firstEmptySlot.Item = item;
                 if (item != null)
                 {
-                    if (!ignoreReplacementCooldown)
-                    {
-                        if (_itemReplacementCooldownTween != null)
-                        {
-                            LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
-                            _itemReplacementCooldownTween = null;
-                        }
-                        _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
-                        {
-                            _itemReplacementCooldownTween = null;
-                            OnReplacementCooldownTimerStartedOrFinished?.Invoke();
-                        });
-                    }
+                    RestartItemReplacementCooldown();
                     OnItemAdded?.Invoke(item);
-                    if (!ignoreReplacementCooldown)
-                    {
-                        OnReplacementCooldownTimerStartedOrFinished?.Invoke();
-                    }
+                    OnReplacementCooldownTimerStartedOrFinished?.Invoke();
                 }
                 return true;
             }
@@ -154,13 +153,16 @@ namespace BML.Scripts.Player.Items
             if (_slotsLimit.Value == 0)
             {
                 _slots.Add(new ItemSlot<T>(item));
+                RestartItemReplacementCooldown();
+                OnItemAdded?.Invoke(item);
+                OnReplacementCooldownTimerStartedOrFinished?.Invoke();
                 return true;
             }
             
             var firstUnlockedSlot = _slots.FirstOrDefault(s => !s.Lock);
             if (firstUnlockedSlot != null)
             {
-                if (_itemReplacementCooldownTween != null)
+                if (_itemReplacementCooldownTween != null && !ignoreReplacementCooldown)
                 {
                     return false;
                 }
@@ -175,24 +177,9 @@ namespace BML.Scripts.Player.Items
                 firstUnlockedSlot.Item = item;
                 if (item != null)
                 {
-                    if (!ignoreReplacementCooldown)
-                    {
-                        if (_itemReplacementCooldownTween != null)
-                        {
-                            LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
-                            _itemReplacementCooldownTween = null;
-                        }
-                        _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
-                        {
-                            _itemReplacementCooldownTween = null;
-                             OnReplacementCooldownTimerStartedOrFinished?.Invoke();
-                        });
-                    }
+                    RestartItemReplacementCooldown();
                     OnItemAdded?.Invoke(item);
-                    if (!ignoreReplacementCooldown)
-                    {
-                        OnReplacementCooldownTimerStartedOrFinished?.Invoke();
-                    }
+                    OnReplacementCooldownTimerStartedOrFinished?.Invoke();
                 }
                 return true;
             }
@@ -235,6 +222,7 @@ namespace BML.Scripts.Player.Items
 
         public bool Clear()
         {
+            _slots.SetLength(_slotsLimit.Value);
             foreach (var itemSlot in _slots.Where(s => !s.Lock))
             {
                 itemSlot.Item = default(T);
@@ -253,5 +241,6 @@ namespace BML.Scripts.Player.Items
         public event OnSlotItemChanged OnReplacementCooldownTimerStartedOrFinished;
 
         #endregion
+        
     }
 }
