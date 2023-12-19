@@ -44,14 +44,14 @@ namespace BML.Scripts.Player.Items.Store
         {
             if (!_isGodModeEnabled.Value)
             {
-                var canBuyItem = payload.Item.CheckIfCanBuy();
+                bool canBuyItem = _playerInventory.CheckIfCanBuy(payload.Item, true);
                 if (!canBuyItem)
                 {
                     _onStoreFailOpenEvent.Raise();
                     return;
                 }
             
-                payload.Item.DeductCosts();
+                _playerInventory.DeductCosts(payload.Item);
             }
 
             DoPurchase(payload.Item);
@@ -61,7 +61,7 @@ namespace BML.Scripts.Player.Items.Store
 
         private void DoPurchase(PlayerItem item)
         {
-            var didAddItem = _playerInventory.TryAddItem(item);
+            var didAddItem = _playerInventory.TryAddItem(item, true);
             if (!didAddItem)
             {
                 throw new Exception("Purchase failed.");

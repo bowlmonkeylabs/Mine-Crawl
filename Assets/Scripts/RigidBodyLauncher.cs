@@ -54,6 +54,7 @@ namespace BML.Scripts
         private void Launch(GameObject gameObject, bool instantiate = true)
         {
             var position = (!_firePoint.SafeIsUnityNull() ? _firePoint.position : this.transform.position);
+            var rotation = (!_firePoint.SafeIsUnityNull() ? _firePoint.rotation : this.transform.rotation);
             var parent = (_container?.Value != null ? _container.Value : this.transform);
 
             GameObject launchedGameObject;
@@ -65,7 +66,7 @@ namespace BML.Scripts
             {
                 launchedGameObject = gameObject;
             }
-            launchedGameObject.transform.SetPositionAndRotation(position, Quaternion.identity);
+            launchedGameObject.transform.SetPositionAndRotation(position, rotation);
             launchedGameObject.SetActive(true);
 
             var attachedRigidBody = launchedGameObject.GetComponent<Rigidbody>();
@@ -89,8 +90,8 @@ namespace BML.Scripts
                 var torque = _torque.Value + torqueVariance;
 
                 // Apply force and torque
-                attachedRigidBody.AddForce(force, _forceMode);
-                attachedRigidBody.AddTorque(torque, _forceMode);
+                attachedRigidBody.AddForce(rotation * force, _forceMode);
+                attachedRigidBody.AddTorque(rotation * torque, _forceMode);
             }
         }
     }

@@ -6,6 +6,7 @@ using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.Player.Items;
 using BML.Scripts.Player.Items.Store;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -134,15 +135,18 @@ namespace BML.Scripts.UI.Items
             for (int i = 0; i < _storeItemButtons.Count; i++)
             {
                 var buttonController = _storeItemButtons[i];
-                if (isStoreInventoryDefined && i < _storeInventory.AvailableItems.Count)
+                if (!buttonController.SafeIsUnityNull())
                 {
-                    var item = _storeInventory.AvailableItems[i];
-                    buttonController.Init(item);
-                    buttonController.gameObject.SetActive(true);
-                }
-                else
-                {
-                    buttonController.gameObject.SetActive(false);
+                    if (isStoreInventoryDefined && i < _storeInventory.AvailableItems.Count)
+                    {
+                        var item = _storeInventory.AvailableItems[i];
+                        buttonController.Init(item);
+                        buttonController.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        buttonController.gameObject.SetActive(false);
+                    }
                 }
             }
 
@@ -175,7 +179,8 @@ namespace BML.Scripts.UI.Items
             
             var filteredButtons = _storeItemButtons
                 .Where(b =>
-                    (includeInactive || b.gameObject.activeSelf) 
+                    !b.SafeIsUnityNull()
+                    && (includeInactive || b.gameObject.activeSelf) 
                     && (includeNonInteractable || b.Button.IsInteractable()))
                 .Select(b => b.Button)
                 .ToList();

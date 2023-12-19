@@ -6078,12 +6078,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 801741264647034461}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: -0.375, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 3383630610286495642}
-  m_RootOrder: 5
+  m_Father: {fileID: 992820320567626940}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &898412242645442911
 GameObject:
@@ -9621,7 +9621,6 @@ Transform:
   - {fileID: 6535237234419854927}
   - {fileID: 872260361183828327}
   - {fileID: 5081931932841574671}
-  - {fileID: 6018573843172930576}
   - {fileID: 5978069358849114674}
   m_Father: {fileID: 8722278798120057416}
   m_RootOrder: 3
@@ -10218,6 +10217,7 @@ MonoBehaviour:
   _onPurchaseEvent: {fileID: 11400000, guid: 55866cc2117789d43af4b6db2f26f0ef, type: 2}
   _onReceivePickup: {fileID: 11400000, guid: efff3a82652674647b52fa2947dd6a9b, type: 2}
   _playerInventory: {fileID: 11400000, guid: 9356dfe23cfc20041850028b69aa7e4c, type: 2}
+  _inventoryItemDropper: {fileID: 5851580323107330667}
   _playerExperience:
     UseConstant: 0
     EnableInstanceOptions: 0
@@ -18089,6 +18089,38 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 14
   m_CollisionDetection: 0
+--- !u!1 &4693144472622283597
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 992820320567626940}
+  m_Layer: 7
+  m_Name: Pickup stuff
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &992820320567626940
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4693144472622283597}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 6018573843172930576}
+  - {fileID: 4036064547611499267}
+  m_Father: {fileID: 7265003986444444711}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4720054890593790168
 GameObject:
   m_ObjectHideFlags: 0
@@ -28963,6 +28995,7 @@ Transform:
   - {fileID: 2948586884496874650}
   - {fileID: 6514263781450521087}
   - {fileID: 1939597532527996424}
+  - {fileID: 992820320567626940}
   m_Father: {fileID: 8722278798120057416}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -0.06, y: 150, z: 0}
@@ -28991,7 +29024,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 92.03705
+  field of view: 92.03622
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -29111,6 +29144,137 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!1 &7325245207668222353
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4036064547611499267}
+  - component: {fileID: 5851580323107330667}
+  - component: {fileID: 116753615732450982}
+  m_Layer: 7
+  m_Name: '{Inventory Pickup Dropper}'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4036064547611499267
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7325245207668222353}
+  m_LocalRotation: {x: -0.258819, y: -0.000000014901161, z: 0.000000037252903, w: 0.9659259}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 992820320567626940}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: -30, y: 0, z: 0}
+--- !u!114 &5851580323107330667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7325245207668222353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: badd9f866037432798fe2414edc757da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSpawnPickup:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 116753615732450982}
+        m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
+        m_MethodName: Launch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _basePickupPrefab: {fileID: 8097470616027808229, guid: 403e8b8ea52f6ce4caab8a3ff49a1ae1, type: 3}
+  _pickupContainer: {fileID: 11400000, guid: eddf651308826cd46a3e62a45a34c7cd, type: 2}
+  _pickupDelaySetting: 1
+--- !u!114 &116753615732450982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7325245207668222353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f680a7afde40b49d9741bdbc7aa5bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _firePoint: {fileID: 4036064547611499267}
+  _container: {fileID: 0}
+  _quantity:
+    ReferenceTypeSelector: 0
+    ConstantValue: 1
+    RoundingBehavior: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _forceMode: 1
+  _direction:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 1}
+    Variable: {fileID: 0}
+  _directionVariance:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 0}
+  _force:
+    ReferenceTypeSelector: 0
+    ConstantValue: 6
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+  _forceVariance:
+    ReferenceTypeSelector: 0
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+  _torque:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 0}
+  _torqueVariance:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: {x: 0, y: 0, z: 0}
+    Variable: {fileID: 0}
+  _instantiateAsPrefab: 1
 --- !u!1 &7356159543126202168
 GameObject:
   m_ObjectHideFlags: 0
@@ -29355,7 +29519,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3383630610286495642}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &221586454172332477
 MonoBehaviour:
@@ -32156,14 +32320,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: faea4f824e685234c98cf4a4ec87257b, type: 3}
---- !u!4 &5172907581052711381 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8669587467729378765, guid: faea4f824e685234c98cf4a4ec87257b, type: 3}
-  m_PrefabInstance: {fileID: 4582786282930990104}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &6034591097091087148 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 7793056352837515060, guid: faea4f824e685234c98cf4a4ec87257b, type: 3}
+  m_PrefabInstance: {fileID: 4582786282930990104}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5172907581052711381 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8669587467729378765, guid: faea4f824e685234c98cf4a4ec87257b, type: 3}
   m_PrefabInstance: {fileID: 4582786282930990104}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5048760685977138667
@@ -36752,9 +36916,9 @@ PrefabInstance:
     - {fileID: 3960018906311444401, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
     - {fileID: 1834598533700266193, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
---- !u!108 &6442617568504354145 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 2518388751964019896, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
+--- !u!4 &1939597532527996424 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7021408810435422161, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
   m_PrefabInstance: {fileID: 8906954242875656665}
   m_PrefabAsset: {fileID: 0}
 --- !u!198 &3569760054384691783 stripped
@@ -36762,8 +36926,8 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 5337203621404181406, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
   m_PrefabInstance: {fileID: 8906954242875656665}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1939597532527996424 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7021408810435422161, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
+--- !u!108 &6442617568504354145 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 2518388751964019896, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
   m_PrefabInstance: {fileID: 8906954242875656665}
   m_PrefabAsset: {fileID: 0}

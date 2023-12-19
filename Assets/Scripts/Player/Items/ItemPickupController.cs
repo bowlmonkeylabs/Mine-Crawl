@@ -17,8 +17,10 @@ namespace BML.Scripts.Player.Items
         // [SerializeField, Tooltip("This default mesh is only used when the item has no ObjectPrefab assigned.")] 
         // private PickupShaderController _pickupShaderControllerForDefaultMesh;
         
-        [FormerlySerializedAs("_defaultPickupVisualController")] [SerializeField, Tooltip("This default mesh is only used when the item has no ObjectPrefab assigned.")]
-        private DefaultItemVisualController defaultItemVisualController;
+        [FormerlySerializedAs("defaultItemVisualController")] [FormerlySerializedAs("_defaultPickupVisualController")] [SerializeField, Tooltip("This default mesh is only used when the item has no ObjectPrefab assigned.")]
+        private DefaultItemVisualController _defaultItemVisualController;
+
+        [NonSerialized] private ItemVisualController _itemVisualController;
 
         [SerializeField] private Transform _pickupVisualParent;
 
@@ -29,6 +31,7 @@ namespace BML.Scripts.Player.Items
         [SerializeField] private GameObject _activateTrigger;
         
         [SerializeField] private DynamicGameEvent _onReceivePickup;
+        [SerializeField] private PlayerInventory _playerInventory;
 
         #endregion
         
@@ -38,12 +41,12 @@ namespace BML.Scripts.Player.Items
         {
             if (_item != null)
             {
-                _item.OnPickupabilityChanged -= UpdateActivated;
+                _playerInventory.UnsubscribeOnPickupabilityChanged(_item, UpdateActivated);
             }
             _item = item;
             if (_item != null)
             {
-                _item.OnPickupabilityChanged += UpdateActivated;
+                _playerInventory.SubscribeOnPickupabilityChanged(_item, UpdateActivated);
             }
             UpdateAssignedItem();
         }
@@ -57,7 +60,7 @@ namespace BML.Scripts.Player.Items
 
         public void TryActivatePickup()
         {
-            if (_item.CheckIfCanPickup())
+            if (_playerInventory.CheckIfCanAddItem(_item))
             {
                 _activateFeedbacks.PlayFeedbacks();
             }
@@ -65,7 +68,7 @@ namespace BML.Scripts.Player.Items
 
         public void TryReceivePickup()
         {
-            if (_item.CheckIfCanPickup())
+            if (_playerInventory.CheckIfCanAddItem(_item))
             {
                 _idleFeedbacks.StopFeedbacks();
                 _receiveFeedbacks.PlayFeedbacks();
@@ -87,7 +90,7 @@ namespace BML.Scripts.Player.Items
         {
             if (_item != null)
             {
-                _item.OnPickupabilityChanged -= UpdateActivated;
+                _playerInventory.UnsubscribeOnPickupabilityChanged(_item, UpdateActivated);
             }
         }
 
@@ -102,14 +105,14 @@ namespace BML.Scripts.Player.Items
             bool useDefault3dObject = (_item.ObjectPrefab == null);
             // _pickupShaderControllerForDefaultMesh.SetItem(_item);
             // _pickupShaderControllerForDefaultMesh.gameObject.SetActive(useDefault3dObject);
-            defaultItemVisualController.SetItem(_item);
-            defaultItemVisualController.gameObject.SetActive(useDefault3dObject);
+            _defaultItemVisualController.SetItem(_item);
+            _defaultItemVisualController.gameObject.SetActive(useDefault3dObject);
 
             if (!useDefault3dObject)
             {
                 var newVisualGameObject = GameObjectUtils.SafeInstantiate(true, _item.ObjectPrefab, _pickupVisualParent);
-                var newVisualController = newVisualGameObject.GetComponent<ItemVisualController>();
-                newVisualController.SetItem(_item);
+                _itemVisualController = newVisualGameObject.GetComponent<ItemVisualController>();
+                _itemVisualController.SetItem(_item);
             }
 
             // TODO assign pickup sound overrides?
@@ -117,9 +120,10 @@ namespace BML.Scripts.Player.Items
 
         private void UpdateActivated()
         {
-            if (_item.CheckIfCanPickup())
+            if (_playerInventory.CheckIfCanAddItem(_item) && _pickupDelayTimer.IsFinished)
             {
-                _activateTrigger.SetActive(true);
+                // _activateTrigger.SetActive(true);
+                // actually it seems better if activation is only turned on on trigger enter
             }
             else
             {
