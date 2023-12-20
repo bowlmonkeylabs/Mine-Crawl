@@ -62,6 +62,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         [FoldoutGroup("Debug"), SerializeField] private bool _showDebugPrefab;
         [FoldoutGroup("Debug"), SerializeField] private GameObject _debugPrefab;
+        [FoldoutGroup("Debug"), SerializeField] private bool _alwaysDrawGizmos = false;
         [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] protected ICaveNodeData parentNode;
         public ICaveNodeData ParentNode
         {
@@ -78,6 +79,64 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         #endregion
 
         #region Unity lifecycle
+
+        private void OnDrawGizmos()
+        {
+            if (_alwaysDrawGizmos)
+            {
+                #if UNITY_EDITOR
+            
+                var transformCached = this.transform;
+                var checkTransforms = new Transform[] { transformCached, transformCached.parent };
+                var position = transformCached.position;
+                    
+                if (_projectionBehavior == SpawnPointProjectionBehavior.Randomize)
+                {
+                    float fovVertical = _projectionDirectionRandomnessRangeDegrees.y * 2;
+                    float fovHorizontal = _projectionDirectionRandomnessRangeDegrees.x * 2;
+                    float aspect = fovHorizontal / fovVertical;
+                    Gizmos.color = Color.yellow;
+                    Gizmos.matrix = this.transform.localToWorldMatrix * Matrix4x4.Rotate(Quaternion.LookRotation(_projectionVector));
+                    Gizmos.DrawFrustum(Vector3.zero, fovVertical, _projectionDistance, 0, aspect);
+                    Gizmos.matrix = Matrix4x4.identity;
+                    Gizmos.DrawRay(position, this.transform.TransformDirection(_projectionVector));
+                }
+                
+                // Project();
+                if (_projectedPosition != null && _projectedPosition != position)
+                {
+                    Gizmos.color = Color.grey;
+                    DrawDebugMesh(_projectedPosition.Value, _projectedRotation ?? Quaternion.identity);
+                    Gizmos.DrawLine(position, _projectedPosition.Value);
+                    Gizmos.color = Color.blue;
+                    var projectedForward = Vector3.forward;
+                    if (_projectedRotation.HasValue)
+                    {
+                        projectedForward = _projectedRotation.Value * projectedForward;
+                    }
+                    Gizmos.DrawLine(_projectedPosition.Value, _projectedPosition.Value + projectedForward);
+                }
+                else
+                {
+                    Gizmos.color = Color.grey;
+                    DrawDebugMesh(position, Quaternion.identity);
+                }
+
+                var style = new GUIStyle
+                {
+                    alignment = TextAnchor.MiddleCenter,
+                    fontSize = 8,
+                    normal = new GUIStyleState
+                    {
+                        textColor = Color.white,
+                    },
+                };
+                // Handles.Label(position + Vector3.down * 0.3f, this.tag, style);
+                Handles.Label(position + Vector3.up * 0.3f, this.name, style);
+                
+                #endif
+            }
+        }
 
         private void OnDrawGizmosSelected()
         {
@@ -260,9 +319,11 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             Quaternion rotationOffset = Quaternion.Euler(_rotationEulerOffset);
             foreach (var meshFilter in meshFilters)
             {
+                var meshPosition = meshFilter.transform.localPosition;
+                meshPosition.Scale(meshFilter.transform.lossyScale.Inverse());
                 Gizmos.DrawMesh(
                     meshFilter.sharedMesh,
-                (position + meshFilter.transform.localPosition).RotatePointAroundPivot(_projectedPosition.Value, rotation), 
+                    (position + meshPosition).RotatePointAroundPivot(position, rotation), 
                 rotation * meshFilter.transform.rotation,
                     meshFilter.transform.lossyScale
                 );
