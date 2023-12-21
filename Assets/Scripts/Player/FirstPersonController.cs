@@ -514,7 +514,7 @@ namespace BML.Scripts.Player
         }
         
         private void CheckDash() {
-            if(!DashActive.Value && !isNoClipEnabled.Value && !DashInCooldown.Value && _input.dash) {
+            if(!DashActive.Value && !isNoClipEnabled.Value && !DashCooldownTimer.IsActive && _input.dash) {
                 ExitRopeMovement();
                 _currentGravity = 0f;
                 DashActive.Value = true;
@@ -533,9 +533,11 @@ namespace BML.Scripts.Player
             }
         }
 
-        private void CheckDashCooldown() {
+        private void CheckDashCooldown() 
+        {
             DashCooldownTimer.UpdateTime();
-            if((DashInCooldown.Value && DashCooldownTimer.IsFinished) || _isGodModeEnabled.Value) {
+            if (DashInCooldown.Value && (!DashCooldownTimer.IsActive || _isGodModeEnabled.Value)) 
+            {
                 DashInCooldown.Value = false;
                 DashCooldownTimer.ResetTimer();
             }

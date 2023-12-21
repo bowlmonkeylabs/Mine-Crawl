@@ -23,11 +23,13 @@ namespace BML.ScriptableObjectCore.Scripts.Events
 
         public void Subscribe(OnUpdate callback)
         {
+            if (enableLogs) Debug.Log($"Subscribe {this.name} ({callback.Method.Name})");
             this.OnUpdate += callback;
         }
 
         public void Unsubscribe(OnUpdate callback)
         {
+            if (enableLogs) Debug.Log($"Unsubscribe {this.name} ({callback.Method.Name})");
             this.OnUpdate -= callback;
         }
 
@@ -36,19 +38,28 @@ namespace BML.ScriptableObjectCore.Scripts.Events
         #region GameEventListener Registration
 
         public void RegisterListener(GameEventListener listener)
-        { listeners.Add(listener); }
+        {
+            if (enableLogs) Debug.Log($"RegisterListener {this.name} ({listener.name})");
+            listeners.Add(listener);
+        }
 
         public void UnregisterListener(GameEventListener listener)
-        { listeners.Remove(listener); }
+        {
+            if (enableLogs) Debug.Log($"UnregisterListener {this.name} ({listener.name})");
+            listeners.Remove(listener);
+        }
 
         #endregion
 
         public void Raise()
         {
+            if (enableLogs) Debug.Log($"Raise {this.name}");
             OnUpdate?.Invoke();
-            
-            for(int i = listeners.Count -1; i >= 0; i--)
+
+            for (int i = listeners.Count - 1; i >= 0; i--)
+            {
                 listeners[i].OnEventRaised();
+            }
         }
 
         

@@ -1,6 +1,7 @@
 using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.Scripts.CaveV2;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -19,6 +20,8 @@ namespace BML.Scripts.Player.Items
         OnPickaxeSweep = 7,
         OnPickaxeSweepHit = 8,
         OnPickaxeKillEnemy = 9,
+        OnPickaxeMineHit = 10,
+        OnPickaxeMineBreak = 11,
     }
     
     [Serializable]
@@ -28,6 +31,7 @@ namespace BML.Scripts.Player.Items
     {
         #region Inspector
 
+        [InfoBox("The parent item for this effect is not assigned; Something has gone horribly wrong!", InfoMessageType.Error, "_parentItemNotAssigned")]
         [SerializeField] 
         [PropertySpace(SpaceBefore = 20)]
         private ItemEffectTrigger _trigger;
@@ -64,6 +68,11 @@ namespace BML.Scripts.Player.Items
         public TimerVariable RecurringTimerForTrigger => _recurringTimerForTrigger;
         public bool RecurringTimerForTriggerCondition => _recurringTimerForTriggerCondition.Value;
 
+        [HideInInspector]
+        public PlayerItem ParentItem;
+        private bool _parentItemNotAssigned => ParentItem == null;
+        private string SteppedSeedKey => $"{ParentItem.Name}_{Trigger}_{ParentItem.ItemEffects.IndexOf(this)}";
+
         public bool ApplyEffect(bool isGodMode)
         {
             if (_useActivationLimit && _remainingActivations.Value <= 0 && !isGodMode)
@@ -81,7 +90,9 @@ namespace BML.Scripts.Player.Items
 
             if (_useActivationChance && !isGodMode)
             {
-                float randomRoll = Random.value; // TODO use seed??? how?
+                SeedManager.Instance.UpdateSteppedSeed(SteppedSeedKey);
+                Random.InitState(SeedManager.Instance.GetSteppedSeed(SteppedSeedKey));
+                float randomRoll = Random.value;
                 if (randomRoll > ActivationChance)
                 {
                     return false;

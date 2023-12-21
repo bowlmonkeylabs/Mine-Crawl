@@ -56,6 +56,15 @@ namespace BML.Scripts.QuantumConsoleExtensions
             _enemySpawnManager.DespawnAll();
         }
 
+        [Command("none")]
+        private void None()
+        {
+            SetSpawningPaused(true);
+            DespawnAll();
+            DelayWormTimer(10000f);
+            SetWormPaused(true);
+        }
+
         [Command("spawn-at-player", "Spawn an enemy at the player's position. Enemies are referenced by name (e.g. Zombie, Slime)")]
         private void Spawn(string enemyName, int count = 1, int health = -1)
         {
@@ -77,20 +86,20 @@ namespace BML.Scripts.QuantumConsoleExtensions
 
         #region Worm commands
 
-        [Command("pause-worm", "Pause worm countdown timer.")]
+        [Command("worm-pause", "Pause worm countdown timer.")]
         private void SetWormPaused(bool paused = true)
         {
             _caveWormSpawner.PauseSpawnTimer(paused);
         }
 
-        [Command("delay-worm", "Delay worm countdown timer.")]
+        [Command("worm-delay", "Delay worm countdown timer.")]
         private void DelayWormTimer(float addTimeSeconds)
         {
             _caveWormSpawner.DelaySpawnTimer(addTimeSeconds);
         }
 
-        [Command("delete-worm", "The maker meets its maker.")]
-        private void DelayWormTimer(bool killHimExtraHard = false)
+        [Command("worm-delete", "The maker meets its maker.")]
+        private void DeleteWorm(bool killHimExtraHard = false)
         {
             _caveWormSpawner.DeleteWorm(killHimExtraHard);
         }

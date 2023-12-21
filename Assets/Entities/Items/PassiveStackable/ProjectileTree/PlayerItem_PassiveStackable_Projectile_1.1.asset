@@ -18,6 +18,7 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 38f386e05e25e3d4cb2b2f211cd6f035, type: 2}
     - {fileID: 11400000, guid: c7732b8965fadfa44a67cbb51096f5d6, type: 2}
+    - {fileID: 11400000}
     - {fileID: 2553283881051063308, guid: 9afd605e132cf9545a4f9e04b3acdccc, type: 3}
     - {fileID: 11400000, guid: 4f3c154bd5d34bd4e8e4d93472fefad9, type: 2}
     SerializedBytesString: 
@@ -82,18 +83,33 @@ MonoBehaviour:
     - Name: _activationCooldownTimer
       Entry: 10
       Data: 1
+    - Name: _useActivationChance
+      Entry: 5
+      Data: false
+    - Name: _minActivationChance
+      Entry: 4
+      Data: 0
+    - Name: _playerLuckStat
+      Entry: 6
+      Data: 
+    - Name: _luckForMaxActivationChance
+      Entry: 3
+      Data: 0
     - Name: _recurringTimerForTrigger
       Entry: 6
       Data: 
     - Name: _recurringTimerForTriggerCondition
       Entry: 6
       Data: 
-    - Name: Prefab
+    - Name: ParentItem
       Entry: 10
       Data: 2
-    - Name: Target
+    - Name: Prefab
       Entry: 10
       Data: 3
+    - Name: Target
+      Entry: 10
+      Data: 4
     - Name: Container
       Entry: 6
       Data: 
@@ -102,8 +118,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 4|BML.Scripts.Player.Items.ItemEffects.RestartTimerVariableItemEffect,
-        BML.Scripts
+      Data: 4|BML.Scripts.Player.Items.ItemEffects.TimerVariableItemEffect, BML.Scripts
     - Name: _trigger
       Entry: 3
       Data: 4
@@ -119,14 +134,32 @@ MonoBehaviour:
     - Name: _activationCooldownTimer
       Entry: 6
       Data: 
+    - Name: _useActivationChance
+      Entry: 5
+      Data: false
+    - Name: _minActivationChance
+      Entry: 4
+      Data: 0
+    - Name: _playerLuckStat
+      Entry: 6
+      Data: 
+    - Name: _luckForMaxActivationChance
+      Entry: 3
+      Data: 0
     - Name: _recurringTimerForTrigger
       Entry: 6
       Data: 
     - Name: _recurringTimerForTriggerCondition
       Entry: 6
       Data: 
+    - Name: ParentItem
+      Entry: 6
+      Data: 
     - Name: TimerVariable
       Entry: 10
+      Data: 1
+    - Name: _timerFunctionToCall
+      Entry: 3
       Data: 1
     - Name: 
       Entry: 8
@@ -146,6 +179,4 @@ MonoBehaviour:
   _icon: {fileID: 21300000, guid: bb25b5be27d1a63429df70183aa2e20b, type: 3}
   PassiveStackableTreeStartNode: {fileID: 337168288027425340, guid: 21df0c8f4e7486b4c8b29c4e86b50133, type: 2}
   _objectPrefab: {fileID: 0}
-  _playerInventory: {fileID: 11400000, guid: 9356dfe23cfc20041850028b69aa7e4c, type: 2}
-  _isPlayerGodModeVariable: {fileID: 11400000, guid: c3845ac29ad76214893f2b304a42dcef, type: 2}
   _itemType: 1
