@@ -384,20 +384,30 @@ namespace BML.Scripts.CaveV2.MudBun
                 var localScale = new Vector3(caveNodeConnectionData.Radius, caveNodeConnectionData.Radius, edgeLength);
                 // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
 
-                // Spawn tunnel
-                GameObject newGameObject;
-
+                // Choose tunnel
+                GameObject tunnelPrefab;
+                
                 if (caveNodeConnectionData.IsBlocked)
                 {
-                    var sourceOrTargetIsChallengeRoom = source.NodeType == CaveNodeType.Challenge || target.NodeType == CaveNodeType.Challenge;
-                    var tunnelPrefab = sourceOrTargetIsChallengeRoom ? _caveGraphRenderParams.TunnelWithSlidingBarrierPrefab : _caveGraphRenderParams.TunnelWithBarrierPrefab;
-                    newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, tunnelPrefab, mudRenderer.transform);
-                    #warning TODO find tunnel barrier game object
+                    bool sourceOrTargetIsChallengeRoom = source.NodeType == CaveNodeType.Challenge || target.NodeType == CaveNodeType.Challenge;
+                    tunnelPrefab = sourceOrTargetIsChallengeRoom 
+                        ? _caveGraphRenderParams.TunnelWithSlidingBarrierPrefab 
+                        : _caveGraphRenderParams.TunnelWithBarrierPrefab;
+#warning TODO find tunnel barrier game object
                     // caveNodeConnectionData.Barrier = ;
                 }
+                else if (caveNodeConnectionData.Length >= 20f)
+                {
+                    tunnelPrefab = _caveGraphRenderParams.TunnelLongPrefab;
+                }
                 else
-                    newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
+                {
+                    tunnelPrefab = _caveGraphRenderParams.TunnelPrefab;
+                }
                 
+                // Spawn tunnel
+                GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, tunnelPrefab, mudRenderer.transform);
+
                 newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 newGameObject.transform.localScale = localScale;
                 caveNodeConnectionData.GameObject = newGameObject;
