@@ -47,8 +47,14 @@ namespace BML.Scripts.Player.Items
         [SerializeField, FoldoutGroup("Effect")] private ItemType _itemType = ItemType.PassiveStackable;
         [SerializeField, FoldoutGroup("Effect")]
         // [HideReferenceObjectPicker]
+        [OnValueChanged("OnItemEffectsChangedInInspector")]
         private List<ItemEffect> _itemEffects = new List<ItemEffect>();
 
+        private void OnItemEffectsChangedInInspector()
+        {
+            _itemEffects.ForEach(e => e.ParentItem = this);
+        }
+        
         #endregion
         
         #region Public interface
@@ -76,6 +82,20 @@ namespace BML.Scripts.Player.Items
         {
             return String.Join(" + ", _itemCost.Select((KeyValuePair<PlayerResource, int> entry) => $"{entry.Value}{entry.Key.IconText}"));
         }
+
+        #region Unity lifecycle
+
+        // private void OnEnable()
+        // {
+        //     // Normally the parent reference should be assigned automatically on creation, but use this to force the references to be assigned for all existing items.
+        //     #if UNITY_EDITOR
+        //     _itemEffects.ForEach(e => e.ParentItem = this);
+        //     EditorUtility.SetDirty(this);
+        //     // Then Ctrl + S to save all dirty objects
+        //     #endif
+        // }
+
+        #endregion
         
         #region IResettableScriptableObject
         
