@@ -25,6 +25,8 @@ namespace BML.Scripts.Player.Items
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private DynamicGameEvent _onSwingPickaxeCrit;
+        [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onPickaxeMineHit;
+        [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onPickaxeMineBreak;
         
         [SerializeField, FoldoutGroup("Enemy Events")] private DynamicGameEvent _onEnemyKilled;
 
@@ -89,6 +91,8 @@ namespace BML.Scripts.Player.Items
             _onSweepPickaxe.Subscribe(Apply_Passives_OnPickaxeSweep);
             _onSweepPickaxeHit.Subscribe(Apply_Passives_OnPickaxeSweepHit);
             _onSwingPickaxeCrit.Subscribe(Apply_Passives_OnPickaxeSwingCrit);
+            _onPickaxeMineHit.Subscribe(Apply_Passives_OnPickaxeMineHit);
+            _onPickaxeMineBreak.Subscribe(Apply_Passives_OnPickaxeMineBreak);
             
             _onEnemyKilled.Subscribe(OnEnemyKilledDynamic);
         }
@@ -120,6 +124,8 @@ namespace BML.Scripts.Player.Items
             _onSweepPickaxe.Unsubscribe(Apply_Passives_OnPickaxeSweep);
             _onSweepPickaxeHit.Unsubscribe(Apply_Passives_OnPickaxeSweepHit);
             _onSwingPickaxeCrit.Unsubscribe(Apply_Passives_OnPickaxeSwingCrit);
+            _onPickaxeMineHit.Unsubscribe(Apply_Passives_OnPickaxeMineHit);
+            _onPickaxeMineBreak.Unsubscribe(Apply_Passives_OnPickaxeMineBreak);
             
             _onEnemyKilled.Unsubscribe(OnEnemyKilledDynamic);
         }
@@ -389,8 +395,7 @@ namespace BML.Scripts.Player.Items
             _pickaxeHitPosition = Vector3.negativeInfinity;
         }
         
-        private void Apply_Passives_OnPickaxeSwingCrit(object previousValue, object hitPosition)
-        {
+        private void Apply_Passives_OnPickaxeSwingCrit(object previousValue, object hitPosition) {
             _pickaxeHitPosition = (Vector3) hitPosition;
             ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSwingCrit, true);
             _pickaxeHitPosition = Vector3.negativeInfinity;
@@ -406,6 +411,14 @@ namespace BML.Scripts.Player.Items
         
         private void Apply_Passives_OnPickaxeKillEnemy() {
             ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeKillEnemy, true);
+        }
+
+        private void Apply_Passives_OnPickaxeMineHit() {
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeMineHit, true);
+        }
+
+        private void Apply_Passives_OnPickaxeMineBreak() {
+            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeMineBreak, true);
         }
 
         #endregion

@@ -192,6 +192,9 @@ MonoBehaviour:
       - fieldName: From
         node: {fileID: 6751408385089586645}
         reroutePoints: []
+      - fieldName: From
+        node: {fileID: -167068458296544611}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 2
@@ -1423,7 +1426,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c4e280917d072640be943f96cba2774, type: 3}
-  m_Name: Mining 2.2
+  m_Name: Smash and Dash
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -1445,7 +1448,10 @@ MonoBehaviour:
       _node: {fileID: -167068458296544611}
       _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: To
+        node: {fileID: -8672002955570189522}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 2
@@ -1454,12 +1460,15 @@ MonoBehaviour:
       _node: {fileID: -167068458296544611}
       _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: From
+        node: {fileID: 1194245224980575867}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
-  TreeStartNode: {fileID: 0}
+  TreeStartNode: {fileID: 7395606790405979272}
   Item: {fileID: 11400000, guid: ab6b1ccb940be8543bccdaeb054ab39a, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -1597,7 +1606,13 @@ MonoBehaviour:
       _node: {fileID: 1194245224980575867}
       _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: To
+        node: {fileID: 6751408385089586645}
+        reroutePoints: []
+      - fieldName: To
+        node: {fileID: -167068458296544611}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 2
@@ -1611,7 +1626,7 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
-  TreeStartNode: {fileID: 0}
+  TreeStartNode: {fileID: 7395606790405979272}
   Item: {fileID: 11400000, guid: ec25cc2c9898ecb4b90e7c5a9de92982, type: 2}
 --- !u!114 &2359358694554025740
 MonoBehaviour:
@@ -2218,7 +2233,10 @@ MonoBehaviour:
       _node: {fileID: 6751408385089586645}
       _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: From
+        node: {fileID: 1194245224980575867}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 2

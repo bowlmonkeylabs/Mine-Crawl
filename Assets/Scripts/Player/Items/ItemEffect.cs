@@ -19,6 +19,8 @@ namespace BML.Scripts.Player.Items
         OnPickaxeSweep = 7,
         OnPickaxeSweepHit = 8,
         OnPickaxeKillEnemy = 9,
+        OnPickaxeMineHit = 10,
+        OnPickaxeMineBreak = 11,
     }
     
     [Serializable]
