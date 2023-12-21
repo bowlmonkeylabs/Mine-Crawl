@@ -46,7 +46,7 @@ namespace BML.Scripts
             
             bool didHitTarget, didHitObstacle;
 
-            Transform originTransform = _origin ?? transform;
+            Transform originTransform = _origin != null ? _origin : transform;
             Vector3 origin = originTransform.position;
             Vector3 dir = originTransform.forward;
             float raycastDist = Mathf.Approximately(0f, _raycastMaxDistance) ? Mathf.Infinity : _raycastMaxDistance;
