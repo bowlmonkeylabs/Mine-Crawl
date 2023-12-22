@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5353556366311396162}
-  - component: {fileID: 487508687789340740}
+  - component: {fileID: -3042803978322190775}
   m_Layer: 0
   m_Name: '{Spawn_Enemy_Sentinel}'
   m_TagString: Spawn_Enemy_Sentinel
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &487508687789340740
+--- !u!114 &-3042803978322190775
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,9 +40,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 560825861866341704}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b5053bdbdbf48a09af720c08c3c8bf3, type: 3}
+  m_Script: {fileID: 11500000, guid: cafd7541e47809141bf4ffca23b16675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SpawnPointId: '{Spawn_Enemy_Sentinel}_d7f75aa3-499c-4c2b-9948-41d8ab960302'
   _projectionBehavior: 1
   _projectionLayerMask:
     serializedVersion: 2
@@ -50,18 +51,23 @@ MonoBehaviour:
   _projectionVector: {x: 0, y: -1, z: 0}
   _projectionDirectionRandomnessRangeDegrees: {x: 30, y: 15}
   _projectionDistance: 45
+  RequireStableSurface: 1
   _doInheritParentRotation: 1
-  _rotateTowardsSurfaceNormal: 1
+  _alignToProjectionVector: 1
+  _alignToSurfaceNormal: 0
   _rotationEulerOffset: {x: 0, y: 0, z: 0}
+  _randomRotationRangeAroundUpAxis: {x: 0, y: 0}
+  _showDebugPrefab: 0
+  _debugPrefab: {fileID: 0}
   _startingSpawnChance: 1
   _disableIfPlayerVisited: 0
   _persistSpawns: 0
-  _guaranteeSpawnIfInRange: 1
+  _guaranteeSpawnIfInRange: 0
+  _guaranteeSpawnRange: 1
   _limitToOneSpawnAtATime: 1
-  _spawnLimit: 1
+  _spawnLimit: -1
   _applySpawnLimitOnlyToGuaranteedSpawns: 0
-  _ignoreGlobalSpawnCap: 1
-  OnlyIgnoreGlobalSpawnCapForGuaranteedSpawns: 1
-  _showDebugPrefab: 0
-  _debugPrefab: {fileID: 0}
+  _ignoreGlobalSpawnCap: 0
+  OnlyIgnoreGlobalSpawnCapForGuaranteedSpawns: 0
+  _alertOnStart: 1
   Occupied: 0

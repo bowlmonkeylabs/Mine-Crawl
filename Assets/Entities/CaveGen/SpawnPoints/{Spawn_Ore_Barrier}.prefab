@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1657375465712815232}
-  - component: {fileID: 6992820440264572476}
   - component: {fileID: 667386773161420024}
+  - component: {fileID: 4846434205842069495}
   m_Layer: 0
   m_Name: '{Spawn_Ore_Barrier}'
   m_TagString: Spawn_Ore_Barrier
@@ -32,42 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6992820440264572476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2665216146872196931}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b5053bdbdbf48a09af720c08c3c8bf3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _projectionBehavior: 0
-  _projectionLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  _projectionVector: {x: 0, y: -1, z: 0}
-  _projectionDirectionRandomnessRangeDegrees: {x: 30, y: 15}
-  _projectionDistance: 45
-  _doInheritParentRotation: 1
-  _alignToProjectionVector: 1
-  _alignToSurfaceNormal: 0
-  _rotationEulerOffset: {x: 0, y: 0, z: 0}
-  _startingSpawnChance: 1
-  _disableIfPlayerVisited: 0
-  _persistSpawns: 0
-  _guaranteeSpawnIfInRange: 0
-  _limitToOneSpawnAtATime: 0
-  _spawnLimit: -1
-  _applySpawnLimitOnlyToGuaranteedSpawns: 0
-  _ignoreGlobalSpawnCap: 0
-  OnlyIgnoreGlobalSpawnCapForGuaranteedSpawns: 1
-  _alertOnStart: 1
-  _showDebugPrefab: 0
-  _debugPrefab: {fileID: 0}
-  Occupied: 0
 --- !u!135 &667386773161420024
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -81,3 +45,33 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4846434205842069495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2665216146872196931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc9ee879e3205354d9d4fc1d5fb882df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpawnPointId: '{Spawn_Ore_Barrier}_1a83d4b1-c86e-44a1-b4ca-abaf6b472a34'
+  _projectionBehavior: 0
+  _projectionLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _projectionVector: {x: 0, y: -1, z: 0}
+  _projectionDirectionRandomnessRangeDegrees: {x: 30, y: 15}
+  _projectionDistance: 45
+  RequireStableSurface: 1
+  _doInheritParentRotation: 1
+  _alignToProjectionVector: 1
+  _alignToSurfaceNormal: 0
+  _rotationEulerOffset: {x: 0, y: 0, z: 0}
+  _randomRotationRangeAroundUpAxis: {x: 0, y: 0}
+  _showDebugPrefab: 0
+  _debugPrefab: {fileID: 0}
+  LevelObjectParameters: []
+  StopSpawning: 0

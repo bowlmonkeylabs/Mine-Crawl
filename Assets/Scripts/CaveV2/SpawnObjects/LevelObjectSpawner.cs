@@ -8,7 +8,7 @@ using BML.Scripts.CaveV2.CaveGraph;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.Utils;
-using KinematicCharacterController;
+using BML.Scripts.CaveV2.SpawnObjects;
 using Mono.CSharp;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -120,7 +120,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
             ResetSpawnPoints();
             CatalogSpawnPoints(_caveGenerator);
-            bool success = SpawnObjectsAtTags(this.transform, retryOnFailure);
+            bool success = SpawnObjects(this.transform, retryOnFailure);
             if (!success)
             {
                 if (_caveGenerator.EnableLogs)
@@ -152,13 +152,13 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 GameObject.DestroyImmediate(childObject);
             }
         }
-        
+
         private void ResetSpawnPoints()
         {
-            var spawnPoints = FindObjectsOfType<SpawnPoint>();
+            var spawnPoints = FindObjectsOfType<LevelObjectSpawnPoint>();
             foreach (var spawnPoint in spawnPoints)
             {
-                spawnPoint.ResetSpawnProbability();
+                spawnPoint.StopSpawning = false;
             }
         }
 
@@ -171,14 +171,28 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             foreach (var caveNodeData in caveGenerator.CaveGraph.Vertices)
             {
                 if (caveNodeData.GameObject.SafeIsUnityNull()) continue;
-                caveNodeData.SpawnPoints.Clear();
+                //level objects
+                caveNodeData.LevelObjectSpawnPoints.Clear();
 
-                var childSpawnPoints = caveNodeData.GameObject
-                    .GetComponentsInChildren<SpawnPoint>()
+                var childLevelObjectSpawnPoints = caveNodeData.GameObject
+                    .GetComponentsInChildren<LevelObjectSpawnPoint>()
                     .ToList();
                 
-                caveNodeData.SpawnPoints.AddRange(childSpawnPoints);
-                foreach (var childSpawnPoint in childSpawnPoints)
+                caveNodeData.LevelObjectSpawnPoints.AddRange(childLevelObjectSpawnPoints);
+                foreach (var childSpawnPoint in childLevelObjectSpawnPoints)
+                {
+                    childSpawnPoint.ParentNode = caveNodeData;
+                }
+
+                //enemies
+                caveNodeData.EnemySpawnPoints.Clear();
+
+                var childEnemySpawnPoints = caveNodeData.GameObject
+                    .GetComponentsInChildren<EnemySpawnPoint>()
+                    .ToList();
+                
+                caveNodeData.EnemySpawnPoints.AddRange(childEnemySpawnPoints);
+                foreach (var childSpawnPoint in childEnemySpawnPoints)
                 {
                     childSpawnPoint.ParentNode = caveNodeData;
                 }
@@ -187,14 +201,29 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             foreach (var caveNodeConnectionData in caveGenerator.CaveGraph.Edges)
             {
                 if (caveNodeConnectionData.GameObject.SafeIsUnityNull()) continue;
-                caveNodeConnectionData.SpawnPoints.Clear();
 
-                var childSpawnPoints = caveNodeConnectionData.GameObject
-                    .GetComponentsInChildren<SpawnPoint>()
+                //level objects
+                caveNodeConnectionData.LevelObjectSpawnPoints.Clear();
+
+                var childLevelObjectSpawnPoints = caveNodeConnectionData.GameObject
+                    .GetComponentsInChildren<LevelObjectSpawnPoint>()
                     .ToList();
                 
-                caveNodeConnectionData.SpawnPoints.AddRange(childSpawnPoints);
-                foreach (var childSpawnPoint in childSpawnPoints)
+                caveNodeConnectionData.LevelObjectSpawnPoints.AddRange(childLevelObjectSpawnPoints);
+                foreach (var childSpawnPoint in childLevelObjectSpawnPoints)
+                {
+                    childSpawnPoint.ParentNode = caveNodeConnectionData;
+                }
+
+                //enemies
+                caveNodeConnectionData.LevelObjectSpawnPoints.Clear();
+
+                var childEnemySpawnPoints = caveNodeConnectionData.GameObject
+                    .GetComponentsInChildren<EnemySpawnPoint>()
+                    .ToList();
+                
+                caveNodeConnectionData.EnemySpawnPoints.AddRange(childEnemySpawnPoints);
+                foreach (var childSpawnPoint in childEnemySpawnPoints)
                 {
                     childSpawnPoint.ParentNode = caveNodeConnectionData;
                 }
@@ -211,10 +240,10 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             if (parent.SafeIsUnityNull()) return;
 
             var childSpawnPoints = parent
-                .GetComponentsInChildren<SpawnPoint>()
+                .GetComponentsInChildren<LevelObjectSpawnPoint>()
                 .ToList();
                 
-            iCaveNodeData.SpawnPoints.AddRange(childSpawnPoints);
+            iCaveNodeData.LevelObjectSpawnPoints.AddRange(childSpawnPoints);
             foreach (var childSpawnPoint in childSpawnPoints)
             {
                 childSpawnPoint.ParentNode = iCaveNodeData;
@@ -227,84 +256,96 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         /// <param name="parent"></param>
         /// <param name="retryOnFailure"></param>
         /// <returns>False if spawning failed or the spawning parameters are not satisfied.</returns>
-        private bool SpawnObjectsAtTags(Transform parent, bool retryOnFailure)
+        private bool SpawnObjects(Transform parent, bool retryOnFailure)
         {
-            foreach (var spawnAtTagParameters in _levelObjectSpawnerParams.SpawnAtTags)
-            {
-                if (_caveGenerator.EnableLogs) Debug.Log($"Spawning {spawnAtTagParameters.Tag} {spawnAtTagParameters.Prefab.name}");
+            //make a dict of spawn point id => list of level obj/params to spawn, using the level obj params
+            //SO if there is an entry and the spawn points list if not
+            var spawnPointTypesWithParams = FindObjectsOfType<LevelObjectSpawnPoint>()
+                .Aggregate(new Dictionary<string, List<SpawnLevelObjectParameters>>(), (spawnPointTypesWithParams, spawnPoint) => {
+                    if(!spawnPointTypesWithParams.ContainsKey(spawnPoint.SpawnPointId)) {
+                        var levelObjParams = _levelObjectSpawnerParams.SpawnAtPoints
+                            .Find(spawnAtPointParams => spawnAtPointParams.SpawnPoint.SpawnPointId == spawnPoint.SpawnPointId)?.LevelObjectParameters ?? null;
+                        if(levelObjParams == null) {
+                            levelObjParams = spawnPoint.LevelObjectParameters;
+                        }
+                        spawnPointTypesWithParams.Add(spawnPoint.SpawnPointId, levelObjParams);
+                    }
 
-                int spawnCount = 0;
+                    return spawnPointTypesWithParams;
+                });
 
-                var taggedSpawnPoints = GameObject.FindGameObjectsWithTag(spawnAtTagParameters.Tag)
-                    .Select(go => go.GetComponent<SpawnPoint>())
-                    .Where(go => go != null)
+            foreach(var spawnPointId in spawnPointTypesWithParams.Keys) {
+                var spawnPointsOfType = FindObjectsOfType<LevelObjectSpawnPoint>()
+                    .Where(sp => sp.SpawnPointId == spawnPointId)
                     .OrderBy(s => Random.value)
                     .ToList();
 
-                foreach (var spawnPoint in taggedSpawnPoints)
-                {
-                    float mainPathDistanceFactor = _caveGenerator.MaxMainPathDistance == 0 ? 0 
-                        : (float) spawnPoint.ParentNode.MainPathDistance / (float)_caveGenerator.MaxMainPathDistance;
-                    float mainPathProbability = spawnAtTagParameters.MainPathProbabilityFalloff.Evaluate(mainPathDistanceFactor);
+                foreach(var levelObjectParams in spawnPointTypesWithParams[spawnPointId]) {
 
-                    float spawnChance = (spawnPoint.SpawnChance * spawnAtTagParameters.SpawnProbability *
-                                         mainPathProbability);
-                    var rand = Random.value;
-                    bool doSpawn = (rand < spawnChance);
-                    if (_caveGenerator.EnableLogs) Debug.Log($"Try spawn {spawnAtTagParameters.Prefab?.name}: (Spawn point {spawnPoint.SpawnChance}) (Main path {mainPathProbability}) (Spawn chance {spawnChance}) (Random {rand}) (Do Spawn {doSpawn})");
-                    if (doSpawn)
+                    if (_caveGenerator.EnableLogs) Debug.Log($"Spawning {spawnPointsOfType[0].name} {levelObjectParams.LevelObject.name}");
+
+                    int spawnCount = 0;
+                    foreach (var spawnPoint in spawnPointsOfType)
                     {
-                        var spawnAt = spawnPoint.Project(spawnAtTagParameters.SpawnPosOffset, SeedManager.Instance.Seed);
-                        bool hitStableSurface = spawnAt.position.HasValue;
-                        var cachedTransform = spawnPoint.transform;
-                        spawnAt.position = spawnAt.position ?? cachedTransform.position;
-                        spawnAt.rotation = spawnAt.rotation ?? cachedTransform.rotation;
-                        
-                        // Cancel spawn if did not find surface to spawn
-                        if (spawnPoint.RequireStableSurface && !hitStableSurface)
-                        {
-                            if (_caveGenerator.EnableLogs)
-                                Debug.LogWarning($"Failed to spawn {spawnAtTagParameters.Prefab?.name}. No stable " +
-                                          $"surface found!");
-                            continue;
-                        }
+                        float mainPathDistanceFactor = _caveGenerator.MaxMainPathDistance == 0 ? 0 
+                            : (float) spawnPoint.ParentNode.MainPathDistance / (float)_caveGenerator.MaxMainPathDistance;
+                        float mainPathProbability = levelObjectParams.MainPathProbabilityFalloff.Evaluate(mainPathDistanceFactor);
 
-                        var newGameObject =
-                            GameObjectUtils.SafeInstantiate(spawnAtTagParameters.InstanceAsPrefab, spawnAtTagParameters.Prefab, parent);
-                        newGameObject.transform.SetPositionAndRotation(spawnAt.position.Value, spawnAt.rotation.Value);
-                        
-                        var spawnedObjectCaveNodeData = newGameObject.GetComponent<SpawnedObjectCaveNodeData>();
-                        if(spawnedObjectCaveNodeData != null) {
-                            spawnedObjectCaveNodeData.CaveNode = spawnPoint.ParentNode;
-                        }
+                        float spawnChance = ((!spawnPoint.StopSpawning ? 1 : 0 ) * levelObjectParams.SpawnProbability *
+                                            mainPathProbability);
+                        var rand = Random.value;
+                        bool doSpawn = (rand < spawnChance);
+                        if (_caveGenerator.EnableLogs) Debug.Log($"Try spawn {levelObjectParams.LevelObject?.name}: (Spawn point is spawning {!spawnPoint.StopSpawning}) (Main path {mainPathProbability}) (Spawn chance {spawnChance}) (Random {rand}) (Do Spawn {doSpawn})");
+                        if (doSpawn)
+                        {
+                            var spawnAt = spawnPoint.Project(levelObjectParams.SpawnPosOffset, SeedManager.Instance.Seed);
+                            bool hitStableSurface = spawnAt.position.HasValue;
+                            var cachedTransform = spawnPoint.transform;
+                            spawnAt.position = spawnAt.position ?? cachedTransform.position;
+                            spawnAt.rotation = spawnAt.rotation ?? cachedTransform.rotation;
                             
-                        // Catalog spawn points again in case this newGameObject added more spawn points
-                        CatalogSpawnPoints(newGameObject.transform, spawnPoint.ParentNode);
+                            // Cancel spawn if did not find surface to spawn
+                            if (spawnPoint.RequireStableSurface && !hitStableSurface)
+                            {
+                                if (_caveGenerator.EnableLogs)
+                                    Debug.LogWarning($"Failed to spawn {levelObjectParams.LevelObject?.name}. No stable " +
+                                            $"surface found!");
+                                continue;
+                            }
 
-                        if (spawnAtTagParameters.ChooseWithoutReplacement)
-                        {
-                            spawnPoint.SpawnChance = 0f;
-                        }
-                        
-                        spawnCount++;
-                        if (spawnAtTagParameters.MinMaxGlobalAmount.EnableMax
-                            && spawnCount >= spawnAtTagParameters.MinMaxGlobalAmount.ValueMax)
-                        {
-                            break;
+                            var newGameObject =
+                                GameObjectUtils.SafeInstantiate(levelObjectParams.InstanceAsPrefab, levelObjectParams.LevelObject, parent);
+                            newGameObject.transform.SetPositionAndRotation(spawnAt.position.Value, spawnAt.rotation.Value);
+                            
+                            var spawnedObjectCaveNodeData = newGameObject.GetComponent<SpawnedObjectCaveNodeData>();
+                            if(spawnedObjectCaveNodeData != null) {
+                                spawnedObjectCaveNodeData.CaveNode = spawnPoint.ParentNode;
+                            }
+                                
+                            // Catalog spawn points again in case this newGameObject added more spawn points
+                            CatalogSpawnPoints(newGameObject.transform, spawnPoint.ParentNode);
+
+                            if (levelObjectParams.ChooseWithoutReplacement)
+                            {
+                                spawnPoint.StopSpawning = true;
+                            }
+
+                            spawnCount++;
+                            if (levelObjectParams.MinMaxGlobalAmount.EnableMax
+                                && spawnCount >= levelObjectParams.MinMaxGlobalAmount.ValueMax)
+                            {
+                                break;
+                            }
                         }
                     }
-                    
-                }
-                
-                if (spawnAtTagParameters.MinMaxGlobalAmount.EnableMin
-                    && spawnCount < spawnAtTagParameters.MinMaxGlobalAmount.ValueMin)
-                {
-                    if (_caveGenerator.EnableLogs) Debug.LogWarning($"Level Object Spawner: Minimum not met for object {spawnAtTagParameters.Prefab?.name} on tag {spawnAtTagParameters.Tag} ({spawnCount}/{spawnAtTagParameters.MinMaxGlobalAmount.ValueMin})");
-                    return false;
-                }
-                
-                //Debug.Log($"Remaining Spawn Points After: {tagged.Count - pointsToRemove.Count}");
 
+                    if (levelObjectParams.MinMaxGlobalAmount.EnableMin
+                        && spawnCount < levelObjectParams.MinMaxGlobalAmount.ValueMin)
+                    {
+                        if (_caveGenerator.EnableLogs) Debug.LogWarning($"Level Object Spawner: Minimum not met for object {levelObjectParams.LevelObject?.name} on spawn point {spawnPointsOfType[0].name} ({spawnCount}/{levelObjectParams.MinMaxGlobalAmount.ValueMin})");
+                        return false;
+                    }
+                }
             }
 
             return true;

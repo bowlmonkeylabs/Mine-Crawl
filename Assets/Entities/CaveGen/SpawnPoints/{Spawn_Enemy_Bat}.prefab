@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 90190828978322316}
-  - component: {fileID: 8596033602965063984}
   - component: {fileID: 2234711870761473012}
+  - component: {fileID: -1500198543971185296}
   m_Layer: 0
   m_Name: '{Spawn_Enemy_Bat}'
   m_TagString: Spawn_Enemy_Bat
@@ -32,42 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8596033602965063984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3656076094256277583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b5053bdbdbf48a09af720c08c3c8bf3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _projectionBehavior: 2
-  _projectionLayerMask:
-    serializedVersion: 2
-    m_Bits: 8200
-  _projectionVector: {x: 0, y: 1, z: 0}
-  _projectionDirectionRandomnessRangeDegrees: {x: 30, y: 15}
-  _projectionDistance: 45
-  _doInheritParentRotation: 1
-  _alignToProjectionVector: 0
-  _alignToSurfaceNormal: 0
-  _rotationEulerOffset: {x: 0, y: 0, z: 0}
-  _startingSpawnChance: 1
-  _disableIfPlayerVisited: 1
-  _persistSpawns: 1
-  _guaranteeSpawnIfInRange: 0
-  _limitToOneSpawnAtATime: 1
-  _spawnLimit: 1
-  _applySpawnLimitOnlyToGuaranteedSpawns: 0
-  _ignoreGlobalSpawnCap: 0
-  OnlyIgnoreGlobalSpawnCapForGuaranteedSpawns: 0
-  _alertOnStart: 0
-  _showDebugPrefab: 0
-  _debugPrefab: {fileID: 0}
-  Occupied: 0
 --- !u!135 &2234711870761473012
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -81,3 +45,43 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-1500198543971185296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3656076094256277583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cafd7541e47809141bf4ffca23b16675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpawnPointId: '{Spawn_Enemy_Bat}_2784ebb1-79af-4952-9fcb-296e00124cbc'
+  _projectionBehavior: 2
+  _projectionLayerMask:
+    serializedVersion: 2
+    m_Bits: 8200
+  _projectionVector: {x: 0, y: 1, z: 0}
+  _projectionDirectionRandomnessRangeDegrees: {x: 30, y: 15}
+  _projectionDistance: 45
+  RequireStableSurface: 1
+  _doInheritParentRotation: 1
+  _alignToProjectionVector: 0
+  _alignToSurfaceNormal: 0
+  _rotationEulerOffset: {x: 0, y: 0, z: 0}
+  _randomRotationRangeAroundUpAxis: {x: 0, y: 0}
+  _showDebugPrefab: 0
+  _debugPrefab: {fileID: 0}
+  _startingSpawnChance: 1
+  _disableIfPlayerVisited: 0
+  _persistSpawns: 0
+  _guaranteeSpawnIfInRange: 0
+  _guaranteeSpawnRange: 1
+  _limitToOneSpawnAtATime: 1
+  _spawnLimit: -1
+  _applySpawnLimitOnlyToGuaranteedSpawns: 0
+  _ignoreGlobalSpawnCap: 0
+  OnlyIgnoreGlobalSpawnCapForGuaranteedSpawns: 0
+  _alertOnStart: 1
+  Occupied: 0
