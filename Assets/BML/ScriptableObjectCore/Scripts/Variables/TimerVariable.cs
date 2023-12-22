@@ -63,6 +63,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [ShowInInspector, ReadOnly]
         public bool IsStarted => isStarted;
 
+        [ShowInInspector, ReadOnly]
+        public bool IsActive => isStarted && !isFinished;
+
+        [ShowInInspector, ReadOnly]
+        public bool IsPaused => IsActive && isStopped;
+
         [NonSerialized]
         private float startTime = Mathf.NegativeInfinity;
         

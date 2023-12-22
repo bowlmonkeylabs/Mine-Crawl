@@ -23,8 +23,8 @@ namespace BML.Scripts.UI.Items
         [SerializeField] private TMPro.TMP_Text _costText;
         [SerializeField] private UiPlayerItemCounterController _uiPlayerItemIconController;
         [SerializeField] private UiStoreItemDetailController _uiStoreItemDetailController;
-        
-        [SerializeField] private BoolVariable _isGodModeEnabled;
+
+        [SerializeField] private PlayerInventory _playerInventory;
 
         [SerializeField] private PlayerItem _itemToPurchase;
         public PlayerItem ItemToPurchase => _itemToPurchase;
@@ -39,7 +39,7 @@ namespace BML.Scripts.UI.Items
         {
             if (_itemToPurchase != null)
             {
-                _itemToPurchase.OnBuyabilityChanged -= UpdateInteractable;
+                _playerInventory.UnsubscribeOnBuyabilityChanged(_itemToPurchase, UpdateInteractable);
             }
         }
 
@@ -58,7 +58,7 @@ namespace BML.Scripts.UI.Items
         {
             if (_itemToPurchase != null)
             {
-                _itemToPurchase.OnBuyabilityChanged -= UpdateInteractable;
+                _playerInventory.UnsubscribeOnBuyabilityChanged(_itemToPurchase, UpdateInteractable);
             }
             _itemToPurchase = itemToPurchase;
             _uiPlayerItemIconController.Item = itemToPurchase;
@@ -70,7 +70,7 @@ namespace BML.Scripts.UI.Items
 
             if (_itemToPurchase != null)
             {
-                _itemToPurchase.OnBuyabilityChanged += UpdateInteractable;
+                _playerInventory.SubscribeOnBuyabilityChanged(_itemToPurchase, UpdateInteractable);
             }
         }
 
@@ -94,9 +94,9 @@ namespace BML.Scripts.UI.Items
         public void UpdateInteractable()
         {
             if (_enableLogs) Debug.Log($"UpdateInteractable ({_button.gameObject.name})");
-            
-            bool canBuyItem = _itemToPurchase?.CheckIfCanBuy() ?? false;
-            if (_button.interactable != canBuyItem)
+
+            bool canBuyItem = _itemToPurchase != null && _playerInventory.CheckIfCanBuy(_itemToPurchase, true);
+            if (!_button.SafeIsUnityNull() && _button.interactable != canBuyItem)
             {
                 _button.interactable = canBuyItem;
             }

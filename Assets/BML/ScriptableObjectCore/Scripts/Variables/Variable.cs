@@ -33,10 +33,6 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         [SerializeField, HideInInlineEditors, GUIColor("_colorIncludeInContainers")] private VariableContainerKey includeInContainers;
         public VariableContainerKey IncludeInContainers => includeInContainers;
 
-        private Color _colorEnableLogs => enableLogs ? Color.yellow : Color.gray;
-        [InfoBox("Logging is enabled for this scriptable object", InfoMessageType.Warning, visibleIfMemberName:"enableLogs")]
-        [FormerlySerializedAs("_enableLogs")] [SerializeField, HideInInlineEditors, GUIColor("_colorEnableLogs")] protected bool enableLogs;
-
         [LabelText("Default"), LabelWidth(65f)] [InlineButton("Reset", label:"  Reset  ")]
         [SerializeField] protected T defaultValue;
         [LabelText("Runtime"), LabelWidth(65f)] [OnValueChanged("BroadcastUpdate")] [InlineButton("BroadcastUpdate", label:" Update")]

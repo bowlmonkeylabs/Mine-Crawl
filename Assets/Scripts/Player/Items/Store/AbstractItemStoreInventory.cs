@@ -147,7 +147,7 @@ namespace BML.Scripts.Player.Items.Store
                     if (itemsInStoreThatAreNoLongerInPool.Any())
                     {
                         List<PlayerItem> replacementItems = null;
-                        if (_buyBehavior == ItemPoolBehavior.RemoveItem)
+                        if (_buyBehavior == ItemPoolBehavior.ReplaceItem)
                         {
                             replacementItems = itemPool
                                 .Except(_availableItems)
@@ -174,8 +174,6 @@ namespace BML.Scripts.Player.Items.Store
                     OnAvailableItemsChanged?.Invoke();
                     break;
             }
-            
-            // TODO update ui
         }
         
         #endregion

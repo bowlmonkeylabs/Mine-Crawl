@@ -168,6 +168,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
             {
                 _invincibleFeedbacks.StopFeedbacks();
                 _invincibleFeedbacks.ResetFeedbacks();
+                _invincibleFeedbacks.AllowSameFramePlay();
                 _invincibleFeedbacks.PlayFeedbacks();
             }
             else if (_incrementFeedbacks.gameObject.activeInHierarchy)
@@ -183,6 +184,7 @@ namespace BML.Scripts.UI.PlayerHealthBar
             {
                 _invincibleFeedbacks.StopFeedbacks();
                 _invincibleFeedbacks.ResetFeedbacks();
+                _invincibleFeedbacks.AllowSameFramePlay();
                 _invincibleFeedbacks.PlayFeedbacks();
             }
             else if (_incrementFeedbacks.gameObject.activeInHierarchy)

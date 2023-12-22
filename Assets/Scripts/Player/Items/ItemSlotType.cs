@@ -29,6 +29,9 @@ namespace BML.Scripts.Player.Items
         }
         
         #region Inspector
+
+        [SerializeField]
+        private float _itemReplacementCooldown = 2.5f;
         
         [SerializeField]
         // [OnValueChanged("OnSlotsLimitChangedInInspector")]
@@ -91,7 +94,48 @@ namespace BML.Scripts.Player.Items
 
         #endregion
 
-        public bool TryAddItem(T item)
+        private LTDescr _itemReplacementCooldownTween;
+
+        private void RestartItemReplacementCooldown()
+        {
+            if (_itemReplacementCooldownTween != null)
+            {
+                LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
+                _itemReplacementCooldownTween = null;
+            }
+            _itemReplacementCooldownTween = LeanTween.value(0, 1, _itemReplacementCooldown).setOnComplete(() =>
+            {
+                _itemReplacementCooldownTween = null;
+                OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+            });
+        }
+
+        public (bool canAdd, T willReplaceItem) CheckIfCanAddItem(T item, bool ignoreReplacementCooldown = false)
+        {
+            var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
+            if (firstEmptySlot != null)
+            {
+                return (true, default(T));
+            }
+
+            if (_slotsLimit.Value == 0)
+            {
+                return (true, default(T));
+            }
+            
+            var firstUnlockedSlot = _slots.FirstOrDefault(s => !s.Lock);
+            if (firstUnlockedSlot != null)
+            {
+                if (_itemReplacementCooldownTween != null && !ignoreReplacementCooldown)
+                {
+                    return (false, default(T));
+                }
+                return (true, firstUnlockedSlot.Item);
+            }
+            return (false, default(T));
+        }
+
+        public bool TryAddItem(T item, bool ignoreReplacementCooldown = false)
         {
             var firstEmptySlot = _slots.FirstOrDefault(s => s.Item == null);
             if (firstEmptySlot != null)
@@ -99,7 +143,9 @@ namespace BML.Scripts.Player.Items
                 firstEmptySlot.Item = item;
                 if (item != null)
                 {
+                    RestartItemReplacementCooldown();
                     OnItemAdded?.Invoke(item);
+                    OnReplacementCooldownTimerStartedOrFinished?.Invoke();
                 }
                 return true;
             }
@@ -107,22 +153,33 @@ namespace BML.Scripts.Player.Items
             if (_slotsLimit.Value == 0)
             {
                 _slots.Add(new ItemSlot<T>(item));
+                RestartItemReplacementCooldown();
+                OnItemAdded?.Invoke(item);
+                OnReplacementCooldownTimerStartedOrFinished?.Invoke();
                 return true;
             }
             
             var firstUnlockedSlot = _slots.FirstOrDefault(s => !s.Lock);
             if (firstUnlockedSlot != null)
             {
+                if (_itemReplacementCooldownTween != null && !ignoreReplacementCooldown)
+                {
+                    return false;
+                }
+
                 var prevItem = firstUnlockedSlot.Item;
                 // TODO drop the prev item on the ground?
                 if (prevItem != null)
                 {
                     OnItemRemoved?.Invoke(prevItem);
+                    OnItemReplaced?.Invoke(prevItem, item);
                 }
                 firstUnlockedSlot.Item = item;
                 if (item != null)
                 {
+                    RestartItemReplacementCooldown();
                     OnItemAdded?.Invoke(item);
+                    OnReplacementCooldownTimerStartedOrFinished?.Invoke();
                 }
                 return true;
             }
@@ -150,6 +207,12 @@ namespace BML.Scripts.Player.Items
                 itemSlot.Item = default(T);
                 if (prevItem != null)
                 {
+                    if (_itemReplacementCooldownTween != null)
+                    {
+                        LeanTween.cancel(_itemReplacementCooldownTween.uniqueId);
+                        _itemReplacementCooldownTween = null;
+                        OnReplacementCooldownTimerStartedOrFinished?.Invoke();
+                    }
                     OnItemRemoved?.Invoke(prevItem);
                 }
                 return true;
@@ -159,6 +222,7 @@ namespace BML.Scripts.Player.Items
 
         public bool Clear()
         {
+            _slots.SetLength(_slotsLimit.Value);
             foreach (var itemSlot in _slots.Where(s => !s.Lock))
             {
                 itemSlot.Item = default(T);
@@ -168,11 +232,15 @@ namespace BML.Scripts.Player.Items
 
         public delegate void OnSlotItemChanged<T>(T item);
         public delegate void OnSlotItemChanged();
+        public delegate void OnSlotItemReplaced<T>(T oldItem, T newItem);
         
-        public event OnSlotItemChanged<T> OnItemAdded;                  // T is the item that was ADDED
-        public event OnSlotItemChanged<T> OnItemRemoved;                // T is the item that was REMOVED
+        public event OnSlotItemChanged<T> OnItemAdded;
+        public event OnSlotItemChanged<T> OnItemRemoved;
+        public event OnSlotItemReplaced<T> OnItemReplaced;
         public event OnSlotItemChanged OnAnyItemChangedInInspector;     // When changes happen through the inspector, we don't know which specific item changed
+        public event OnSlotItemChanged OnReplacementCooldownTimerStartedOrFinished;
 
         #endregion
+        
     }
 }

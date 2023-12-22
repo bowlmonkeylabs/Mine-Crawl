@@ -59,6 +59,6 @@ public class Chest : MonoBehaviour
     }
 
     private int getCurrentResourceCost() {
-        return _limitOpens ? _costPerOpen[_opensCount] : _resourceCost;
+        return _limitOpens ? _costPerOpen[Mathf.Clamp(_opensCount, 0, _costPerOpen.Length-1)] : _resourceCost;
     }
 }

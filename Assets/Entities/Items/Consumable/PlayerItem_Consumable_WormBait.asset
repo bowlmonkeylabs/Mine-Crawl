@@ -17,7 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 4b1dac39812948140ba362034f3a17f7, type: 2}
-    - {fileID: 11400000, guid: e814b34b957b8be46a5de2d035f75fce, type: 2}
+    - {fileID: 11400000}
     - {fileID: 2249430486495901417, guid: 7f92ffe6437ed6846bca39fbb67dd3d0, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
@@ -62,13 +62,13 @@ MonoBehaviour:
         BML.Scripts]], mscorlib
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 1
     - Name: 
       Entry: 7
-      Data: 3|BML.Scripts.Player.Items.ItemEffects.StatIncreaseItemEffect, BML.Scripts
+      Data: 3|BML.Scripts.Player.Items.ItemEffects.ThrowItemEffect, BML.Scripts
     - Name: _trigger
       Entry: 3
-      Data: 0
+      Data: 1
     - Name: _useActivationLimit
       Entry: 5
       Data: false
@@ -99,72 +99,15 @@ MonoBehaviour:
     - Name: _recurringTimerForTriggerCondition
       Entry: 6
       Data: 
-    - Name: UsePercentageIncrease
-      Entry: 5
-      Data: false
-    - Name: IsTemporaryStatIncrease
-      Entry: 5
-      Data: false
-    - Name: TemporaryStatIncreaseTime
-      Entry: 4
-      Data: 0
-    - Name: FloatStat
-      Entry: 6
-      Data: 
-    - Name: IntStat
+    - Name: ParentItem
       Entry: 10
       Data: 1
-    - Name: StatIncreaseAmount
-      Entry: 3
-      Data: 5
-    - Name: StatIncreasePercent
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 4|BML.Scripts.Player.Items.ItemEffects.ThrowItemEffect, BML.Scripts
-    - Name: _trigger
-      Entry: 3
-      Data: 1
-    - Name: _useActivationLimit
-      Entry: 5
-      Data: true
-    - Name: _remainingActivations
-      Entry: 10
-      Data: 1
-    - Name: _useActivationCooldownTimer
-      Entry: 5
-      Data: false
-    - Name: _activationCooldownTimer
-      Entry: 6
-      Data: 
-    - Name: _useActivationChance
-      Entry: 5
-      Data: false
-    - Name: _minActivationChance
-      Entry: 4
-      Data: 0
-    - Name: _playerLuckStat
-      Entry: 6
-      Data: 
-    - Name: _luckForMaxActivationChance
-      Entry: 3
-      Data: 0
-    - Name: _recurringTimerForTrigger
-      Entry: 6
-      Data: 
-    - Name: _recurringTimerForTriggerCondition
-      Entry: 6
-      Data: 
     - Name: Prefab
       Entry: 10
       Data: 2
     - Name: ThrowForce
       Entry: 7
-      Data: 5|BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences.SafeFloatValueReference,
+      Data: 4|BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences.SafeFloatValueReference,
         ScriptableObjectSystem
     - Name: ReferenceTypeSelector
       Entry: 3
@@ -210,6 +153,4 @@ MonoBehaviour:
   _icon: {fileID: 21300000, guid: 1af7ca2cae437764c9fea2420b537a59, type: 3}
   PassiveStackableTreeStartNode: {fileID: 0}
   _objectPrefab: {fileID: 0}
-  _playerInventory: {fileID: 11400000, guid: 9356dfe23cfc20041850028b69aa7e4c, type: 2}
-  _isPlayerGodModeVariable: {fileID: 11400000, guid: c3845ac29ad76214893f2b304a42dcef, type: 2}
   _itemType: 4

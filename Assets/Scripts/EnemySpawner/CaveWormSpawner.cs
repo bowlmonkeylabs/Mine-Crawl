@@ -24,7 +24,7 @@ namespace BML.Scripts
         [SerializeField, TitleGroup("Spawning")] private float _spawnRadius = 100f;
         [SerializeField, TitleGroup("Spawning")] private AnimationCurve _speedCurve;
         [SerializeField, TitleGroup("Spawning")] private AnimationCurve _spawnDelayCurve;
-
+        
         [SerializeField, TitleGroup("Feedback")] private List<WormWarningData> _warningData;
         [SerializeField, TitleGroup("Feedback")] private MMF_Player _wormActivatedFeedback;
 
@@ -135,7 +135,6 @@ namespace BML.Scripts
             if (wormBaits.Count > 0)
             {
                 targetPoint = wormBaits[0].transform.position;
-                UnRegisterWormBait(wormBaits[0]);
                 spawnDir = Vector3.up;
             }
             else

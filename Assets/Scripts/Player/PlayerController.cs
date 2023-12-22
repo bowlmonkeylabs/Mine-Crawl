@@ -86,8 +86,9 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Store")] private BoolReference _isStoreOpen;
         [SerializeField, FoldoutGroup("Store")] private DynamicGameEvent _onPurchaseEvent;
 
-        [SerializeField, FoldoutGroup("Pickup")] private DynamicGameEvent _onReceivePickup;
-        [SerializeField, FoldoutGroup("Pickup")] private PlayerInventory _playerInventory;
+        [SerializeField, FoldoutGroup("Inventory")] private DynamicGameEvent _onReceivePickup;
+        [SerializeField, FoldoutGroup("Inventory")] private PlayerInventory _playerInventory;
+        [SerializeField, FoldoutGroup("Inventory")] private ItemPickupSpawner _inventoryItemDropper;
 
         [SerializeField, FoldoutGroup("Experience")] private IntReference _playerExperience;
         [SerializeField, FoldoutGroup("Experience")] private CurveVariable _levelExperienceCurve;
@@ -119,6 +120,7 @@ namespace BML.Scripts.Player
             _isDashActive.Subscribe(OnDashSetActive);
             _playerExperience.Subscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
             _onReceivePickup.Subscribe(ReceivePickupDynamic);
+            _playerInventory.OnAnyPlayerItemReplaced += DropItemFromInventory;
             
             SetGodMode();
             primaryAction = playerInput.actions.FindAction("Primary");
@@ -135,6 +137,7 @@ namespace BML.Scripts.Player
             _isDashActive.Unsubscribe(OnDashSetActive);
             _playerExperience.Unsubscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
             _onReceivePickup.Unsubscribe(ReceivePickupDynamic);
+            _playerInventory.OnAnyPlayerItemReplaced -= DropItemFromInventory;
         }
 
         private void Update()
@@ -415,6 +418,11 @@ namespace BML.Scripts.Player
         private void ReceivePickup(PlayerItem item)
         {
             _playerInventory.TryAddItem(item);
+        }
+
+        private void DropItemFromInventory(PlayerItem prevItem, PlayerItem newItem)
+        {
+            _inventoryItemDropper.SpawnItemPickup(prevItem);
         }
         
         #endregion
