@@ -95,7 +95,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     float fovHorizontal = _projectionDirectionRandomnessRangeDegrees.x * 2;
                     float aspect = fovHorizontal / fovVertical;
                     Gizmos.color = Color.yellow;
-                    Gizmos.matrix = this.transform.localToWorldMatrix;
+                    Gizmos.matrix = this.transform.localToWorldMatrix * Matrix4x4.Rotate(Quaternion.LookRotation(_projectionVector));
                     Gizmos.DrawFrustum(Vector3.zero, fovVertical, _projectionDistance, 0, aspect);
                     Gizmos.matrix = Matrix4x4.identity;
                     Gizmos.DrawRay(position, this.transform.TransformDirection(_projectionVector));
