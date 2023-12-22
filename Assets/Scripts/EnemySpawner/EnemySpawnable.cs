@@ -11,7 +11,7 @@ namespace BML.Scripts
         #region Inspector
 
         [SerializeField] public bool DoCountForSpawnCap = true;
-        [SerializeField, ReadOnly] public SpawnPoint SpawnPoint;
+        [SerializeField, ReadOnly] public EnemySpawnPoint SpawnPoint;
         [SerializeField] private UnityEvent _onDespawn;
         
         #endregion

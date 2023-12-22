@@ -13,31 +13,12 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         #region Inspector
 
         [Serializable]
-        public class SpawnAtTagParameters
+        public class SpawnPointLevelObjectParameters
         {
-            [Serializable, InlineProperty]
-            public class MinMax
-            {
-                [HorizontalGroup(.1f), HideLabel] public bool EnableMin = false;
-                [HorizontalGroup(.3f), HideLabel, EnableIf("$EnableMin")] public int ValueMin = 1;
-                [HorizontalGroup(.1f, MarginLeft = .1f), HideLabel] public bool EnableMax = false;
-                [HorizontalGroup(.3f), HideLabel, EnableIf("$EnableMax")] public int ValueMax = 1;
-            }
-            
-            [PropertySpace(10,0)]
-            public string Tag;
-            public GameObject Prefab;
-            [FoldoutGroup("Parameters")] public float SpawnPosOffset = 0f;
-            [FoldoutGroup("Parameters")] public bool InstanceAsPrefab;
-            [FoldoutGroup("Parameters")] public bool ChooseWithoutReplacement;
-            [FoldoutGroup("Parameters")] [Range(0f, 1f)] public float SpawnProbability;
-
-            [FoldoutGroup("Parameters")] public MinMax MinMaxGlobalAmount;
-            [FoldoutGroup("Parameters")] public MinMax MinMaxClusterSize;
-            [PropertySpace(0,10)] [Tooltip("Curve sample space is 0 to 1; this will be 'current room's distance from the main path', divided by 'maximum main path distance present in the level' (this /should/ be close to MaxOffshootLength of the level gen params)")]
-            [FoldoutGroup("Parameters")] public AnimationCurve MainPathProbabilityFalloff = AnimationCurve.Constant(0f, 1f, 1f);
+            public LevelObjectSpawnPoint SpawnPoint;
+            public List<SpawnLevelObjectParameters> LevelObjectParameters;
         }
-        public List<SpawnAtTagParameters> SpawnAtTags;
+        public List<SpawnPointLevelObjectParameters> SpawnAtPoints;
 
         #endregion
         
@@ -52,5 +33,28 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         }
 
         #endregion
+    }
+
+    [Serializable]
+    public class SpawnLevelObjectParameters {
+        [Serializable, InlineProperty]
+        public class MinMax
+        {
+            [HorizontalGroup(.1f), HideLabel] public bool EnableMin = false;
+            [HorizontalGroup(.3f), HideLabel, EnableIf("$EnableMin")] public int ValueMin = 1;
+            [HorizontalGroup(.1f, MarginLeft = .1f), HideLabel] public bool EnableMax = false;
+            [HorizontalGroup(.3f), HideLabel, EnableIf("$EnableMax")] public int ValueMax = 1;
+        }
+
+        public GameObject LevelObject;
+        [FoldoutGroup("Parameters")] public float SpawnPosOffset = 0f;
+        [FoldoutGroup("Parameters")] public bool InstanceAsPrefab;
+        [FoldoutGroup("Parameters")] public bool ChooseWithoutReplacement;
+        [FoldoutGroup("Parameters")] [Range(0f, 1f)] public float SpawnProbability;
+
+        [FoldoutGroup("Parameters")] public MinMax MinMaxGlobalAmount;
+        [FoldoutGroup("Parameters")] public MinMax MinMaxClusterSize;
+        [PropertySpace(0,10)] [Tooltip("Curve sample space is 0 to 1; this will be 'current room's distance from the main path', divided by 'maximum main path distance present in the level' (this /should/ be close to MaxOffshootLength of the level gen params)")]
+        [FoldoutGroup("Parameters")] public AnimationCurve MainPathProbabilityFalloff = AnimationCurve.Constant(0f, 1f, 1f);
     }
 }

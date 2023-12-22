@@ -28,7 +28,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         // Scene object references
         [ShowInInspector] public GameObject GameObject { get; set; }
         [ShowInInspector] public HashSet<Collider> BoundsColliders { get; set; }
-        [ShowInInspector] public HashSet<SpawnPoint> SpawnPoints { get; set; }
+        [ShowInInspector] public HashSet<EnemySpawnPoint> EnemySpawnPoints { get; set; }
+        [ShowInInspector] public HashSet<LevelObjectSpawnPoint> LevelObjectSpawnPoints { get; set; }
         [ShowInInspector] public HashSet<Torch> Torches { get; set; }
         
         // Events

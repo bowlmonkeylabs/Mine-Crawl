@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BML.Scripts.CaveV2.SpawnObjects;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace BML.Scripts
         public float MaxIntensity = 5;
         public float LowIntensity = 2f;
         public float MinIntesity = 1;
-        public List<EnemySpawnParams> SpawnAtTags;
+        public List<EnemySpawnParams> SpawnPointParams;
     }
     
     [Serializable]

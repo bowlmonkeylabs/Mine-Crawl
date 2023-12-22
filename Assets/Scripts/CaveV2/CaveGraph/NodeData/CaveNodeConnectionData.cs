@@ -78,7 +78,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         }
         private GameObject _gameObject;
         [ShowInInspector] public HashSet<Collider> BoundsColliders { get; set; }
-        [ShowInInspector] public HashSet<SpawnPoint> SpawnPoints { get; set; }
+        [ShowInInspector] public HashSet<EnemySpawnPoint> EnemySpawnPoints { get; set; }
+        [ShowInInspector] public HashSet<LevelObjectSpawnPoint> LevelObjectSpawnPoints { get; set; }
         [ShowInInspector] public HashSet<Torch> Torches { get; set; }
         [ShowInInspector] public GameObject Barrier { get; set; }
 
@@ -107,7 +108,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             PlayerInfluence = 0f;
 
             BoundsColliders = new HashSet<Collider>();
-            SpawnPoints = new HashSet<SpawnPoint>();
+            EnemySpawnPoints = new HashSet<EnemySpawnPoint>();
+            LevelObjectSpawnPoints = new HashSet<LevelObjectSpawnPoint>();
             Torches = new HashSet<Torch>();
         }
         

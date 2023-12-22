@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5208207128231882604}
-  - component: {fileID: 6844752652922352259}
+  - component: {fileID: -5290107427636886804}
   m_Layer: 0
   m_Name: '{Spawn_Trap_Dart}'
   m_TagString: Spawn_Trap_Dart
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6844752652922352259
+--- !u!114 &-5290107427636886804
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,31 +40,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 5789129614464447303}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b5053bdbdbf48a09af720c08c3c8bf3, type: 3}
+  m_Script: {fileID: 11500000, guid: dc9ee879e3205354d9d4fc1d5fb882df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SpawnPointId: 76666366-e1e7-4250-b664-4015d1581e16
   _projectionBehavior: 2
   _projectionLayerMask:
     serializedVersion: 2
     m_Bits: 8200
   _projectionVector: {x: 0, y: 0, z: 1}
-  _projectionDirectionRandomnessRangeDegrees: {x: 60, y: 60}
+  _projectionDirectionRandomnessRangeDegrees: {x: 30, y: 15}
   _projectionDistance: 8
   RequireStableSurface: 0
   _doInheritParentRotation: 1
   _alignToProjectionVector: 0
   _alignToSurfaceNormal: 0
   _rotationEulerOffset: {x: 0, y: 0, z: 0}
-  _startingSpawnChance: 1
-  _disableIfPlayerVisited: 0
-  _persistSpawns: 0
-  _guaranteeSpawnIfInRange: 0
-  _limitToOneSpawnAtATime: 0
-  _spawnLimit: -1
-  _applySpawnLimitOnlyToGuaranteedSpawns: 0
-  _ignoreGlobalSpawnCap: 0
-  OnlyIgnoreGlobalSpawnCapForGuaranteedSpawns: 1
-  _alertOnStart: 1
+  _randomRotationRangeAroundUpAxis: {x: 0, y: 0}
   _showDebugPrefab: 0
   _debugPrefab: {fileID: 0}
-  Occupied: 0
+  StopSpawning: 0
