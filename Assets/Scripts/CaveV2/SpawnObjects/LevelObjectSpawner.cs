@@ -263,7 +263,8 @@ namespace BML.Scripts.CaveV2.SpawnObjects
             var spawnPointTypesWithParams = FindObjectsOfType<LevelObjectSpawnPoint>()
                 .Aggregate(new Dictionary<string, List<SpawnLevelObjectParameters>>(), (spawnPointTypesWithParams, spawnPoint) => {
                     if(!spawnPointTypesWithParams.ContainsKey(spawnPoint.SpawnPointId)) {
-                        var levelObjParams = _levelObjectSpawnerParams.SpawnAtPoints.Find(spawnAtPointParams => spawnAtPointParams.SpawnPoint.SpawnPointId == spawnPoint.SpawnPointId)?.LevelObjectParameters ?? null;
+                        var levelObjParams = _levelObjectSpawnerParams.SpawnAtPoints
+                            .Find(spawnAtPointParams => spawnAtPointParams.SpawnPoint.SpawnPointId == spawnPoint.SpawnPointId)?.LevelObjectParameters ?? null;
                         if(levelObjParams == null) {
                             levelObjParams = spawnPoint.LevelObjectParameters;
                         }

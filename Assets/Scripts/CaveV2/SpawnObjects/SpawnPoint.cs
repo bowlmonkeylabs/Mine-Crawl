@@ -29,7 +29,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         [ShowInInspector, InfoBox("This spawn point will not be found if it does not have an id generated!", InfoMessageType.Error, "@_spawnPointIdNotSet"), PropertyOrder(-1)] 
         [TitleGroup("Spawn Point Id"), Button]
         private void GenerateSpawnPointId() {
-            SpawnPointId = System.Guid.NewGuid().ToString();
+            SpawnPointId = $"{this.name}_{System.Guid.NewGuid()}";
         }
         [SerializeField, ReadOnly] public string SpawnPointId = "";
         private bool _spawnPointIdNotSet => SpawnPointId == null || SpawnPointId == "";
