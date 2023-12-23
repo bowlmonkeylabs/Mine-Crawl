@@ -302,6 +302,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 2784734588104159043}
         DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
         Sfx: {fileID: 8300000, guid: ffc663a3af38ea044a453316f040bb8a, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -367,6 +369,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 1
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 5
         MaxDistance: 30
 --- !u!114 &7474774504049594333
@@ -508,6 +517,8 @@ MonoBehaviour:
   _applyKnockback: 1
   _useExplosiveRadiusFeedback: 1
   _explosiveRadiusFeedback: {fileID: 1575615267193881643}
+  _explosionCueOffsetTime: 0.25
+  _explosionCueFeedbacks: {fileID: 0}
   _onActivate:
     m_PersistentCalls:
       m_Calls:
@@ -634,21 +645,28 @@ MonoBehaviour:
   _health: 1
   _hasMaxHealth: 0
   _maxHealthReference:
-    UseConstant: 0
-    EnableInstanceOptions: 0
-    InstanceName: 
-    InstancePath: IntermediateProperties
-    ConstantValue: 0
-    Variable: {fileID: 0}
-  _isInvincible: 0
-  _invincibilitySeconds:
     ReferenceTypeSelector: 0
     ConstantValue: 0
+    RoundingBehavior: 0
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     ReferenceValue_BoolVariable: {fileID: 0}
     ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _isInvincible: 0
+  _useInvincibilityVariable: 0
+  _invincibilityTimer:
+    UseConstant: 0
+    ConstantDuration:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+    Variable: {fileID: 0}
+  _invincibilitySeconds: 0
   _onHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -680,6 +698,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: {fileID: 4708090958953502232}
+  healthTemporary: {fileID: 0}
   _damageable:
   - _damageTypesPreview: Player_Bomb, Enemy_Sentinel_Projectile, Ore_Explosive, Enemy_Bomb_Explosion,
       Trap_Spike, Trap_Stalactite
@@ -1039,6 +1058,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 5972786606092377391}
         DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
         Sfx: {fileID: 8300000, guid: 7c5eaaef3c99cdc4cbf6039d6836e3cb, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -1104,6 +1125,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 1
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 5
         MaxDistance: 30
     00000002:
@@ -1363,6 +1391,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1503147641094332603, guid: 1693e39c988f211489b6fc48aab5ea77, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 1f13b58f450ea064e86730096776c508, type: 2}
     - target: {fileID: 7087777517693757624, guid: 1693e39c988f211489b6fc48aab5ea77, type: 3}
       propertyPath: m_Name
       value: Bomb_mesh
