@@ -10,6 +10,7 @@ using BML.Scripts.CaveV2.MudBun;
 using BML.Scripts.Utils;
 using BML.Scripts.CaveV2.SpawnObjects;
 using Mono.CSharp;
+using QFSW.QC.Utilities;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
@@ -258,29 +259,25 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         /// <returns>False if spawning failed or the spawning parameters are not satisfied.</returns>
         private bool SpawnObjects(Transform parent, bool retryOnFailure)
         {
-            //make a dict of spawn point id => list of level obj/params to spawn, using the level obj params
-            //SO if there is an entry and the spawn points list if not
-            var spawnPointTypesWithParams = FindObjectsOfType<LevelObjectSpawnPoint>()
-                .Aggregate(new Dictionary<string, List<SpawnLevelObjectParameters>>(), (spawnPointTypesWithParams, spawnPoint) => {
-                    if(!spawnPointTypesWithParams.ContainsKey(spawnPoint.SpawnPointId)) {
-                        var levelObjParams = _levelObjectSpawnerParams.SpawnAtPoints
-                            .Find(spawnAtPointParams => spawnAtPointParams.SpawnPoint.SpawnPointId == spawnPoint.SpawnPointId)?.LevelObjectParameters ?? null;
-                        if(levelObjParams == null) {
-                            levelObjParams = spawnPoint.LevelObjectParameters;
-                        }
-                        spawnPointTypesWithParams.Add(spawnPoint.SpawnPointId, levelObjParams);
-                    }
+            // Build dictionary of spawn point params from the level parameters; these level parameters should take priority.
+            var spawnPointTypesWithParams = _levelObjectSpawnerParams.SpawnAtPoints
+                .DistinctBy(sap => sap.SpawnPoint.SpawnPointId)
+                .ToDictionary(sap => sap.SpawnPoint.SpawnPointId, sap => sap.LevelObjectParameters);
+            // Add spawn point parameters specified on spawn points, but only where the level has not specified anything.
+            FindObjectsOfType<LevelObjectSpawnPoint>()
+                .DistinctBy(sp => sp.SpawnPointId)
+                .Where(sp => !spawnPointTypesWithParams.ContainsKey(sp.SpawnPointId))
+                .ForEach(sp => spawnPointTypesWithParams.Add(sp.SpawnPointId, sp.LevelObjectParameters));
 
-                    return spawnPointTypesWithParams;
-                });
-
-            foreach(var spawnPointId in spawnPointTypesWithParams.Keys) {
-                var spawnPointsOfType = FindObjectsOfType<LevelObjectSpawnPoint>()
-                    .Where(sp => sp.SpawnPointId == spawnPointId)
-                    .OrderBy(s => Random.value)
-                    .ToList();
-
-                foreach(var levelObjectParams in spawnPointTypesWithParams[spawnPointId]) {
+            foreach (var spawnPointId in spawnPointTypesWithParams.Keys) 
+            {
+                foreach(var levelObjectParams in spawnPointTypesWithParams[spawnPointId])
+                {
+                    
+                    var spawnPointsOfType = FindObjectsOfType<LevelObjectSpawnPoint>()
+                        .Where(sp => sp.SpawnPointId == spawnPointId)
+                        .OrderBy(s => Random.value)
+                        .ToList();
 
                     if (_caveGenerator.EnableLogs) Debug.Log($"Spawning {spawnPointsOfType[0].name} {levelObjectParams.LevelObject.name}");
 
