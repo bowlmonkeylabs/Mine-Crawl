@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BML.Scripts.Attributes;
 using BML.Scripts.CaveV2.SpawnObjects;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace BML.Scripts
     [Serializable]
     public class EnemySpawnParams
     {
-        public string Tag;
+        [Tag("Spawn_Enemy")] public List<string> Tags;
         public GameObject Prefab;
         public int Cost = 1;
         [FoldoutGroup("Parameters")] public float SpawnPosOffset = 0f;

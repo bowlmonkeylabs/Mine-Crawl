@@ -173,7 +173,7 @@ namespace BML.Scripts
         private void InitSpawnPoints()
         {
             var tagsToSpawn = _enemySpawnerParams.SpawnPointParams
-                .Select(spawnAtTag => spawnAtTag.Tag)
+                .SelectMany(spawnAtTag => spawnAtTag.Tags)
                 .Distinct()
                 .ToList();
 
@@ -371,7 +371,7 @@ namespace BML.Scripts
 
             EnemySpawnParams randomEnemyParams = RandomUtils.RandomWithWeights(weightPairs);
 
-            List<EnemySpawnPoint> potentialSpawnPointsForTag = _activeSpawnPointsByTag[randomEnemyParams.Tag]
+            List<EnemySpawnPoint> potentialSpawnPointsForTag = randomEnemyParams.Tags.SelectMany(tag => _activeSpawnPointsByTag.ContainsKey(tag) ? _activeSpawnPointsByTag[tag] : new List<EnemySpawnPoint>())
                 .Where(spawnPoint => spawnPoint.EnemySpawnWeight != 0 && !spawnPoint.Occupied
                     && (!reachedGlobalSpawnCap || spawnPoint.IgnoreGlobalSpawnCap)
                     && !spawnPoint.SpawnImmediate
@@ -380,7 +380,7 @@ namespace BML.Scripts
             // If no spawn points in range for this tag, return
             if (potentialSpawnPointsForTag.Count == 0)
             {
-                if (_enableLogs) Debug.LogWarning($"HandleSpawning No valid spawn points available for enemy: {randomEnemyParams.Tag}");
+                if (_enableLogs) Debug.LogWarning($"HandleSpawning No valid spawn points available for enemy: {String.Join(", ", randomEnemyParams.Tags)}");
                 return;
             }
             
@@ -450,7 +450,7 @@ namespace BML.Scripts
                 foreach (var kv in _activeSpawnPointsByTag)
                 {
                     var enemyOptionsForTag = _enemySpawnerParams.SpawnPointParams
-                        .Where(enemySpawnerParams => enemySpawnerParams.Tag == kv.Key)
+                        .Where(enemySpawnerParams => enemySpawnerParams.Tags.Contains(kv.Key))
                         .ToList();
                     if (!enemyOptionsForTag.Any())
                     {
