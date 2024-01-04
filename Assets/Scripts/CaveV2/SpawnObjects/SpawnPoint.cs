@@ -9,7 +9,11 @@ using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Matrix4x4 = UnityEngine.Matrix4x4;
+using Quaternion = UnityEngine.Quaternion;
 using Random = UnityEngine.Random;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 namespace BML.Scripts.CaveV2.SpawnObjects
 {
@@ -62,6 +66,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         [FoldoutGroup("Debug"), SerializeField] private bool _showDebugPrefab;
         [FoldoutGroup("Debug"), SerializeField] private GameObject _debugPrefab;
+        [FoldoutGroup("Debug"), SerializeField] private bool _alwaysDrawGizmos = false;
         [FoldoutGroup("Debug"), ShowInInspector, ReadOnly] protected ICaveNodeData parentNode;
         public ICaveNodeData ParentNode
         {
@@ -78,6 +83,70 @@ namespace BML.Scripts.CaveV2.SpawnObjects
         #endregion
 
         #region Unity lifecycle
+
+        private void OnDrawGizmos()
+        {
+            if (_alwaysDrawGizmos)
+            {
+                #if UNITY_EDITOR
+            
+                var transformCached = this.transform;
+                var checkTransforms = new Transform[] { transformCached, transformCached.parent };
+                var position = transformCached.position;
+                    
+                if (_projectionBehavior == SpawnPointProjectionBehavior.Randomize)
+                {
+                    float fovVertical = _projectionDirectionRandomnessRangeDegrees.y * 2;
+                    float fovHorizontal = _projectionDirectionRandomnessRangeDegrees.x * 2;
+                    float aspect = fovHorizontal / fovVertical;
+                    Gizmos.color = Color.yellow;
+                    Gizmos.matrix = this.transform.localToWorldMatrix * Matrix4x4.Rotate(Quaternion.LookRotation(_projectionVector));
+                    Gizmos.DrawFrustum(Vector3.zero, fovVertical, _projectionDistance, 0, aspect);
+                    Gizmos.matrix = Matrix4x4.identity;
+                    Gizmos.DrawRay(position, this.transform.TransformDirection(_projectionVector));
+                }
+                
+                // Project();
+                if (_projectedPosition != null && _projectedPosition != position)
+                {
+                    Gizmos.color = Color.grey;
+                    DrawDebugMesh(_projectedPosition.Value, _projectedRotation ?? Quaternion.identity);
+                    Gizmos.DrawLine(position, _projectedPosition.Value);
+                    
+                    Gizmos.matrix = Matrix4x4.Translate(_projectedPosition.Value);
+                    if (_projectedRotation.HasValue)
+                    {
+                        Gizmos.matrix *= Matrix4x4.Rotate(_projectedRotation.Value);
+                    }
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawLine(Vector3.zero, Vector3.forward);
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawLine(Vector3.zero, Vector3.right);
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawLine(Vector3.zero, Vector3.up);
+                    Gizmos.matrix = Matrix4x4.identity;
+                }
+                else
+                {
+                    Gizmos.color = Color.grey;
+                    DrawDebugMesh(position, Quaternion.identity);
+                }
+
+                var style = new GUIStyle
+                {
+                    alignment = TextAnchor.MiddleCenter,
+                    fontSize = 8,
+                    normal = new GUIStyleState
+                    {
+                        textColor = Color.white,
+                    },
+                };
+                // Handles.Label(position + Vector3.down * 0.3f, this.tag, style);
+                Handles.Label(position + Vector3.up * 0.3f, this.name, style);
+                
+                #endif
+            }
+        }
 
         private void OnDrawGizmosSelected()
         {
@@ -108,13 +177,19 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     Gizmos.color = Color.grey;
                     DrawDebugMesh(_projectedPosition.Value, _projectedRotation ?? Quaternion.identity);
                     Gizmos.DrawLine(position, _projectedPosition.Value);
-                    Gizmos.color = Color.blue;
-                    var projectedForward = Vector3.forward;
+                    
+                    Gizmos.matrix = Matrix4x4.Translate(_projectedPosition.Value);
                     if (_projectedRotation.HasValue)
                     {
-                        projectedForward = _projectedRotation.Value * projectedForward;
+                        Gizmos.matrix *= Matrix4x4.Rotate(_projectedRotation.Value);
                     }
-                    Gizmos.DrawLine(_projectedPosition.Value, _projectedPosition.Value + projectedForward);
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawLine(Vector3.zero, Vector3.forward);
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawLine(Vector3.zero, Vector3.right);
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawLine(Vector3.zero, Vector3.up);
+                    Gizmos.matrix = Matrix4x4.identity;
                 }
                 else
                 {
@@ -247,26 +322,43 @@ namespace BML.Scripts.CaveV2.SpawnObjects
 
         private void DrawDebugMesh(Vector3 position, Quaternion rotation)
         {
+            Gizmos.matrix = Matrix4x4.Translate(position) * Matrix4x4.Rotate(rotation);
+            
             if (_debugPrefab == null)
             {
-                Gizmos.DrawSphere(position, 0.25f);
+                Gizmos.color = Color.gray;
+                Gizmos.DrawWireCube(Vector3.zero, new Vector3(0.5f, 0.1f, 0.5f));
+                Gizmos.matrix = Matrix4x4.identity;
                 return;
             }
             
-            List<MeshFilter> meshFilters = _debugPrefab.GetComponentsInChildren<MeshFilter>().ToList();
+            List<MeshFilter> meshFilters = _debugPrefab.GetComponentsInChildren<MeshFilter>()
+                .Where(m =>
+                {
+                    bool hasRenderer = m.TryGetComponent<Renderer>(out var renderer);
+                    return hasRenderer && renderer.enabled;
+                })
+                .ToList();
             if (meshFilters.IsNullOrEmpty())
                 return;
 
-            Quaternion rotationOffset = Quaternion.Euler(_rotationEulerOffset);
             foreach (var meshFilter in meshFilters)
             {
+                var parentLossyScale = meshFilter.transform.lossyScale;
+                parentLossyScale.Scale(meshFilter.transform.localScale.Inverse());
+
+                var meshPosition = meshFilter.transform.localPosition;
+                meshPosition.Scale(parentLossyScale);
+                Gizmos.color = Color.gray;
                 Gizmos.DrawMesh(
                     meshFilter.sharedMesh,
-                (position + meshFilter.transform.localPosition).RotatePointAroundPivot(_projectedPosition.Value, rotation), 
-                rotation * meshFilter.transform.rotation,
+                    meshPosition, 
+                    meshFilter.transform.localRotation,
                     meshFilter.transform.lossyScale
                 );
             }
+            
+            Gizmos.matrix = Matrix4x4.identity;
         }
     }
 }

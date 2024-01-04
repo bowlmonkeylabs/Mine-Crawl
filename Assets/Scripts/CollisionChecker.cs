@@ -62,7 +62,7 @@ namespace BML.Scripts
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, ColliderReference.radius);
+            Gizmos.DrawWireSphere(transform.position, ColliderReference?.radius ?? Radius.Value);
         }
     }
 }

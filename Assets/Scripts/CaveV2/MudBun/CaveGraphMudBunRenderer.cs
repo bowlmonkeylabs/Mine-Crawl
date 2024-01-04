@@ -74,6 +74,46 @@ namespace BML.Scripts.CaveV2.MudBun
             public Dictionary<CaveNodeConnectionData, int> EdgeToConnectionPortIndexMap;
         }
 
+        /// <summary>
+        /// The shader we're using on the generated mesh utilizes the vertex colors as masks for applying textures; This function determines the map value for a given node.
+        /// </summary>
+        /// <returns></returns>
+        private Color GetMaskColors(CaveNodeData caveNodeData)
+        {
+            bool isMainPathOrMerchant = caveNodeData.MainPathDistance == 0 || caveNodeData.NodeType == CaveNodeType.Merchant;
+            float isMainPathOrMerchantFactor = (isMainPathOrMerchant ? 1f : 0f);
+            float objectiveDistanceFactor = (float)caveNodeData.ObjectiveDistance / _caveGenerator.MaxObjectiveDistance;
+            objectiveDistanceFactor = 1f - objectiveDistanceFactor;
+            objectiveDistanceFactor = Mathf.Clamp01((objectiveDistanceFactor - 0.5f) * 2);
+            return new Color(
+                isMainPathOrMerchantFactor,
+                objectiveDistanceFactor,
+                0f,
+                1f
+            );
+        }
+        
+        /// <summary>
+        /// The shader we're using on the generated mesh utilizes the vertex colors as masks for applying textures; This function determines the map value for a given node.
+        /// </summary>
+        /// <returns></returns>
+        private Color GetMaskColors(CaveNodeConnectionData caveNodeConnectionData)
+        {
+            bool isMainPathOrMerchant = caveNodeConnectionData.MainPathDistance == 0 ||
+                                        caveNodeConnectionData.Source.NodeType == CaveNodeType.Merchant ||
+                                        caveNodeConnectionData.Target.NodeType == CaveNodeType.Merchant;
+            float isMainPathOrMerchantFactor = (isMainPathOrMerchant ? 1f : 0f);
+            float objectiveDistanceFactor = (float)caveNodeConnectionData.ObjectiveDistance / _caveGenerator.MaxObjectiveDistance;
+            objectiveDistanceFactor = 1f - objectiveDistanceFactor;
+            objectiveDistanceFactor = Mathf.Clamp01((objectiveDistanceFactor - 0.5f) * 2);
+            return new Color(
+                isMainPathOrMerchantFactor,
+                objectiveDistanceFactor,
+                0f,
+                1f
+            );
+        }
+
         protected override IEnumerator GenerateMudBunInternal(
             MudRenderer mudRenderer,
             bool instanceAsPrefabs
@@ -102,170 +142,136 @@ namespace BML.Scripts.CaveV2.MudBun
             // Spawn "rooms" at each cave node
             foreach (var caveNodeData in _caveGraph.Vertices.OrderBy(vertex => vertex.StartDistance))
             {
-                bool changeNodeColor = true;
-                
                 // Select room to spawn
                 SelectedRoom selectedRoom;
-                // if (caveNodeData == _caveGraph.StartNode &&
-                //     !_caveGraphRenderParams.StartRoomPrefab.SafeIsUnityNull())
-                // {
-                //     selectedRoom = new SelectedRoom() {
-                //         RoomPrefab = _caveGraphRenderParams.StartRoomPrefab,
-                //         RoomScale = Vector3.one,
-                //         RoomRotation = Quaternion.identity
-                //     };
-                //     changeNodeColor = false;
-                // }
-                // else if (caveNodeData == _caveGraph.EndNode &&
-                //          !_caveGraphRenderParams.EndRoomPrefab.SafeIsUnityNull())
-                // {
-                //     selectedRoom = new SelectedRoom() {
-                //         RoomPrefab = _caveGraphRenderParams.EndRoomPrefab,
-                //         RoomScale = Vector3.one,
-                //         RoomRotation = Quaternion.identity,
-                //     };
-                // }
-                // if(caveNodeData == _caveGraph.MerchantNode &&
-                //         !_caveGraphRenderParams.MerchantRoomPrefab.SafeIsUnityNull())
-                // {
-                //     selectedRoom = new SelectedRoom() {
-                //         RoomPrefab = _caveGraphRenderParams.MerchantRoomPrefab,
-                //         RoomScale = Vector3.one,
-                //         RoomRotation = Quaternion.identity,
-                //     };
-                //     changeNodeColor = false;
-                // }
-                // else
-                {
-                    List<CaveNodeConnectionData> edges = _caveGraph.AdjacentEdges(caveNodeData).ToList();
-                    
-                    List<WeightedValueEntry<SelectedRoom>> validWeightedRoomPairs = _caveGraphRenderParams.GetWeightedRoomOptionsForType(caveNodeData.NodeType).Options
-                    .Where(roomWeightedPair => roomWeightedPair.Weight > 0)
-                    .Select(roomWeightedPair => {
-                        return new WeightedValueEntry<SelectedRoom>(new SelectedRoom() {
-                                RoomPrefab = roomWeightedPair.Value,
-                                RoomScale = Vector3.one * caveNodeData.Scale,
-                                RoomRotation = Quaternion.identity,
-                                EdgeToConnectionPortIndexMap = new Dictionary<CaveNodeConnectionData, int>()
-                            }, roomWeightedPair.Weight);
-                    })
-                    .Where(roomWeightedPair => {
-                        List<CaveNodeConnectionPort> roomConnectionPorts = roomWeightedPair.Value.RoomPrefab.GetComponent<CaveGraphMudBunRoom>()?.ConnectionPorts;
-
-                        if (roomConnectionPorts == null || roomConnectionPorts.Count() != edges.Count())
-                        {
-                            return false;
-                        }
-
-                        var edgeConnectionPortPairingsSets = roomConnectionPorts.Select(
-                            (startingConnPort, startingConnPortIndex) => edges.Select(
-                                (edge, edgeIndex) => new ConnectionPortEdge
-                                {
-                                    ConnectionPort = roomConnectionPorts[(startingConnPortIndex + edgeIndex) % roomConnectionPorts.Count],
-                                    Edge = edge,
-                                }).ToList()
-                            ).ToList();
-
-                        float minimalValidRotation = edgeConnectionPortPairingsSets.Aggregate(float.PositiveInfinity, (minimalValidRotation, edgeConnectionPortPairingsSet) => {
-                            (float LowerRotationBound, float UpperRotationBound) = edgeConnectionPortPairingsSet.Aggregate((-1000f, 1000f), (rotationBounds, edgeConnectionPortPairing) => {
-                                if(Mathf.Abs(edgeConnectionPortPairing.Edge.SteepnessAngle) > edgeConnectionPortPairing.ConnectionPort.AngleRangeVertical) {
-                                    return rotationBounds;
-                                }
-                                
-                                //get the connection points location in relation to the center of the room, then relate it to the center of the cave node
-                                var connectionPortInCaveGraphSpace = (edgeConnectionPortPairing.ConnectionPort.transform.position - roomWeightedPair.Value.RoomPrefab.transform.position) + caveNodeData.LocalPosition;
-                                 //get the position of this end of the edge in 2d space
-                                var caveNodePosition = caveNodeData.LocalPosition.xz();
-                                //get the position of the other end of the edge in 2d space
-                                var otherEndPosition = edgeConnectionPortPairing.Edge.OtherEnd(caveNodeData).LocalPosition.xz();
-                                //move connection port to cave graph space, and reduce it to two dimensions
-                                var initialConnectionPortPositionInCaveGraphSpace = connectionPortInCaveGraphSpace.xz();
-                                var initialConnectionPortDirection = (initialConnectionPortPositionInCaveGraphSpace - caveNodePosition).normalized;
-                                //could also just do ConnectionPort.position.magnitue but want to keep it in cave graph space
-                                var radiusToConnectionPort = (initialConnectionPortPositionInCaveGraphSpace - caveNodePosition).magnitude;
-                                //align connection port to other end
-                                var initialAlignedConnectionPortDirection = (otherEndPosition - caveNodePosition).normalized;
-                                var initialAlignedConnectionPort = (radiusToConnectionPort * initialAlignedConnectionPortDirection) + caveNodePosition;
-
-                                var angleToRotateConnectionPortToAlignWithOtherEnd = -Vector2.SignedAngle(initialConnectionPortDirection, initialAlignedConnectionPortDirection);
-                                
-                                //get the max number of degrees the room can be rotated before it breaks the connection points angle range
-                                
-                                float angleTolerance = edgeConnectionPortPairing.ConnectionPort.AngleRangeHorizontal / 2;
-                                float angleRange = Enumerable.Range(1, 359).FirstOrDefault(degrees => {
-                                    var newConnectionPointDirection = initialAlignedConnectionPortDirection.Rotate(degrees);
-                                    var newConnectionPointPosition = caveNodePosition + (radiusToConnectionPort * newConnectionPointDirection);
-                                    var directionToOtherEndFromConnectionPoint = (otherEndPosition - newConnectionPointPosition).normalized;
-                                    var angleToOtherEndFromConnectionPoint = Vector2.Angle(newConnectionPointDirection, directionToOtherEndFromConnectionPoint);
-                                    
-                                    return angleToOtherEndFromConnectionPoint > angleTolerance;
-                                });
-                                //if it somehow gets through the whole range of degrees without finding one that breaks the tolerance (should be impossible?)
-                                //it will return default, so check for that and set to final number
-                                if(angleRange == default) {
-                                    angleRange = 360;
-                                }
-                                //the number returned will be the degree past the point of tolerance, so subtract 1
-                                angleRange -= 1;
-
-                                var lowerRotationBound = angleToRotateConnectionPortToAlignWithOtherEnd - angleRange;
-                                var upperRotationBound = angleToRotateConnectionPortToAlignWithOtherEnd + angleRange;
-
-                                //go thru and determine what the smallest possible range of rotation angles we can do to rotate the room is
-                                if(lowerRotationBound > rotationBounds.Item1) {
-                                    rotationBounds.Item1 = lowerRotationBound;
-                                }
-
-                                if(upperRotationBound < rotationBounds.Item2) {
-                                    rotationBounds.Item2 = upperRotationBound;
-                                }
-                                
-                                return rotationBounds;
-                            });
-
-                            //there is no rotation for the room to meet the the constraints on the current set of pairings, so continue
-                            if(LowerRotationBound > UpperRotationBound) {
-                                return minimalValidRotation;
-                            }
-
-                            //determine if newest valid rotation is less than the current one, if so update it
-                            float midPointRotation = (LowerRotationBound + UpperRotationBound) / 2f;
-                            if(Mathf.Abs(midPointRotation) < Mathf.Abs(minimalValidRotation)) {
-                                edgeConnectionPortPairingsSet.ForEach(edgeConnectionPortPairing => {
-                                    roomWeightedPair.Value.EdgeToConnectionPortIndexMap[edgeConnectionPortPairing.Edge] = roomConnectionPorts.FindIndex(rcp => rcp == edgeConnectionPortPairing.ConnectionPort);
-                                }); 
-                                
-                                return midPointRotation;
-                            }
-
-                            return minimalValidRotation;
-                        });
-                        
-                        //this room has no valid rotation to make the connection ports work
-                        if(float.IsPositiveInfinity(minimalValidRotation)) {
-                            return false;
-                        }
-
-                        //set valid rooms rotation
-                        roomWeightedPair.Value.RoomRotation = Quaternion.AngleAxis(minimalValidRotation, Vector3.up);
-                        return true;
-                    }).ToList();
-
-                    var validWeightedRoomOptions = new WeightedValueOptions<SelectedRoom>() {
-                        Options = validWeightedRoomPairs
-                    };
-
-                    //no valid room was found so set to default room
-                    if(validWeightedRoomOptions.Options.Count() <= 0) {
-                        var roomPrefab = _caveGraphRenderParams.GetRandomDefaultRoomForType(caveNodeData.NodeType);
-                        selectedRoom = new SelectedRoom(){
-                            RoomPrefab = roomPrefab,
+                List<CaveNodeConnectionData> edges = _caveGraph.AdjacentEdges(caveNodeData).ToList();
+                
+                List<WeightedValueEntry<SelectedRoom>> validWeightedRoomPairs = _caveGraphRenderParams.GetWeightedRoomOptionsForType(caveNodeData.NodeType).Options
+                .Where(roomWeightedPair => roomWeightedPair.Weight > 0)
+                .Select(roomWeightedPair => {
+                    return new WeightedValueEntry<SelectedRoom>(new SelectedRoom() {
+                            RoomPrefab = roomWeightedPair.Value,
                             RoomScale = Vector3.one * caveNodeData.Scale,
-                        };
-                    } else {
-                        validWeightedRoomOptions.Normalize();
-                        selectedRoom = validWeightedRoomOptions.RandomWithWeights();
+                            RoomRotation = Quaternion.identity,
+                            EdgeToConnectionPortIndexMap = new Dictionary<CaveNodeConnectionData, int>()
+                        }, roomWeightedPair.Weight);
+                })
+                .Where(roomWeightedPair => {
+                    List<CaveNodeConnectionPort> roomConnectionPorts = roomWeightedPair.Value.RoomPrefab.GetComponent<CaveGraphMudBunRoom>()?.ConnectionPorts;
+
+                    if (roomConnectionPorts == null || roomConnectionPorts.Count() != edges.Count())
+                    {
+                        return false;
                     }
+
+                    var edgeConnectionPortPairingsSets = roomConnectionPorts.Select(
+                        (startingConnPort, startingConnPortIndex) => edges.Select(
+                            (edge, edgeIndex) => new ConnectionPortEdge
+                            {
+                                ConnectionPort = roomConnectionPorts[(startingConnPortIndex + edgeIndex) % roomConnectionPorts.Count],
+                                Edge = edge,
+                            }).ToList()
+                        ).ToList();
+
+                    float minimalValidRotation = edgeConnectionPortPairingsSets.Aggregate(float.PositiveInfinity, (minimalValidRotation, edgeConnectionPortPairingsSet) => {
+                        (float LowerRotationBound, float UpperRotationBound) = edgeConnectionPortPairingsSet.Aggregate((-1000f, 1000f), (rotationBounds, edgeConnectionPortPairing) => {
+                            if(Mathf.Abs(edgeConnectionPortPairing.Edge.SteepnessAngle) > edgeConnectionPortPairing.ConnectionPort.AngleRangeVertical) {
+                                return rotationBounds;
+                            }
+                            
+                            //get the connection points location in relation to the center of the room, then relate it to the center of the cave node
+                            var connectionPortInCaveGraphSpace = (edgeConnectionPortPairing.ConnectionPort.transform.position - roomWeightedPair.Value.RoomPrefab.transform.position) + caveNodeData.LocalPosition;
+                             //get the position of this end of the edge in 2d space
+                            var caveNodePosition = caveNodeData.LocalPosition.xz();
+                            //get the position of the other end of the edge in 2d space
+                            var otherEndPosition = edgeConnectionPortPairing.Edge.OtherEnd(caveNodeData).LocalPosition.xz();
+                            //move connection port to cave graph space, and reduce it to two dimensions
+                            var initialConnectionPortPositionInCaveGraphSpace = connectionPortInCaveGraphSpace.xz();
+                            var initialConnectionPortDirection = (initialConnectionPortPositionInCaveGraphSpace - caveNodePosition).normalized;
+                            //could also just do ConnectionPort.position.magnitue but want to keep it in cave graph space
+                            var radiusToConnectionPort = (initialConnectionPortPositionInCaveGraphSpace - caveNodePosition).magnitude;
+                            //align connection port to other end
+                            var initialAlignedConnectionPortDirection = (otherEndPosition - caveNodePosition).normalized;
+                            var initialAlignedConnectionPort = (radiusToConnectionPort * initialAlignedConnectionPortDirection) + caveNodePosition;
+
+                            var angleToRotateConnectionPortToAlignWithOtherEnd = -Vector2.SignedAngle(initialConnectionPortDirection, initialAlignedConnectionPortDirection);
+                            
+                            //get the max number of degrees the room can be rotated before it breaks the connection points angle range
+                            
+                            float angleTolerance = edgeConnectionPortPairing.ConnectionPort.AngleRangeHorizontal / 2;
+                            float angleRange = Enumerable.Range(1, 359).FirstOrDefault(degrees => {
+                                var newConnectionPointDirection = initialAlignedConnectionPortDirection.Rotate(degrees);
+                                var newConnectionPointPosition = caveNodePosition + (radiusToConnectionPort * newConnectionPointDirection);
+                                var directionToOtherEndFromConnectionPoint = (otherEndPosition - newConnectionPointPosition).normalized;
+                                var angleToOtherEndFromConnectionPoint = Vector2.Angle(newConnectionPointDirection, directionToOtherEndFromConnectionPoint);
+                                
+                                return angleToOtherEndFromConnectionPoint > angleTolerance;
+                            });
+                            //if it somehow gets through the whole range of degrees without finding one that breaks the tolerance (should be impossible?)
+                            //it will return default, so check for that and set to final number
+                            if(angleRange == default) {
+                                angleRange = 360;
+                            }
+                            //the number returned will be the degree past the point of tolerance, so subtract 1
+                            angleRange -= 1;
+
+                            var lowerRotationBound = angleToRotateConnectionPortToAlignWithOtherEnd - angleRange;
+                            var upperRotationBound = angleToRotateConnectionPortToAlignWithOtherEnd + angleRange;
+
+                            //go thru and determine what the smallest possible range of rotation angles we can do to rotate the room is
+                            if(lowerRotationBound > rotationBounds.Item1) {
+                                rotationBounds.Item1 = lowerRotationBound;
+                            }
+
+                            if(upperRotationBound < rotationBounds.Item2) {
+                                rotationBounds.Item2 = upperRotationBound;
+                            }
+                            
+                            return rotationBounds;
+                        });
+
+                        //there is no rotation for the room to meet the the constraints on the current set of pairings, so continue
+                        if(LowerRotationBound > UpperRotationBound) {
+                            return minimalValidRotation;
+                        }
+
+                        //determine if newest valid rotation is less than the current one, if so update it
+                        float midPointRotation = (LowerRotationBound + UpperRotationBound) / 2f;
+                        if(Mathf.Abs(midPointRotation) < Mathf.Abs(minimalValidRotation)) {
+                            edgeConnectionPortPairingsSet.ForEach(edgeConnectionPortPairing => {
+                                roomWeightedPair.Value.EdgeToConnectionPortIndexMap[edgeConnectionPortPairing.Edge] = roomConnectionPorts.FindIndex(rcp => rcp == edgeConnectionPortPairing.ConnectionPort);
+                            }); 
+                            
+                            return midPointRotation;
+                        }
+
+                        return minimalValidRotation;
+                    });
+                    
+                    //this room has no valid rotation to make the connection ports work
+                    if(float.IsPositiveInfinity(minimalValidRotation)) {
+                        return false;
+                    }
+
+                    //set valid rooms rotation
+                    roomWeightedPair.Value.RoomRotation = Quaternion.AngleAxis(minimalValidRotation, Vector3.up);
+                    return true;
+                }).ToList();
+
+                var validWeightedRoomOptions = new WeightedValueOptions<SelectedRoom>() {
+                    Options = validWeightedRoomPairs
+                };
+
+                //no valid room was found so set to default room
+                if(validWeightedRoomOptions.Options.Count() <= 0) {
+                    var roomPrefab = _caveGraphRenderParams.GetRandomDefaultRoomForType(caveNodeData.NodeType);
+                    selectedRoom = new SelectedRoom(){
+                        RoomPrefab = roomPrefab,
+                        RoomScale = Vector3.one * caveNodeData.Scale,
+                    };
+                } else {
+                    validWeightedRoomOptions.Normalize();
+                    selectedRoom = validWeightedRoomOptions.RandomWithWeights();
                 }
 
                 // Spawn room
@@ -273,6 +279,18 @@ namespace BML.Scripts.CaveV2.MudBun
                 newGameObject.transform.SetPositionAndRotation(localOrigin + caveNodeData.LocalPosition, selectedRoom.RoomRotation);
                 newGameObject.transform.localScale = selectedRoom.RoomScale;
                 caveNodeData.GameObject = newGameObject;
+
+                var nodeColor = GetMaskColors(caveNodeData);
+                if (nodeColor != Color.black)
+                {
+                    List<MudMaterial> materials = caveNodeData.GameObject.GetComponentsInChildren<MudMaterial>()?.ToList();
+                    materials?.ForEach(m =>
+                    {
+                        m.Color = nodeColor;
+                        m.ContributeMaterial = true;
+                    });
+                }
+                
                 var instancedRoomConnectionPorts = newGameObject.GetComponent<CaveGraphMudBunRoom>()?.ConnectionPorts;
                 if(instancedRoomConnectionPorts != null && instancedRoomConnectionPorts.Count() > 0 && selectedRoom.EdgeToConnectionPortIndexMap != null) {
                     selectedRoom.EdgeToConnectionPortIndexMap.Keys.ToList().ForEach(edge => {
@@ -284,21 +302,12 @@ namespace BML.Scripts.CaveV2.MudBun
                         }
                     });
                 }
-                
 
                 // Assign reference to cave node data
                 var caveNodeDataDebugComponent = newGameObject.GetComponent<CaveNodeDataDebugComponent>();
                 if (caveNodeDataDebugComponent != null)
                 {
                     caveNodeDataDebugComponent.CaveNodeData = caveNodeData;
-                    if (changeNodeColor)
-                    {
-                        List<MudMaterial> materials = caveNodeData.GameObject.GetComponentsInChildren<MudMaterial>()?.ToList();
-                        materials?.ForEach(m =>
-                        {
-                            m.Color *= _caveGraphRenderParams.CaveColor;
-                        });
-                    }
                 }
             }
 
@@ -375,36 +384,50 @@ namespace BML.Scripts.CaveV2.MudBun
                 var localScale = new Vector3(caveNodeConnectionData.Radius, caveNodeConnectionData.Radius, edgeLength);
                 // Debug.Log($"Edge length: EdgeLengthRaw {caveNodeConnectionData.Length} | Result Edge Length {edgeLength} | Source {caveNodeConnectionData.Source.Size} | Target {caveNodeConnectionData.Target.Size}");
 
-                // Spawn tunnel
-                GameObject newGameObject;
-
+                // Choose tunnel
+                GameObject tunnelPrefab;
+                
                 if (caveNodeConnectionData.IsBlocked)
                 {
-                    var sourceOrTargetIsChallengeRoom = source.NodeType == CaveNodeType.Challenge || target.NodeType == CaveNodeType.Challenge;
-                    var tunnelPrefab = sourceOrTargetIsChallengeRoom ? _caveGraphRenderParams.TunnelWithSlidingBarrierPrefab : _caveGraphRenderParams.TunnelWithBarrierPrefab;
-                    newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, tunnelPrefab, mudRenderer.transform);
-                    #warning TODO find tunnel barrier game object
+                    bool sourceOrTargetIsChallengeRoom = source.NodeType == CaveNodeType.Challenge || target.NodeType == CaveNodeType.Challenge;
+                    tunnelPrefab = sourceOrTargetIsChallengeRoom 
+                        ? _caveGraphRenderParams.TunnelWithSlidingBarrierPrefab 
+                        : _caveGraphRenderParams.TunnelWithBarrierPrefab;
+#warning TODO find tunnel barrier game object
                     // caveNodeConnectionData.Barrier = ;
                 }
+                else if (caveNodeConnectionData.Length >= 20f)
+                {
+                    tunnelPrefab = _caveGraphRenderParams.TunnelLongPrefab;
+                }
                 else
-                    newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, _caveGraphRenderParams.TunnelPrefab, mudRenderer.transform);
+                {
+                    tunnelPrefab = _caveGraphRenderParams.TunnelPrefab;
+                }
                 
+                // Spawn tunnel
+                GameObject newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefabs, tunnelPrefab, mudRenderer.transform);
+
                 newGameObject.transform.SetPositionAndRotation(edgeMidPosition, edgeRotation);
                 newGameObject.transform.localScale = localScale;
                 caveNodeConnectionData.GameObject = newGameObject;
+
+                var nodeColor = GetMaskColors(caveNodeConnectionData);
+                if (nodeColor != Color.black)
+                {
+                    List<MudMaterial> materials = caveNodeConnectionData.GameObject.GetComponentsInChildren<MudMaterial>()?.ToList();
+                    materials?.ForEach(m =>
+                    {
+                        m.Color = nodeColor;
+                        m.ContributeMaterial = true;
+                    });
+                }
                 
                 // Assign reference to cave node connection data
                 var caveNodeConnectionDataDebugComponent = newGameObject.GetComponent<CaveNodeConnectionDataDebugComponent>();
                 if (caveNodeConnectionDataDebugComponent != null)
                 {
                     caveNodeConnectionDataDebugComponent.CaveNodeConnectionData = caveNodeConnectionData;
-
-                    List<MudMaterial> materials = caveNodeConnectionData.GameObject.GetComponentsInChildren<MudMaterial>()?.ToList();
-                    materials?.ForEach(m =>
-                    {
-                        m.Color *= _caveGraphRenderParams.CaveColor;
-                    });
-                    
                 }
             }
 
