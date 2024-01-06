@@ -65,6 +65,14 @@ namespace BML.Scripts
             isDeActivated = true;
         }
 
+        public void UpdateDamage(IntVariable newDamage) {
+            _damage.SetVariable(newDamage);
+        }
+
+        public void UpdateRadius(FloatVariable newRadius) {
+            _explosionRadius.SetVariable(newRadius);
+        }
+
         private void Update()
         {
             if (!isActive)
