@@ -44,7 +44,7 @@ namespace BML.Scripts
             }
             lastRaycastTime = Time.time;
             
-            bool didHitTarget, didHitObstacle;
+            bool didHitTarget = false, didHitObstacle = false;
 
             Transform originTransform = _origin != null ? _origin : transform;
             Vector3 origin = originTransform.position;
@@ -86,8 +86,11 @@ namespace BML.Scripts
                         QueryTriggerInteraction.Ignore)
                     : Physics.SphereCast(origin, _thicknessRadius, dir, out hit, raycastDist, combinedMask,
                         QueryTriggerInteraction.Ignore);
-                didHitTarget = hit.collider.gameObject.IsInLayerMask(_hitMask);
-                didHitObstacle = hit.collider.gameObject.IsInLayerMask(_obstacleMask);
+                if (didHit)
+                {
+                    didHitTarget = hit.collider.gameObject.IsInLayerMask(_hitMask);
+                    didHitObstacle = hit.collider.gameObject.IsInLayerMask(_obstacleMask);
+                }
             }
 
             if (didHitObstacle)
