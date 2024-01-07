@@ -1,4 +1,5 @@
-﻿using BML.Scripts.Utils;
+﻿using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +17,10 @@ namespace BML.Scripts
         [SerializeField] private UnityEvent _onCollisionEnter;
 
         private float _lastDamageTime = Mathf.NegativeInfinity;
+
+        public void UpdateDamage(IntVariable newDamage) {
+            _damage = newDamage.Value;
+        }
         
         private void OnCollisionEnter(Collision col)
         {
