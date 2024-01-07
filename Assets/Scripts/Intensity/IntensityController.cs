@@ -162,6 +162,7 @@ namespace Intensity
                         if (_despawnIdleEnemies)
                         {
                             _enemySpawnManager.DespawnEnemies(EnemyState.AggroState.Idle, _despawnIdleEnemyDistance);
+                            _enemySpawnManager.DespawnEnemies(EnemyState.AggroState.Seeking, _despawnIdleEnemyDistance);
                         }
                     }
 
