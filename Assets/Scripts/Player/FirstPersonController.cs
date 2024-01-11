@@ -518,23 +518,23 @@ namespace BML.Scripts.Player
         }
         
         private void CheckDash() {
-            if(!DashActive.Value && !isNoClipEnabled.Value && !DashCooldownTimer.IsActive && _input.dash) {
-                ExitRopeMovement();
-                _currentGravity = 0f;
-                DashActive.Value = true;
-                _startDashTime = Time.time;
-                Vector3 inputDir = GetInputDirection();
-                if(Mathf.Approximately(inputDir.magnitude, 0)) {
-                    inputDir = _mainCamera.transform.forward.xoz().normalized;
-                }
-                _dashDirection = inputDir;
-            }
-            if(DashActive.Value && Time.time - _startDashTime >= DashTime.Value) {
-                DashActive.Value = false;
-                _currentGravity = Gravity;
-                DashCooldownTimer.RestartTimer();
-                DashInCooldown.Value = true;
-            }
+            // if(!DashActive.Value && !isNoClipEnabled.Value && !DashCooldownTimer.IsActive && _input.dash) {
+            //     ExitRopeMovement();
+            //     _currentGravity = 0f;
+            //     DashActive.Value = true;
+            //     _startDashTime = Time.time;
+            //     Vector3 inputDir = GetInputDirection();
+            //     if(Mathf.Approximately(inputDir.magnitude, 0)) {
+            //         inputDir = _mainCamera.transform.forward.xoz().normalized;
+            //     }
+            //     _dashDirection = inputDir;
+            // }
+            // if(DashActive.Value && Time.time - _startDashTime >= DashTime.Value) {
+            //     DashActive.Value = false;
+            //     _currentGravity = Gravity;
+            //     DashCooldownTimer.RestartTimer();
+            //     DashInCooldown.Value = true;
+            // }
         }
 
         private void CheckDashCooldown() 
