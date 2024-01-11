@@ -258,98 +258,98 @@ namespace BML.Scripts.Player
         
         private void TryUseSweep()
         {
-            if (_pickaxeSweepCooldown.IsStarted && !_pickaxeSweepCooldown.IsFinished)
-            {
-                return;
-            }
-            
-            _startSweepFeedback.PlayFeedbacks();
-            _pickaxeSweepCooldown.RestartTimer();
-            _pickaxeSwingCooldown.RestartTimer();
+            // if (_pickaxeSweepCooldown.IsStarted && !_pickaxeSweepCooldown.IsFinished)
+            // {
+            //     return;
+            // }
+            //
+            // _startSweepFeedback.PlayFeedbacks();
+            // _pickaxeSweepCooldown.RestartTimer();
+            // _pickaxeSwingCooldown.RestartTimer();
         }
         
         // To be called by anim
         public void DoSweep()
         {
-            var center = _sweepCollider.transform.TransformPoint(_sweepCollider.center);
-            var halfExtents = _sweepCollider.size / 2f;
-            Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, _sweepCollider.transform.rotation,
-                _interactMask, QueryTriggerInteraction.Ignore);
-            
-            _onSweepPickaxe.Raise();
-
-            if (hitColliders.Length < 1)
-            {
-                _missSwingFeedback.PlayFeedbacks();
-                return;
-            }
-            
-            _sweepSuccessHitFeedbacks.PlayFeedbacks();
-            _onSweepPickaxeHit.Raise();
-
-            // HashSet to prevent duplicates
-            HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)> interactionReceivers =
-                new HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)>();
-
-            bool isEnemyHit = false;
-            foreach (var hitCollider in hitColliders)
-            {
-                PickaxeInteractionReceiver interactionReceiver = hitCollider.GetComponent<PickaxeInteractionReceiver>();
-                if (interactionReceiver == null)
-                    continue;
-                if (hitCollider.gameObject.IsInLayerMask(_enemyMask))
-                    isEnemyHit = true;
-                
-                interactionReceivers.Add((interactionReceiver, hitCollider.bounds.center));
-            }
-
-            if (isEnemyHit)
-            {
-                _sweepHitEnemyFeedback.PlayFeedbacks();
-            }
-            
-            Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
-            bool isCrit = Random.value < _sweepCritChance.Value;
-            if (isCrit)
-            {
-                _sweepCritFeedbacks.PlayFeedbacks();
-            }
-
-            foreach (var (interactionReceiver, colliderCenter) in interactionReceivers)
-            {
-                var hitPos = interactionReceiver.transform.position;
-                
-                // Use spherecast from camera to hit collider center to try approximate hit position
-                var delta = colliderCenter - _mainCamera.transform.position;
-                var dir = delta.normalized;
-                var dist = delta.magnitude + 5f;
-                RaycastHit[] hits = Physics.SphereCastAll(_mainCamera.position, .5f, dir, dist, _interactMask,
-                    QueryTriggerInteraction.Ignore);
-                
-                foreach (var hit in hits)
-                {
-                    if (hit.collider.gameObject == interactionReceiver.gameObject)
-                    {
-                        hitPos = hit.point;
-                        if (isCrit)
-                        {
-                            _sweepCritInstanceFeedbacks.AllowSameFramePlay();
-                            _sweepCritInstanceFeedbacks.PlayFeedbacks(hitPos, 1f);
-                        }
-                        else
-                        {
-                            _sweepHitFeedbacks.AllowSameFramePlay();
-                            _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
-                        }
-                        break;
-                    }
-                }
-
-                int damage = Mathf.FloorToInt(_sweepDamage.Value) * (isCrit ? _critDamageMultiplier : 1);
-                HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, damage, _mainCamera.forward, 
-                    hitPos);
-                interactionReceiver.ReceiveSecondaryInteraction(pickaxeHitInfo);
-            }
+            // var center = _sweepCollider.transform.TransformPoint(_sweepCollider.center);
+            // var halfExtents = _sweepCollider.size / 2f;
+            // Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, _sweepCollider.transform.rotation,
+            //     _interactMask, QueryTriggerInteraction.Ignore);
+            //
+            // _onSweepPickaxe.Raise();
+            //
+            // if (hitColliders.Length < 1)
+            // {
+            //     _missSwingFeedback.PlayFeedbacks();
+            //     return;
+            // }
+            //
+            // _sweepSuccessHitFeedbacks.PlayFeedbacks();
+            // _onSweepPickaxeHit.Raise();
+            //
+            // // HashSet to prevent duplicates
+            // HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)> interactionReceivers =
+            //     new HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)>();
+            //
+            // bool isEnemyHit = false;
+            // foreach (var hitCollider in hitColliders)
+            // {
+            //     PickaxeInteractionReceiver interactionReceiver = hitCollider.GetComponent<PickaxeInteractionReceiver>();
+            //     if (interactionReceiver == null)
+            //         continue;
+            //     if (hitCollider.gameObject.IsInLayerMask(_enemyMask))
+            //         isEnemyHit = true;
+            //     
+            //     interactionReceivers.Add((interactionReceiver, hitCollider.bounds.center));
+            // }
+            //
+            // if (isEnemyHit)
+            // {
+            //     _sweepHitEnemyFeedback.PlayFeedbacks();
+            // }
+            //
+            // Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
+            // bool isCrit = Random.value < _sweepCritChance.Value;
+            // if (isCrit)
+            // {
+            //     _sweepCritFeedbacks.PlayFeedbacks();
+            // }
+            //
+            // foreach (var (interactionReceiver, colliderCenter) in interactionReceivers)
+            // {
+            //     var hitPos = interactionReceiver.transform.position;
+            //     
+            //     // Use spherecast from camera to hit collider center to try approximate hit position
+            //     var delta = colliderCenter - _mainCamera.transform.position;
+            //     var dir = delta.normalized;
+            //     var dist = delta.magnitude + 5f;
+            //     RaycastHit[] hits = Physics.SphereCastAll(_mainCamera.position, .5f, dir, dist, _interactMask,
+            //         QueryTriggerInteraction.Ignore);
+            //     
+            //     foreach (var hit in hits)
+            //     {
+            //         if (hit.collider.gameObject == interactionReceiver.gameObject)
+            //         {
+            //             hitPos = hit.point;
+            //             if (isCrit)
+            //             {
+            //                 _sweepCritInstanceFeedbacks.AllowSameFramePlay();
+            //                 _sweepCritInstanceFeedbacks.PlayFeedbacks(hitPos, 1f);
+            //             }
+            //             else
+            //             {
+            //                 _sweepHitFeedbacks.AllowSameFramePlay();
+            //                 _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
+            //             }
+            //             break;
+            //         }
+            //     }
+            //
+            //     int damage = Mathf.FloorToInt(_sweepDamage.Value) * (isCrit ? _critDamageMultiplier : 1);
+            //     HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, damage, _mainCamera.forward, 
+            //         hitPos);
+            //     interactionReceiver.ReceiveSecondaryInteraction(pickaxeHitInfo);
+            // }
         }
 
         private void SweepReadyFeedbacks()
