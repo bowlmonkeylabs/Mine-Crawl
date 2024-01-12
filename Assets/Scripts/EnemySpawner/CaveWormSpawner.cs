@@ -19,6 +19,7 @@ namespace BML.Scripts
         #region Inspector
         
         [SerializeField, TitleGroup("Spawning")] private TimerVariable _wormSpawnTimer;
+        [SerializeField, TitleGroup("Spawning")] private FloatVariable _wormSpawnFactor;
         [SerializeField, TitleGroup("Spawning")] private BoolVariable _playerHasExitedStartRoom;
         [SerializeField, TitleGroup("Spawning")] private TimerVariable _wormMaxStrengthTimer;
         [SerializeField, TitleGroup("Spawning")] private float _spawnRadius = 100f;
@@ -87,6 +88,8 @@ namespace BML.Scripts
         {
             _wormSpawnTimer.UpdateTime();
             _wormMaxStrengthTimer.UpdateTime();
+
+            _wormSpawnFactor.Value = _wormSpawnTimer.ElapsedTime / _wormSpawnTimer.Duration;
 
             if (!_wormSpawnTimer.IsFinished)
                 return;
