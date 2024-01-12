@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Attributes;
 using BML.Scripts.CaveV2.SpawnObjects;
 using Sirenix.OdinInspector;
@@ -12,7 +13,7 @@ namespace BML.Scripts
     {
         public float SpawnDelay = 5f;
         public float SpawnDelayLowIntensity = 3f;
-        public float SpawnCap = 5f;
+        public SafeFloatValueReference SpawnCap;
         public float MaxIntensity = 5;
         public float LowIntensity = 2f;
         public float MinIntesity = 1;

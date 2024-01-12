@@ -59,7 +59,7 @@ Seed: {SeedManager.Instance.Seed}
 Enemy Spawn Params ----------
 Spawn delay: {enemySpawnParams.SpawnDelay.ToString("0.00")}
 Spawn delay Low Intensity: {enemySpawnParams.SpawnDelayLowIntensity.ToString("0.00")}
-Count: (Current: {_currentEnemyCount.Value}) (Max: {enemySpawnParams.SpawnCap.ToString("0.00")})
+Count: (Current: {_currentEnemyCount.Value}) (Max: {enemySpawnParams.SpawnCap.Value.ToString("0.00")})
 Worm: Spawn Timer: {_wormSpawnTimer.RemainingTime} Max Strength Timer: {_wormMaxStrengthTimer.RemainingTime}
 Combat ----------
 Intensity Score: (Current: {_playerIntensityScore.Value.ToString("0.00")}) (Target: {enemySpawnParams.MaxIntensity.ToString("0.00")})
