@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3006733974970169832}
   - component: {fileID: 6967329777459826023}
   m_Layer: 0
-  m_Name: KnockbackExplosion
+  m_Name: StunExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,8 +30,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5767131424066236221}
-  - {fileID: 4922348820833636682}
+  - {fileID: 1273844881956288666}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -68,7 +67,7 @@ MonoBehaviour:
     EnableInstanceOptions: 0
     InstanceName: 
     InstancePath: IntermediateProperties
-    ConstantValue: 3
+    ConstantValue: 5
     Variable: {fileID: 0}
   _explosionMask:
     serializedVersion: 2
@@ -82,18 +81,17 @@ MonoBehaviour:
     EnableInstanceOptions: 0
     InstanceName: 
     InstancePath: IntermediateProperties
-    ConstantValue: 1
+    ConstantValue: 0
     Variable: {fileID: 0}
-  _applyKnockback: 1
-  _customizeKnockback: 1
+  _applyKnockback: 0
   _knockbackTime:
     UseConstant: 1
     EnableInstanceOptions: 0
     InstanceName: 
     InstancePath: IntermediateProperties
-    ConstantValue: 0.4
+    ConstantValue: 0.5
     Variable: {fileID: 0}
-  _applyStun: 0
+  _applyStun: 1
   _useExplosiveRadiusFeedback: 0
   _explosiveRadiusFeedback: {fileID: 0}
   _explosionCueOffsetTime: 0.25
@@ -192,8 +190,6 @@ MonoBehaviour:
   - id: 3
   - id: 4
   - id: 5
-  - id: 6
-  - id: 7
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   ForceStopFeedbacksOnDisable: 1
@@ -279,80 +275,6 @@ MonoBehaviour:
       type: {class: MMF_Particles, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
         Active: 1
-        UniqueID: 1950888822
-        Label: Particles Play
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        Owner: {fileID: 3006733974970169832}
-        DebugActive: 0
-        Mode: 0
-        BoundParticleSystem: {fileID: 4922348820852110534}
-        RandomParticleSystems: []
-        MoveToPosition: 1
-        ActivateOnPlay: 0
-        StopSystemOnInit: 1
-    00000002:
-      type: {class: MMF_Particles, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
         UniqueID: 1856217512
         Label: Particles Play
         ChannelMode: 0
@@ -418,12 +340,12 @@ MonoBehaviour:
         Owner: {fileID: 3006733974970169832}
         DebugActive: 0
         Mode: 0
-        BoundParticleSystem: {fileID: 5767131424066236210}
+        BoundParticleSystem: {fileID: 1273844881937927668}
         RandomParticleSystems: []
         MoveToPosition: 1
         ActivateOnPlay: 0
         StopSystemOnInit: 1
-    00000003:
+    00000002:
       type: {class: MMF_MMSoundManagerSound, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
       data:
         Active: 1
@@ -594,6 +516,76 @@ MonoBehaviour:
           ButtonText: Debug Stop Sound
         ResetSequentialIndexButton:
           ButtonText: Reset Sequential Index
+    00000003:
+      type: {class: MMF_Destroy, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: 337724880
+        Label: Destroy
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 1
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        Owner: {fileID: 3006733974970169832}
+        DebugActive: 0
+        TargetGameObject: {fileID: 446237803680940135}
+        Mode: 0
     00000004:
       type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
       data:
@@ -822,302 +814,6 @@ MonoBehaviour:
           m_PropagationSpeed: 343
         Velocity: {x: 0, y: 10, z: 0}
         ClearImpulseOnStop: 0
-    00000006:
-      type: {class: MMF_Light, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: 1339442466
-        Label: Light
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 0.1
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        Owner: {fileID: 3006733974970169832}
-        DebugActive: 0
-        BoundLight: {fileID: 5767131424795321647}
-        Mode: 0
-        Duration: 0.2
-        StartsOff: 1
-        DisableOnStop: 1
-        RelativeValues: 1
-        ResetShakerValuesAfterShake: 1
-        ResetTargetValuesAfterShake: 1
-        OnlyBroadcastInRange: 0
-        EventRange: 100
-        EventOriginTransform: {fileID: 0}
-        AllowAdditivePlays: 0
-        ModifyColor: 0
-        ColorOverTime:
-          serializedVersion: 2
-          key0: {r: 1, g: 1, b: 1, a: 1}
-          key1: {r: 1, g: 1, b: 1, a: 1}
-          key2: {r: 0, g: 0, b: 0, a: 0}
-          key3: {r: 0, g: 0, b: 0, a: 0}
-          key4: {r: 0, g: 0, b: 0, a: 0}
-          key5: {r: 0, g: 0, b: 0, a: 0}
-          key6: {r: 0, g: 0, b: 0, a: 0}
-          key7: {r: 0, g: 0, b: 0, a: 0}
-          ctime0: 0
-          ctime1: 65535
-          ctime2: 0
-          ctime3: 0
-          ctime4: 0
-          ctime5: 0
-          ctime6: 0
-          ctime7: 0
-          atime0: 0
-          atime1: 65535
-          atime2: 0
-          atime3: 0
-          atime4: 0
-          atime5: 0
-          atime6: 0
-          atime7: 0
-          m_Mode: 0
-          m_NumColorKeys: 2
-          m_NumAlphaKeys: 2
-        InstantColor: {r: 1, g: 0, b: 0, a: 1}
-        ToDestinationColor: {r: 1, g: 0, b: 0, a: 1}
-        ModifyIntensity: 1
-        IntensityCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.3
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapIntensityZero: 0
-        RemapIntensityOne: 1
-        InstantIntensity: 1
-        ToDestinationIntensity: 1
-        ModifyRange: 1
-        RangeCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.3
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeZero: 0
-        RemapRangeOne: 10
-        InstantRange: 10
-        ToDestinationRange: 10
-        ModifyShadowStrength: 1
-        ShadowStrengthCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 0.3
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapShadowStrengthZero: 0
-        RemapShadowStrengthOne: 1
-        InstantShadowStrength: 1
-        ToDestinationShadowStrength: 1
-    00000007:
-      type: {class: MMF_Destroy, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
-      data:
-        Active: 1
-        UniqueID: 337724880
-        Label: Destroy
-        ChannelMode: 0
-        Channel: 0
-        MMChannelDefinition: {fileID: 0}
-        Chance: 100
-        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
-        Timing:
-          TimescaleMode: 0
-          ExcludeFromHoldingPauses: 0
-          ContributeToTotalDuration: 1
-          InitialDelay: 1
-          CooldownDuration: 0
-          InterruptsOnStop: 1
-          NumberOfRepeats: 0
-          RepeatForever: 0
-          DelayBetweenRepeats: 1
-          MMFeedbacksDirectionCondition: 0
-          PlayDirection: 0
-          ConstantIntensity: 0
-          UseIntensityInterval: 0
-          IntensityIntervalMin: 0
-          IntensityIntervalMax: 0
-          Sequence: {fileID: 0}
-          TrackID: 0
-          Quantized: 0
-          TargetBPM: 120
-        AutomatedTargetAcquisition:
-          Mode: 0
-          ChildIndex: 0
-        RandomizeOutput: 0
-        RandomMultiplier: {x: 0.8, y: 1}
-        RandomizeDuration: 0
-        RandomDurationMultiplier: {x: 0.5, y: 2}
-        UseRange: 0
-        RangeDistance: 5
-        UseRangeFalloff: 0
-        RangeFalloff:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 1
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        RemapRangeFalloff: {x: 0, y: 1}
-        Owner: {fileID: 3006733974970169832}
-        DebugActive: 0
-        TargetGameObject: {fileID: 446237803680940135}
-        Mode: 0
 --- !u!114 &6967329777459826023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1151,187 +847,82 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
---- !u!1001 &2610724757673249820
+--- !u!1001 &625393151453706812
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 1657589470557383718}
     m_Modifications:
-    - target: {fileID: 8373281513275089696, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-      propertyPath: clearBehavior
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalScale.x
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalScale.y
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalScale.z
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.70710677
-      objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 90.00001
-      objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089708, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-      propertyPath: m_Name
-      value: p_KockbackExplosion
-      objectReference: {fileID: 0}
-    - target: {fileID: 8373281513275089708, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8373281513275089696, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-  m_SourcePrefab: {fileID: 100100000, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
---- !u!4 &5767131424066236221 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8373281513275089697, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-  m_PrefabInstance: {fileID: 2610724757673249820}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &5767131424066236210 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 8373281513275089710, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-  m_PrefabInstance: {fileID: 2610724757673249820}
-  m_PrefabAsset: {fileID: 0}
---- !u!108 &5767131424795321647 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8373281512560552243, guid: 46dcd23fd3eb60547a23c1d27322ed8d, type: 3}
-  m_PrefabInstance: {fileID: 2610724757673249820}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &4863576520152370579
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1657589470557383718}
-    m_Modifications:
-    - target: {fileID: 518291362818242901, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: ShapeModule.arc.spread
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362818247599, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: ShapeModule.arc.spread
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362818247599, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: ShapeModule.sphericalDirectionAmount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362831949085, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: m_Name
-      value: p_ExplosionNovaSmallBlue
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.7071068
       objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalRotation.x
       value: -0.7071068
       objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -90
       objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
+    - target: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1801524419838695572, guid: 551c559cd024d454c8c98faefe159117, type: 3}
+      propertyPath: m_Name
+      value: p_FrostExplosion
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
---- !u!4 &4922348820833636682 stripped
+  m_SourcePrefab: {fileID: 100100000, guid: 551c559cd024d454c8c98faefe159117, type: 3}
+--- !u!4 &1273844881956288666 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 518291362832375001, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-  m_PrefabInstance: {fileID: 4863576520152370579}
+  m_CorrespondingSourceObject: {fileID: 1801524419838345894, guid: 551c559cd024d454c8c98faefe159117, type: 3}
+  m_PrefabInstance: {fileID: 625393151453706812}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &4922348820852110534 stripped
+--- !u!198 &1273844881937927668 stripped
 ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 518291362818242901, guid: 98952d78b0763cd4f98bb4ec0814d8a6, type: 3}
-  m_PrefabInstance: {fileID: 4863576520152370579}
+  m_CorrespondingSourceObject: {fileID: 1801524419852515272, guid: 551c559cd024d454c8c98faefe159117, type: 3}
+  m_PrefabInstance: {fileID: 625393151453706812}
   m_PrefabAsset: {fileID: 0}

@@ -10,11 +10,18 @@ namespace BML.Scripts
     {
         [SerializeField] private BehaviorDesigner.Runtime.BehaviorTree behaviorTree;
 
-        public void SetKnockback(Vector3 direction) {
+        public void SetKnockback(Vector3 direction, float knockbackTime = default) {
+            if(knockbackTime != default) {
+                behaviorTree.SetVariableValue("KnockbackTime", knockbackTime);
+            }
             behaviorTree.SendEvent<object, object>("SetKnockback", direction, Time.time);
         }
 
         public void SetKnockback(HitInfo hitInfo) {
+            SetKnockback(hitInfo.HitDirection);
+        }
+
+        public void SetKnockback(HitInfo hitInfo, float knockbackTime = default) {
             SetKnockback(hitInfo.HitDirection);
         }
 

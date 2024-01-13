@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
+using System.Linq;
 
 namespace BML.Scripts
 {
@@ -20,6 +21,9 @@ namespace BML.Scripts
         [SerializeField] private DamageType _damageType;
         [SerializeField] private IntReference _damage;
         [SerializeField] private bool _applyKnockback = true;
+        [ShowIf("_applyKnockback"), SerializeField] private bool _customizeKnockback = false;
+        [ShowIf("_customizeKnockback"), SerializeField] private FloatReference _knockbackTime = null;
+        [SerializeField] private bool _applyStun = false;
         [SerializeField] private bool _useExplosiveRadiusFeedback = true;
         [SerializeField, ShowIf("_useExplosiveRadiusFeedback")] private MMF_Player _explosiveRadiusFeedback;
         [SerializeField] private float _explosionCueOffsetTime = .25f;
@@ -99,7 +103,7 @@ namespace BML.Scripts
                 if(col.gameObject == gameObject || col.attachedRigidbody?.gameObject == gameObject) {
                     continue;
                 }
-
+                
                 RaycastHit hit;
                 Vector3 originToTarget = col.bounds.center - origin;
                 if (Physics.Raycast(origin, originToTarget.normalized, out hit, originToTarget.magnitude, _obstacleMask))
@@ -124,19 +128,26 @@ namespace BML.Scripts
                 if(damageable != null) {
                     damageable.TakeDamage(hitInfo);
                 }
+
+                if(_applyKnockback) {
+                    Knockbackable knockbackable = col.GetComponent<Knockbackable>() ?? col.attachedRigidbody?.GetComponent<Knockbackable>();
+
+                    if(knockbackable != null) {
+                        if (_customizeKnockback)
+                        {
+                            knockbackable.SetKnockback(hitInfo, _knockbackTime.Value);
+                        } else {
+                            knockbackable.SetKnockback(hitInfo);
+                        }
+                    }
+                }
                 
-                if (!_applyKnockback) continue;
-
-                Knockbackable knockbackable = col.GetComponent<Knockbackable>();
-                if (knockbackable == null)
-                {
-                    knockbackable = col.attachedRigidbody?.GetComponent<Knockbackable>();
-                }
-
-                if (knockbackable != null)
-                {
-                    knockbackable.SetKnockback(hitInfo);
-                }
+               if(_applyStun) {
+                    Stunnable stunnable = col.GetComponent<Stunnable>() ?? col.attachedRigidbody?.GetComponent<Stunnable>();
+                    if(stunnable != null) {
+                        stunnable.SetStun(hitInfo);
+                    }
+               }
             }
 
             isActive = false;
