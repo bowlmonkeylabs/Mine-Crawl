@@ -200,6 +200,10 @@ namespace BML.Scripts
         
         private bool SpawnPointIsActive(EnemySpawnPoint spawnPoint)
         {
+            if(!spawnPoint.gameObject.activeSelf) {
+                return false;
+            }
+            
             bool inRangeOfPlayer = (spawnPoint.ParentNode.PlayerDistance >= _minMaxSpawnPlayerDistance.x
                 && spawnPoint.ParentNode.PlayerDistance <= _minMaxSpawnPlayerDistance.y
                 && !spawnPoint.ParentNode.PlayerOccupiedAdjacentNodeOrConnection);
