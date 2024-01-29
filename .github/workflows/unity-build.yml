@@ -270,6 +270,11 @@ jobs:
             ${{ runner.os }}-UnversionedAssets
       # ^ Git annex ^ -------------------------------
 
+      - name: Test Delete Hot reload cache
+        run: |
+          rm -rf Library/PackageCache/com.singularitygroup.hotreload
+        
+
       # v Restore Unity caches v -------------------------------
       - name: Restore Library cache 📂
         id: cache-restore-library
