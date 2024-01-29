@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f20bdc9e74430486c481f8563e54a7, type: 3}
   m_Name: CaveGenParams_Level0
   m_EditorClassIdentifier: 
-  PoissonSampleRadius: 11
+  PoissonSampleRadius: 16
   PoissonBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 78, y: 26, z: 78}
+    m_Extent: {x: 30, y: 20, z: 30}
   PoissonBoundsPadding: {x: 3, y: 3, z: 3}
   PoissonBoundsPaddingInnerOuter: 0
-  MaxEdgeLengthFactor: 2
+  MaxEdgeLengthFactor: 1.5
   SteepnessRanges:
   - Angle: {x: 0, y: 20}
     EdgeRadius: {x: 1.25, y: 1.25}
@@ -27,8 +27,8 @@ MonoBehaviour:
   RoomScaling: {x: 1, y: 4}
   OnlyShortestPathBetweenStartAndEnd: 1
   UseOffshootsFromMainPath: 1
-  NumOffshoots: 4
-  MinMaxOffshootLength: {x: 3, y: 4}
+  NumOffshoots: 3
+  MinMaxOffshootLength: {x: 1, y: 2}
   MinimumSpanningTree: 0
   MinimumSpanningNodes: 10
   RemoveOrphanNodes: 1
