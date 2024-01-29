@@ -269,18 +269,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-UnversionedAssets
       # ^ Git annex ^ -------------------------------
-      
+
       # v Restore Unity caches v -------------------------------
       - name: Restore Library cache 📂
         id: cache-restore-library
         uses: actions/cache/restore@v3
         with:
           path: Library
-          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-0.12.117-00b3b7f0be9575c935b18d9a6fc75eb002537c81
+          key: ${{ runner.os }}-Library-${{ matrix.targetPlatform }}-${{ steps.set-build-version.outputs.buildVersion }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-Library-${{ matrix.targetPlatform }}
             ${{ runner.os }}-Library
-          
+
       - name: Restore "everything else" cache 📂
         id: cache-restore-everything-else
         uses: actions/cache/restore@v3
