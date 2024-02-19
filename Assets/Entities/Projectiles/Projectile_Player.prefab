@@ -301,6 +301,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 7391122811801765368}
         DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
         Sfx: {fileID: 8300000, guid: 268a6fab250ce4e40be876ebe05a7470, type: 3}
         RandomSfx: []
         TestPlayButton:
@@ -366,6 +368,13 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 0
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 20
         MaxDistance: 70
 --- !u!1 &6073927028198922860
@@ -413,6 +422,7 @@ GameObject:
   - component: {fileID: 7854503322635327098}
   - component: {fileID: 3948568082478859347}
   - component: {fileID: 2397865955889468302}
+  - component: {fileID: 7364898777780125418}
   m_Layer: 24
   m_Name: Projectile_Player
   m_TagString: Untagged
@@ -561,6 +571,78 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7364898777780125418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264773026492306718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 007ea1391362e4845aee91886eb0cda3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionLayerMask:
+    serializedVersion: 2
+    m_Bits: 32768
+  OnCollisionEnterEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4412284428161751536}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnCollisionExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollisionStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  TriggerLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  OnTriggerEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  Collision2DLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  OnCollision2DEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollision2DExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollision2DStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  Trigger2DLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  OnTrigger2DEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTrigger2DExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTrigger2DStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7105204453429942838
 GameObject:
   m_ObjectHideFlags: 0
@@ -912,6 +994,8 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 4412284428161751536}
         DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
         Sfx: {fileID: 8300000, guid: 64fb9477894fa2e4a997518fbb1c2f15, type: 3}
         RandomSfx:
         - {fileID: 8300000, guid: 64fb9477894fa2e4a997518fbb1c2f15, type: 3}
@@ -979,5 +1063,12 @@ MonoBehaviour:
         DopplerLevel: 1
         Spread: 0
         RolloffMode: 0
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
         MinDistance: 20
         MaxDistance: 70
