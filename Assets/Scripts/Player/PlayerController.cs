@@ -368,8 +368,6 @@ namespace BML.Scripts.Player
             
             _startPickaxeThrowFeedbacks.PlayFeedbacks();
             _pickaxeThrowCooldown.RestartTimer();
-            
-            //TODO: Disable pickaxe usage and visual
         }
 
         public void DoPickaxeThrow()
