@@ -45,6 +45,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private BoxCollider _sweepCollider;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSweepCooldown;
+        [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeThrowCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _pickaxeDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _swingCritChance;
@@ -67,6 +68,8 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepSuccessHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitEnemyFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startPickaxeThrowFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startPickaxeReceiveFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingCritFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepCritFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepCritInstanceFeedbacks;
@@ -105,6 +108,7 @@ namespace BML.Scripts.Player
         private InputAction primaryAction;
         private InputAction secondaryAction;
         private bool secondaryInputHeld = false;
+        private bool pickaxeHeld = true;
         private PickaxeInteractionReceiver hoveredInteractionReceiver = null;
 
         #endregion
@@ -116,6 +120,7 @@ namespace BML.Scripts.Player
             _isGodModeEnabled.Subscribe(SetGodMode);
             _combatTimer.SubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
+            _pickaxeThrowCooldown.SubscribeFinished(StartPickaxeReceiveFeedbacks);
             _tryHeal.Subscribe(Heal);
             _tryHealTemporary.Subscribe(HealTemporary);
             _isDashActive.Subscribe(OnDashSetActive);
@@ -133,6 +138,7 @@ namespace BML.Scripts.Player
             _isGodModeEnabled.Unsubscribe(SetGodMode);
             _combatTimer.UnsubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
+            _pickaxeThrowCooldown.UnsubscribeFinished(StartPickaxeReceiveFeedbacks);
             _tryHeal.Unsubscribe(Heal);
             _tryHealTemporary.Unsubscribe(HealTemporary);
             _isDashActive.Unsubscribe(OnDashSetActive);
@@ -144,12 +150,13 @@ namespace BML.Scripts.Player
         private void Update()
         {
             if (primaryAction.IsPressed()) TrySwingPickaxe();
-            if (secondaryAction.IsPressed()) TryUseSweep();
+            if (secondaryAction.IsPressed()) TryUsePickaxeThrow();
             HandleHover();
             HandleReticleScaling();
             _combatTimer.UpdateTime(!_anyEnemiesEngaged.Value ? _safeCombatTimerDecayMultiplier : 1f);
             _pickaxeSwingCooldown.UpdateTime();
             _pickaxeSweepCooldown.UpdateTime();
+            _pickaxeThrowCooldown.UpdateTime();
         }
 
         #endregion
@@ -164,7 +171,7 @@ namespace BML.Scripts.Player
         
         private void TrySwingPickaxe()
         {
-            if (_pickaxeSwingCooldown.IsStarted && !_pickaxeSwingCooldown.IsFinished)
+            if (_pickaxeSwingCooldown.IsStarted && !_pickaxeSwingCooldown.IsFinished || !pickaxeHeld)
             {
                 return;
             }
@@ -350,6 +357,34 @@ namespace BML.Scripts.Player
             //         hitPos);
             //     interactionReceiver.ReceiveSecondaryInteraction(pickaxeHitInfo);
             // }
+        }
+
+        private void TryUsePickaxeThrow()
+        {
+            if (!pickaxeHeld)
+            {
+                return;
+            }
+            
+            _startPickaxeThrowFeedbacks.PlayFeedbacks();
+            _pickaxeThrowCooldown.RestartTimer();
+            
+            //TODO: Disable pickaxe usage and visual
+        }
+
+        public void DoPickaxeThrow()
+        {
+            pickaxeHeld = false;
+        }
+
+        private void StartPickaxeReceiveFeedbacks()
+        {
+            _startPickaxeReceiveFeedbacks.PlayFeedbacks();
+        }
+
+        public void ReceivePickaxe()
+        {
+            pickaxeHeld = true;
         }
 
         private void SweepReadyFeedbacks()
