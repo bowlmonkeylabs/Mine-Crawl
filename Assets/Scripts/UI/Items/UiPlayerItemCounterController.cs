@@ -98,6 +98,13 @@ namespace BML.Scripts.UI.Items
                                     return null;
                                 }
                                 return _playerInventory.PassiveItems[_inventoryItemSlotIndex];
+                            case ItemType.Ability:
+                                if (_playerInventory == null || _inventoryItemSlotIndex >=
+                                    _playerInventory.AbilityItems.ItemCount)
+                                {
+                                    return null;
+                                }
+                                return _playerInventory.AbilityItems[_inventoryItemSlotIndex];
                             case ItemType.PassiveStackable:
                                 // TODO we probably want to have the representative information defined on the tree start node, but for now it's easier to just display the first item in the tree
                                 return InventoryPassiveStackableTreeStartNode?.FirstItemInTree;
@@ -176,6 +183,11 @@ namespace BML.Scripts.UI.Items
                         _playerInventory.PassiveItems.OnItemAdded += OnPassiveItemChanged;
                         _playerInventory.PassiveItems.OnItemRemoved += OnPassiveItemChanged;
                         break;
+                    case ItemType.Ability:
+                        // _playerInventory.AbilityItems.OnItemAdded += OnPassiveStackableItemAdded;
+                        // _playerInventory.AbilityItems.OnItemRemoved += OnPassiveStackableItemRemoved;
+                        // _playerInventory.AbilityItems.OnAnyItemChangedInInspector += OnPassiveStackableItemChangedInInspector;
+                        break;
                     case ItemType.PassiveStackable:
                         _playerInventory.PassiveStackableItems.OnItemAdded += OnPassiveStackableItemAdded;
                         _playerInventory.PassiveStackableItems.OnItemRemoved += OnPassiveStackableItemRemoved;
@@ -215,6 +227,11 @@ namespace BML.Scripts.UI.Items
                     case ItemType.Passive:
                         _playerInventory.PassiveItems.OnItemAdded -= OnPassiveItemChanged;
                         _playerInventory.PassiveItems.OnItemRemoved -= OnPassiveItemChanged;
+                        break;
+                    case ItemType.Ability:
+                        // _playerInventory.PassiveStackableItems.OnItemAdded -= OnPassiveStackableItemAdded;
+                        // _playerInventory.PassiveStackableItems.OnItemRemoved -= OnPassiveStackableItemRemoved;
+                        // _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector -= OnPassiveStackableItemChangedInInspector;
                         break;
                     case ItemType.PassiveStackable:
                         _playerInventory.PassiveStackableItems.OnItemAdded -= OnPassiveStackableItemAdded;

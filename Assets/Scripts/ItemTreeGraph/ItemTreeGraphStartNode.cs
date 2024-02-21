@@ -13,6 +13,10 @@ namespace BML.Scripts.ItemTreeGraph {
         [Output(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection Start;
 
         public PlayerItem FirstItemInTree => ((ItemTreeGraphNode)this.GetValue(this.GetOutputPort("Start"))).Item;
+
+        public bool RequireAbilityItem = false;
+        [ShowIf("RequireAbilityItem")]
+        public PlayerItem RequiredAbilityItem;
         
         [ShowInInspector, NonSerialized, ReadOnly]
         // this status is cached here at runtime for UI purposes, but this should not be referenced or relied upon for other purpoes; PlayerInventory is the source of truth.

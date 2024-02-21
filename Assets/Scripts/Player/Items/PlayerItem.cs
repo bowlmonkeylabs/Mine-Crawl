@@ -19,6 +19,7 @@ namespace BML.Scripts.Player.Items
         Passive = 2,
         Active = 3,
         Consumable = 4,
+        Ability = 5,
     }
 
     [InlineEditor()]

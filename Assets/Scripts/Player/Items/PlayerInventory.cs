@@ -60,6 +60,11 @@ namespace BML.Scripts.Player.Items
         [BoxGroup("Consumable Items"), InlineProperty, HideLabel]
         [PropertySpace(SpaceAfter = PROPERTY_SPACING)]
         public ItemSlotType<PlayerItem> ConsumableItems;
+
+        [SerializeField]
+        [BoxGroup("Ability Items"), InlineProperty, HideLabel]
+        [PropertySpace(SpaceAfter = PROPERTY_SPACING)]
+        public ItemSlotType<PlayerItem> AbilityItems;
         
         [NonSerialized]
         public Queue<PlayerItem> OnAcquiredConsumableQueue = new Queue<PlayerItem>();
@@ -76,6 +81,9 @@ namespace BML.Scripts.Player.Items
             switch (item.Type)
             {
                 case ItemType.PassiveStackable:
+                    return true;
+                    break;
+                case ItemType.Ability:
                     return true;
                     break;
                 case ItemType.Passive:
@@ -140,6 +148,9 @@ namespace BML.Scripts.Player.Items
                         didAdd = PassiveStackableItems.TryAddItem(item, ignoreReplacementCooldown);
                     }
                     break;
+                case ItemType.Ability:
+                    didAdd = AbilityItems.TryAddItem(item, ignoreReplacementCooldown);
+                    break;
                 case ItemType.Passive:
                     didAdd = PassiveItems.TryAddItem(item, ignoreReplacementCooldown);
                     break;
@@ -171,6 +182,9 @@ namespace BML.Scripts.Player.Items
                 case ItemType.PassiveStackable:
                     didRemove = PassiveStackableItems.TryRemoveItem(item);
                     break;
+                case ItemType.Ability:
+                    didRemove = AbilityItems.TryRemoveItem(item);
+                    break;
                 case ItemType.Passive:
                     didRemove = PassiveItems.TryRemoveItem(item);
                     break;
@@ -197,12 +211,14 @@ namespace BML.Scripts.Player.Items
             this.ConsumableItems.ForEach(p => p?.ResetScriptableObject());
             this.PassiveItems.ForEach(p => p?.ResetScriptableObject());
             this.PassiveStackableItems.ForEach(p => p?.ResetScriptableObject());
+            this.AbilityItems.ForEach(p => p?.ResetScriptableObject());
 
             this.ActiveItems.Clear();
             this.ConsumableItems.Clear();
             this.PassiveItems.Clear();
             this.PassiveStackableItems.Clear();
             this.PassiveStackableItemTrees.Clear();
+            this.AbilityItems.Clear();
 
             OnReset?.Invoke();
         }
@@ -301,6 +317,7 @@ namespace BML.Scripts.Player.Items
             switch (item.Type)
             {
                 case ItemType.PassiveStackable:
+                case ItemType.Ability:
                 case ItemType.Passive:
                 case ItemType.Active:
                     break;
@@ -334,6 +351,7 @@ namespace BML.Scripts.Player.Items
             switch (item.Type)
             {
                 case ItemType.PassiveStackable:
+                case ItemType.Ability:
                 case ItemType.Passive:
                 case ItemType.Active:
                     break;
@@ -373,6 +391,11 @@ namespace BML.Scripts.Player.Items
                     PassiveStackableItems.OnItemRemoved += onInventoryItemUpdated;
                     PassiveStackableItems.OnReplacementCooldownTimerStartedOrFinished += onInventoryUpdated;
                     break;
+                case ItemType.Ability:
+                    AbilityItems.OnItemAdded += onInventoryItemUpdated;
+                    AbilityItems.OnItemRemoved += onInventoryItemUpdated;
+                    AbilityItems.OnReplacementCooldownTimerStartedOrFinished += onInventoryUpdated;
+                    break;
                 case ItemType.Passive:
                     PassiveItems.OnItemAdded += onInventoryItemUpdated;
                     PassiveItems.OnItemRemoved += onInventoryItemUpdated;
@@ -407,6 +430,11 @@ namespace BML.Scripts.Player.Items
                     PassiveStackableItems.OnItemAdded -= onInventoryItemUpdated;
                     PassiveStackableItems.OnItemRemoved -= onInventoryItemUpdated;
                     PassiveStackableItems.OnReplacementCooldownTimerStartedOrFinished -= onInventoryUpdated;
+                    break;
+                case ItemType.Ability:
+                    AbilityItems.OnItemAdded -= onInventoryItemUpdated;
+                    AbilityItems.OnItemRemoved -= onInventoryItemUpdated;
+                    AbilityItems.OnReplacementCooldownTimerStartedOrFinished -= onInventoryUpdated;
                     break;
                 case ItemType.Passive:
                     PassiveItems.OnItemAdded -= onInventoryItemUpdated;

@@ -84,6 +84,8 @@ namespace BML.Scripts.Player.Items
             _playerInventory.PassiveItems.OnItemRemoved += Unapply_OnAcquired;
             _playerInventory.ConsumableItems.OnItemAdded += Apply_OnAcquired;
             _playerInventory.ConsumableItems.OnItemRemoved += Unapply_OnAcquired;
+            _playerInventory.AbilityItems.OnItemAdded += Apply_OnAcquired;
+            _playerInventory.AbilityItems.OnItemRemoved += Unapply_OnAcquired;
 
             _inDash.Subscribe(OnInDashChange);
             
@@ -117,6 +119,8 @@ namespace BML.Scripts.Player.Items
             _playerInventory.PassiveItems.OnItemRemoved -= Unapply_OnAcquired;
             _playerInventory.ConsumableItems.OnItemAdded -= Apply_OnAcquired;
             _playerInventory.ConsumableItems.OnItemRemoved -= Unapply_OnAcquired;
+            _playerInventory.AbilityItems.OnItemAdded -= Apply_OnAcquired;
+            _playerInventory.AbilityItems.OnItemRemoved -= Unapply_OnAcquired;
 
             _inDash.Unsubscribe(OnInDashChange);
 
