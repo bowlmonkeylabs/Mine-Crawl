@@ -86,6 +86,7 @@ namespace BML.Scripts.Player.Items
             var unobtainedItemPool = new List<PlayerItem>();
 
             var startNodes = this.nodes.OfType<ItemTreeGraphStartNode>();
+            startNodes = startNodes.Where(node => !node.RequireAbilityItem || _playerInventory.AbilityItems.Contains(node.RequiredAbilityItem));
             // var slottedStartNodes = startNodes.Where(node => (node as ItemTreeGraphStartNode).Slotted);
             var slottedStartNodes = _playerInventory.PassiveStackableItemTrees.Items;
             

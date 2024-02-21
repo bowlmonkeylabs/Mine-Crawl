@@ -64,6 +64,7 @@ namespace BML.Scripts.Player
 		[SerializeField, FoldoutGroup("Knockback")] float KnockbackDuration = .2f;
 		[SerializeField, FoldoutGroup("Knockback")] AnimationCurve KnockbackHorizontalForceCurve;
 
+        [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Dash Enabled")] private BoolVariable DashEnabled;
 		[SerializeField, FoldoutGroup("Dash"), Tooltip("Dash speed of the character in m/s")] private SafeFloatValueReference DashMaxSpeed;
 		[SerializeField, FoldoutGroup("Dash"), Tooltip("Dash speed of the character in m/s")] private CurveVariable DashSpeedCurve;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Dash duration, in seconds")] private SafeFloatValueReference DashTime;
@@ -518,23 +519,27 @@ namespace BML.Scripts.Player
         }
         
         private void CheckDash() {
-            // if(!DashActive.Value && !isNoClipEnabled.Value && !DashCooldownTimer.IsActive && _input.dash) {
-            //     ExitRopeMovement();
-            //     _currentGravity = 0f;
-            //     DashActive.Value = true;
-            //     _startDashTime = Time.time;
-            //     Vector3 inputDir = GetInputDirection();
-            //     if(Mathf.Approximately(inputDir.magnitude, 0)) {
-            //         inputDir = _mainCamera.transform.forward.xoz().normalized;
-            //     }
-            //     _dashDirection = inputDir;
-            // }
-            // if(DashActive.Value && Time.time - _startDashTime >= DashTime.Value) {
-            //     DashActive.Value = false;
-            //     _currentGravity = Gravity;
-            //     DashCooldownTimer.RestartTimer();
-            //     DashInCooldown.Value = true;
-            // }
+            if(!DashEnabled.Value) {
+                return;
+            }
+
+            if(!DashActive.Value && !isNoClipEnabled.Value && !DashCooldownTimer.IsActive && _input.dash) {
+                ExitRopeMovement();
+                _currentGravity = 0f;
+                DashActive.Value = true;
+                _startDashTime = Time.time;
+                Vector3 inputDir = GetInputDirection();
+                if(Mathf.Approximately(inputDir.magnitude, 0)) {
+                    inputDir = _mainCamera.transform.forward.xoz().normalized;
+                }
+                _dashDirection = inputDir;
+            }
+            if(DashActive.Value && Time.time - _startDashTime >= DashTime.Value) {
+                DashActive.Value = false;
+                _currentGravity = Gravity;
+                DashCooldownTimer.RestartTimer();
+                DashInCooldown.Value = true;
+            }
         }
 
         private void CheckDashCooldown() 
