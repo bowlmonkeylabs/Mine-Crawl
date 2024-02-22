@@ -9,7 +9,7 @@ namespace BML.Scripts.Player.Items
 {
     public enum PlayerAbilityType {
         Movement = 1,
-        SecondaryAttack = 2
+        PickaxeSecondary = 2
     }
 
     [CreateAssetMenu(fileName = "PlayerAbilityItems", menuName = "BML/Player/PlayerAbilityItems", order = 0)]

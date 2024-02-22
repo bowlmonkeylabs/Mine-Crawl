@@ -43,6 +43,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _enemyMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoolVariable _sweepEnabled;
+        [SerializeField, FoldoutGroup("Pickaxe")] private BoolVariable _pickaxeThrowEnabled;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoxCollider _sweepCollider;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSweepCooldown;
@@ -151,7 +152,7 @@ namespace BML.Scripts.Player
         private void Update()
         {
             if (primaryAction.IsPressed()) TrySwingPickaxe();
-            if (secondaryAction.IsPressed()) TryUsePickaxeThrow();
+            if (secondaryAction.IsPressed()) TryUsePickaxeSecondary();
             HandleHover();
             HandleReticleScaling();
             _combatTimer.UpdateTime(!_anyEnemiesEngaged.Value ? _safeCombatTimerDecayMultiplier : 1f);
@@ -263,6 +264,11 @@ namespace BML.Scripts.Player
         {
             _interactDistance.Value = dist;
         }
+
+        private void TryUsePickaxeSecondary() {
+            TryUseSweep();
+            TryUsePickaxeThrow();
+        }
         
         private void TryUseSweep()
         {
@@ -366,6 +372,10 @@ namespace BML.Scripts.Player
 
         private void TryUsePickaxeThrow()
         {
+            if(!_pickaxeThrowEnabled.Value) {
+
+            }
+
             if (!pickaxeHeld)
             {
                 return;
