@@ -47,6 +47,10 @@ namespace BML.Scripts.UI
 
         #endregion
 
+        public void SetTimerVariable(TimerVariable timerVariable) {
+            _timer.SetVariable(timerVariable);
+        }
+
         private void UpdateImage()
         {
             float fillPercent = 0;
