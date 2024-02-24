@@ -373,7 +373,7 @@ namespace BML.Scripts.Player
         private void TryUsePickaxeThrow()
         {
             if(!_pickaxeThrowEnabled.Value) {
-
+                return;
             }
 
             if (!pickaxeHeld)

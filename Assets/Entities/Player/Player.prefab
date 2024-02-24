@@ -9936,7 +9936,7 @@ MonoBehaviour:
   lookScaleMouse: {x: 0.005, y: 0.005}
   lookScaleGamepad: {x: 12.5, y: 12.5}
   jump: 0
-  dash: 0
+  movement: 0
   analogMovement: 1
   playerCursorLocked: 1
   _mouseSensitivity:
@@ -10218,6 +10218,29 @@ MonoBehaviour:
   DashActive: {fileID: 11400000, guid: 0cfe6ddbe3de93e45ac2c79fcbe0f181, type: 2}
   DashInCooldown: {fileID: 11400000, guid: a37b8913d77aa8e47b5d1504e78331aa, type: 2}
   DashCooldownTimer: {fileID: 11400000, guid: 937a698e47634ff4283f92fbd3b3f16e, type: 2}
+  SprintEnabled: {fileID: 11400000, guid: b0a6c6a158484304286a187708a29d9c, type: 2}
+  SprintActive: {fileID: 11400000, guid: 9456af9248c6c924894454df3342441a, type: 2}
+  SprintMultiplier:
+    ReferenceTypeSelector: 1
+    ConstantValue: 3
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: 1213bf3f843653c4685b457ac8761e62,
+      type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+  SprintTimer: {fileID: 11400000, guid: 59c9e5b879b74214095a82703b8c53ee, type: 2}
+  SprintCooldownTimer: {fileID: 11400000, guid: 0d0af3932d96dd448af746bdeaaf30e6,
+    type: 2}
+  SprintRechargeRate:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 11400000, guid: 18fb360855ef87c4290f393054a61b56,
+      type: 2}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _playerEnteredRopeEvent: {fileID: 11400000, guid: 79f6c3fbdcaa27645a06b439ec82da13,
     type: 2}
   _isRopeMovementEnabled:
@@ -10306,7 +10329,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 525312
   _sweepEnabled: {fileID: 11400000, guid: 927768d819ba6c34ca0e1febf4411efb, type: 2}
-  _pickaxeThrowEnabled: {fileID: 11400000, guid: 9052c68af67186e4e88c24c0d2e26aa3, type: 2}
+  _pickaxeThrowEnabled: {fileID: 11400000, guid: 9052c68af67186e4e88c24c0d2e26aa3,
+    type: 2}
   _sweepCollider: {fileID: 6637335878769414553}
   _pickaxeSwingCooldown:
     UseConstant: 0
@@ -10744,9 +10768,9 @@ MonoBehaviour:
   health: {fileID: 1905872712608776435}
   healthTemporary: {fileID: 6164536746581849819}
   _damageable:
-  - _damageTypesPreview: Enemy_Sentinel_Projectile, Ore_Explosive, Enemy_Bomb_Explosion,
+  - _damageTypesPreview: Player_Bomb, Enemy_Sentinel_Projectile, Ore_Explosive, Enemy_Bomb_Explosion,
       Trap_Stalactite
-    _damageType: 10384
+    _damageType: 10386
     _damageModifierType: 2
     _damageMultiplier:
       ReferenceTypeSelector: 0
@@ -10772,70 +10796,6 @@ MonoBehaviour:
       RoundingBehavior: 0
       ReferenceValue_FloatVariable: {fileID: 0}
       ReferenceValue_IntVariable: {fileID: 0}
-      ReferenceValue_BoolVariable: {fileID: 0}
-      ReferenceValue_FunctionVariable: {fileID: 0}
-      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-    _onDamage:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 6318842967923595271}
-          m_TargetAssemblyTypeName: BML.Scripts.Player.FirstPersonController, BML.Scripts
-          m_MethodName: Knockback
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 4112429824577967131}
-          m_TargetAssemblyTypeName: BML.Scripts.Player.PlayerController, BML.Scripts
-          m_MethodName: SetInCombat
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    _onFailDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onDeath:
-      m_PersistentCalls:
-        m_Calls: []
-  - _damageTypesPreview: Player_Bomb, Player_FireBomb
-    _damageType: 65538
-    _damageModifierType: 2
-    _damageMultiplier:
-      ReferenceTypeSelector: 3
-      ConstantValue: 1
-      RoundingBehavior: 0
-      ReferenceValue_FloatVariable: {fileID: 0}
-      ReferenceValue_IntVariable: {fileID: 0}
-      ReferenceValue_BoolVariable: {fileID: 0}
-      ReferenceValue_FunctionVariable: {fileID: 0}
-      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-    _damageResistance:
-      ReferenceTypeSelector: 0
-      ConstantValue: 0
-      RoundingBehavior: 0
-      ReferenceValue_FloatVariable: {fileID: 0}
-      ReferenceValue_IntVariable: {fileID: 0}
-      ReferenceValue_BoolVariable: {fileID: 0}
-      ReferenceValue_FunctionVariable: {fileID: 0}
-      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-    _damageOverride:
-      ReferenceTypeSelector: 1
-      ConstantValue: 2
-      RoundingBehavior: 0
-      ReferenceValue_FloatVariable: {fileID: 0}
-      ReferenceValue_IntVariable: {fileID: 11400000, guid: 64d889f7174f20f41859f5f5f1014a68,
-        type: 2}
       ReferenceValue_BoolVariable: {fileID: 0}
       ReferenceValue_FunctionVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
