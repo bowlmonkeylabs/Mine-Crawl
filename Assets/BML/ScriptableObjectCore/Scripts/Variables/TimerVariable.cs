@@ -133,9 +133,12 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             isStopped = true;
         }
 
-        public void AddTime(float addSeconds)
+        public void AddTime(float addSeconds, bool overrideDuration = true)
         {
             this.remainingTime += addSeconds;
+            if(!overrideDuration && this.remainingTime > Duration) {
+                this.remainingTime = Duration;
+            }
             if (_enableLogs) Debug.Log($"AddTime ({this.name}) (Add {addSeconds}) (Remaining {remainingTime}s) (LastUpdateTime {lastUpdateTime})");
             OnUpdate?.Invoke();
         }

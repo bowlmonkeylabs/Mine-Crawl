@@ -72,6 +72,13 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Player Dash In Cooldown")] private BoolVariable DashInCooldown;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Dash Cooldown Length, in seconds")] private TimerVariable DashCooldownTimer;
 
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Is Sprint Enabled")] private BoolVariable SprintEnabled;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Is Player Currently Sprinting")] private BoolVariable SprintActive;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Sprint multiplier of move speed")] private SafeFloatValueReference SprintMultiplier;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Max Sprint duration timer")] private TimerVariable SprintTimer;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Sprint Cooldown Length, in seconds")] private TimerVariable SprintCooldownTimer;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Sprint recharge rate, in percentage per second")] private SafeFloatValueReference SprintRechargeRate;
+
 		[SerializeField, FoldoutGroup("RopeMovement")] private GameEvent _playerEnteredRopeEvent;
 		[SerializeField, FoldoutGroup("RopeMovement")] private BoolReference _isRopeMovementEnabled;
         [SerializeField, FoldoutGroup("RopeMovement")] private DynamicGameEvent _playerRopePointStateChanged;
@@ -183,6 +190,7 @@ namespace BML.Scripts.Player
 				percentToEndKnockback = (Time.time - knockbackStartTime) / KnockbackDuration;
 			}
 
+            CheckSprintTimers();
             CheckDashCooldown();
 		}
 
@@ -198,6 +206,7 @@ namespace BML.Scripts.Player
 		public void BeforeCharacterUpdate(float deltaTime)
 	    {
 	        // This is called before the motor does anything
+            CheckSprint();
             CheckDash();
 	        JumpAndGravity();
 	        GroundedCheck();
@@ -250,7 +259,12 @@ namespace BML.Scripts.Player
 		    }
 
 		    // set target speed based on move speed, sprint speed and if sprint is pressed
-		    float targetSpeed = (_input.dash && isNoClipEnabled.Value) ? (MoveSpeed.Value * noClipSprintMultiplier) : MoveSpeed.Value;
+            float targetSpeed = MoveSpeed.Value;
+            if(_input.movement && isNoClipEnabled.Value) {
+                targetSpeed = MoveSpeed.Value * noClipSprintMultiplier;
+            } else if(SprintActive.Value) {
+                targetSpeed = MoveSpeed.Value * SprintMultiplier.Value;
+            }
 
             if(!DashActive.Value || isNoClipEnabled.Value) {
                 // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
@@ -517,13 +531,25 @@ namespace BML.Scripts.Player
         private Vector3 GetInputDirection() {
             return (_input.move.y * _mainCamera.transform.forward.xoz().normalized + _input.move.x * _mainCamera.transform.right.xoz().normalized).normalized;
         }
+
+        private void CheckSprint() {
+            if(!SprintEnabled.Value || isNoClipEnabled.Value) {
+                return;
+            }
+
+            if(!SprintCooldownTimer.IsActive && _input.movement && !Mathf.Approximately(_input.move.magnitude, 0)) {
+                SprintActive.Value = true;
+            } else {
+                SprintActive.Value = false;
+            }
+        }
         
         private void CheckDash() {
             if(!DashEnabled.Value) {
                 return;
             }
 
-            if(!DashActive.Value && !isNoClipEnabled.Value && !DashCooldownTimer.IsActive && _input.dash) {
+            if(!DashActive.Value && !isNoClipEnabled.Value && !DashCooldownTimer.IsActive && _input.movement) {
                 ExitRopeMovement();
                 _currentGravity = 0f;
                 DashActive.Value = true;
@@ -539,6 +565,33 @@ namespace BML.Scripts.Player
                 _currentGravity = Gravity;
                 DashCooldownTimer.RestartTimer();
                 DashInCooldown.Value = true;
+            }
+        }
+
+        private void CheckSprintTimers() {
+            SprintTimer.UpdateTime();
+            SprintCooldownTimer.UpdateTime();
+
+            if(SprintActive.Value) {
+                SprintTimer.StartTimer();
+            }
+
+            if(SprintTimer.IsActive && !SprintActive.Value) {
+                SprintTimer.StopTimer();
+                float inc = (SprintRechargeRate.Value / 100f) * SprintTimer.Duration;
+                SprintTimer.AddTime(inc * Time.fixedDeltaTime, false);
+                if(SprintTimer.RemainingTime == SprintTimer.Duration) {
+                    SprintTimer.ResetTimer();
+                }
+            }
+
+            if(SprintCooldownTimer.IsFinished && SprintTimer.IsFinished) {
+                SprintTimer.ResetTimer();
+                SprintCooldownTimer.ResetTimer();
+            }
+
+            if(SprintTimer.IsFinished && !SprintCooldownTimer.IsActive) {
+                SprintCooldownTimer.RestartTimer();
             }
         }
 
