@@ -184,9 +184,9 @@ namespace BML.Scripts.UI.Items
                         _playerInventory.PassiveItems.OnItemRemoved += OnPassiveItemChanged;
                         break;
                     case ItemType.Ability:
-                        // _playerInventory.AbilityItems.OnItemAdded += OnPassiveStackableItemAdded;
-                        // _playerInventory.AbilityItems.OnItemRemoved += OnPassiveStackableItemRemoved;
-                        // _playerInventory.AbilityItems.OnAnyItemChangedInInspector += OnPassiveStackableItemChangedInInspector;
+                        _playerInventory.AbilityItems.OnItemAdded += OnAbilityItemAdded;
+                        _playerInventory.AbilityItems.OnItemRemoved += OnAbilityItemRemoved;
+                        _playerInventory.AbilityItems.OnAnyItemChangedInInspector += OnAbilityItemListChangedInInspector;
                         break;
                     case ItemType.PassiveStackable:
                         _playerInventory.PassiveStackableItems.OnItemAdded += OnPassiveStackableItemAdded;
@@ -229,9 +229,9 @@ namespace BML.Scripts.UI.Items
                         _playerInventory.PassiveItems.OnItemRemoved -= OnPassiveItemChanged;
                         break;
                     case ItemType.Ability:
-                        // _playerInventory.PassiveStackableItems.OnItemAdded -= OnPassiveStackableItemAdded;
-                        // _playerInventory.PassiveStackableItems.OnItemRemoved -= OnPassiveStackableItemRemoved;
-                        // _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector -= OnPassiveStackableItemChangedInInspector;
+                        _playerInventory.AbilityItems.OnItemAdded -= OnAbilityItemAdded;
+                        _playerInventory.AbilityItems.OnItemRemoved -= OnAbilityItemRemoved;
+                        _playerInventory.AbilityItems.OnAnyItemChangedInInspector -= OnAbilityItemListChangedInInspector;
                         break;
                     case ItemType.PassiveStackable:
                         _playerInventory.PassiveStackableItems.OnItemAdded -= OnPassiveStackableItemAdded;
@@ -307,6 +307,32 @@ namespace BML.Scripts.UI.Items
             {
                 UpdateAssignedItem();
                 TryPlayItemChangedFeedbacks(item);
+            }
+        }
+
+        private void OnAbilityItemAdded(PlayerItem item)
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Ability)
+            {
+                UpdateAssignedItem();
+                TryPlayItemChangedFeedbacks(item);
+            }
+        }
+        
+        private void OnAbilityItemRemoved(PlayerItem item)
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Ability)
+            {
+                UpdateAssignedItem();
+                TryPlayItemChangedFeedbacks(item);
+            }
+        }
+
+        private void OnAbilityItemListChangedInInspector()
+        {
+            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Ability)
+            {
+                UpdateAssignedItem();
             }
         }
         
