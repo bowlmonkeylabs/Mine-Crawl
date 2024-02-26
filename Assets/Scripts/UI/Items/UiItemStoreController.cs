@@ -7,6 +7,7 @@ using BML.Scripts.Player.Items;
 using BML.Scripts.Player.Items.Store;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -27,6 +28,7 @@ namespace BML.Scripts.UI.Items
 
         [SerializeField, FoldoutGroup("UI Refs")] private BoolVariable _isStoreMenuOpen;
         [SerializeField, FoldoutGroup("UI Refs")] private Transform _storeButtonsListContainer;
+        [SerializeField, FoldoutGroup("UI Refs")] private TMP_Text _storeCallToActionText;
         [SerializeField, FoldoutGroup("UI Refs")] private Button _cancelButton;
         [SerializeField, FoldoutGroup("UI Refs")] private bool _navHorizontal = true;
         [SerializeField, FoldoutGroup("UI Refs"), LabelText("@(_navHorizontal ? \"Button Nav Up\" : \"Button Nav Left\")")] private Button _buttonNavLeft;
@@ -42,7 +44,7 @@ namespace BML.Scripts.UI.Items
             PopulateButtonList();
             if (_storeInventory != null)
             {
-                UpdateButtonsFromInventory();
+                UpdateStoreFromInventory();
             }
             _onOpenStoreInventory?.Subscribe(OnOpenStoreInventoryDynamic);
         }
@@ -51,7 +53,7 @@ namespace BML.Scripts.UI.Items
         {
             if (_storeInventory != null)
             {
-                _storeInventory.OnAvailableItemsChanged += UpdateButtonsFromInventory;
+                _storeInventory.OnAvailableItemsChanged += UpdateStoreFromInventory;
             }
         }
         
@@ -59,7 +61,7 @@ namespace BML.Scripts.UI.Items
         {
             if (_storeInventory != null)
             {
-                _storeInventory.OnAvailableItemsChanged -= UpdateButtonsFromInventory;
+                _storeInventory.OnAvailableItemsChanged -= UpdateStoreFromInventory;
             }
         }
 
@@ -82,13 +84,13 @@ namespace BML.Scripts.UI.Items
         {
             if (_storeInventory != null)
             {
-                _storeInventory.OnAvailableItemsChanged -= UpdateButtonsFromInventory;
+                _storeInventory.OnAvailableItemsChanged -= UpdateStoreFromInventory;
             }
             _storeInventory = storeInventory;
             if (_storeInventory != null)
             {
-                UpdateButtonsFromInventory();
-                _storeInventory.OnAvailableItemsChanged += UpdateButtonsFromInventory;
+                UpdateStoreFromInventory();
+                _storeInventory.OnAvailableItemsChanged += UpdateStoreFromInventory;
 
                 if (_isStoreMenuOpen != null)
                 {
@@ -122,6 +124,11 @@ namespace BML.Scripts.UI.Items
                     
                 _storeItemButtons.Add(buttonController);
             }
+        }
+
+        private void UpdateStoreFromInventory() {
+            this._storeCallToActionText.text = _storeInventory.GetCallToActionText();
+            this.UpdateButtonsFromInventory();
         }
 
         private void UpdateButtonsFromInventory()

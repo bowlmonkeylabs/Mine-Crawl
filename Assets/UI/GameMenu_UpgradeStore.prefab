@@ -455,7 +455,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7853073468304527286}
   - component: {fileID: 4348729967358701529}
-  - component: {fileID: 8604466774910246168}
+  - component: {fileID: 666544527421027227}
   m_Layer: 0
   m_Name: ItemStoreController
   m_TagString: Untagged
@@ -495,16 +495,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enableLogs: 0
-  _storeInventory: {fileID: 8604466774910246168}
+  _storeInventory: {fileID: 666544527421027227}
   _onOpenStoreInventory: {fileID: 0}
   _tryPurchaseEvent: {fileID: 11400000, guid: 55866cc2117789d43af4b6db2f26f0ef, type: 2}
   _isStoreMenuOpen: {fileID: 11400000, guid: b097147d192343940aca02f32a439f21, type: 2}
   _storeButtonsListContainer: {fileID: 8649190722918014623}
+  _storeCallToActionText: {fileID: 3133352834079194943}
   _cancelButton: {fileID: 0}
   _navHorizontal: 1
   _buttonNavLeft: {fileID: 0}
   _buttonNavRight: {fileID: 0}
---- !u!114 &8604466774910246168
+--- !u!114 &666544527421027227
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -513,7 +514,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2291863498587819169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72d418fec4794155bb708f8cdfa9913b, type: 3}
+  m_Script: {fileID: 11500000, guid: f15880d4a187f204584eca1233eac3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _storeId: 1
@@ -524,8 +525,9 @@ MonoBehaviour:
   _fallbackOptions:
   - {fileID: 11400000, guid: ae1dc6e6502a9a74ab89542e11545286, type: 2}
   - {fileID: 11400000, guid: e856ec875ba83824fa508f29d3fd679f, type: 2}
+  _callToActionUpgradeText: 'Choose an upgrade:'
   _playerAbilityItems: {fileID: 11400000, guid: c3c22ef7ba4d41e40a3ff1eb0d73f689, type: 2}
-  _currentLevel: {fileID: 11400000, guid: c21e96147429a874bb7324a3390516c1, type: 2}
+  _callToActionAbilityText: 'Choose an ability:'
 --- !u!1 &4064137793203584478
 GameObject:
   m_ObjectHideFlags: 0
@@ -1742,6 +1744,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
+--- !u!224 &6035593340240042166 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6497956022634779255, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
+  m_PrefabInstance: {fileID: 716033553220569793}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6035593340240042167 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6497956022634779254, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
@@ -1753,11 +1760,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &6035593340240042166 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6497956022634779255, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
-  m_PrefabInstance: {fileID: 716033553220569793}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &955733319567954742
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2975,7 +2977,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6497956022634779254, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
       propertyPath: m_text
-      value: 'Choose an upgrade:'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6497956022634779254, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
       propertyPath: m_fontSize
@@ -3076,6 +3078,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6497956022634779255, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
   m_PrefabInstance: {fileID: 8166863812213960009}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3133352834079194943 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6497956022634779254, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
+  m_PrefabInstance: {fileID: 8166863812213960009}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8600715397621630354
 PrefabInstance:
   m_ObjectHideFlags: 0
