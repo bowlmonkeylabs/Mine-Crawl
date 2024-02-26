@@ -90,6 +90,18 @@ namespace BML.Scripts.CaveV2
         public int MinimumSpanningNodes = 3;
         
         [TitleGroup("Graph processing")]
+        [ShowIf("$MinimumSpanningTree")] [Indent]
+        public bool MinimumSpanningTree_Debug1 = false;
+        
+        [TitleGroup("Graph processing")]
+        [ShowIf("$MinimumSpanningTree")] [Indent]
+        public bool MinimumSpanningTree_Debug2 = false;
+        
+        [TitleGroup("Graph processing")]
+        [ShowIf("$MinimumSpanningTree")] [Indent]
+        public bool MinimumSpanningTree_Debug3 = false;
+        
+        [TitleGroup("Graph processing")]
         public bool RemoveOrphanNodes = true;
 
         #endregion

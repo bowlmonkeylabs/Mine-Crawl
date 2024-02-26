@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.CaveV2.CaveGraph.NodeData;
 using BML.Scripts.Utils;
+using BML.Utils.Random;
+using DrawXXL;
+using QuikGraph;
 using Sirenix.Utilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -25,6 +28,22 @@ namespace BML.Scripts.CaveV2.CaveGraph
             
         }
 
+        private CaveGraphV2(bool allowParallelEdges, EdgeEqualityComparer<CaveNodeData> edgeEqualityComparer) 
+            : base(allowParallelEdges, edgeEqualityComparer)
+        {
+            
+        }
+        
+        public CaveGraphV2(CaveGraphV2 graph) : this(graph.AllowParallelEdges, graph.EdgeEqualityComparer)
+        {
+            this.EdgeCapacity = graph.EdgeCapacity;
+            this.AddVertexRange(graph.Vertices);
+            this.AddEdgeRange(graph.Edges);
+            this.StartNode = graph.StartNode;
+            this.EndNode = graph.EndNode;
+            this.MerchantNode = graph.MerchantNode;
+        }
+
         public CaveNodeData GetRandomVertex(IEnumerable<CaveNodeData> excludeVertices = null)
         {
             var vertices = (excludeVertices != null)
@@ -39,10 +58,13 @@ namespace BML.Scripts.CaveV2.CaveGraph
             return randomVertex;
         }
         
-        public IEnumerable<CaveNodeData> GetRandomVertices(int numVertices, bool allowRepeats, IEnumerable<CaveNodeData> excludeVertices = null)
-        {
-            var vertices = (excludeVertices != null)
-                ? Vertices.Except(excludeVertices).ToList()
+        public List<CaveNodeData> GetRandomVertices(
+            int numVertices, 
+            bool allowRepeats, 
+            Func<CaveNodeData, bool> includeVertices = null
+        ) {
+            var vertices = (includeVertices != null)
+                ? Vertices.Where(includeVertices).ToList()
                 : Vertices.ToList();
 
             if (numVertices >= vertices.Count)
@@ -61,6 +83,18 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 }
             }
             return randomVertices;
+        }
+
+        public CaveNodeData GetNormalWeightedRandomVertex(Vector3 nearPoint, float nearThreshold = 10f, IEnumerable<CaveNodeData> excludeVertices = null)
+        {
+            var candidateVertices = this.Vertices
+                .Where(v => excludeVertices == null || !excludeVertices.Contains(v))
+                .Select(v => (caveNodeData: v, dist: Vector3.Distance(nearPoint, v.LocalPosition)))
+                .Where(v => v.dist <= nearThreshold)
+                .OrderBy(v => v.dist)
+                .ToList();
+            var randomIndex = RandomUtils.RandomGaussian(0, candidateVertices.Count - 1);
+            return candidateVertices[randomIndex].caveNodeData;
         }
 
         /// <summary>
@@ -170,13 +204,13 @@ namespace BML.Scripts.CaveV2.CaveGraph
             }
         }
         
-        public void DrawGizmos(Vector3 localOrigin, bool showMainPath, Color color)
+        public void DrawGizmos(Vector3 localOrigin, bool showMainPath, Color color, bool displayText = true, float lineWeight = 1f)
         {
             Gizmos.color = color;
             foreach (var caveNodeData in Vertices)
             {
                 var worldPosition = localOrigin + caveNodeData.LocalPosition;
-                var size = caveNodeData.Scale;
+                var size = caveNodeData.Scale * 2;
                 Color gizmoColor = color;
                 if (this.IsAdjacentEdgesEmpty(caveNodeData))
                 {
@@ -185,8 +219,28 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 }
                 if (caveNodeData == StartNode) gizmoColor = Color.green;
                 if (caveNodeData == EndNode) gizmoColor = Color.red;
+                var adjacentVertices = this.AdjacentVertices(caveNodeData).ToList();
+                bool isCandidate = adjacentVertices.Count == 1 
+                                   && caveNodeData.MainPathDistance > 1
+                                   && adjacentVertices.All(v => v.ObjectiveDistance < caveNodeData.ObjectiveDistance);
+                // bool isCandidate = adjacentVertices.Count == 1;
+                if (isCandidate)
+                {
+                    gizmoColor = Color.yellow;
+                }
+                
                 Gizmos.color = gizmoColor;
                 Gizmos.DrawSphere(worldPosition, size);
+                // DrawShapes.Sphere(worldPosition, radius: size, color: gizmoColor);
+
+                if (displayText)
+                {
+                    string type = "";
+                    if (MerchantNode == caveNodeData) type = "Merchant";
+                    if (StartNode == caveNodeData) type = "Start";
+                    if (EndNode == caveNodeData) type = "End";
+                    // DrawText.WriteFramed(caveNodeData.ToString(type), worldPosition - (Vector3.up * size * 2), size:size);
+                }
             }
             
             Gizmos.color = color;
@@ -194,7 +248,9 @@ namespace BML.Scripts.CaveV2.CaveGraph
             {
                 var sourceWorldPosition = localOrigin + caveNodeConnectionData.Source.LocalPosition;
                 var targetWorldPosition = localOrigin + caveNodeConnectionData.Target.LocalPosition;
-                Gizmos.DrawLine(sourceWorldPosition, targetWorldPosition);
+                // Gizmos.DrawLine(sourceWorldPosition, targetWorldPosition);
+                
+                DrawBasics.Line(sourceWorldPosition, targetWorldPosition, color: color, width: lineWeight);
             }
             
             if (showMainPath && MainPath != null)
@@ -204,7 +260,9 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 {
                     var sourceWorldPosition = localOrigin + caveNodeConnectionData.Source.LocalPosition;
                     var targetWorldPosition = localOrigin + caveNodeConnectionData.Target.LocalPosition;
-                    Gizmos.DrawLine(sourceWorldPosition, targetWorldPosition);
+                    // Gizmos.DrawLine(sourceWorldPosition, targetWorldPosition);
+                    
+                    DrawBasics.Line(sourceWorldPosition, targetWorldPosition, color: Color.green, width: lineWeight);
                 }
             }
         }

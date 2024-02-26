@@ -49,6 +49,23 @@ namespace BML.Scripts.CaveV2.Util
                 Mathf.CeilToInt(size.z / cellSize)];
         }
 
+        /// Create a sampler with the following parameters:
+        ///
+        /// size:  each sample's x,y,z coordinate will be between [0, <var>], repectively
+        /// radius: each sample will be at least `radius` units away from any other sample, and at most 2 * `radius`.
+        public PoissonDiscSampler3D(Vector3 size, int approximateN)
+            : this(size, Mathf.Pow((size.x * size.y * size.z) / approximateN / (Mathf.PI * (4f/3f)), 1f/3f))
+        {
+            // var halfSize = size / 2;
+            // this.bounds = new Bounds(halfSize, size);
+            // this.radius = radius;
+            // radius2 = radius * radius;
+            // cellSize = radius / Mathf.Sqrt(2);
+            // grid = new Vector3[Mathf.CeilToInt(size.x / cellSize),
+            //     Mathf.CeilToInt(size.y / cellSize),
+            //     Mathf.CeilToInt(size.z / cellSize)];
+        }
+
         /// Return a lazy sequence of samples. You typically want to call this in a foreach loop, like so:
         ///   foreach (Vector3 sample in sampler.Samples()) { ... }
         public IEnumerable<Vector3> Samples(List<Vector3> initialSamples = null)

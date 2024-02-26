@@ -45,14 +45,14 @@ namespace BML.Scripts.CaveV2.MudBun
         protected override void OnEnable()
         {
             base.OnEnable();
-            _caveGenerator.OnAfterGenerate += GenerateMudBunInternal;
+            _caveGenerator.OnAfterGenerate += TryGenerateWithCooldown;
             _caveGraphRenderParams.OnValidateEvent += TryGenerateWithCooldown_OnValidate;
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
-            _caveGenerator.OnAfterGenerate -= GenerateMudBunInternal;
+            _caveGenerator.OnAfterGenerate -= TryGenerateWithCooldown;
             _caveGraphRenderParams.OnValidateEvent -= TryGenerateWithCooldown_OnValidate;
         }
 

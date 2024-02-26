@@ -379,6 +379,111 @@ namespace BML.Scripts.CaveV2
                 }
                 return true;
             });
+
+            // TODO
+            // Minimum spanning tree
+            if (caveGenParams.MinimumSpanningTree)
+            {
+#if UNITY_EDITOR
+                _debug_InitialPointsGraph = new CaveGraphV2(caveGraph);
+#endif
+                
+                // TODO distribute random points more uniformly over the sample space
+                // TODO prevent points from being so close that they violate the tunnel steepness constraints
+                var excludeVertices = new List<CaveNodeData> { caveGraph.StartNode, caveGraph.EndNode };
+                // var pointsOfInterest = caveGraph.GetRandomVertices(
+                //     caveGenParams.MinimumSpanningNodes, 
+                //     false, 
+                //     (caveNodeData) => !excludeVertices.Contains(caveNodeData)
+                // );
+                var pointsOfInterest = new List<CaveNodeData>();
+
+                var poissonTest = new PoissonDiscSampler3D(poissonBoundsWithPadding.size, approximateN: caveGenParams.MinimumSpanningNodes);
+                var sectorLocations = poissonTest.Samples(new List<Vector3>
+                    { caveGraph.StartNode.LocalPosition, caveGraph.EndNode.LocalPosition });
+                foreach (var sectorLocation in sectorLocations)
+                {
+                    if (sectorLocation == caveGraph.StartNode.LocalPosition ||
+                        sectorLocation == caveGraph.EndNode.LocalPosition)
+                    {
+                        continue;
+                    }
+                    
+                    pointsOfInterest.Add(caveGraph.GetNormalWeightedRandomVertex(sectorLocation, 15f));
+                }
+                pointsOfInterest.Add(caveGraph.StartNode);
+                pointsOfInterest.Add(caveGraph.EndNode);
+                
+                var dCalc = new DelaunayCalculator();
+                var delaunayPoints = pointsOfInterest.Select(v => v.LocalPosition.xz()).ToList();
+                var triangulation = dCalc.CalculateTriangulation(delaunayPoints);
+                var triangulationCaveNodes = triangulation.Vertices
+                    .Select(v2 =>
+                        caveGraph.Vertices.FirstOrDefault(caveNode =>
+                            Mathf.Approximately(caveNode.LocalPosition.x, v2.x)
+                            && Mathf.Approximately(caveNode.LocalPosition.z, v2.y)))
+                    .ToList();
+                
+                var edges = new HashSet<CaveNodeConnectionData>();
+                for (int i = 0; i < triangulation.Triangles.Count; i += 3)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        var sourceIndex = triangulation.Triangles[i+j];
+                        var targetIndex = triangulation.Triangles[i+((j+1)%3)];
+                        var sourceNode = triangulationCaveNodes[sourceIndex];
+                        var targetNode = triangulationCaveNodes[targetIndex];
+                        if (sourceNode == null || targetNode == null)
+                        {
+                            continue;
+                        }
+                        
+                        var edgeRadius = Math.Max(sourceNode.Scale, targetNode.Scale);
+                        var edge = new CaveNodeConnectionData(sourceNode, targetNode, edgeRadius);
+                        edges.Add(edge);
+                    }
+                }
+                
+                var minimumGraph = new CaveGraphV2();
+                minimumGraph.AddVerticesAndEdgeRange(edges);
+                minimumGraph.StartNode = startNode;
+                minimumGraph.EndNode = endNode;
+                    
+#if UNITY_EDITOR
+                _debug_PointsOfInterestOptionsGraph = new CaveGraphV2(minimumGraph);
+#endif
+                
+                var minimumSpanningTree = 
+                    minimumGraph.MinimumSpanningTreeKruskal(
+                        edge => edge.Length).ToList();
+                // TODO add some loops to the tree to make it more interesting, not all dead-ends
+                // minimumGraph.RemoveVertexIf(vertex => vertex.MainPathDistance > 3);
+                
+                minimumGraph.RemoveEdgeIf(edge => !minimumSpanningTree.Contains(edge));
+                // TODO USE the minimum spanning tree as the overall structure, but use nodes from the original graph for more rooms instead of having long tunnels
+                // TODO pathfind using larger graph
+
+#if UNITY_EDITOR
+                _debug_PointsOfInterestMinimumGraph = new CaveGraphV2(minimumGraph);
+#endif
+
+                var edgesToCheck = minimumGraph.Edges.ToList();
+                foreach (var edge in edgesToCheck)
+                {
+                    // Pathfind using larger graph
+                    var shortestPathFromSourceFunc = caveGraph.ShortestPathsDijkstra(edge => edge.Length, edge.Source);
+                    shortestPathFromSourceFunc(edge.Target, out var shortestPathFromSourceToTarget);
+                    var shortestPathFromSourceToTargetList = shortestPathFromSourceToTarget?.ToList();
+                    
+                    minimumGraph.RemoveEdge(edge);
+                    minimumGraph.AddVerticesAndEdgeRange(shortestPathFromSourceToTargetList);
+                }
+                
+#if UNITY_EDITOR
+                _minimumSpanningTreeGraphTEMP = minimumGraph;
+                caveGraph = minimumGraph;
+#endif
+            }
             
             // Calculate based on adjacency size
             if (caveGenParams.CalculateRoomSize && caveGenParams.CalculateRoomSizeBasedOnRawAdjacency)
@@ -432,7 +537,7 @@ namespace BML.Scripts.CaveV2
                         .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target })
                         .Distinct();
                     caveGraph.FloodFillDistance(mainPathVertices, (node, dist) => node.MainPathDistance = dist);
-
+            
                     this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
                 }
                 
@@ -440,9 +545,9 @@ namespace BML.Scripts.CaveV2
                 {
                     var keepEdges = new List<CaveNodeConnectionData>();
                     var checkedVertices = new Dictionary<CaveNodeData, int>();
-
+            
                     int maxRecheckCount = 3;
-
+            
                     // Offshoots from main path
                     if (caveGenParams.UseOffshootsFromMainPath)
                     {
@@ -465,10 +570,10 @@ namespace BML.Scripts.CaveV2
                             }
                             int randomOffshootPathIndex = Random.Range(0, remainingVertices.Count);
                             CaveNodeData offshootStart = remainingVertices[randomOffshootPathIndex];
-
+            
                             var offshootPath = new List<CaveNodeConnectionData>();
                             bool offshootSuccess = true;
-
+            
                             for (int i = 0; i < caveGenParams.MinMaxOffshootLength.y; i++)
                             {
                                 if (checkedVertices.ContainsKey(offshootStart)) checkedVertices[offshootStart] = checkedVertices[offshootStart] + 1;
@@ -482,7 +587,7 @@ namespace BML.Scripts.CaveV2
                                         var edgeConnectsToStartOrEnd =
                                             edge.Source == startNode || edge.Source == endNode ||
                                             edge.Target == startNode || edge.Target == endNode;
-
+            
                                         CaveNodeData otherVertex;
                                         if (offshootStart == edge.Source) otherVertex = edge.Target;
                                         otherVertex = edge.Source;
@@ -502,7 +607,7 @@ namespace BML.Scripts.CaveV2
                                     }
                                     break;
                                 }
-
+            
                                 var sortedAdjacentEdges = adjacentEdges
                                     .OrderByDescending(e =>
                                     {
@@ -514,7 +619,7 @@ namespace BML.Scripts.CaveV2
                                 int randomEdgeIndex = Mathf.RoundToInt(RandomUtils.RandomGaussian(0, adjacentEdges.Count - 1));
                                 var randomEdge = sortedAdjacentEdges[randomEdgeIndex];
                                 offshootPath.Add(randomEdge);
-
+            
                                 if (offshootStart == randomEdge.Source) offshootStart = randomEdge.Target;
                                 else if (offshootStart == randomEdge.Target) offshootStart = randomEdge.Source;
                                 else
@@ -540,58 +645,13 @@ namespace BML.Scripts.CaveV2
                     
                     // Remove all edges except what we want to keep
                     caveGraph.RemoveEdgeIf(edge => !keepEdges.Contains(edge));
-
+            
                     // var recheckSummary = checkedVertices.GroupBy(kv => kv.Value)
                     //     .Select(group => (group.Key, group.Sum(kv => 1)))
                     //     .ToList();
                     // var recheckString = String.Join(" | ", recheckSummary.Select(kv => $"{kv.Item2} main path vertices checked {kv.Key} times"));
                     // Debug.Log(recheckString);
                 }
-            }
-            
-            // Minimum spanning tree
-            if (caveGenParams.MinimumSpanningTree)
-            {
-                var pointsOfInterest = caveGraph.GetRandomVertices(caveGenParams.MinimumSpanningNodes, false);
-                var minimumGraph = new CaveGraphV2();
-                minimumGraph.AddVertex(caveGraph.StartNode);
-                minimumGraph.AddVertex(caveGraph.EndNode);
-                minimumGraph.AddVertexRange(pointsOfInterest);
-                var test = new DelaunayCalculator();
-                var delaunayPoints = minimumGraph.Vertices.Select(v => v.LocalPosition.xz()).ToList();
-                var triangulation = test.CalculateTriangulation(delaunayPoints);
-                var triangulationCaveNodes = triangulation.Vertices
-                    .Select(v2 =>
-                        minimumGraph.Vertices.FirstOrDefault(caveNode =>
-                            Mathf.Approximately(caveNode.LocalPosition.x, v2.x)
-                            && Mathf.Approximately(caveNode.LocalPosition.z, v2.y)))
-                    .ToList();
-                var edges = new List<CaveNodeConnectionData>();
-                for (int i = 0; i < triangulation.Triangles.Count; i += 3)
-                {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        var sourceIndex = triangulation.Triangles[i+j];
-                        var targetIndex = triangulation.Triangles[i+((j+1)%3)];
-                        var sourceNode = triangulationCaveNodes[sourceIndex];
-                        var targetNode = triangulationCaveNodes[targetIndex];
-                        if (sourceNode == null || targetNode == null)
-                        {
-                            continue;
-                        }
-
-                        var edgeRadius = Math.Max(sourceNode.Scale, targetNode.Scale);
-                        var edge = new CaveNodeConnectionData(sourceNode, targetNode, edgeRadius);
-                        edges.Add(edge);
-                    }
-                }
-                minimumGraph.AddEdgeRange(edges);
-                var minimumSpanningTree = 
-                    minimumGraph.MinimumSpanningTreeKruskal(
-                        edge => edge.Length).ToList();
-                minimumGraph.RemoveEdgeIf(edge => !minimumSpanningTree.Contains(edge));
-                _minimumSpanningTreeGraphTEMP = minimumGraph;
-                // TODO use or remove minimum spanning tree
             }
             
             // Remove orphaned nodes
@@ -952,9 +1012,9 @@ namespace BML.Scripts.CaveV2
         private void GenerateCaveGraphDebugObjects()
         {
             if (EnableLogs) Debug.Log("Cave Graph: Generating debug objects");
-            
+
             if (!_generateDebugObjects || _debugObjectsContainer == null || !IsGenerated || _caveGraph == null) return;
-            
+
             // Spawn debug object at each cave node
             foreach (var caveNodeData in _caveGraph.Vertices)
             {
@@ -962,7 +1022,7 @@ namespace BML.Scripts.CaveV2
                 GameObject newGameObject = new GameObject("Cave Node Gizmo");
                 newGameObject.transform.SetParent(_debugObjectsContainer);
                 newGameObject.transform.position = LocalToWorld(caveNodeData.LocalPosition);
-                
+
                 // Add shape renderer component for node
                 var sphereOuter = newGameObject.AddComponent<Shapes.Sphere>();
                 sphereOuter.Color = DebugNodeColor_Default;
@@ -970,7 +1030,7 @@ namespace BML.Scripts.CaveV2
 #if UNITY_EDITOR
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(sphereOuter, false);
 #endif
-                
+
                 // Add shape renderer component for secondary node indicator
                 GameObject newGameObjectInner = new GameObject("Indicator");
                 newGameObjectInner.transform.SetParent(newGameObject.transform);
@@ -981,7 +1041,7 @@ namespace BML.Scripts.CaveV2
 #if UNITY_EDITOR
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(sphereInner, false);
 #endif
-                
+
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeDataDebugComponent>();
                 debugComponent.CaveNodeData = caveNodeData;
@@ -992,16 +1052,18 @@ namespace BML.Scripts.CaveV2
                 UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
 #endif
             }
-            
+
             // Spawn debug object on each edge to ensure nodes are connected
             foreach (var caveNodeConnectionData in _caveGraph.Edges)
             {
                 // Calculate tunnel position
                 var sourceTargetDiff = (caveNodeConnectionData.Target.LocalPosition -
                                         caveNodeConnectionData.Source.LocalPosition);
-                var sourceTargetDiffProjectedToGroundNormalized = Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
-                
-                var edgeDiff = (caveNodeConnectionData.Target.LocalPosition - caveNodeConnectionData.Source.LocalPosition);
+                var sourceTargetDiffProjectedToGroundNormalized =
+                    Vector3.ProjectOnPlane(sourceTargetDiff, Vector3.up).normalized;
+
+                var edgeDiff = (caveNodeConnectionData.Target.LocalPosition -
+                                caveNodeConnectionData.Source.LocalPosition);
                 var edgeMidPosition = caveNodeConnectionData.Source.LocalPosition + edgeDiff / 2;
                 var edgeRotation = Quaternion.LookRotation(edgeDiff);
                 var edgeLength = edgeDiff.magnitude;
@@ -1023,7 +1085,7 @@ namespace BML.Scripts.CaveV2
 #if UNITY_EDITOR
                 UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(shapeLineComponent, false);
 #endif
-                
+
                 // Add debug component
                 var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
                 debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
@@ -1032,8 +1094,15 @@ namespace BML.Scripts.CaveV2
                 UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
 #endif
             }
-            
         }
+
+#if UNITY_EDITOR
+
+        private CaveGraphV2 _debug_InitialPointsGraph;
+        private CaveGraphV2 _debug_PointsOfInterestOptionsGraph;
+        private CaveGraphV2 _debug_PointsOfInterestMinimumGraph;
+
+#endif
         
         #endregion
 
@@ -1212,18 +1281,52 @@ namespace BML.Scripts.CaveV2
             // {
             //     _caveGraph.DrawGizmos(LocalOrigin, _showTraversabilityCheck, Color.white);
             // }
+#if UNITY_EDITOR
             if (_caveGenParams.MinimumSpanningTree && _minimumSpanningTreeGraphTEMP != null)
             {
+                // var offsetPosition = LocalOrigin + Vector3.up * _caveGenParams.PoissonBounds.size.y;
+                var offsetPosition = LocalOrigin;
+                var op = 0.6f;
+                if (_caveGenParams.MinimumSpanningTree_Debug1 && _debug_InitialPointsGraph != null)
+                {
+                    _debug_InitialPointsGraph.DrawGizmos(
+                        offsetPosition, 
+                        false,
+                        new Color(op, op, op, 0.1f),
+                        false,
+                        0.2f);
+                }
+                if (_caveGenParams.MinimumSpanningTree_Debug2 && _debug_PointsOfInterestOptionsGraph != null)
+                {
+                    _debug_PointsOfInterestOptionsGraph.DrawGizmos(
+                        offsetPosition, 
+                        false,
+                        Color.cyan,
+                        false, 
+                        0.2f);
+                }
+                if (_caveGenParams.MinimumSpanningTree_Debug3 && _debug_PointsOfInterestMinimumGraph != null)
+                {
+                    _debug_PointsOfInterestMinimumGraph.DrawGizmos(
+                        offsetPosition, 
+                        false,
+                        Color.yellow,
+                        false,
+                        0.2f);
+                }
                 _minimumSpanningTreeGraphTEMP.DrawGizmos(
-                    LocalOrigin + Vector3.up * _caveGenParams.PoissonBounds.size.y, 
+                    offsetPosition, 
                     _showTraversabilityCheck,
-                    Color.yellow);
+                    Color.gray,
+                    true,
+                    1f);
             }
+#endif
             
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             // Draw seed label
             Handles.Label(transform.position, SeedManager.Instance.GetSteppedSeed("CaveGraph").ToString());
-            #endif
+#endif
 
         }
 

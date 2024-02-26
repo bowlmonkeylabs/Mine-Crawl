@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.CaveV2.SpawnObjects;
@@ -101,6 +102,29 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         private void OnPlayerVisited()
         {
             onPlayerVisited?.Invoke(this, new EventArgs());
+        }
+
+        public string ToString(string type)
+        {
+            var sb = new StringBuilder();
+            // sb.Append($"X:{LocalPosition.x}, Y:{LocalPosition.y}, Z:{LocalPosition.z}, Scale:{Scale}");
+            sb.Append($"M:{MainPathDistance}");
+            sb.Append($"{Environment.NewLine}");
+            sb.Append($"O:{ObjectiveDistance}");
+            if (!type.IsNullOrWhitespace())
+            {
+                sb.Append($"{Environment.NewLine}");
+                sb.Append($"Type:{type}");
+            }
+            // sb.Append($"{Environment.NewLine}");
+            // sb.Append($"PlayerDist:{PlayerDistance}, PlayerDistDelta:{PlayerDistanceDelta}, DirectPlayerDist:{DirectPlayerDistance}");
+            // sb.Append($"{Environment.NewLine}");
+            // sb.Append($"PlayerVisited:{PlayerVisited}, PlayerOccupied:{PlayerOccupied}");
+            // sb.Append($"{Environment.NewLine}");
+            // sb.Append($"PlayerVisitedAdjacent:{PlayerVisitedAdjacent}, PlayerVisitedAllAdjacent:{PlayerVisitedAllAdjacent}");
+            // sb.Append($"{Environment.NewLine}");
+            // sb.Append($"TorchRequirement:{TorchRequirement}, TorchInfluence:{TorchInfluence}, PlayerInfluence:{PlayerInfluence}");
+            return sb.ToString();
         }
     }
 }
