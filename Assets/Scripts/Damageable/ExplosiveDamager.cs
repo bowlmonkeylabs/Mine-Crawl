@@ -19,12 +19,14 @@ namespace BML.Scripts
         
         [SerializeField] private RangeSensor _rangeSensor;
         [SerializeField] private LOSSensor _losSensor;
+        [SerializeField] private SafeFloatValueReference _additionalRange;
 
         [TitleGroup("Effects")]
 
         [SerializeField] private bool _applyDamage = true;
         [SerializeField, ShowIf("_applyDamage"), Required] private DamageType _damageType;
         [SerializeField, ShowIf("_applyDamage"), Required] private SafeIntValueReference _damage;
+        [SerializeField, ShowIf("_applyDamage")] private SafeIntValueReference _additionalDamage;
 
         [SerializeField] private bool _applyKnockback = true;
         [SerializeField, ShowIf("_applyKnockback")] private bool _customizeKnockback = false;
@@ -70,11 +72,37 @@ namespace BML.Scripts
         
         #endif
 
+        private void OnEnable()
+        {
+            UpdateRadius();
+            _additionalRange.Subscribe(UpdateRadius);
+        }
+
+        private void OnDisable()
+        {
+            _additionalRange.Unsubscribe(UpdateRadius);
+        }
+
         #endregion
         
-        #region Public interface
-
+        #region Range 
+        
         public float Radius => _rangeSensor?.Sphere.Radius ?? 0;
+        
+        private float? _initialRadius;
+
+        private void UpdateRadius()
+        {
+            if (_initialRadius == null)
+            {
+                _initialRadius = _rangeSensor.Sphere.Radius;
+            }
+            _rangeSensor.Sphere.Radius = _initialRadius.Value + _additionalRange.Value; 
+        }
+        
+        #endregion
+        
+        #region Apply Damage
         
         public void ApplyDamage()
         {
@@ -100,14 +128,12 @@ namespace BML.Scripts
                 _explosiveRadiusFeedback.PlayFeedbacks(transform.position);
             }
         }
-        
-        #endregion
 
         private void ApplyDamage(Collider coll)
         {
             HitInfo hitInfo = new HitInfo(
                 _damageType,
-                _damage.Value,
+                _damage.Value + (_additionalDamage?.Value ?? 0),
                 (coll.transform.position - _losSensor.transform.position).normalized
             );
 
@@ -152,6 +178,8 @@ namespace BML.Scripts
                 }
             }
         }
+        
+        #endregion
         
     }
 }

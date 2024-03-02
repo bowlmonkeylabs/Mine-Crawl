@@ -448,6 +448,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rangeSensor: {fileID: 7229396335671363088}
   _losSensor: {fileID: 4012286902027974492}
+  _additionalRange:
+    ReferenceTypeSelector: 3
+    ConstantValue: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: d608064d1e333244996516375a73949e, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _applyDamage: 1
   _damageType: 2
   _damage:
@@ -459,6 +467,15 @@ MonoBehaviour:
     ReferenceValue_BoolVariable: {fileID: 0}
     ReferenceValue_FunctionVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _additionalDamage:
+    ReferenceTypeSelector: 5
+    ConstantValue: 0
+    RoundingBehavior: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 11400000, guid: 1953fe5890e63574f8bb5ee8878c7273, type: 2}
   _applyKnockback: 1
   _customizeKnockback: 0
   _knockbackTime:
@@ -900,7 +917,7 @@ GameObject:
   - component: {fileID: 8859659215968451388}
   - component: {fileID: 2758434629729907293}
   - component: {fileID: 8859659215968451389}
-  - component: {fileID: 4463721914421143873}
+  - component: {fileID: 4063704671212139839}
   - component: {fileID: 8859659215968451362}
   - component: {fileID: 8859659215968451363}
   m_Layer: 20
@@ -975,7 +992,7 @@ MonoBehaviour:
   _initialForceMode: 0
   _stickOnFirstCollision: 0
   _stickWithParentConstraint: 1
-  _parentConstraint: {fileID: 4463721914421143873}
+  _parentConstraint: {fileID: 4063704671212139839}
   _stickyLayerMask:
     serializedVersion: 2
     m_Bits: 533576
@@ -983,7 +1000,7 @@ MonoBehaviour:
   _onStick:
     m_PersistentCalls:
       m_Calls: []
---- !u!1773428102 &4463721914421143873
+--- !u!1773428102 &4063704671212139839
 ParentConstraint:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
