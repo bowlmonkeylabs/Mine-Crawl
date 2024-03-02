@@ -876,18 +876,6 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4209211229920923481}
-        m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
-        m_MethodName: TakeDamage
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 2242044947178572222}
         m_TargetAssemblyTypeName: BML.Scripts.OreCritMarker, BML.Scripts
         m_MethodName: ActivateCritMarker
@@ -918,18 +906,6 @@ MonoBehaviour:
       - m_Target: {fileID: 4209211229920923481}
         m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8438481402473190015}
-        m_TargetAssemblyTypeName: BML.Scripts.OreShaderController, BML.Scripts
-        m_MethodName: UpdateShaderOnPickaxeInteract
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1006,6 +982,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 8438481402473190015}
+          m_TargetAssemblyTypeName: BML.Scripts.OreShaderController, BML.Scripts
+          m_MethodName: UpdateShaderOnPickaxeInteract
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     _onFailDamage:
       m_PersistentCalls:
         m_Calls: []
@@ -1020,6 +1008,19 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 0}
+          m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Events.GameEvent,
+            ScriptableObjectSystem
+          m_MethodName: 
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -1059,7 +1060,70 @@ MonoBehaviour:
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     _onDamage:
       m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8438481402473190015}
+          m_TargetAssemblyTypeName: BML.Scripts.OreShaderController, BML.Scripts
+          m_MethodName: UpdateShaderOnPickaxeInteract
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    _onFailDamage:
+      m_PersistentCalls:
         m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  - _damageTypesPreview: Player_FireBomb
+    _damageType: 65536
+    _damageModifierType: 2
+    _damageMultiplier:
+      ReferenceTypeSelector: 0
+      ConstantValue: 1
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageResistance:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageOverride:
+      ReferenceTypeSelector: 0
+      ConstantValue: 1
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8438481402473190015}
+          m_TargetAssemblyTypeName: BML.Scripts.OreShaderController, BML.Scripts
+          m_MethodName: UpdateShaderOnPickaxeInteract
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     _onFailDamage:
       m_PersistentCalls:
         m_Calls: []
@@ -1145,7 +1209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 4912633858816596011
+  uniqueID: 8623301879790181737
   updateError: 1
   checkTime: 0.2
 --- !u!114 &8438481402473190015

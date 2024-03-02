@@ -1,4 +1,5 @@
 ﻿using System;
+using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -31,6 +32,25 @@ namespace BML.Scripts
             
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            var crackPosition0 = _oreRenderer.material.GetVector(CrackPosition0);
+            if (crackPosition0 != Vector4.zero)
+            {
+                Gizmos.DrawWireSphere(crackPosition0, 1f);
+            }
+            var crackPosition1 = _oreRenderer.material.GetVector(CrackPosition1);
+            if (crackPosition1 != Vector4.zero)
+            {
+                Gizmos.DrawWireSphere(crackPosition1, 1f);
+            }
+            var crackPosition2 = _oreRenderer.material.GetVector(CrackPosition2);
+            if (crackPosition2 != Vector4.zero)
+            {
+                Gizmos.DrawWireSphere(crackPosition2, 1f);
+            }
+        }
+
         #endregion
 
         public void UpdateShaderOnPickaxeInteract(HitInfo hitInfo)
@@ -53,7 +73,7 @@ namespace BML.Scripts
                     var crackPosition0 = _oreRenderer.material.GetVector(CrackPosition0);
                     if (crackPosition0 == Vector4.zero)
                     {
-                        var localHitPosition = _oreRenderer.transform.InverseTransformPoint(hitInfo.HitPositon);
+                        var localHitPosition = GetLocalHitPosition(hitInfo);
                         _oreRenderer.material.SetVector(CrackPosition0, localHitPosition);
                     }
                     break;
@@ -61,7 +81,7 @@ namespace BML.Scripts
                     var crackPosition1 = _oreRenderer.material.GetVector(CrackPosition1);
                     if (crackPosition1 == Vector4.zero)
                     {
-                        var localHitPosition = _oreRenderer.transform.InverseTransformPoint(hitInfo.HitPositon);
+                        var localHitPosition = GetLocalHitPosition(hitInfo);
                         _oreRenderer.material.SetVector(CrackPosition1, localHitPosition);
                     }
                     break;
@@ -69,13 +89,33 @@ namespace BML.Scripts
                     var crackPosition2 = _oreRenderer.material.GetVector(CrackPosition2);
                     if (crackPosition2 == Vector4.zero)
                     {
-                        var localHitPosition = _oreRenderer.transform.InverseTransformPoint(hitInfo.HitPositon);
+                        var localHitPosition = GetLocalHitPosition(hitInfo);
                         _oreRenderer.material.SetVector(CrackPosition2, localHitPosition);
                     }
                     break;
             }
             
             _oreCrystalsRenderer.material.SetFloat(DamageFac, oreDamageFac);
+        }
+        
+        private Vector3 GetLocalHitPosition(HitInfo hitInfo)
+        {
+            var hitPosition = hitInfo.HitPositon;
+            if (!hitPosition.HasValue)
+            {
+                var coll = _oreRenderer.GetComponent<Collider>();
+                var colliderMaxExtent = coll.bounds.extents.Max();
+                
+                var hitDirection = hitInfo.HitDirection;
+                if (!hitInfo.HitDirection.HasValue)
+                {
+                    hitDirection = Vector3.up * colliderMaxExtent;
+                }
+                
+                hitPosition = coll.ClosestPointOnBounds(coll.transform.position - hitDirection.Value);
+            }
+            
+            return _oreRenderer.transform.InverseTransformPoint(hitPosition.Value);
         }
 
     }
