@@ -206,7 +206,7 @@ namespace BML.Scripts
                 InitializePidControllers();
             }
             
-            Redirect(hitInfo.HitDirection);
+            Redirect(hitInfo.HitDirection ?? -rb.transform.forward);
         }
 
         public void Redirect(Vector3 newDirection)
