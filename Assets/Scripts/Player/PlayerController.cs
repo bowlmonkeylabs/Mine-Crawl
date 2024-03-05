@@ -43,6 +43,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _enemyMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoolVariable _sweepEnabled;
+        [SerializeField, FoldoutGroup("Pickaxe")] private BoolVariable _doubleSweepEnabled;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoolVariable _pickaxeThrowEnabled;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoxCollider _sweepCollider;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
@@ -112,6 +113,7 @@ namespace BML.Scripts.Player
         private bool secondaryInputHeld = false;
         private bool pickaxeHeld = true;
         private PickaxeInteractionReceiver hoveredInteractionReceiver = null;
+        private int doubleSweepCount = 0;
 
         #endregion
 
@@ -276,14 +278,28 @@ namespace BML.Scripts.Player
                 return;
             }
 
+            if(_startSweepFeedback.IsPlaying) {
+                return;
+            }
+
             if (_pickaxeSweepCooldown.IsStarted && !_pickaxeSweepCooldown.IsFinished)
             {
                 return;
             }
-            
+
             _startSweepFeedback.PlayFeedbacks();
-            _pickaxeSweepCooldown.RestartTimer();
-            _pickaxeSwingCooldown.RestartTimer();
+            
+            if(_doubleSweepEnabled.Value) {
+                doubleSweepCount += 1;
+                if(doubleSweepCount >= 2) {
+                    _pickaxeSweepCooldown.RestartTimer();
+                    _pickaxeSwingCooldown.RestartTimer();
+                    doubleSweepCount = 0;
+                }
+            } else {
+                _pickaxeSweepCooldown.RestartTimer();
+                _pickaxeSwingCooldown.RestartTimer();
+            }
         }
         
         // To be called by anim
