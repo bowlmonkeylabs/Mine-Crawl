@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0699a69989f2e77499221b13d2694b0b, type: 3}
-  m_Name: PlayerItem_PassiveStackable_Sweep_3.1
+  m_Name: PlayerItem_PassiveStackable_Luck_2.1
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -18,7 +18,10 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 38f386e05e25e3d4cb2b2f211cd6f035, type: 2}
     - {fileID: 11400000}
-    - {fileID: 11400000, guid: 323ee1608f06ac64fafc05abaaaf0f57, type: 2}
+    - {fileID: 11400000, guid: c9efda6b1918bb6439ab7909a8667b10, type: 2}
+    - {fileID: 11400000, guid: f9d5719e9c3b2f0418be534010f41e5e, type: 2}
+    - {fileID: 11400000, guid: 9dd86dfd093db714c9f8c9544133c539, type: 2}
+    - {fileID: 11400000, guid: 755f221cc10445145a014f1a50c8467b, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -62,10 +65,10 @@ MonoBehaviour:
         BML.Scripts]], mscorlib
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 7
-      Data: 3|BML.Scripts.Player.Items.ItemEffects.SetBoolVariableItemEffect, BML.Scripts
+      Data: 3|BML.Scripts.Player.Items.ItemEffects.StatIncreaseItemEffect, BML.Scripts
     - Name: _trigger
       Entry: 3
       Data: 0
@@ -102,9 +105,75 @@ MonoBehaviour:
     - Name: ParentItem
       Entry: 10
       Data: 1
-    - Name: BoolVariable
+    - Name: UsePercentageIncrease
+      Entry: 5
+      Data: false
+    - Name: IsTemporaryStatIncrease
+      Entry: 5
+      Data: false
+    - Name: TemporaryStatIncreaseTime
+      Entry: 4
+      Data: 0
+    - Name: FloatStat
+      Entry: 6
+      Data: 
+    - Name: IntStat
       Entry: 10
       Data: 2
+    - Name: StatIncreaseAmount
+      Entry: 3
+      Data: 2
+    - Name: StatIncreasePercent
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 4|BML.Scripts.Player.Items.ItemEffects.AddResourceItemEffect, BML.Scripts
+    - Name: _trigger
+      Entry: 3
+      Data: 9
+    - Name: _useActivationLimit
+      Entry: 5
+      Data: false
+    - Name: _remainingActivations
+      Entry: 6
+      Data: 
+    - Name: _useActivationCooldownTimer
+      Entry: 5
+      Data: false
+    - Name: _activationCooldownTimer
+      Entry: 6
+      Data: 
+    - Name: _useActivationChance
+      Entry: 5
+      Data: true
+    - Name: _minActivationChance
+      Entry: 4
+      Data: 0.3
+    - Name: _playerLuckStat
+      Entry: 10
+      Data: 3
+    - Name: _luckForMaxActivationChance
+      Entry: 3
+      Data: 10
+    - Name: _recurringTimerForTrigger
+      Entry: 6
+      Data: 
+    - Name: _recurringTimerForTriggerCondition
+      Entry: 6
+      Data: 
+    - Name: ParentItem
+      Entry: 10
+      Data: 4
+    - Name: _resource
+      Entry: 10
+      Data: 5
+    - Name: _addAmount
+      Entry: 3
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
@@ -114,12 +183,13 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  _name: Sweep 3.1
-  _effectDescription: Can sweep twice before entering cooldown
+  _name: Lucky Strike
+  _effectDescription: +1 Luck, Enable Chance to Heal after killing an enemy with
+    pickaxe
   _storeDescription: 
   _useIconColor: 1
-  _iconColor: {r: 1, g: 0.86981195, b: 0.1462264, a: 1}
-  _icon: {fileID: 21300000, guid: 3c40526a3f66ae0488a4ed0cee42a7ac, type: 3}
-  PassiveStackableTreeStartNode: {fileID: -5241733248247546144, guid: 21df0c8f4e7486b4c8b29c4e86b50133, type: 2}
+  _iconColor: {r: 0.7529412, g: 0.011764706, b: 0.59968466, a: 1}
+  _icon: {fileID: 21300000, guid: 6ff47d6898023a544b408db446e9e794, type: 3}
+  PassiveStackableTreeStartNode: {fileID: -4643251887282997832, guid: 21df0c8f4e7486b4c8b29c4e86b50133, type: 2}
   _objectPrefab: {fileID: 0}
   _itemType: 1
