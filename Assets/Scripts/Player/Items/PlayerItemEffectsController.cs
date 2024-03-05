@@ -16,10 +16,11 @@ namespace BML.Scripts.Player.Items
     {
         [SerializeField] private PlayerInventory _playerInventory;
 
+        [SerializeField, FoldoutGroup("Player")] private PlayerController _playerController;
         [SerializeField, FoldoutGroup("Player")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Player")] private BoolVariable _inGodMode;
         [SerializeField, FoldoutGroup("Player")] private BoolVariable _inDash;
-        
+
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSwingPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private DynamicGameEvent _onSwingPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxe;
@@ -490,6 +491,9 @@ namespace BML.Scripts.Player.Items
                 else if (itemEffect is ThrowItemEffect asThrowItemEffect)
                 {
                     asThrowItemEffect.PrimeEffect(MainCameraRef.Value.transform);
+                } else if (itemEffect is TeleportItemEffect asTeleportItemEffect)
+                {
+                    asTeleportItemEffect.PrimeEffect(_playerController);
                 }
                 
                 itemEffect.ApplyEffect(_inGodMode.Value);
