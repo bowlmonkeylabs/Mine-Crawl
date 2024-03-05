@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 273264086}
   - component: {fileID: 273264087}
   - component: {fileID: 2462990902379948414}
+  - component: {fileID: 5143086270840528051}
   m_Layer: 8
   m_Name: AlwaysOnTopCamera
   m_TagString: Untagged
@@ -71,7 +72,7 @@ Camera:
   m_HDR: 1
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
+  m_ForceIntoRT: 1
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
@@ -135,6 +136,33 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &5143086270840528051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 273264085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d35af20b508d5546ba80581bc1b979a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ssccShader: {fileID: 4800000, guid: 89ec5ce1bd95ed946a65b649164a9c1d, type: 3}
+  effectIntensity: 0.299
+  distanceFade: 0
+  curvaturePixelRadius: 0
+  curvatureBrights: 2
+  curvatureDarks: 3
+  cavitySamples: 2
+  saturateCavity: 1
+  cavityRadius: 0.25
+  cavityBrights: 3
+  cavityDarks: 2
+  cavityResolution: 0
+  normalsSource: 1
+  debugMode: 0
+  output: 0
 --- !u!1 &322946834
 GameObject:
   m_ObjectHideFlags: 0
@@ -28946,6 +28974,15 @@ MonoBehaviour:
     ConstantValue: 0
     Variable: {fileID: 0}
   _applyKnockback: 1
+  _customizeKnockback: 0
+  _knockbackTime:
+    UseConstant: 0
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 0
+    Variable: {fileID: 0}
+  _applyStun: 0
   _useExplosiveRadiusFeedback: 0
   _explosiveRadiusFeedback: {fileID: 0}
   _explosionCueOffsetTime: 0.25
@@ -28969,6 +29006,7 @@ GameObject:
   - component: {fileID: 7265003986444444705}
   - component: {fileID: 7281687976586860607}
   - component: {fileID: 3709041530147172989}
+  - component: {fileID: 7084462664031572024}
   m_Layer: 7
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -29040,7 +29078,7 @@ Camera:
   m_HDR: 1
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
+  m_ForceIntoRT: 1
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
@@ -29146,6 +29184,33 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &7084462664031572024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7265003986444444706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d35af20b508d5546ba80581bc1b979a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ssccShader: {fileID: 4800000, guid: 89ec5ce1bd95ed946a65b649164a9c1d, type: 3}
+  effectIntensity: 0.299
+  distanceFade: 0
+  curvaturePixelRadius: 0
+  curvatureBrights: 2
+  curvatureDarks: 3
+  cavitySamples: 2
+  saturateCavity: 1
+  cavityRadius: 0.25
+  cavityBrights: 3
+  cavityDarks: 2
+  cavityResolution: 0
+  normalsSource: 1
+  debugMode: 0
+  output: 0
 --- !u!1 &7325245207668222353
 GameObject:
   m_ObjectHideFlags: 0
@@ -32255,14 +32320,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
---- !u!4 &2794262310649021554 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
-  m_PrefabInstance: {fileID: 3890960061709579440}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &2599902467193343756 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 1291339071860702140, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
+  m_PrefabInstance: {fileID: 3890960061709579440}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2794262310649021554 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1384928679184904386, guid: 205932039de1d994aa76cb572aefc9f9, type: 3}
   m_PrefabInstance: {fileID: 3890960061709579440}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4582786282930990104
@@ -36923,13 +36988,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7021408810435422161, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
   m_PrefabInstance: {fileID: 8906954242875656665}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &3569760054384691783 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 5337203621404181406, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
-  m_PrefabInstance: {fileID: 8906954242875656665}
-  m_PrefabAsset: {fileID: 0}
 --- !u!108 &6442617568504354145 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 2518388751964019896, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
+  m_PrefabInstance: {fileID: 8906954242875656665}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3569760054384691783 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5337203621404181406, guid: 334ccdade87a4194b9f1855c484967dc, type: 3}
   m_PrefabInstance: {fileID: 8906954242875656665}
   m_PrefabAsset: {fileID: 0}
