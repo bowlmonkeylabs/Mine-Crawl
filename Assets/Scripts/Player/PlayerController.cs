@@ -477,31 +477,44 @@ namespace BML.Scripts.Player
 
         #endregion
 
-        #region Set position
+        #region Set position and teleport
 
-        public void SetPosition(Vector3 destination, bool resetFallDamage = true)
+        public void SetPositionAndRotation(Vector3 position, Quaternion rotation, bool resetFallDamage = true)
         {
             // If in play mode, move player using kinematicCharController motor to avoid race condition
             if (ApplicationUtils.IsPlaying_EditorSafe)
             {
-                if(_enableLogs) Debug.Log($"Moving KCC to {destination}");
+                if(_enableLogs) Debug.Log($"Moving KCC to {position}");
                 if (_kinematicCharacterMotor != null)
                 {
-                    _kinematicCharacterMotor.SetPosition(destination);
-                    _fallDamageController.ResetFall();
+                    _kinematicCharacterMotor.SetPositionAndRotation(position, rotation);
+                    if (resetFallDamage)
+                    {
+                        _fallDamageController.ResetFall();
+                    }
                 }
                 else
                 {
-                    this.transform.position = destination;
+                    this.transform.position = position;
                     Debug.LogWarning("Could not find KinematicCharacterMotor on player! " +
                                      "Moving player position directly via Transform.");
                 }
             }
             else
             {
-                if(_enableLogs) Debug.Log($"Moving transform to {destination}");
-                this.transform.position = destination;
+                if(_enableLogs) Debug.Log($"Moving transform to {position}");
+                this.transform.position = position;
             }
+        }
+        
+        public void TpToWaypoint(string tpPointName)
+        {
+            var tpPoint = TeleportUtil.FindTpPoint(tpPointName);
+            if (tpPoint == null)
+            {
+                throw new Exception("No teleport point named " + tpPointName);
+            }
+            this.SetPositionAndRotation(tpPoint.position, tpPoint.rotation);
         }
 
         #endregion

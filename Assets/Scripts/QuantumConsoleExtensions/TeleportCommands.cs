@@ -10,52 +10,38 @@ namespace BML.Scripts.Player.Items.PlayerItems
     [CommandPrefix("tp.")]
     public class TeleportCommands : MonoBehaviour
     {
-        [SerializeField] private KinematicCharacterMotor _playerCharacterMotor;
-
-        private const string TELEPORT_TAG = "Dev_Teleport";
-        private const string TELEPORT_NAME_PREFIX = "TP_";
-
-        // In order to be found, teleport points should be tagged with 'Dev_Teleport' and should be named with the convention '{TP_<name>}'
-        private Transform FindTpPoint(string tpPointName)
-        {
-            var taggedTeleportPoints = GameObject.FindGameObjectsWithTag(TELEPORT_TAG);
-            var requested = taggedTeleportPoints.FirstOrDefault(go =>
-            {
-                var goTrimmedName = go.name.Trim('{', '}').Remove(0, TELEPORT_NAME_PREFIX.Length);
-                return goTrimmedName.Equals(tpPointName, StringComparison.OrdinalIgnoreCase);
-            });
-
-            return requested?.transform;
-        }
+        [SerializeField] private PlayerController _playerController;
 
         [Command("waypoint")]
-        private string TpToName(string tpPointName)
+        private string TpToWaypoint(string tpPointName)
         {
-            var tpPoint = FindTpPoint(tpPointName);
-            if (tpPoint == null)
+            try
             {
-                return "No teleport point with that name.";
+                _playerController.TpToWaypoint(tpPointName);
+                return "";
             }
-            _playerCharacterMotor.SetPositionAndRotation(tpPoint.position, tpPoint.rotation);
-            return "";
+            catch (Exception e)
+            {
+                return e.Message;
+            }
         }
 
         [Command("start")]
         private string TpToStart()
         {
-            return TpToName("start");
+            return TpToWaypoint("start");
         }
         
         [Command("end")]
         private string TpToEnd()
         {
-            return TpToName("end");
+            return TpToWaypoint("end");
         }
         
         [Command("merchant")]
         private string TpToMerchant()
         {
-            return TpToName("merchant");
+            return TpToWaypoint("merchant");
         }
         
     }
