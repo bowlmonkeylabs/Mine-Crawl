@@ -41,6 +41,9 @@ namespace BML.Scripts.Player
 		[Tooltip("Outputted Velocity")]
 		[SerializeField, FoldoutGroup("Player")] Vector3Reference CurrentVelocityOut;
 
+        [Space(10)]
+        [SerializeField, FoldoutGroup("Player")] private BoolVariable PlayerMovingAtTopSpeed;
+
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
 		[SerializeField, FoldoutGroup("Player")] float JumpHeight = 1.2f;
@@ -172,6 +175,7 @@ namespace BML.Scripts.Player
 			isNoClipEnabled.Subscribe(SetNoClip);
             _playerEnteredRopeEvent.Subscribe(OnPlayerEnteredRope);
             _playerRopePointStateChanged.Subscribe(OnPlayerRopePointStateChanged);
+            CurrentVelocityOut.Subscribe(CheckMoveTopSpeed);
 		}
 
 		private void OnDisable()
@@ -179,6 +183,7 @@ namespace BML.Scripts.Player
 			isNoClipEnabled.Unsubscribe(SetNoClip);
             _playerEnteredRopeEvent.Unsubscribe(OnPlayerEnteredRope);
             _playerRopePointStateChanged.Unsubscribe(OnPlayerRopePointStateChanged);
+            CurrentVelocityOut.Unsubscribe(CheckMoveTopSpeed);
 		}
 
 		private void Update()
@@ -672,6 +677,14 @@ namespace BML.Scripts.Player
 				_motor.CollidableLayers = orignalCollisionMask;
 			}
 		}
+
+        private void CheckMoveTopSpeed() {
+            var lateralSpeed = CurrentVelocityOut.Value.xoz().magnitude;
+            var isMovingAtTopSpeed = Mathf.Approximately(lateralSpeed, MoveSpeed.Value) || lateralSpeed >= MoveSpeed.Value;
+            if(isMovingAtTopSpeed != PlayerMovingAtTopSpeed.Value) {
+                PlayerMovingAtTopSpeed.Value = isMovingAtTopSpeed;
+            }
+        }
 
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 		{
