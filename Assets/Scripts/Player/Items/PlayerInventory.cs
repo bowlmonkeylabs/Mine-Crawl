@@ -244,6 +244,10 @@ namespace BML.Scripts.Player.Items
             ConsumableItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
             ConsumableItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
             ConsumableItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
+
+            AbilityItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
+            AbilityItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
+            AbilityItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
         }
 
         private void OnDisable()
@@ -263,6 +267,10 @@ namespace BML.Scripts.Player.Items
             ConsumableItems.OnItemAdded -= InvokeOnAnyPlayerItemAdded;
             ConsumableItems.OnItemRemoved -= InvokeOnAnyPlayerItemRemoved;
             ConsumableItems.OnItemReplaced -= InvokeOnAnyPlayerItemReplaced;
+
+            AbilityItems.OnItemAdded -= InvokeOnAnyPlayerItemAdded;
+            AbilityItems.OnItemRemoved -= InvokeOnAnyPlayerItemRemoved;
+            AbilityItems.OnItemReplaced -= InvokeOnAnyPlayerItemReplaced;
         }
 
         #endregion
