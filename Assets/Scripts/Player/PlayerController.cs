@@ -118,7 +118,7 @@ namespace BML.Scripts.Player
         private PickaxeInteractionReceiver hoveredInteractionReceiver = null;
         private int doubleSweepCount = 0;
 
-        private float SwingCritActivationChance => !_enableSwingCrits
+        private float SwingCritActivationChance => !_enableSwingCrits.Value
             ? 0f
             : (_minSwingCritChance + ((float)_playerLuckStat.Value / _luckLevelForMaxSwingCritChance) * (1 - _minSwingCritChance));
 
@@ -258,9 +258,10 @@ namespace BML.Scripts.Player
 
             Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
             bool isCrit = Random.value < SwingCritActivationChance;
-
+            Debug.Log(isCrit);
             if (isCrit)
             {
+                Debug.Log(SwingCritActivationChance);
                 damage *= _critDamageMultiplier;
                 _swingCritFeedbacks.PlayFeedbacks(hit.point);
                 _onSwingPickaxeCrit.Raise(hit.point);
