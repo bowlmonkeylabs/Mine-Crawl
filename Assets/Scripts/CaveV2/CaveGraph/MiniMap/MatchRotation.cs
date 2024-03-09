@@ -23,6 +23,13 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         [SerializeField] private Vector3 _remapAnglesNewMin = Vector3.zero;
         [SerializeField] private Vector3 _remapAnglesNewMax = Vector3.one * 360;
 
+        private enum UpdateMethod
+        {
+            Update,
+            FixedUpdate,
+        }
+        [SerializeField] private UpdateMethod _updateMethod = UpdateMethod.FixedUpdate;
+
         #endregion
 
         #region Unity lifecycle
@@ -45,6 +52,24 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         }
 
         private void FixedUpdate()
+        {
+            if (_updateMethod == UpdateMethod.FixedUpdate)
+            {
+                UpdateRotation();
+            } 
+        }
+
+        private void Update()
+        {
+            if (_updateMethod == UpdateMethod.Update)
+            {
+                UpdateRotation();
+            }
+        }
+
+        #endregion
+
+        private void UpdateRotation()
         {
             if (_target.Value != null && _transform.Value != null)
             {
@@ -70,8 +95,6 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
                 }
             }
         }
-
-        #endregion
 
         private Coroutine _coroutineResetRotation;
         private IEnumerator CoroutineResetRotation()
