@@ -363,10 +363,14 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 }
                 
                 var startWorldPosition = caveGenerator.LocalToWorld(caveGenerator.CaveGraph.StartNode.LocalPosition);
+                var firstConnectedNode = caveGenerator.CaveGraph.AdjacentVertices(caveGenerator.CaveGraph.StartNode)
+                    .FirstOrDefault();
+                var facingDir = (firstConnectedNode.LocalPosition - caveGenerator.CaveGraph.StartNode.LocalPosition).xoz().normalized;
+                var startRotation = Quaternion.LookRotation(facingDir, Vector3.up);
                 // Debug.Log($"Call SpawnPlayer: Position {startWorldPosition} | Player in scene {playerInThisScene}");
                 if (player.scene.isLoaded)
                 {
-                    playerController.SetPosition(startWorldPosition, true);
+                    playerController.SetPositionAndRotation(startWorldPosition, startRotation, true);
                 }
                 else
                 {
@@ -376,7 +380,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                     var isPrefab = false;
 #endif
                     player = GameObjectUtils.SafeInstantiate(isPrefab, player, parent);
-                    playerController.SetPosition(startWorldPosition, true);
+                    playerController.SetPositionAndRotation(startWorldPosition, startRotation, true);
                 }
                 
                 // Stop velocity

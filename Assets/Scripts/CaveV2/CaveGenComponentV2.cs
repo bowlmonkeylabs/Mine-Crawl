@@ -192,7 +192,12 @@ namespace BML.Scripts.CaveV2
                 var playerController = _playerSceneReference.Value.gameObject.GetComponent<IPlayerController>();
                 if (playerController != null)
                 {
-                    playerController.SetPosition(_greenRoomSceneReference.Value.transform.position, true);
+                    var transform1 = _greenRoomSceneReference.Value.transform;
+                    playerController.SetPositionAndRotation(
+                        transform1.position, 
+                        transform1.rotation, 
+                        true
+                    );
                 }
                 else
                 {
