@@ -51,9 +51,6 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeThrowCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _pickaxeDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepDamage;
-        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _swingCritChance;
-        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepCritChance;
-        [SerializeField, FoldoutGroup("Pickaxe")] private int _critDamageMultiplier = 2;
         [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSwingPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe")] private DynamicGameEvent _onSwingPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe")] private DynamicGameEvent _onSwingPickaxeCrit;
@@ -73,9 +70,15 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitEnemyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startPickaxeThrowFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startPickaxeReceiveFeedbacks;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingCritFeedbacks;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepCritFeedbacks;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepCritInstanceFeedbacks;
+
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private BoolVariable _enableSwingCrits;
+        [SerializeField, FoldoutGroup("Pickaxe Crit"), Range(0, 1)] private float _minSwingCritChance;
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private IntVariable _playerLuckStat;
+        [SerializeField, FoldoutGroup("Pickaxe Crit"), Range(0, 20)] private int _luckLevelForMaxSwingCritChance;
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private int _critDamageMultiplier = 2;
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private MMF_Player _swingCritFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private MMF_Player _sweepCritFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private MMF_Player _sweepCritInstanceFeedbacks;
 
         [SerializeField, FoldoutGroup("Dash")] private BoolReference _isDashActive;
         [SerializeField, FoldoutGroup("Dash")] private SafeFloatValueReference _postDashInvincibilityTime;
@@ -114,6 +117,10 @@ namespace BML.Scripts.Player
         private bool pickaxeHeld = true;
         private PickaxeInteractionReceiver hoveredInteractionReceiver = null;
         private int doubleSweepCount = 0;
+
+        private float SwingCritActivationChance => !_enableSwingCrits
+            ? 0f
+            : (_minSwingCritChance + ((float)_playerLuckStat.Value / _luckLevelForMaxSwingCritChance) * (1 - _minSwingCritChance));
 
         #endregion
 
@@ -250,7 +257,7 @@ namespace BML.Scripts.Player
             float damage = _pickaxeDamage.Value;
 
             Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
-            bool isCrit = Random.value < _swingCritChance.Value;
+            bool isCrit = Random.value < SwingCritActivationChance;
 
             if (isCrit)
             {
@@ -342,12 +349,12 @@ namespace BML.Scripts.Player
                 _sweepHitEnemyFeedback.PlayFeedbacks();
             }
             
-            Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
-            bool isCrit = Random.value < _sweepCritChance.Value;
-            if (isCrit)
-            {
-                _sweepCritFeedbacks.PlayFeedbacks();
-            }
+            // Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
+            // bool isCrit = false;
+            // if (isCrit)
+            // {
+            //     _sweepCritFeedbacks.PlayFeedbacks();
+            // }
             
             foreach (var (interactionReceiver, colliderCenter) in interactionReceivers)
             {
@@ -365,21 +372,24 @@ namespace BML.Scripts.Player
                     if (hit.collider.gameObject == interactionReceiver.gameObject)
                     {
                         hitPos = hit.point;
-                        if (isCrit)
-                        {
-                            _sweepCritInstanceFeedbacks.AllowSameFramePlay();
-                            _sweepCritInstanceFeedbacks.PlayFeedbacks(hitPos, 1f);
-                        }
-                        else
-                        {
-                            _sweepHitFeedbacks.AllowSameFramePlay();
-                            _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
-                        }
+                        _sweepHitFeedbacks.AllowSameFramePlay();
+                        _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        // if (isCrit)
+                        // {
+                        //     _sweepCritInstanceFeedbacks.AllowSameFramePlay();
+                        //     _sweepCritInstanceFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        // }
+                        // else
+                        // {
+                        //     _sweepHitFeedbacks.AllowSameFramePlay();
+                        //     _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        // }
                         break;
                     }
                 }
             
-                int damage = Mathf.FloorToInt(_sweepDamage.Value) * (isCrit ? _critDamageMultiplier : 1);
+                // int damage = Mathf.FloorToInt(_sweepDamage.Value) * (isCrit ? _critDamageMultiplier : 1);
+                int damage = Mathf.FloorToInt(_sweepDamage.Value);
                 HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, damage, _mainCamera.forward, 
                     hitPos);
                 interactionReceiver.ReceiveSecondaryInteraction(pickaxeHitInfo);
