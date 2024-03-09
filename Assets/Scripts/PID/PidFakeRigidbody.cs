@@ -160,7 +160,7 @@ namespace BML.Scripts.PID
                 }
             }
             
-            if (!_isMatchPositionMode && _rotationPIDController != null)
+            if (!_isMatchPositionMode && _rotationPIDController != null && _target.Value != null)
             {
                 // Shapes.Draw.Line(position, position + transform.forward, Color.blue);
                 

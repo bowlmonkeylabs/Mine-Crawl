@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
+using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.Scripts.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -18,6 +20,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         [SerializeField] private SafeTransformValueReference _levelRoot;
         [SerializeField] private SafeTransformValueReference _playerPosition;
         [SerializeField] private Transform _playerCursor;
+        
+        [SerializeField] private Vector2Variable _moveInput;
         
         [SerializeField] private GameObjectSceneReference _caveGenerator;
 
@@ -44,8 +48,12 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
 
         #region Unity lifecycle
 
+        private Camera _camera;
+
         private void Awake()
         {
+            _camera = Camera.main;
+            
             if (_scalingTarget != null)
             {
                 _zoomBaseline = _scalingTarget.localScale.x;
@@ -55,11 +63,13 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         private void OnEnable()
         {
             MinimapParameters.OpenMapOverlay.Subscribe(UpdateMinimapOverlay);
+            _moveInput.Subscribe(OnMove);
         }
 
         private void OnDisable()
         {
             MinimapParameters.OpenMapOverlay.Unsubscribe(UpdateMinimapOverlay);
+            _moveInput.Unsubscribe(OnMove);
         }
 
         private void FixedUpdate()
@@ -91,6 +101,46 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         #endregion
 
         private Vector3? _centerOnPoint;
+        private Vector3? _moveOffset;
+
+        private void OnMove()
+        {
+            if (MinimapParameters.OpenMapOverlay.Value && _moveInput.Value != Vector2.zero)
+            {
+                if (_moveOffset == null)
+                {
+                    _moveOffset = Vector3.zero;
+                }
+                
+                var caveGenComponent = _caveGenerator.CachedComponent as CaveGenComponentV2;
+                var bounds = caveGenComponent?.CaveGenBounds;
+
+                float offsetFactor = 0f;
+                if (bounds != null)
+                {
+                    offsetFactor = Mathf.Clamp01(_moveOffset.Value.magnitude / bounds.Value.extents.Max() * 2f);
+                }
+
+                var m = 100f;
+                var multiplier = FloatUtils.RemapRange(offsetFactor, 0, 1, 0f, m);
+                _moveOffset += (_camera.transform.rotation * _moveInput.Value.xoy()).xoz().normalized 
+                               * (Time.unscaledDeltaTime * m);
+                var centeringForce = (-_moveOffset.Value).normalized * (Time.unscaledDeltaTime * multiplier);
+                _moveOffset += centeringForce;
+                if (bounds != null)
+                {
+                    _moveOffset = Vector3.ClampMagnitude(_moveOffset.Value, bounds.Value.extents.magnitude * 2 / 5);
+                }
+            }
+            else if (_moveOffset != Vector3.zero)
+            {
+                _moveOffset = Vector3.Lerp(_moveOffset.Value, Vector3.zero, 0.1f);
+            }
+            else
+            {
+                _moveOffset = null;
+            }
+        }
 
         private void UpdateMinimapTransform()
         {
@@ -103,7 +153,11 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
                 }
                 else if (_centerOnPoint.HasValue)
                 {
-                    pos = _centerOnPoint.Value;
+                    if (_moveInput.Value != Vector2.zero || _moveOffset != null)
+                    {
+                        OnMove();
+                    }
+                    pos = _centerOnPoint.Value + (_moveOffset ?? Vector3.zero);
                 }
 
                 if (pos.HasValue)
@@ -141,7 +195,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
                         .Where(caveNode => caveNode.PlayerVisited)
                         .ToList();
                     var averagePosition = discoveredNodes
-                        .Select(caveNode => caveNode.GameObject.transform.localPosition)
+                        .Select(caveNode => caveNode.GameObject.transform.position)
                         .Aggregate((current, next) => current + next) / discoveredNodes.Count;
                     
                     _centerOnPoint = averagePosition;
