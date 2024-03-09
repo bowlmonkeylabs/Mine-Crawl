@@ -43,6 +43,7 @@ namespace BML.Scripts.Player.Items
             {
                 var items = new List<PlayerItem>(_playerInventory.PassiveStackableItems.Items);
                 items.AddRange(_playerInventory.PassiveItems.Items);
+                items.AddRange(_playerInventory.AbilityItems.Items);
                 return items;
             }
         }
