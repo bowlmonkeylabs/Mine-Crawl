@@ -7,8 +7,8 @@ namespace BML.Scripts.Editor
 {
     public class Shortcuts
     {
-        // Alt + K
-        [Shortcut("Clear Console", KeyCode.K, ShortcutModifiers.Alt)]
+        // Alt + C
+        [Shortcut("Clear Console", KeyCode.C, ShortcutModifiers.Alt)]
         public static void ClearConsole()
         {
             var assembly = Assembly.GetAssembly(typeof(SceneView));
@@ -18,7 +18,7 @@ namespace BML.Scripts.Editor
         }
         
         
-        // Alt + K
+        // Alt + F
         [Shortcut("Find Player In Scene View", KeyCode.F, ShortcutModifiers.Alt)]
         public static void FindPlayerInSceneView()
         {

@@ -469,8 +469,47 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
-  TreeStartNode: {fileID: -4643251887282997832}
+  TreeStartNode: {fileID: 0}
   Item: {fileID: 11400000, guid: 63e33b4de7974ee4992d096220f9d34b, type: 2}
+--- !u!114 &-7396786270027149457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 265593927741f7f4ca0df8cb5367b997, type: 3}
+  m_Name: Explosive Tree
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: 4488, y: 1240}
+  ports:
+    keys:
+    - Start
+    values:
+    - _fieldName: Start
+      _node: {fileID: -7396786270027149457}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: From
+        node: {fileID: -2189542775857867869}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
 --- !u!114 &-5558730097424497059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -660,6 +699,60 @@ MonoBehaviour:
       _dynamic: 0
   TreeStartNode: {fileID: -9161877483033769915}
   Item: {fileID: 11400000, guid: 9c0b613c93647784d900a4ff0e117c78, type: 2}
+--- !u!114 &-4754301029061950761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4e280917d072640be943f96cba2774, type: 3}
+  m_Name: Blasting Power
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: 5512, y: 1704}
+  ports:
+    keys:
+    - From
+    - To
+    values:
+    - _fieldName: From
+      _node: {fileID: -4754301029061950761}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: To
+        node: {fileID: -2189542775857867869}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: To
+      _node: {fileID: -4754301029061950761}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: From
+        node: {fileID: 1402355694483163169}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+  TreeStartNode: {fileID: -7396786270027149457}
+  Item: {fileID: 11400000, guid: ff0d47ce77f72fd40a9f7b66ad100454, type: 2}
 --- !u!114 &-4697192755667978362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -862,7 +955,7 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
-  TreeStartNode: {fileID: -4643251887282997832}
+  TreeStartNode: {fileID: 0}
   Item: {fileID: 11400000, guid: 7762919640e94b344b8fa5a468dab7d2, type: 2}
 --- !u!114 &-2587787219697522379
 MonoBehaviour:
@@ -1071,6 +1164,117 @@ MonoBehaviour:
       _dynamic: 0
   TreeStartNode: {fileID: 0}
   Item: {fileID: 11400000, guid: af46b7fe96fc6334d905ae4faafe7445, type: 2}
+--- !u!114 &-2189542775857867869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4e280917d072640be943f96cba2774, type: 3}
+  m_Name: and then... bombs?
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: 4968, y: 1208}
+  ports:
+    keys:
+    - From
+    - To
+    values:
+    - _fieldName: From
+      _node: {fileID: -2189542775857867869}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: Start
+        node: {fileID: -7396786270027149457}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: To
+      _node: {fileID: -2189542775857867869}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: From
+        node: {fileID: -1808633768162732105}
+        reroutePoints: []
+      - fieldName: From
+        node: {fileID: -4754301029061950761}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+  TreeStartNode: {fileID: -7396786270027149457}
+  Item: {fileID: 11400000, guid: 2fa6c7e95b93efb449f455f05f2c3b84, type: 2}
+--- !u!114 &-1808633768162732105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4e280917d072640be943f96cba2774, type: 3}
+  m_Name: More Range
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: 5528, y: 856}
+  ports:
+    keys:
+    - From
+    - To
+    values:
+    - _fieldName: From
+      _node: {fileID: -1808633768162732105}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: To
+        node: {fileID: -2189542775857867869}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: To
+      _node: {fileID: -1808633768162732105}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: From
+        node: {fileID: 1402355694483163169}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+  TreeStartNode: {fileID: -7396786270027149457}
+  Item: {fileID: 11400000, guid: ed500e7d7f7bab34bba68eed3a873d75, type: 2}
 --- !u!114 &-1619310141380800746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1159,7 +1363,7 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 2
       _dynamic: 0
-  TreeStartNode: {fileID: -4643251887282997832}
+  TreeStartNode: {fileID: 0}
   Item: {fileID: 11400000, guid: 4fdb4ad87913eaf4fa916834fc576210, type: 2}
 --- !u!114 &-1381992161343708809
 MonoBehaviour:
@@ -1536,6 +1740,11 @@ MonoBehaviour:
   - {fileID: 3259775184278472719}
   - {fileID: 5170288456868161185}
   - {fileID: -1619310141380800746}
+  - {fileID: -7396786270027149457}
+  - {fileID: -2189542775857867869}
+  - {fileID: -1808633768162732105}
+  - {fileID: 1402355694483163169}
+  - {fileID: -4754301029061950761}
   _playerInventory: {fileID: 11400000, guid: 9356dfe23cfc20041850028b69aa7e4c, type: 2}
   _maxSlottedTrees: {fileID: 11400000, guid: 2d091d4d5be35d9498388968704cb628, type: 2}
 --- !u!114 &337168288027425340
@@ -1631,6 +1840,60 @@ MonoBehaviour:
       _dynamic: 0
   TreeStartNode: {fileID: 7395606790405979272}
   Item: {fileID: 11400000, guid: ec25cc2c9898ecb4b90e7c5a9de92982, type: 2}
+--- !u!114 &1402355694483163169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4e280917d072640be943f96cba2774, type: 3}
+  m_Name: Pyrotechnic License
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  graph: {fileID: 11400000}
+  position: {x: 6104, y: 1080}
+  ports:
+    keys:
+    - From
+    - To
+    values:
+    - _fieldName: From
+      _node: {fileID: 1402355694483163169}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: To
+        node: {fileID: -4754301029061950761}
+        reroutePoints: []
+      - fieldName: To
+        node: {fileID: -1808633768162732105}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: To
+      _node: {fileID: 1402355694483163169}
+      _typeQualifiedName: BML.Scripts.Player.Items.ItemGraphConnection, BML.Scripts,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+  TreeStartNode: {fileID: -7396786270027149457}
+  Item: {fileID: 11400000, guid: 1fff1aafa2068c6409a7c9a50a2047af, type: 2}
 --- !u!114 &2359358694554025740
 MonoBehaviour:
   m_ObjectHideFlags: 0

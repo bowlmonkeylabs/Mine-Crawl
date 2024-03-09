@@ -6,8 +6,8 @@ namespace BML.Scripts
     {
         public DamageType DamageType;
         public int Damage;
-        public Vector3 HitPositon;
-        public Vector3 HitDirection;
+        public Vector3? HitPositon;
+        public Vector3? HitDirection;
 
         public HitInfo(DamageType DamageType, int Damage, Vector3 HitDirection) {
             this.DamageType = DamageType;

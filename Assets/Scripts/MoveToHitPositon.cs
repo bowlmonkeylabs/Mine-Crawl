@@ -6,7 +6,10 @@ namespace BML.Scripts
     {
         public void Move(HitInfo hitInfo)
         {
-            transform.position = hitInfo.HitPositon;
+            if (hitInfo.HitPositon.HasValue)
+            {
+                transform.position = hitInfo.HitPositon.Value;
+            }
         }
     }
 }

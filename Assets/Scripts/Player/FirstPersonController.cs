@@ -545,11 +545,11 @@ namespace BML.Scripts.Player
 
 		public void Knockback(HitInfo hitInfo)
 		{
-			if (_knockbackActive)
+			if (_knockbackActive || !hitInfo.HitDirection.HasValue)
 				return;
 
 			_motor.ForceUnground();
-			_knockbackDir = hitInfo.HitDirection.xoz().normalized;
+			_knockbackDir = hitInfo.HitDirection.Value.xoz().normalized;
 			_verticalVelocity = KnockbackVerticalForce;
 			knockbackStartTime = Time.time;
 			_knockbackActive = true;
