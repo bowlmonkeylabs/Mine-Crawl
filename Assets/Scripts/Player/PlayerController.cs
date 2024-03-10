@@ -258,7 +258,7 @@ namespace BML.Scripts.Player
 
             Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
             bool isCrit = Random.value < SwingCritActivationChance;
-            Debug.Log(isCrit);
+            
             if (isCrit)
             {
                 Debug.Log(SwingCritActivationChance);
