@@ -74,6 +74,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Player Currently Dashing")] private BoolVariable DashActive;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Player Dash In Cooldown")] private BoolVariable DashInCooldown;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Dash Cooldown Length, in seconds")] private TimerVariable DashCooldownTimer;
+        [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Dash Stun Enabled")] private BoolVariable DashStunEnabled;
 
         [SerializeField, FoldoutGroup("Sprint"), Tooltip("Is Sprint Enabled")] private BoolVariable SprintEnabled;
         [SerializeField, FoldoutGroup("Sprint"), Tooltip("Is Player Currently Sprinting")] private BoolVariable SprintActive;
@@ -81,6 +82,7 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Sprint"), Tooltip("Max Sprint duration timer")] private TimerVariable SprintTimer;
         [SerializeField, FoldoutGroup("Sprint"), Tooltip("Sprint Cooldown Length, in seconds")] private TimerVariable SprintCooldownTimer;
         [SerializeField, FoldoutGroup("Sprint"), Tooltip("Sprint recharge rate, in percentage per second")] private SafeFloatValueReference SprintRechargeRate;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Is Sprint Knockbak Enabled")] private BoolVariable SprintKnockbackEnabled;
 
 		[SerializeField, FoldoutGroup("RopeMovement")] private GameEvent _playerEnteredRopeEvent;
 		[SerializeField, FoldoutGroup("RopeMovement")] private BoolReference _isRopeMovementEnabled;
@@ -96,6 +98,9 @@ namespace BML.Scripts.Player
 		[SerializeField, FoldoutGroup("No Clip Mode")] private LayerMask noClipCollisionMask;
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
+
+        [SerializeField, FoldoutGroup("Movement Collision")] private float _collisionCooldown = .1f;
+		[SerializeField, FoldoutGroup("Movement Collision")] private LayerMask _enemyLayerMask;
 
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
 		[SerializeField, FoldoutGroup("Cinemachine")] GameObject CinemachineCameraTarget;
@@ -132,6 +137,9 @@ namespace BML.Scripts.Player
         //dash
         private float _startDashTime;
         private Vector3 _dashDirection;
+
+        //movement collisions
+        private float _lastCollidedTime = Mathf.NegativeInfinity;
 
 		private PlayerInput _playerInput;
 		private KinematicCharacterMotor _motor;
@@ -346,6 +354,26 @@ namespace BML.Scripts.Player
 	        ref HitStabilityReport hitStabilityReport)
 	    {
             // This is called when the motor's movement logic detects a hit
+
+            // if(_lastCollidedTime + _collisionCooldown > Time.time) {
+            //     return;
+            // }
+
+            if(hitCollider.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+                var hitInfo = new HitInfo(DamageType.Player_Contact_Dash, 0, hitCollider.transform.position - transform.position, hitPoint);
+
+                if(DashActive.Value && DashStunEnabled.Value) {
+                    hitInfo.DamageType = DamageType.Player_Contact_Dash;
+                    hitCollider.gameObject.GetComponent<Damageable>().TakeDamage(hitInfo);
+                }
+
+                if(SprintActive.Value && SprintKnockbackEnabled.Value) {
+                    hitInfo.DamageType = DamageType.Player_Contact_Sprint;
+                    hitCollider.gameObject.GetComponent<Damageable>().TakeDamage(hitInfo);
+                }
+            }
+
+            _lastCollidedTime = Time.time; 
 	    }
 
 	    public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint,

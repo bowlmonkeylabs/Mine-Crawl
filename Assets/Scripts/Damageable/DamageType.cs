@@ -18,6 +18,7 @@ namespace BML.Scripts {
         Enemy_Worm = 1 << 14,
         Player_Projectile = 1 << 15,
         Player_FireBomb = 1 << 16,
-        Player_Contact = 1 << 17
+        Player_Contact_Dash = 1 << 17,
+        Player_Contact_Sprint = 1 << 18
     }
 }
