@@ -92,6 +92,11 @@ namespace BML.Scripts.Utils
             return ret;
         }
 
+        public static Vector3? NullIfZero(this Vector3 vec)
+        {
+            return (vec == Vector3.zero ? null : (Vector3?)vec);
+        }
+
         public static Vector3Int FloorToInt(this Vector3 vec)
         {
             var ret = new Vector3Int();

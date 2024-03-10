@@ -362,7 +362,7 @@ namespace BML.Scripts.Player
 		private void CameraRotation()
 		{
 			//Don't multiply mouse input by Time.deltaTime
-			float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+			float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.unscaledDeltaTime;
 			
 			float rotSpeed = RotationSpeed;
 			float lookAcceleration = LookAcceleration.Value * lookAccelerationFactor;
@@ -393,9 +393,14 @@ namespace BML.Scripts.Player
 
 				//Accelerate to higher values but stop immediately
 				if (rotSpeed > previouRotSpeed)
-					rotSpeedAccelerated = Mathf.SmoothDamp(previouRotSpeed, rotSpeed, ref dummy, lookAcceleration);
+				{
+					rotSpeedAccelerated = Mathf.SmoothDamp(previouRotSpeed, rotSpeed, ref dummy, 
+						lookAcceleration, Mathf.Infinity, Time.unscaledDeltaTime);
+				}
 				else
+				{
 					rotSpeedAccelerated = rotSpeed;
+				}
 
 				rotSpeed = rotSpeedAccelerated;
 				previouRotSpeed = rotSpeedAccelerated;
@@ -403,7 +408,6 @@ namespace BML.Scripts.Player
 
 			if (Mathf.Approximately(0f, _input.look.magnitude))
 				previouRotSpeed = 0f;
-				
 			
 			_cinemachineTargetYaw += _input.look.x * rotSpeed * deltaTimeMultiplier;
 			_cinemachineTargetPitch += _input.look.y * rotSpeed * deltaTimeMultiplier;

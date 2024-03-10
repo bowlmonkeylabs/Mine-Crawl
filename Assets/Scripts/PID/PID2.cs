@@ -81,6 +81,9 @@ namespace BML.Scripts.Compass
         [ShowInInspector] private float _prevError;
         [ShowInInspector] private float _prevValue;
 
+        public float PrevError => _prevError;
+        public float PrevValue => _prevValue;
+
         public PID2(PIDParameters parameters)
         {
             Parameters = parameters;
@@ -124,7 +127,7 @@ namespace BML.Scripts.Compass
                 }
             }
             
-            _prevValue = currentValue; 
+            _prevValue = currentValue;
             _prevError = currentError;
 
             var p = _p * _parameters.Kp;
