@@ -132,7 +132,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
                     _moveOffset = Vector3.ClampMagnitude(_moveOffset.Value, bounds.Value.extents.magnitude * 2 / 5);
                 }
             }
-            else if (_moveOffset != Vector3.zero)
+            else if (_moveOffset != Vector3.zero && _moveOffset != null)
             {
                 _moveOffset = Vector3.Lerp(_moveOffset.Value, Vector3.zero, 0.1f);
             }
