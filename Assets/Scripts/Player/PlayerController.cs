@@ -8,6 +8,7 @@ using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.CaveV2;
 using BML.Scripts.CaveV2.Objects;
 using BML.Scripts.Player.Items;
+using BML.Scripts.Player.Items.Loot;
 using BML.Scripts.UI;
 using BML.Scripts.Utils;
 using MoreMountains.Feedbacks;
