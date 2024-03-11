@@ -7,11 +7,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 
-namespace BML.Scripts
+namespace BML.Scripts.Player.Items.Loot
 {
     public class ItemLootRandomizer : MonoBehaviour
     {
         [SerializeField] private ItemLootTableVariable _lootTable;
+        [SerializeField] private UnityEvent<PlayerItem> _onPeek;
         [SerializeField] private UnityEvent<PlayerItem> _onDrop;
         [SerializeField] private UnityEvent _onNothingDrop;
 
@@ -44,12 +45,23 @@ namespace BML.Scripts
         {
             _randomRoll = value;
         }
+
+        public void Peek()
+        {
+            var lootTableEntry = _lootTable.Value.Evaluate(_randomRoll);
+            
+            foreach (var itemDeal in lootTableEntry.Drops)
+            {
+                _onPeek?.Invoke(itemDeal);
+            }
+        }
         
         public void Drop()
         {
             var lootTableEntry = _lootTable.Value.Evaluate(_randomRoll);
             
-            if(lootTableEntry.Key == LootTableKey.Nothing) {
+            if (lootTableEntry.Key == LootTableKey.Nothing) 
+            {
                 _onNothingDrop.Invoke();
                 return;
             }
