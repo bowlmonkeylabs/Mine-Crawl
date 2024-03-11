@@ -112,7 +112,10 @@ namespace BML.Scripts.Player.Items
             {
                 var newVisualGameObject = GameObjectUtils.SafeInstantiate(true, _item.ObjectPrefab, _pickupVisualParent);
                 _itemVisualController = newVisualGameObject.GetComponent<ItemVisualController>();
-                _itemVisualController.SetItem(_item);
+                if (_itemVisualController != null)
+                {
+                    _itemVisualController.SetItem(_item);
+                }
             }
 
             // TODO assign pickup sound overrides?
