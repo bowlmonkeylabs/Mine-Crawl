@@ -37,27 +37,14 @@ namespace BML.Scripts.Player.Items
         
         [SerializeField, FoldoutGroup("Throwable")] private TransformSceneReference ThrowableContainer;
 
-        private List<PlayerItem> PassiveItems 
-        {
-            get
-            {
-                var items = new List<PlayerItem>(_playerInventory.PassiveStackableItems.Items);
-                items.AddRange(_playerInventory.PassiveItems.Items);
-                items.AddRange(_playerInventory.AbilityItems.Items);
-                return items;
-            }
-        }
-        
-        private List<PlayerItem> AllItems 
-        {
-            get 
-            {
-                var items = new List<PlayerItem>(_playerInventory.PassiveStackableItems.Items);
-                items.AddRange(_playerInventory.PassiveItems.Items);
-                items.AddRange(_playerInventory.ActiveItems.Items);
-                return items;
-            }
-        }
+        private IEnumerable<PlayerItem> AllPassiveItems =>
+            _playerInventory.PassiveStackableItems.Items
+                .Concat(_playerInventory.PassiveItems.Items);
+
+        private IEnumerable<PlayerItem> AllItems =>
+            this.AllPassiveItems
+                // .Concat(_playerInventory.ConsumableItems.Items) // we are purposefully excluding consumables?
+                .Concat(_playerInventory.ActiveItems);
 
         private Vector3 _pickaxeHitPosition = Vector3.negativeInfinity;
 
@@ -86,8 +73,6 @@ namespace BML.Scripts.Player.Items
             _playerInventory.PassiveItems.OnItemRemoved += Unapply_OnAcquired;
             _playerInventory.ConsumableItems.OnItemAdded += Apply_OnAcquired;
             _playerInventory.ConsumableItems.OnItemRemoved += Unapply_OnAcquired;
-            _playerInventory.AbilityItems.OnItemAdded += Apply_OnAcquired;
-            _playerInventory.AbilityItems.OnItemRemoved += Unapply_OnAcquired;
 
             _inDash.Subscribe(OnInDashChange);
             
@@ -121,8 +106,6 @@ namespace BML.Scripts.Player.Items
             _playerInventory.PassiveItems.OnItemRemoved -= Unapply_OnAcquired;
             _playerInventory.ConsumableItems.OnItemAdded -= Apply_OnAcquired;
             _playerInventory.ConsumableItems.OnItemRemoved -= Unapply_OnAcquired;
-            _playerInventory.AbilityItems.OnItemAdded -= Apply_OnAcquired;
-            _playerInventory.AbilityItems.OnItemRemoved -= Unapply_OnAcquired;
 
             _inDash.Unsubscribe(OnInDashChange);
 
@@ -381,51 +364,51 @@ namespace BML.Scripts.Player.Items
         #region Passive and Passive stackable item effects
         
         private void Apply_Passives_OnAcquired() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnAcquired, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnAcquired, true);
         }
 
         private void Unapply_Passives_OnAcquired() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnAcquired, false);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnAcquired, false);
         }
 
         private void Apply_Passives_OnDash() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnDash, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnDash, true);
         }
         
         private void Apply_Passives_OnPickaxeSwing() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSwing, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeSwing, true);
         }
         
         private void Apply_Passives_OnPickaxeSwingHit(object previousValue, object hitPosition) {
             _pickaxeHitPosition = (Vector3) hitPosition;
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSwingHit, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeSwingHit, true);
             _pickaxeHitPosition = Vector3.negativeInfinity;
         }
         
         private void Apply_Passives_OnPickaxeSwingCrit(object previousValue, object hitPosition) {
             _pickaxeHitPosition = (Vector3) hitPosition;
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSwingCrit, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeSwingCrit, true);
             _pickaxeHitPosition = Vector3.negativeInfinity;
         }
         
         private void Apply_Passives_OnPickaxeSweep() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSweep, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeSweep, true);
         }
         
         private void Apply_Passives_OnPickaxeSweepHit() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSweepHit, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeSweepHit, true);
         }
         
         private void Apply_Passives_OnPickaxeKillEnemy() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeKillEnemy, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeKillEnemy, true);
         }
 
         private void Apply_Passives_OnPickaxeMineHit() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeMineHit, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeMineHit, true);
         }
 
         private void Apply_Passives_OnPickaxeMineBreak() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeMineBreak, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeMineBreak, true);
         }
 
         #endregion

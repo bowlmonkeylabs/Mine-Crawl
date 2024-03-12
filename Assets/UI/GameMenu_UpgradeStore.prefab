@@ -455,7 +455,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7853073468304527286}
   - component: {fileID: 4348729967358701529}
-  - component: {fileID: 666544527421027227}
+  - component: {fileID: 1190134599995909673}
   m_Layer: 0
   m_Name: ItemStoreController
   m_TagString: Untagged
@@ -495,7 +495,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enableLogs: 0
-  _storeInventory: {fileID: 666544527421027227}
+  _storeInventory: {fileID: 1190134599995909673}
   _onOpenStoreInventory: {fileID: 0}
   _tryPurchaseEvent: {fileID: 11400000, guid: 55866cc2117789d43af4b6db2f26f0ef, type: 2}
   _isStoreMenuOpen: {fileID: 11400000, guid: b097147d192343940aca02f32a439f21, type: 2}
@@ -505,7 +505,7 @@ MonoBehaviour:
   _navHorizontal: 1
   _buttonNavLeft: {fileID: 0}
   _buttonNavRight: {fileID: 0}
---- !u!114 &666544527421027227
+--- !u!114 &1190134599995909673
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -514,20 +514,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 2291863498587819169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f15880d4a187f204584eca1233eac3d4, type: 3}
+  m_Script: {fileID: 11500000, guid: 72d418fec4794155bb708f8cdfa9913b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _storeId: 1
   _numAvailableItems: 3
   _buyBehavior: 3
   _onAfterGenerateLevelObjects: {fileID: 11400000, guid: 6b14c457b3e8a0446918006e4929ed06, type: 2}
+  _playerLevel:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    RoundingBehavior: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 11400000, guid: c21e96147429a874bb7324a3390516c1, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+  _playerUnspentLevelCount:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    RoundingBehavior: 0
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 11400000, guid: 012f4002f86df074f9fe3d0a198510ac, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
+    ReferenceValue_EvaluateCurveVariable: {fileID: 0}
   _itemTreeGraph: {fileID: 11400000, guid: 21df0c8f4e7486b4c8b29c4e86b50133, type: 2}
   _fallbackOptions:
   - {fileID: 11400000, guid: ae1dc6e6502a9a74ab89542e11545286, type: 2}
   - {fileID: 11400000, guid: e856ec875ba83824fa508f29d3fd679f, type: 2}
-  _callToActionUpgradeText: 'Choose an upgrade:'
-  _playerAbilityItems: {fileID: 11400000, guid: c3c22ef7ba4d41e40a3ff1eb0d73f689, type: 2}
-  _callToActionAbilityText: 'Choose an ability:'
 --- !u!1 &4064137793203584478
 GameObject:
   m_ObjectHideFlags: 0

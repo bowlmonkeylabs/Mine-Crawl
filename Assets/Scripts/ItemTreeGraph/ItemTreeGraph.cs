@@ -5,6 +5,7 @@ using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Managers;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.ItemTreeGraph;
+using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 using XNode;
@@ -15,7 +16,7 @@ namespace BML.Scripts.Player.Items
     [Serializable]
     public class ItemGraphConnection
     {
-
+        public PlayerItem Item;
     }
 
     [CreateAssetMenu(fileName = "ItemTreeGraph", menuName = "BML/Graphs/ItemTreeGraph", order = 0)]
@@ -81,17 +82,34 @@ namespace BML.Scripts.Player.Items
             }
         }
 
-        public List<PlayerItem> GetUnobtainedItemPool(bool updateStatusInGraphWhileTraversing = true) 
+        public List<PlayerItem> GetUnobtainedItemPool(int playerLevel, bool updateStatusInGraphWhileTraversing = true) 
         {
             var unobtainedItemPool = new List<PlayerItem>();
 
-            var startNodes = this.nodes.OfType<ItemTreeGraphStartNode>();
-            startNodes = startNodes.Where(node => !node.RequireAbilityItem || _playerInventory.AbilityItems.Contains(node.RequiredAbilityItem));
-            // var slottedStartNodes = startNodes.Where(node => (node as ItemTreeGraphStartNode).Slotted);
-            var slottedStartNodes = _playerInventory.PassiveStackableItemTrees.Items;
-            
-            if(slottedStartNodes.Count >= _maxSlottedTrees.Value) {
-                startNodes = slottedStartNodes;
+            List<ItemTreeGraphStartNode> startNodes;
+
+            var choiceNodes = nodes.OfType<ItemTreeGraphChoiceNode>();
+            var choiceForThisLevel = choiceNodes
+                .Where(choice => choice.Evaluated == false)
+                .FirstOrDefault(choice => choice.LevelRequirement <= playerLevel);
+            if (choiceForThisLevel != null)
+            {
+                startNodes = choiceForThisLevel.GetOutputPort("Choices").GetConnections().Select(nodePort => (nodePort.node as ItemTreeGraphStartNode)).ToList();
+            }
+            else
+            {
+                startNodes = this.nodes.OfType<ItemTreeGraphStartNode>()
+                    .Where(node =>
+                    {
+                        var choicesPort = node.GetInputPort("Choices");
+                        return !choicesPort.IsConnected || choicesPort.GetConnections().Any(connection => (connection.node as ItemTreeGraphChoiceNode).LevelRequirement <= playerLevel);
+                    })
+                    .ToList();
+                var slottedStartNodes = _playerInventory.PassiveStackableItemTrees.Items;
+                if (slottedStartNodes.Count >= _maxSlottedTrees.Value) 
+                {
+                    startNodes = slottedStartNodes;
+                }
             }
 
             foreach (var startNode in startNodes)
@@ -210,6 +228,16 @@ namespace BML.Scripts.Player.Items
             return nodes.Where(node => node is ItemTreeGraphStartNode && (node as ItemTreeGraphStartNode).Slotted)
                 .Select(node => node as ItemTreeGraphStartNode)
                 .ToList();
+        }
+        
+        [Button]
+        public void UpdateAllTreeStartNodes() 
+        {
+            var startNodes = nodes.OfType<ItemTreeGraphStartNode>();
+            foreach (var itemTreeGraphStartNode in startNodes)
+            {
+                itemTreeGraphStartNode.PropagateUpdateToConnected();
+            }
         }
         
         public event IResettableScriptableObject.OnResetScriptableObject OnReset;

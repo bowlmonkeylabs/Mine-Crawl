@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isPlayerGodMode: {fileID: 11400000, guid: c3845ac29ad76214893f2b304a42dcef, type: 2}
   Resources:
-    _itemReplacementCooldown: 0
     _slotsLimit:
       ReferenceTypeSelector: 0
       ConstantValue: 0
@@ -24,15 +23,19 @@ MonoBehaviour:
       ReferenceValue_BoolVariable: {fileID: 0}
       ReferenceValue_FunctionVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _itemReplacementCooldown: 0
     _slots:
     - Item: {fileID: 11400000, guid: 1c477d863c44c914290e8c75672bff55, type: 2}
       Lock: 1
+      Filter: 0
     - Item: {fileID: 11400000, guid: 4b1dac39812948140ba362034f3a17f7, type: 2}
       Lock: 1
+      Filter: 0
     - Item: {fileID: 11400000, guid: 38f386e05e25e3d4cb2b2f211cd6f035, type: 2}
       Lock: 1
+      Filter: 0
+    _preserveOrder: 1
   PassiveStackableItemTrees:
-    _itemReplacementCooldown: 0
     _slotsLimit:
       ReferenceTypeSelector: 1
       ConstantValue: 0
@@ -42,15 +45,25 @@ MonoBehaviour:
       ReferenceValue_BoolVariable: {fileID: 0}
       ReferenceValue_FunctionVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _itemReplacementCooldown: 0
     _slots:
     - Item: {fileID: 0}
       Lock: 0
+      Filter: 0
     - Item: {fileID: 0}
       Lock: 0
+      Filter: 0
     - Item: {fileID: 0}
       Lock: 0
+      Filter: 32
+    - Item: {fileID: 0}
+      Lock: 0
+      Filter: 64
+    - Item: {fileID: 0}
+      Lock: 0
+      Filter: 0
+    _preserveOrder: 0
   PassiveStackableItems:
-    _itemReplacementCooldown: 0
     _slotsLimit:
       ReferenceTypeSelector: 0
       ConstantValue: 0
@@ -60,11 +73,10 @@ MonoBehaviour:
       ReferenceValue_BoolVariable: {fileID: 0}
       ReferenceValue_FunctionVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-    _slots:
-    - Item: {fileID: 11400000, guid: fb38736a10e08694da3dc3e9eb08be59, type: 2}
-      Lock: 0
+    _itemReplacementCooldown: 0
+    _slots: []
+    _preserveOrder: 0
   PassiveItems:
-    _itemReplacementCooldown: 2.5
     _slotsLimit:
       ReferenceTypeSelector: 0
       ConstantValue: 1
@@ -74,11 +86,13 @@ MonoBehaviour:
       ReferenceValue_BoolVariable: {fileID: 0}
       ReferenceValue_FunctionVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _itemReplacementCooldown: 2.5
     _slots:
     - Item: {fileID: 0}
       Lock: 0
+      Filter: 0
+    _preserveOrder: 1
   ActiveItems:
-    _itemReplacementCooldown: 2.5
     _slotsLimit:
       ReferenceTypeSelector: 0
       ConstantValue: 4
@@ -88,17 +102,22 @@ MonoBehaviour:
       ReferenceValue_BoolVariable: {fileID: 0}
       ReferenceValue_FunctionVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _itemReplacementCooldown: 2.5
     _slots:
     - Item: {fileID: 11400000, guid: d1fde606700981d4d87b25a158cb6e26, type: 2}
       Lock: 1
+      Filter: 1
     - Item: {fileID: 11400000, guid: 65f82ce5c7edd3c43bafcc9904f4c6bb, type: 2}
       Lock: 1
+      Filter: 2
     - Item: {fileID: 11400000, guid: 5bf360c9532f6b14f9b89b3bdc506f88, type: 2}
       Lock: 1
+      Filter: 4
     - Item: {fileID: 0}
       Lock: 0
+      Filter: 0
+    _preserveOrder: 1
   ConsumableItems:
-    _itemReplacementCooldown: 2.5
     _slotsLimit:
       ReferenceTypeSelector: 0
       ConstantValue: 1
@@ -108,24 +127,9 @@ MonoBehaviour:
       ReferenceValue_BoolVariable: {fileID: 0}
       ReferenceValue_FunctionVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-    _slots:
-    - Item: {fileID: 0}
-      Lock: 0
-  AbilityItems:
     _itemReplacementCooldown: 2.5
-    _slotsLimit:
-      ReferenceTypeSelector: 0
-      ConstantValue: 3
-      RoundingBehavior: 0
-      ReferenceValue_FloatVariable: {fileID: 0}
-      ReferenceValue_IntVariable: {fileID: 0}
-      ReferenceValue_BoolVariable: {fileID: 0}
-      ReferenceValue_FunctionVariable: {fileID: 0}
-      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
     _slots:
-    - Item: {fileID: 11400000, guid: de8021d34a3e7ed469db07cae0e3ba7b, type: 2}
-      Lock: 0
     - Item: {fileID: 0}
       Lock: 0
-    - Item: {fileID: 0}
-      Lock: 0
+      Filter: 0
+    _preserveOrder: 1

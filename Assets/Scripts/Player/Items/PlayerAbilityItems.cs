@@ -24,7 +24,7 @@ namespace BML.Scripts.Player.Items
 
         public List<PlayerAbilityType> UnobtainedAbilityTypes() {
             return _playerAbilities.Keys.Where(playerAbilityType => {
-                return !_playerAbilities[playerAbilityType].Any(abilityItem => _playerInventory.AbilityItems.Items.Contains(abilityItem));
+                return !_playerAbilities[playerAbilityType].Any(abilityItem => _playerInventory.PassiveStackableItems.Items.Contains(abilityItem));
             }).ToList();
         }
 
@@ -33,7 +33,7 @@ namespace BML.Scripts.Player.Items
         }
 
         public bool AbilityUpgradeAvailable() {
-            var playerAbilityCount = _playerInventory.AbilityItems.Where(item => item != null).Count();
+            var playerAbilityCount = _playerInventory.PassiveStackableItems.Where(item => item != null).Count();
             if(playerAbilityCount > _levelsForAbilityUpgrade.Count - 1) {
                 return false;
             }
