@@ -199,12 +199,6 @@ namespace BML.Scripts.Player.Items.Store
         }
         
         #endregion
-
-        #region Get Inventory Descriptors
-
-        public abstract string GetCallToActionText();
-
-        #endregion
         
     }
 }

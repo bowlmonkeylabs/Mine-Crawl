@@ -126,19 +126,14 @@ namespace BML.Scripts.UI.Items
             }
         }
 
-        private void UpdateStoreFromInventory() {
-            this._storeCallToActionText.text = _storeInventory.GetCallToActionText();
-            this.UpdateButtonsFromInventory();
-        }
-
-        private void UpdateButtonsFromInventory()
+        private void UpdateStoreFromInventory()
         {
             bool isStoreInventoryDefined = (_storeInventory != null && _storeInventory.AvailableItems != null);
             if (isStoreInventoryDefined && _storeInventory.AvailableItems.Count > _storeItemButtons.Count)
             {
                 throw new Exception("Not enough buttons to display all the available items.");
             }
-            
+
             for (int i = 0; i < _storeItemButtons.Count; i++)
             {
                 var buttonController = _storeItemButtons[i];
@@ -156,7 +151,7 @@ namespace BML.Scripts.UI.Items
                     }
                 }
             }
-
+            
             SetNavigationOrder();
         }
         

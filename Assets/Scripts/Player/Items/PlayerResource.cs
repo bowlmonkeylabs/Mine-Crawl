@@ -11,7 +11,7 @@ namespace BML.Scripts.Player.Items
 
     [InlineEditor()]
     [CreateAssetMenu(fileName = "PlayerResource", menuName = "BML/Player/PlayerResource", order = 0)]
-    public class PlayerResource : ScriptableObject
+    public class PlayerResource : ScriptableObject, IHasSlotType<SlotTypeFilter>
     {
         #region Inspector
         
@@ -23,6 +23,8 @@ namespace BML.Scripts.Player.Items
         [FormerlySerializedAs("_playerCount")] [SerializeField, FoldoutGroup("Player")] IntVariable _playerAmount;
         [SerializeField, FoldoutGroup("Player")] private SafeIntValueReference _playerAmountLimit;
 
+        [HideInInspector] public SlotTypeFilter SlotTypeFilter => SlotTypeFilter.None;
+        
         #endregion
 
         #region Public interface

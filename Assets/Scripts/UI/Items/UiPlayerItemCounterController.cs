@@ -63,6 +63,15 @@ namespace BML.Scripts.UI.Items
                 return null;
             }
         }
+
+        private PlayerItem GetSlotHelper(ItemSlotType<PlayerItem, SlotTypeFilter> itemSlotType)
+        {
+            if (itemSlotType == null || _inventoryItemSlotIndex >= itemSlotType.ItemCount)
+            {
+                return null;
+            }
+            return itemSlotType[_inventoryItemSlotIndex];
+        }
         
         [ShowInInspector, ShowIf("@_itemSource == ItemSource.PlayerInventory"), ReadOnly] public PlayerItem Item
         {
@@ -77,37 +86,15 @@ namespace BML.Scripts.UI.Items
                     case ItemSource.PlayerInventory:
                         switch (_inventoryItemType)
                         {
-                            case ItemType.Active:
-                                if (_playerInventory == null || _inventoryItemSlotIndex >=
-                                    _playerInventory.ActiveItems.ItemCount)
-                                {
-                                    return null;
-                                }
-                                return _playerInventory.ActiveItems[_inventoryItemSlotIndex];
-                            case ItemType.Consumable:
-                                if (_playerInventory == null || _inventoryItemSlotIndex >=
-                                    _playerInventory.ConsumableItems.ItemCount)
-                                {
-                                    return null;
-                                }
-                                return _playerInventory.ConsumableItems[_inventoryItemSlotIndex];
-                            case ItemType.Passive:
-                                if (_playerInventory == null || _inventoryItemSlotIndex >=
-                                    _playerInventory.PassiveItems.ItemCount)
-                                {
-                                    return null;
-                                }
-                                return _playerInventory.PassiveItems[_inventoryItemSlotIndex];
-                            case ItemType.Ability:
-                                if (_playerInventory == null || _inventoryItemSlotIndex >=
-                                    _playerInventory.AbilityItems.ItemCount)
-                                {
-                                    return null;
-                                }
-                                return _playerInventory.AbilityItems[_inventoryItemSlotIndex];
                             case ItemType.PassiveStackable:
                                 // TODO we probably want to have the representative information defined on the tree start node, but for now it's easier to just display the first item in the tree
                                 return InventoryPassiveStackableTreeStartNode?.FirstItemInTree;
+                            case ItemType.Passive:
+                                return GetSlotHelper(_playerInventory.PassiveItems);
+                            case ItemType.Active:
+                                return GetSlotHelper(_playerInventory.ActiveItems);
+                            case ItemType.Consumable:
+                                return GetSlotHelper(_playerInventory.ConsumableItems);
                             default:
                                 return null;
                                 break;
@@ -169,6 +156,19 @@ namespace BML.Scripts.UI.Items
             {
                 switch (_inventoryItemType)
                 {
+                    case ItemType.PassiveStackable:
+                        _playerInventory.PassiveStackableItems.OnItemAdded += OnPassiveStackableItemAdded;
+                        _playerInventory.PassiveStackableItems.OnItemRemoved += OnPassiveStackableItemRemoved;
+                        _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector += OnPassiveStackableItemChangedInInspector;
+
+                        _playerInventory.PassiveStackableItemTrees.OnItemAdded += OnPassiveStackableItemTreeAdded;
+                        _playerInventory.PassiveStackableItemTrees.OnItemRemoved += OnPassiveStackableItemTreeRemoved;
+                        _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector += OnPassiveStackableItemTreeChangedInInspector;
+                        break;
+                    case ItemType.Passive:
+                        _playerInventory.PassiveItems.OnItemAdded += OnPassiveItemChanged;
+                        _playerInventory.PassiveItems.OnItemRemoved += OnPassiveItemChanged;
+                        break;
                     case ItemType.Active:
                         _playerInventory.ActiveItems.OnItemAdded += OnActiveItemChanged;
                         _playerInventory.ActiveItems.OnItemRemoved += OnActiveItemChanged;
@@ -178,24 +178,6 @@ namespace BML.Scripts.UI.Items
                         _playerInventory.ConsumableItems.OnItemAdded += OnConsumableItemChanged;
                         _playerInventory.ConsumableItems.OnItemRemoved += OnConsumableItemChanged;
                         _playerInventory.ConsumableItems.OnAnyItemChangedInInspector += OnConsumableItemListChangedInInspector;
-                        break;
-                    case ItemType.Passive:
-                        _playerInventory.PassiveItems.OnItemAdded += OnPassiveItemChanged;
-                        _playerInventory.PassiveItems.OnItemRemoved += OnPassiveItemChanged;
-                        break;
-                    case ItemType.Ability:
-                        _playerInventory.AbilityItems.OnItemAdded += OnAbilityItemAdded;
-                        _playerInventory.AbilityItems.OnItemRemoved += OnAbilityItemRemoved;
-                        _playerInventory.AbilityItems.OnAnyItemChangedInInspector += OnAbilityItemListChangedInInspector;
-                        break;
-                    case ItemType.PassiveStackable:
-                        _playerInventory.PassiveStackableItems.OnItemAdded += OnPassiveStackableItemAdded;
-                        _playerInventory.PassiveStackableItems.OnItemRemoved += OnPassiveStackableItemRemoved;
-                        _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector += OnPassiveStackableItemChangedInInspector;
-
-                        _playerInventory.PassiveStackableItemTrees.OnItemAdded += OnPassiveStackableItemTreeAdded;
-                        _playerInventory.PassiveStackableItemTrees.OnItemRemoved += OnPassiveStackableItemTreeRemoved;
-                        _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector += OnPassiveStackableItemTreeChangedInInspector;
                         break;
                 }
                 
@@ -214,6 +196,19 @@ namespace BML.Scripts.UI.Items
             {
                 switch (_inventoryItemType)
                 {
+                    case ItemType.PassiveStackable:
+                        _playerInventory.PassiveStackableItems.OnItemAdded -= OnPassiveStackableItemAdded;
+                        _playerInventory.PassiveStackableItems.OnItemRemoved -= OnPassiveStackableItemRemoved;
+                        _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector -= OnPassiveStackableItemChangedInInspector;
+            
+                        _playerInventory.PassiveStackableItemTrees.OnItemAdded -= OnPassiveStackableItemTreeAdded;
+                        _playerInventory.PassiveStackableItemTrees.OnItemRemoved -= OnPassiveStackableItemTreeRemoved;
+                        _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector -= OnPassiveStackableItemTreeChangedInInspector;
+                        break;
+                    case ItemType.Passive:
+                        _playerInventory.PassiveItems.OnItemAdded -= OnPassiveItemChanged;
+                        _playerInventory.PassiveItems.OnItemRemoved -= OnPassiveItemChanged;
+                        break;
                     case ItemType.Active:
                         _playerInventory.ActiveItems.OnItemAdded -= OnActiveItemChanged;
                         _playerInventory.ActiveItems.OnItemRemoved -= OnActiveItemChanged;
@@ -223,24 +218,6 @@ namespace BML.Scripts.UI.Items
                         _playerInventory.ConsumableItems.OnItemAdded -= OnConsumableItemChanged;
                         _playerInventory.ConsumableItems.OnItemRemoved -= OnConsumableItemChanged;
                         _playerInventory.ConsumableItems.OnAnyItemChangedInInspector -= OnConsumableItemListChangedInInspector;
-                        break;
-                    case ItemType.Passive:
-                        _playerInventory.PassiveItems.OnItemAdded -= OnPassiveItemChanged;
-                        _playerInventory.PassiveItems.OnItemRemoved -= OnPassiveItemChanged;
-                        break;
-                    case ItemType.Ability:
-                        _playerInventory.AbilityItems.OnItemAdded -= OnAbilityItemAdded;
-                        _playerInventory.AbilityItems.OnItemRemoved -= OnAbilityItemRemoved;
-                        _playerInventory.AbilityItems.OnAnyItemChangedInInspector -= OnAbilityItemListChangedInInspector;
-                        break;
-                    case ItemType.PassiveStackable:
-                        _playerInventory.PassiveStackableItems.OnItemAdded -= OnPassiveStackableItemAdded;
-                        _playerInventory.PassiveStackableItems.OnItemRemoved -= OnPassiveStackableItemRemoved;
-                        _playerInventory.PassiveStackableItems.OnAnyItemChangedInInspector -= OnPassiveStackableItemChangedInInspector;
-            
-                        _playerInventory.PassiveStackableItemTrees.OnItemAdded -= OnPassiveStackableItemTreeAdded;
-                        _playerInventory.PassiveStackableItemTrees.OnItemRemoved -= OnPassiveStackableItemTreeRemoved;
-                        _playerInventory.PassiveStackableItemTrees.OnAnyItemChangedInInspector -= OnPassiveStackableItemTreeChangedInInspector;
                         break;
                 }
             
@@ -307,32 +284,6 @@ namespace BML.Scripts.UI.Items
             {
                 UpdateAssignedItem();
                 TryPlayItemChangedFeedbacks(item);
-            }
-        }
-
-        private void OnAbilityItemAdded(PlayerItem item)
-        {
-            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Ability)
-            {
-                UpdateAssignedItem();
-                TryPlayItemChangedFeedbacks(item);
-            }
-        }
-        
-        private void OnAbilityItemRemoved(PlayerItem item)
-        {
-            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Ability)
-            {
-                UpdateAssignedItem();
-                TryPlayItemChangedFeedbacks(item);
-            }
-        }
-
-        private void OnAbilityItemListChangedInInspector()
-        {
-            if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.Ability)
-            {
-                UpdateAssignedItem();
             }
         }
         
