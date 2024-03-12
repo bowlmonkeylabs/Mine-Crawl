@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace BML.Scripts
+namespace BML.Scripts.Player.Items.Loot
 {
     [ExecuteAlways]
     public class LootManager : MonoBehaviour

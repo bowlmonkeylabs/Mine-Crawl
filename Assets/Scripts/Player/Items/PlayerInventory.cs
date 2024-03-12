@@ -91,9 +91,13 @@ namespace BML.Scripts.Player.Items
                         .Where(e => e.Trigger == ItemEffectTrigger.OnAcquired && e is AddResourceItemEffect)
                         .Any(e => (e as AddResourceItemEffect).CanAddResource());
                     // OR if the item has effects with any triggers other than OnAcquired
-                    var effectsNotOnAcquired = item.ItemEffects.Where(e => e.Trigger != ItemEffectTrigger.OnAcquired);
+                    var effectsNotOnAcquired = item.ItemEffects.Where(e => e.Trigger != ItemEffectTrigger.OnAcquired).ToList();
                     if (canGrantAnyResourcesOnAcquired || effectsNotOnAcquired.Any())
                     {
+                        if (canGrantAnyResourcesOnAcquired && !effectsNotOnAcquired.Any())
+                        {
+                            ignoreReplacementCooldown = true;
+                        }
                         return ConsumableItems.CheckIfCanAddItem(item, ignoreReplacementCooldown).canAdd;
                     }
                     return false;
