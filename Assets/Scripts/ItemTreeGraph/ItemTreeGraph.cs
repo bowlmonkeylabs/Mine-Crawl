@@ -98,17 +98,23 @@ namespace BML.Scripts.Player.Items
             }
             else
             {
-                startNodes = this.nodes.OfType<ItemTreeGraphStartNode>()
-                    .Where(node =>
-                    {
-                        var choicesPort = node.GetInputPort("Choices");
-                        return !choicesPort.IsConnected || choicesPort.GetConnections().Any(connection => (connection.node as ItemTreeGraphChoiceNode).LevelRequirement <= playerLevel);
-                    })
-                    .ToList();
                 var slottedStartNodes = _playerInventory.PassiveStackableItemTrees.Items;
                 if (slottedStartNodes.Count >= _maxSlottedTrees.Value) 
                 {
                     startNodes = slottedStartNodes;
+                }
+                else
+                {
+                    var evaluatedChoices = this.nodes.OfType<ItemTreeGraphChoiceNode>()
+                        .Where(node => node.Evaluated)
+                        .Select(node => node.GetValue(node.GetOutputPort("Choices")) as ItemTreeGraphStartNode)
+                        .ToList();
+
+                    var otherStartNodes = this.nodes.OfType<ItemTreeGraphStartNode>()
+                        .Where(node => !node.GetInputPort("Choices").IsConnected)
+                        .ToList();
+                
+                    startNodes = evaluatedChoices.Concat(otherStartNodes).ToList();
                 }
             }
 
@@ -203,6 +209,17 @@ namespace BML.Scripts.Player.Items
         {
             treeStartNode.Slotted = _playerInventory.PassiveStackableItemTrees.Contains(treeStartNode);
             treeStartNode.NumberOfObtainedItemsInTree = _playerInventory.PassiveStackableItems.Count(item => item.PassiveStackableTreeStartNode == treeStartNode);
+            
+            // if has choices, mark as evaluated and mark what choice was made
+            var choicesPort = treeStartNode.GetInputPort("Choices");
+            if (choicesPort.IsConnected)
+            {
+                foreach (var port in choicesPort.GetConnections())
+                {
+                    var startNode = (port.node as ItemTreeGraphChoiceNode);
+                    startNode.MarkEvaluated(treeStartNode);
+                }
+            } 
         }
 
         public ItemTreeGraphStartNode GetTreeStartNodeForItem(PlayerItem item) {
