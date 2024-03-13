@@ -22,9 +22,11 @@ namespace BML.Scripts.ItemTreeGraph
 
         public int LevelRequirement = 0;
         
-        [ShowInInspector, NonSerialized, ReadOnly]
         // this status is cached here at runtime for UI purposes, but this should not be referenced or relied upon for other purpoes; PlayerInventory is the source of truth.
+        [ShowInInspector, NonSerialized, ReadOnly]
         public bool Evaluated = false;
+        [ShowInInspector, NonSerialized, ReadOnly]
+        public int? EvaluatedChoiceIndex = null;
 
         // Use this for initialization
         protected override void Init() 
@@ -44,8 +46,28 @@ namespace BML.Scripts.ItemTreeGraph
 
         public override object GetValue(NodePort port)
         {
+            if (port.fieldName == "Choices" && Evaluated)
+            {
+                return port
+                    .GetConnections()
+                    .Skip(Mathf.Max(0, EvaluatedChoiceIndex.Value - 1))
+                    .First();
+            }
+
             return null;
-            return base.GetValue(port);
+        }
+        
+        public void MarkEvaluated(ItemTreeGraphStartNode startNode)
+        {
+            var choices = this.GetOutputPort("Choices").GetConnections().Select(port => port.node as ItemTreeGraphStartNode).ToList();
+            var choiceIndex = choices.IndexOf(startNode);
+            MarkEvaluated(choiceIndex);
+        }
+        
+        private void MarkEvaluated(int choiceIndex)
+        {
+            Evaluated = true;
+            EvaluatedChoiceIndex = choiceIndex;
         }
     }
 }
