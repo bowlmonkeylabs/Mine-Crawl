@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.Scripts.Utils;
 using Sirenix.OdinInspector;
-using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
-using UnityEditor.SceneManagement;
+// using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -39,11 +37,11 @@ namespace BML.Scripts.Mineable
 
         private void OnDrawGizmosSelected()
         {
-            if (!Application.isPlaying || EditorSceneManager.IsPreviewScene(this.gameObject.scene))
-            {
-                // Debug.Log("Not in play mode or in prefab mode. Gizmos will not be drawn.");
-                return;
-            }
+            // if (!Application.isPlaying || EditorSceneManager.IsPreviewScene(this.gameObject.scene))
+            // {
+            //     // Debug.Log("Not in play mode or in prefab mode. Gizmos will not be drawn.");
+            //     return;
+            // }
 
             // var radius = 0.1f;
             // var crackPosition0 = _mineableRenderers.First().material.GetVector(CrackPosition0);
