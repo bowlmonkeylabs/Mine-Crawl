@@ -81,8 +81,8 @@ namespace BML.Scripts.Player.Items
         #region Public interface
 
         public List<ItemSlot<TItem, TSlotType>> Slots => _slots;
-        public List<TItem> Items => _slots.Where(s => s.Item != null).Select(s => s.Item).ToList();
-        public int ItemCount => _slots.Count(s => s.Item != null);
+        public List<TItem> Items => _slots.Where(s => s != null && s.Item != null).Select(s => s.Item).ToList();
+        public int ItemCount => _slots.Count(s => s != null && s.Item != null);
         public int SlotCount => _slots.Count;
 
         public TItem this[int key]
@@ -163,25 +163,25 @@ namespace BML.Scripts.Player.Items
                 || (!itemHasFlags && itemSlot.Filter.Equals(default(TSlotType)))
             );
 
-            var slotsEnumerated = _slots
-                .Select((s, i) => (s, i))
-                .Where(t => t.s.Item == null)
-                .Select(t => (t.s, t.i, doesPassFilter: FilterPredicate(t.s)))
+            var enumeratedEmptySlots = _slots
+                .Select((slot, index) => (slot, index))
+                .Where(t => t.slot.Item == null)
+                .Select(t => (t.slot, index: (int?)t.index, doesPassFilter: FilterPredicate(t.slot)))
                 .ToList();
-            var firstEmptySlot = slotsEnumerated.FirstOrDefault(t => t.doesPassFilter);
-            if (firstEmptySlot.s != null)
+            var firstEmptySlotThatItemCanGoIn = enumeratedEmptySlots.FirstOrDefault(t => t.doesPassFilter);
+            if (firstEmptySlotThatItemCanGoIn.slot != null)
             {
                 if (!_preserveOrder)
                 {
-                    var firstEmptySlotThatDoesntPassFilter = slotsEnumerated.FirstOrDefault(t => !t.doesPassFilter);
-                    if (firstEmptySlotThatDoesntPassFilter.i < firstEmptySlot.i)
+                    var actualFirstEmptySlot = enumeratedEmptySlots.FirstOrDefault(t => !t.doesPassFilter);
+                    if (actualFirstEmptySlot.index.HasValue && actualFirstEmptySlot.index.Value < firstEmptySlotThatItemCanGoIn.index)
                     {
-                        _slots[firstEmptySlotThatDoesntPassFilter.i] = firstEmptySlot.s;
-                        _slots[firstEmptySlot.i] = firstEmptySlotThatDoesntPassFilter.s;
+                        _slots[actualFirstEmptySlot.index.Value] = firstEmptySlotThatItemCanGoIn.slot;
+                        _slots[firstEmptySlotThatItemCanGoIn.index.Value] = actualFirstEmptySlot.slot;
                     }
                 }
 
-                firstEmptySlot.s.Item = item;
+                firstEmptySlotThatItemCanGoIn.slot.Item = item;
                 if (item != null)
                 {
                     RestartItemReplacementCooldown();
