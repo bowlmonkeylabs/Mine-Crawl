@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Managers;
 using BML.Scripts.Player.Items;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace BML.Scripts.ItemTreeGraph
         
     }
     
-    public class ItemTreeGraphChoiceNode : Node
+    public class ItemTreeGraphChoiceNode : Node, IResettableScriptableObject
     {
         [Output(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphChoiceConnection Choices;
 
@@ -69,5 +70,18 @@ namespace BML.Scripts.ItemTreeGraph
             Evaluated = true;
             EvaluatedChoiceIndex = choiceIndex;
         }
+        
+        #region IResettableScriptableObject
+
+        public void ResetScriptableObject()
+        {
+            Evaluated = false;
+            EvaluatedChoiceIndex = null;
+            OnReset?.Invoke();
+        }
+
+        public event IResettableScriptableObject.OnResetScriptableObject OnReset;
+        
+        #endregion
     }
 }
