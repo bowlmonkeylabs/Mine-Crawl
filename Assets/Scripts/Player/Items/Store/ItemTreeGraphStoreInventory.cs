@@ -14,15 +14,20 @@ namespace BML.Scripts.Player.Items.Store
         
         [SerializeField] private ItemTreeGraph _itemTreeGraph;
         [SerializeField] private List<PlayerItem> _fallbackOptions;
-        
+
+        protected override bool SkipRandomizeItemPool => _skipRandomizeItemPool;
+        private bool _skipRandomizeItemPool;
+
         protected override IEnumerable<PlayerItem> GetItemPool()
         {
             var effectivePlayerLevel = _playerLevel.Value - _playerUnspentLevelCount.Value;
             var upgradesFromTree = _itemTreeGraph.GetUnobtainedItemPool(effectivePlayerLevel);
             if (upgradesFromTree.Count > 0)
             {
+                _skipRandomizeItemPool = false;
                 return upgradesFromTree;
             }
+            _skipRandomizeItemPool = true;
             return _fallbackOptions;
         }
     }

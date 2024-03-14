@@ -198,11 +198,17 @@ namespace BML.Scripts.Player.Items.Store
         #region Get Item Pool
 
         protected abstract IEnumerable<PlayerItem> GetItemPool();
+        
+        protected virtual bool SkipRandomizeItemPool => false;
 
         protected List<PlayerItem> GetItemPoolRandomized(bool updateSeed = false)
         {
             var itemPool = GetItemPool();
-            
+            if (SkipRandomizeItemPool)
+            {
+                return itemPool.ToList();
+            }
+
             if (updateSeed)
             {
                 SeedManager.Instance.UpdateSteppedSeed(SteppedSeedKey);
