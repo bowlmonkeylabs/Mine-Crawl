@@ -259,16 +259,14 @@ namespace BML.Scripts.Player.Items
         
         public event IResettableScriptableObject.OnResetScriptableObject OnReset;
 
-        public void ResetScriptableObject() {
-            nodes.ForEach(node => {
-                if(node is ItemTreeGraphNode) {
-                    (node as ItemTreeGraphNode).Obtained = false;
-                }
-                if(node is ItemTreeGraphStartNode) {
-                    (node as ItemTreeGraphStartNode).Slotted = false;
-                }
-            });
-            
+        public void ResetScriptableObject() 
+        {
+            Debug.Log("Resetting ItemTreeGraph");
+            var resettableNodes = this.nodes.OfType<IResettableScriptableObject>();
+            foreach (var node in resettableNodes)
+            {
+                node.ResetScriptableObject();
+            }
             OnReset?.Invoke();
         }
     }

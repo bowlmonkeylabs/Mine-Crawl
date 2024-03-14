@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Managers;
 using BML.Scripts.Player.Items;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using XNode;
 
 namespace BML.Scripts.ItemTreeGraph { 
-    public class ItemTreeGraphStartNode : Node, IHasSlotType<SlotTypeFilter>
+    public class ItemTreeGraphStartNode : Node, IResettableScriptableObject, IHasSlotType<SlotTypeFilter>
     {
         [Input(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphChoiceConnection Choices;
         [Output(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection Start;
@@ -69,5 +70,16 @@ namespace BML.Scripts.ItemTreeGraph {
                     return null;
             }
         }
+
+        #region IResettableScriptableObject
+
+        public void ResetScriptableObject()
+        {
+            Slotted = false;
+        }
+
+        public event IResettableScriptableObject.OnResetScriptableObject OnReset;
+        
+        #endregion
     }
 }
