@@ -72,7 +72,7 @@ namespace BML.Scripts.Player.Items
         [HideInInspector]
         public PlayerItem ParentItem;
         private bool _parentItemNotAssigned => ParentItem == null;
-        private string SteppedSeedKey => $"{ParentItem.Name}_{Trigger}_{ParentItem.ItemEffects.IndexOf(this)}";
+        protected string SteppedSeedKey => $"{ParentItem.Name}_{Trigger}_{ParentItem.ItemEffects.IndexOf(this)}";
 
         public bool ApplyEffect(bool isGodMode)
         {

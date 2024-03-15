@@ -155,7 +155,7 @@ namespace BML.Scripts.Player.Items
             return (false, default(TItem));
         }
 
-        public bool TryAddItem(TItem item, bool ignoreReplacementCooldown = false)
+        public bool TryAddItem(TItem item, bool ignoreReplacementCooldown = false, bool dropOverflow = false)
         {
             var itemHasFlags = !item.SlotTypeFilter.Equals(default(TSlotType));
             Func<ItemSlot<TItem, TSlotType>, bool> FilterPredicate = (itemSlot) => (
@@ -188,6 +188,12 @@ namespace BML.Scripts.Player.Items
                     OnItemAdded?.Invoke(item);
                     OnReplacementCooldownTimerStartedOrFinished?.Invoke();
                 }
+                return true;
+            }
+
+            if (dropOverflow)
+            {
+                OnItemOverflowed?.Invoke(item);
                 return true;
             }
 
@@ -273,11 +279,13 @@ namespace BML.Scripts.Player.Items
 
         public delegate void OnSlotItemChanged<T>(T item);
         public delegate void OnSlotItemChanged();
+        public delegate void OnSlotItemOverflowed<T>(T item);
         public delegate void OnSlotItemReplaced<T>(T oldItem, T newItem);
         
         public event OnSlotItemChanged<TItem> OnItemAdded;
         public event OnSlotItemChanged<TItem> OnItemRemoved;
         public event OnSlotItemReplaced<TItem> OnItemReplaced;
+        public event OnSlotItemOverflowed<TItem> OnItemOverflowed;
         public event OnSlotItemChanged OnAnyItemChangedInInspector;     // When changes happen through the inspector, we don't know which specific item changed
         public event OnSlotItemChanged OnReplacementCooldownTimerStartedOrFinished;
 

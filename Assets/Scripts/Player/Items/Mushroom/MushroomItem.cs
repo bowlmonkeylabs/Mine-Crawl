@@ -23,6 +23,12 @@ namespace BML.Scripts.Player.Items.Mushroom
         [NonSerialized, ShowInInspector] private bool _isKnown;
 
         public override string Name => _isKnown ? _name : "???";
+
+        public bool IsKnown
+        {
+            get => _isKnown;
+            set => _isKnown = value;
+        }
         
         public override void OnAfterApplyEffect()
         {
