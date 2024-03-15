@@ -485,6 +485,10 @@ namespace BML.Scripts.Player.Items
                 {
                     asTeleportItemEffect.PrimeEffect(_playerController);
                 }
+                else if (itemEffect is AddToPlayerInventoryItemEffect asAddToPlayerInventoryItemEffect)
+                {
+                    asAddToPlayerInventoryItemEffect.PrimeEffect(_playerInventory);
+                }
                 
                 itemEffect.ApplyEffect(_inGodMode.Value);
             } 

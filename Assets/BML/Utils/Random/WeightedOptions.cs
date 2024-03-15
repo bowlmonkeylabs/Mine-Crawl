@@ -19,7 +19,7 @@ namespace BML.Utils.Random
         // [HorizontalGroup("Split", 0.2f, LabelWidth = 1)] [HideLabel]
         [FormerlySerializedAs("weight")]
         [MinValue(0), DisableIf("Lock")]
-        [TableColumnWidth(45, false)]
+        [TableColumnWidth(80, false)]
         public float Weight;
 
         [TableColumnWidth(30, false)]

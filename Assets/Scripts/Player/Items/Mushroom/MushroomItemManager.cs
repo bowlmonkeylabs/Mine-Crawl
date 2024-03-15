@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.CaveV2;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -15,6 +16,18 @@ namespace BML.Scripts.Player.Items.Mushroom
         private bool _notEnoughVisualsForItems => _mushroomItemVisuals.Count < _mushroomItems.Count;
         [InfoBox("Not enough unique visuals for all of the provided items1.", InfoMessageType.Error, "_notEnoughVisualsForItems")]
         [SerializeField] private List<MushroomItemVisual> _mushroomItemVisuals;
+        
+        [SerializeField] private SafeBoolValueReference _hasMushroomExpertUpgrade;
+
+        private void OnEnable()
+        {
+            _hasMushroomExpertUpgrade.Subscribe(OnMushroomExpertUpgradeChanged);
+        }
+
+        private void OnDisable()
+        {
+            _hasMushroomExpertUpgrade.Unsubscribe(OnMushroomExpertUpgradeChanged);
+        }
 
         private void Start()
         {
@@ -33,6 +46,17 @@ namespace BML.Scripts.Player.Items.Mushroom
                 
                 // Assign random visual
                 _mushroomItems[i].MushroomItemVisual = randomlyOrderedVisuals[i];
+            }
+        }
+        
+        private void OnMushroomExpertUpgradeChanged()
+        {
+            if (_hasMushroomExpertUpgrade.Value)
+            {
+                foreach (var mushroomItem in _mushroomItems)
+                {
+                    mushroomItem.IsKnown = true;
+                }
             }
         }
         

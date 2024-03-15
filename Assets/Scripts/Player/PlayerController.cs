@@ -138,7 +138,8 @@ namespace BML.Scripts.Player
             _playerExperience.Subscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
             _onReceivePickup.Subscribe(ReceivePickupDynamic);
             _playerInventory.OnAnyPlayerItemReplaced += DropItemFromInventory;
-            
+            _playerInventory.OnAnyPlayerItemOverflowed += DropItemFromInventory;
+
             SetGodMode();
             primaryAction = playerInput.actions.FindAction("Primary");
             secondaryAction = playerInput.actions.FindAction("Secondary");
@@ -156,6 +157,7 @@ namespace BML.Scripts.Player
             _playerExperience.Unsubscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
             _onReceivePickup.Unsubscribe(ReceivePickupDynamic);
             _playerInventory.OnAnyPlayerItemReplaced -= DropItemFromInventory;
+            _playerInventory.OnAnyPlayerItemOverflowed -= DropItemFromInventory;
         }
 
         private void Update()
@@ -498,7 +500,12 @@ namespace BML.Scripts.Player
 
         private void DropItemFromInventory(PlayerItem prevItem, PlayerItem newItem)
         {
-            _inventoryItemDropper.SpawnItemPickup(prevItem);
+            DropItemFromInventory(prevItem);
+        }
+        
+        private void DropItemFromInventory(PlayerItem item)
+        {
+            _inventoryItemDropper.SpawnItemPickup(item);
         }
         
         #endregion
