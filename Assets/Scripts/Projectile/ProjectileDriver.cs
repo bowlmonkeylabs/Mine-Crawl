@@ -195,6 +195,12 @@ namespace BML.Scripts
 
         #region Public interface
 
+        public void Deflect()
+        {
+            var fakeHitInfo = new HitInfo(DamageType.None, 0, -rb.transform.forward);
+            Deflect(fakeHitInfo);
+        }
+
         public void Deflect(HitInfo hitInfo)
         {
             gameObject.layer = LayerMask.NameToLayer(deflectLayer);
