@@ -192,7 +192,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
                 {
                     var caveGenComponent = _caveGenerator.CachedComponent as CaveGenComponentV2;
                     var discoveredNodes = caveGenComponent.CaveGraph.AllNodes
-                        .Where(caveNode => caveNode.PlayerVisited)
+                        .Where(caveNode => caveNode.PlayerMapped)
                         .ToList();
                     var averagePosition = discoveredNodes
                         .Select(caveNode => caveNode.GameObject.transform.position)
