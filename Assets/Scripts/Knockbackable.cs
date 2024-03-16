@@ -25,7 +25,7 @@ namespace BML.Scripts
 
         public void SetKnockback(HitInfo hitInfo, float knockbackTime = default) {
             if (hitInfo.HitDirection.HasValue) {
-                SetKnockback(hitInfo.HitDirection.Value);
+                SetKnockback(hitInfo.HitDirection.Value, knockbackTime);
             }
         }
 
