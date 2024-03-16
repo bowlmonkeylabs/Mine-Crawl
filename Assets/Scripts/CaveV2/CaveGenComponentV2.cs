@@ -110,9 +110,11 @@ namespace BML.Scripts.CaveV2
 // #endif
         [SerializeField, ShowIf("$_generateDebugObjects")] private Transform _debugObjectsContainer;
         
+        [TitleGroup("Minimap")]
         [SerializeField] private bool _generateMinimap = true;
         [SerializeField, ShowIf("$_generateMinimap")] private SafeTransformValueReference _minimapObjectsContainer;
         [FormerlySerializedAs("_minimapParameters")] [SerializeField, ShowIf("$_generateMinimap")] public CaveMinimapParameters MinimapParameters;
+        [SerializeField] private GameEvent _onRequestRevealWholeMap;
 
         public enum GizmoColorScheme
         {
@@ -1132,6 +1134,23 @@ namespace BML.Scripts.CaveV2
 #endif
             }
         }
+
+        public void SetAllMapped(bool alsoSetVisited)
+        {
+            foreach (var node in _caveGraph.AllNodes)
+            {
+                node.PlayerMapped = true;
+                if (alsoSetVisited)
+                {
+                    node.PlayerVisited = true;
+                }
+            }
+        }
+        
+        public void SetAllMapped()
+        {
+            SetAllMapped(false);
+        }
         
         #endregion
 
@@ -1155,6 +1174,7 @@ namespace BML.Scripts.CaveV2
             _caveGenParams.OnValidateEvent += OnValidate;
             _onTorchPlaced.Subscribe(OnTorchPlaced);
             _onEnemyKilled.Subscribe(OnEnemyKilled);
+            _onRequestRevealWholeMap.Subscribe(SetAllMapped);
             _coroutinePlayerInfluence = StartCoroutine(UpdatePlayerInfluenceCoroutine());
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += PlayModeStateChanged;
@@ -1166,6 +1186,7 @@ namespace BML.Scripts.CaveV2
             _caveGenParams.OnValidateEvent -= OnValidate;
             _onTorchPlaced.Unsubscribe(OnTorchPlaced);
             _onEnemyKilled.Unsubscribe(OnEnemyKilled);
+            _onRequestRevealWholeMap.Unsubscribe(SetAllMapped);
             if (_coroutinePlayerInfluence != null) StopCoroutine(_coroutinePlayerInfluence);
             _coroutinePlayerInfluence = null;
 #if UNITY_EDITOR
