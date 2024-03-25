@@ -32,6 +32,20 @@ namespace BML.Scripts.Player.Items
             Lock = false;
             Filter = default;
         }
+
+        public bool ResetToDefault(ItemSlot<TItem, TSlotType> defaultValue)
+        {
+            if (defaultValue == null)
+            {
+                return false;
+            }
+            
+            Item = defaultValue.Item;
+            Lock = defaultValue.Lock;
+            Filter = defaultValue.Filter;
+            
+            return true;
+        }
     }
     
     [Serializable]
@@ -276,6 +290,30 @@ namespace BML.Scripts.Player.Items
             }
             return true;
         }
+
+        public bool ResetToDefault(ItemSlotType<TItem, TSlotType> defaultValues)
+        {
+            if (defaultValues == null)
+            {
+                return false;
+            }
+            
+            _itemReplacementCooldown = defaultValues._itemReplacementCooldown;
+            _preserveOrder = defaultValues._preserveOrder;
+            
+            _slotsLimit.Value = defaultValues._slotsLimit.Value;
+            _slots.SetLength(_slotsLimit.Value);
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                _slots[i].ResetToDefault(defaultValues._slots[i]);
+            }
+            
+            return true;
+        }
+        
+        #endregion
+        
+        #region Events
 
         public delegate void OnSlotItemChanged<T>(T item);
         public delegate void OnSlotItemChanged();

@@ -21,7 +21,10 @@ namespace BML.Scripts.Player.Items
     {
         #region Inspector
 
-        [SerializeField, FoldoutGroup("Player dependency")] private BoolVariable _isPlayerGodMode;
+        [SerializeField, FoldoutGroup("Player settings")] private BoolVariable _isPlayerGodMode;
+        
+        [Tooltip("The inventory that the player will start with. This is only used when the player inventory is reset.")]
+        [SerializeField, FoldoutGroup("Player settings")] private PlayerInventory _startingInventory;
         
         private const float PROPERTY_SPACING = 20;
         
@@ -225,12 +228,15 @@ namespace BML.Scripts.Player.Items
             this.PassiveItems.ForEach(p => p?.ResetScriptableObject());
             this.ActiveItems.ForEach(p => p?.ResetScriptableObject());
             this.ConsumableItems.ForEach(p => p?.ResetScriptableObject());
-
-            this.PassiveStackableItems.Clear();
-            this.PassiveStackableItemTrees.Clear();
-            this.PassiveItems.Clear();
-            this.ActiveItems.Clear();
-            this.ConsumableItems.Clear();
+            
+            if (_startingInventory != null)
+            {
+                this.PassiveStackableItemTrees.ResetToDefault(_startingInventory.PassiveStackableItemTrees);
+                this.PassiveStackableItems.ResetToDefault(_startingInventory.PassiveStackableItems);
+                this.PassiveItems.ResetToDefault(_startingInventory.PassiveItems);
+                this.ActiveItems.ResetToDefault(_startingInventory.ActiveItems);
+                this.ConsumableItems.ResetToDefault(_startingInventory.ConsumableItems);
+            }
 
             OnReset?.Invoke();
         }
