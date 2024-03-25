@@ -32,24 +32,24 @@ namespace BML.Scripts
             
         }
 
-        private void OnDrawGizmosSelected()
-        {
-            var crackPosition0 = _oreRenderer.material.GetVector(CrackPosition0);
-            if (crackPosition0 != Vector4.zero)
-            {
-                Gizmos.DrawWireSphere(crackPosition0, 1f);
-            }
-            var crackPosition1 = _oreRenderer.material.GetVector(CrackPosition1);
-            if (crackPosition1 != Vector4.zero)
-            {
-                Gizmos.DrawWireSphere(crackPosition1, 1f);
-            }
-            var crackPosition2 = _oreRenderer.material.GetVector(CrackPosition2);
-            if (crackPosition2 != Vector4.zero)
-            {
-                Gizmos.DrawWireSphere(crackPosition2, 1f);
-            }
-        }
+        // private void OnDrawGizmosSelected()
+        // {
+        //     var crackPosition0 = _oreRenderer.material.GetVector(CrackPosition0);
+        //     if (crackPosition0 != Vector4.zero)
+        //     {
+        //         Gizmos.DrawWireSphere(crackPosition0, 1f);
+        //     }
+        //     var crackPosition1 = _oreRenderer.material.GetVector(CrackPosition1);
+        //     if (crackPosition1 != Vector4.zero)
+        //     {
+        //         Gizmos.DrawWireSphere(crackPosition1, 1f);
+        //     }
+        //     var crackPosition2 = _oreRenderer.material.GetVector(CrackPosition2);
+        //     if (crackPosition2 != Vector4.zero)
+        //     {
+        //         Gizmos.DrawWireSphere(crackPosition2, 1f);
+        //     }
+        // }
 
         #endregion
 
