@@ -634,6 +634,52 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1764742299592648838
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2642027151045111193}
+  - component: {fileID: 6056248535685224619}
+  m_Layer: 0
+  m_Name: NameContainer(EditorOnly)
+  m_TagString: EditorOnly
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2642027151045111193
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764742299592648838}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4342505517474385330}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6056248535685224619
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764742299592648838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 190d9e9918d0aaf48a103a2bb6995059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameOverride: PickaxeInteractOnCollision - No Chain
+  tooltipOverride: 
+  target: {fileID: -3562012857583577246}
 --- !u!1 &4322692254866907232
 GameObject:
   m_ObjectHideFlags: 0
@@ -3570,6 +3616,52 @@ Transform:
   m_Father: {fileID: 3718485013956532060}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5102231805082250862
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 826401543346965526}
+  - component: {fileID: 8169442183149429754}
+  m_Layer: 0
+  m_Name: NameContainer(EditorOnly)
+  m_TagString: EditorOnly
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &826401543346965526
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102231805082250862}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4342505517474385330}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8169442183149429754
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102231805082250862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 190d9e9918d0aaf48a103a2bb6995059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameOverride: PickaxeInteractOnCollision - Chain
+  tooltipOverride: 
+  target: {fileID: 4432364480890240404}
 --- !u!1 &6510059383271272821
 GameObject:
   m_ObjectHideFlags: 0
@@ -7206,8 +7298,12 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3948568082478859347, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
+      propertyPath: _homingPid
+      value: 
+      objectReference: {fileID: 642167563020559934}
+    - target: {fileID: 3948568082478859347, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
       propertyPath: _limitRange
-      value: 3000
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3948568082478859347, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
       propertyPath: _enableHoming.ReferenceValue_FunctionVariable
@@ -7243,17 +7339,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2397865955889468302, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
+    - {fileID: 7364898777780125418, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
---- !u!54 &8900326571490606610 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 7854503322635327098, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
-  m_PrefabInstance: {fileID: 1622565752096106600}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4644463647423397238 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6264773026492306718, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
-  m_PrefabInstance: {fileID: 1622565752096106600}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8050666917256354068 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8736196148616425852, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
@@ -7275,6 +7362,327 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &4644463647423397238 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6264773026492306718, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
+  m_PrefabInstance: {fileID: 1622565752096106600}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &642167563020559934 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2192669226818948694, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
+  m_PrefabInstance: {fileID: 1622565752096106600}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644463647423397238}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44bf1e89245e43e6b285c2978dfd81cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2326288652511882299 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3948568082478859347, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
+  m_PrefabInstance: {fileID: 1622565752096106600}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644463647423397238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 294a90d4b495407f889152a6d854fa48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!54 &8900326571490606610 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 7854503322635327098, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
+  m_PrefabInstance: {fileID: 1622565752096106600}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &3911656886791380492 stripped
+SphereCollider:
+  m_CorrespondingSourceObject: {fileID: 2363402180298159716, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
+  m_PrefabInstance: {fileID: 1622565752096106600}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4342505517474385330 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3082484382596539866, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
+  m_PrefabInstance: {fileID: 1622565752096106600}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-3562012857583577246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644463647423397238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b095136369ec877488f18b88a430926d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damage: 1
+  _interactMask:
+    serializedVersion: 2
+    m_Bits: 13639753
+  _pickaxeInteractType: 1
+  _damageType: 1024
+  _useRigidbodyVelocity: 1
+  _rigidbody: {fileID: 8900326571490606610}
+  _onCollisionEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  _onCollisionEnterInfo:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3152264356292899224}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &421923539923554733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644463647423397238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f00a8324cac4f1e84ad1644ec747516, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalProcessors: []
+  OnDetected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLostDetection:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSomeDetection:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNoDetection:
+    m_PersistentCalls:
+      m_Calls: []
+  signalFilter:
+    IgnoreList: []
+    EnableTagFilter: 0
+    AllowedTags: []
+  DetectionMode: 0
+  Shape: 0
+  Sphere:
+    Radius: 100
+  Box:
+    HalfExtents: {x: 0.5, y: 0.5, z: 0.5}
+  Capsule:
+    Radius: 0.5
+    Height: 1
+  DetectsOnLayers:
+    serializedVersion: 2
+    m_Bits: 525312
+  IgnoreTriggerColliders: 1
+  pulseRoutine:
+    Mode:
+      value: 0
+    UpdateFunction: 0
+    Interval:
+      value: 1
+--- !u!114 &1295005678580404969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644463647423397238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37d0f18f006f45eabdf63f3b9421bdb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signalProcessors: []
+  OnDetected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLostDetection:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSomeDetection:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNoDetection:
+    m_PersistentCalls:
+      m_Calls: []
+  inputSensor:
+    value: {fileID: 421923539923554733}
+  pulseRoutine:
+    Mode:
+      value: 0
+    UpdateFunction: 0
+    Interval:
+      value: 1
+  BlocksLineOfSight:
+    serializedVersion: 2
+    m_Bits: 1582152
+  IgnoreTriggerColliders: 1
+  PointSamplingMethod: 0
+  TestLOSTargetsOnly: 0
+  NumberOfRays: 3
+  MinimumVisibility: 0.5
+  MovingAverageEnabled: 0
+  MovingAverageWindowSize: 10
+  LimitDistance: 0
+  MaxDistance: 1
+  VisibilityByDistance:
+    Mode: 0
+    Curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.5
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  LimitViewAngle: 0
+  MaxHorizAngle: 45
+  VisibilityByHorizAngle:
+    Mode: 0
+    Curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.5
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  MaxVertAngle: 45
+  VisibilityByVertAngle:
+    Mode: 0
+    Curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.5
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  FOVConstraintMethod: 0
+--- !u!114 &3528492574991824024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644463647423397238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de1a17f03eb116f49872a02c363b2351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _upgradeChainProjectilesCount:
+    UseConstant: 1
+    EnableInstanceOptions: 0
+    InstanceName: 
+    InstancePath: IntermediateProperties
+    ConstantValue: 6
+    Variable: {fileID: 0}
+  _projectileDriver: {fileID: 2326288652511882299}
+  _rangeSensor: {fileID: 421923539923554733}
+  _losSensor: {fileID: 1295005678580404969}
+  _projectileCollider: {fileID: 3911656886791380492}
+  _redirectLayer: PlayerProjectileRedirected
+  _onChainFailure:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3152264356292899224}
+        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
+        m_MethodName: PlayFeedbacks
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4432364480890240404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7290,19 +7698,21 @@ MonoBehaviour:
   _damage: 1
   _interactMask:
     serializedVersion: 2
-    m_Bits: 14165065
-  _interactCooldown: 2
+    m_Bits: 525312
   _pickaxeInteractType: 1
   _damageType: 1024
   _useRigidbodyVelocity: 1
   _rigidbody: {fileID: 8900326571490606610}
   _onCollisionEnter:
     m_PersistentCalls:
+      m_Calls: []
+  _onCollisionEnterInfo:
+    m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3152264356292899224}
-        m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Feedbacks
-        m_MethodName: PlayFeedbacks
-        m_Mode: 1
+      - m_Target: {fileID: 3528492574991824024}
+        m_TargetAssemblyTypeName: Projectile.Chainable, BML.Scripts
+        m_MethodName: TryChain
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -7311,6 +7721,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &9065557264234233998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644463647423397238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 315e9dd745fa4c4d85b2258781990a8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7398730125746655123
 PrefabInstance:
   m_ObjectHideFlags: 0

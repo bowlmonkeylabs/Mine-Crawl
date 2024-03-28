@@ -11,15 +11,13 @@ public class PickaxeInteractOnCollision : MonoBehaviour
 {
     [SerializeField] private int _damage = 1;
     [SerializeField] private LayerMask _interactMask;
-    [SerializeField] private float _interactCooldown = 2;
     [SerializeField] private PickaxeInteractType _pickaxeInteractType;
     [SerializeField] private DamageType _damageType;
     [SerializeField] private bool _useRigidbodyVelocity = false;
     [SerializeField, ShowIf("_useRigidbodyVelocity")] private Rigidbody _rigidbody;
     [SerializeField] private UnityEvent _onCollisionEnter;
-
-    private float _lastInteractTime = Mathf.NegativeInfinity;
-
+    [SerializeField] private UnityEvent<Collider> _onCollisionEnterInfo;
+    
     [System.Serializable]
     enum PickaxeInteractType
     {
@@ -38,10 +36,6 @@ public class PickaxeInteractOnCollision : MonoBehaviour
 
     private void AttemptDamage(Collider other)
     {
-        if(_lastInteractTime + _interactCooldown > Time.time) {
-            return;
-        }
-            
         GameObject otherObj = other.gameObject;
         if (!otherObj.IsInLayerMask(_interactMask)) return;
 
@@ -56,9 +50,9 @@ public class PickaxeInteractOnCollision : MonoBehaviour
                 receiver.ReceiveInteraction(new HitInfo(_damageType, _damage, hitDirection));
             else
                 receiver.ReceiveSecondaryInteraction(new HitInfo(_damageType, _damage, hitDirection));
-            _lastInteractTime = Time.time;
         }
             
         _onCollisionEnter.Invoke();
+        _onCollisionEnterInfo.Invoke(other);
     }
 }

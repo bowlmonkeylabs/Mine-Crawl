@@ -3,9 +3,11 @@ using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Compass;
+using BML.Scripts.PID;
 using Shapes;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using DrawXXL;
 
 namespace BML.Scripts
 {
@@ -40,18 +42,8 @@ namespace BML.Scripts
         [FoldoutGroup("Homing"), ShowIf("_showHomingParameters")] [SerializeField] 
         private LayerMask _homingTargetAcquisitionLayerMask;
         [FoldoutGroup("Homing"), ShowIf("_showHomingParameters")] [SerializeField] 
-        private SafeTransformValueReference _homingTarget;
-        [FoldoutGroup("Homing"), ShowIf("_showHomingParameters")] [SerializeField] 
-        private PIDParameters _horizontalRotationPidParameters;
-        [FoldoutGroup("Homing"), ShowIf("@_showHomingParameters && !_doUseCurvability")] [SerializeField] 
-        private bool _useSamePidParametersForVerticalRotation = true;
-        [FoldoutGroup("Homing"), ShowIf("@_showHomingParameters && !_doUseCurvability && !_useSamePidParametersForVerticalRotation")] [SerializeField] 
-        private PIDParameters _verticalRotationPidParameters;
-        [FoldoutGroup("Homing")] [ShowInInspector, ShowIf("_showHomingParameters")]
-        private PID2 _horizontalRotationPidController;
-        [FoldoutGroup("Homing")] [ShowInInspector, ShowIf("_showHomingParameters")] 
-        private PID2 _verticalRotationPidController;
-        
+        private PidRigidbody _homingPid;
+
         #endregion
 
         private Vector3 moveDirection;
@@ -63,11 +55,11 @@ namespace BML.Scripts
             if (_doUseCurvability)
             {
                 var size = _curvabilityToMinMaxOutput.Value.Evaluate(_curvability);
-                _horizontalRotationPidParameters.OutputMinMax = new Vector2(-size, size);
+                _homingPid.SetRotationOutputMinMax(new Vector2(-size, size));
             }
             else
             {
-                _horizontalRotationPidParameters.OutputMinMax = Vector2.zero;
+                _homingPid.SetRotationOutputMinMax(Vector2.zero);
             }
         }
 
@@ -75,11 +67,6 @@ namespace BML.Scripts
 
         private void Start()
         {
-            if (_enableHoming.Value)
-            {
-                InitializePidControllers();
-            }
-
             if (_doLimitRange)
             {
                 _traveledDistance = 0;
@@ -112,7 +99,7 @@ namespace BML.Scripts
             if (_enableHoming.Value)
             {
                 // If no target is acquired yet, check for targets
-                if (_homingTarget.Value == null)
+                if (!_homingPid.HasTarget)
                 {
                     // Update target selection
                     // TODO
@@ -122,7 +109,7 @@ namespace BML.Scripts
                     {
                         // Prioritize homing directly to the transform of the hit collider; Because of the offset baked into the rigidbody of 'flying' enemies (e.g. Bats), homing to hitInfo.transform caused the projectile to target the enemy origin rather than the center of mass.
                         var targetTransform = hitInfo.collider?.transform ?? hitInfo.rigidbody?.transform ?? hitInfo.transform;
-                        _homingTarget.AssignConstantValue(targetTransform);
+                        _homingPid.SetTarget(targetTransform);
                     }
                     else
                     {
@@ -130,7 +117,7 @@ namespace BML.Scripts
                         if (didHit2)
                         {
                             var targetTransform = hitInfo.collider?.transform ?? hitInfo.rigidbody?.transform ?? hitInfo.transform;
-                            _homingTarget.AssignConstantValue(targetTransform);
+                            _homingPid.SetTarget(targetTransform);
                         }
                         else
                         {
@@ -139,35 +126,8 @@ namespace BML.Scripts
                     }
                 }
                 
-                if (_homingTarget?.Value != null)
-                {
-                    // Adjust direction towards target
-                    var targetPosition = _homingTarget.Value.position;
-                    var rotation = transform.rotation;
-                    Vector3 targetDirection = (targetPosition - transform.position);
-                    Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
-
-                    var currentOffsetFromTargetEulerAngles = rotation.eulerAngles - targetRotation.eulerAngles;
-                
-                    if (currentOffsetFromTargetEulerAngles.x <= -180) currentOffsetFromTargetEulerAngles.x += 360;
-                    else if (currentOffsetFromTargetEulerAngles.x >= 180) currentOffsetFromTargetEulerAngles.x -= 360;
-                
-                    if (currentOffsetFromTargetEulerAngles.y <= -180) currentOffsetFromTargetEulerAngles.y += 360;
-                    else if (currentOffsetFromTargetEulerAngles.y >= 180) currentOffsetFromTargetEulerAngles.y -= 360;
-                
-                    float horizontalTorqueCorrection = _horizontalRotationPidController.GetOutput(currentOffsetFromTargetEulerAngles.y, 0, Time.fixedDeltaTime);
-                    float verticalTorqueCorrection = _verticalRotationPidController.GetOutput(currentOffsetFromTargetEulerAngles.x, 0, Time.fixedDeltaTime);
-
-                    float distanceToTargetFac = Mathf.Clamp01(targetDirection.magnitude / 10f);
-                
-                    var torque = (distanceToTargetFac * (!_enableHorizontalHoming ? 0 : horizontalTorqueCorrection) * Vector3.up)
-                                 + (distanceToTargetFac * (!_enableVerticalHoming ? 0 : verticalTorqueCorrection) * Vector3.right);
-                
-                    rb.AddRelativeTorque(torque);
-                    moveDirection = transform.forward;
-                
-                    // Debug.Log($"ApplyHoming (Name {this.gameObject.name}) (Torque {torque})");
-                }
+                _homingPid.enabled = _homingPid.HasTarget;
+                moveDirection = transform.forward;
             }
             
             ApplyVelocity();
@@ -180,12 +140,11 @@ namespace BML.Scripts
             
             var color1 = new Color(0.0f, 0.15f, 1f, 0.6f);
             var color2 = new Color(0.8f,  0.9f, 0f, 0.3f);
-            Shapes.Draw.Line(ShapesBlendMode.Transparent, LineGeometry.Volumetric3D, LineEndCap.Round, ThicknessSpace.Meters, transform.position, transform.position+transform.forward*_limitRange, color1, color1, 1f);
-            Shapes.Draw.Line(ShapesBlendMode.Transparent, LineGeometry.Volumetric3D, LineEndCap.Round, ThicknessSpace.Meters, transform.position, transform.position+transform.forward*_limitRange, color2, color2, 3f);
+            Shapes.Draw.Line(ShapesBlendMode.Transparent, LineGeometry.Volumetric3D, LineEndCap.Round, ThicknessSpace.Meters, transform.position, transform.position+transform.forward*_limitRange, color1, color1, .25f);
 
-            if (_enableHoming.Value && _homingTarget.Value != null)
+            if (_enableHoming.Value && _homingPid.HasTarget)
             {
-                var targetPosition = _homingTarget.Value.transform.position;
+                var targetPosition = _homingPid.Target.position;
                 var targetDirection = targetPosition - position;
                 Shapes.Draw.Line(position, position + targetDirection.normalized, Color.yellow);
             }
@@ -206,21 +165,45 @@ namespace BML.Scripts
             gameObject.layer = LayerMask.NameToLayer(deflectLayer);
             if (_enableHomingOnDeflect.Value)
             {
-                // TODO add a better interface to take info from the hit to augment projectile parameters (damage, speed, homing, homing targets/layers, curvability, color/visual)
-                _enableHoming.ReferenceTypeSelector = SafeBoolValueReference.BoolReferenceTypes.Constant;
-                _enableHoming.Value = true;
-                InitializePidControllers();
+                EnableHoming(true);
             }
-            
-            Redirect(hitInfo.HitDirection ?? -rb.transform.forward);
+
+            var newDirection = hitInfo.HitDirection ?? -rb.transform.forward;
+            Redirect(newDirection, mainCameraRef.Value.position);
         }
 
-        public void Redirect(Vector3 newDirection)
+        public void Redirect(Vector3 newDirection, Vector3? newPosition = null)
         {
             moveDirection = newDirection.normalized;
-            rb.position = mainCameraRef.Value.position;
-            rb.transform.forward = moveDirection;
+            rb.transform.rotation = Quaternion.LookRotation(moveDirection);
+            if (newPosition != null)
+                rb.position = newPosition.Value;
             ApplyVelocity();
+        }
+
+        public void EnableHoming(bool enable, Transform target = null, string newLayer = null)
+        {
+            // TODO add a better interface to take info from the hit to augment projectile parameters (damage, speed, homing, homing targets/layers, curvability, color/visual)
+            if (enable)
+            {
+                _enableHoming.ReferenceTypeSelector = SafeBoolValueReference.BoolReferenceTypes.Constant;
+                _enableHoming.Value = true;
+            }
+            else
+            {
+                _enableHoming.Value = false;
+            }
+
+            if (target != null)
+                _homingPid.SetTarget(target);
+
+            if (newLayer != null)
+                gameObject.layer = LayerMask.NameToLayer(newLayer);
+        }
+
+        public void SetPosition(Vector3 newPosition)
+        {
+            rb.position = newPosition;
         }
 
         public void SetSpeed(float newSpeed)
@@ -228,7 +211,7 @@ namespace BML.Scripts
             speed = newSpeed;
             ApplyVelocity();
         }
-
+        
         #endregion
 
         #region Rigidbody
@@ -236,18 +219,6 @@ namespace BML.Scripts
         private void ApplyVelocity()
         {
             rb.velocity = moveDirection * speed;
-        }
-
-        #endregion
-
-        #region PID
-
-        private void InitializePidControllers()
-        {
-            if (_horizontalRotationPidController == null) _horizontalRotationPidController = new PID2(_horizontalRotationPidParameters);
-            _horizontalRotationPidController.Reset();
-            if (_verticalRotationPidController == null) _verticalRotationPidController = new PID2(_useSamePidParametersForVerticalRotation || _doUseCurvability ? _horizontalRotationPidParameters : _verticalRotationPidParameters);
-            _verticalRotationPidController.Reset();
         }
 
         #endregion

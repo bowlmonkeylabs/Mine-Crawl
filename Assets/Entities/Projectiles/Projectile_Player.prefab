@@ -421,6 +421,7 @@ GameObject:
   - component: {fileID: 2363402180298159716}
   - component: {fileID: 7854503322635327098}
   - component: {fileID: 3948568082478859347}
+  - component: {fileID: 2192669226818948694}
   - component: {fileID: 2397865955889468302}
   - component: {fileID: 7364898777780125418}
   m_Layer: 24
@@ -534,6 +535,61 @@ MonoBehaviour:
     Kd: 0
     IntegralSaturation: 0
     OutputMinMax: {x: 0, y: 0}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
+--- !u!114 &2192669226818948694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264773026492306718}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44bf1e89245e43e6b285c2978dfd81cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetMode: 0
+  _target:
+    ReferenceTypeSelector: 0
+    ReferenceValue_Transform: {fileID: 0}
+    ReferenceValue_TransformSceneReference: {fileID: 0}
+    ReferenceValue_GameObjectSceneReference: {fileID: 0}
+  _doAlignToTargetOnEnable: 1
+  _movementMode: 0
+  _updateMethod: 0
+  _useUnscaledTime: 0
+  _maxAngularVelocity: 20
+  _thrustParameters:
+    Kp: 0
+    Ki: 0
+    Kd: 0
+    IntegralSaturation: 0
+    OutputMinMax: {x: 0, y: 0}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
+  _rotationParameters:
+    Kp: 0.01
+    Ki: 0
+    Kd: 0.1
+    IntegralSaturation: 3
+    OutputMinMax: {x: -0.25, y: 0.25}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
+  _rotationYParameters:
+    Kp: 0.01
+    Ki: 0
+    Kd: 0.1
+    IntegralSaturation: 3
+    OutputMinMax: {x: -0.25, y: 0.25}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
+  _rotationZParameters:
+    Kp: 0.01
+    Ki: 0
+    Kd: 0.1
+    IntegralSaturation: 3
+    OutputMinMax: {x: -0.25, y: 0.25}
     DerivativeMethod: 0
     DifferenceFunction: 0
 --- !u!114 &2397865955889468302
