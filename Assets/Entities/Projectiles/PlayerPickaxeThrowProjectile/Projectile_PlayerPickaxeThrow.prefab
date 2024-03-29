@@ -7306,9 +7306,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3948568082478859347, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
+      propertyPath: _enableHoming.ReferenceTypeSelector
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3948568082478859347, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
+      propertyPath: _enableHoming.ReferenceValue_BoolVariable
+      value: 
+      objectReference: {fileID: 11400000, guid: 85121883e19d612418ec2f8e6bf1951e, type: 2}
+    - target: {fileID: 3948568082478859347, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
       propertyPath: _enableHoming.ReferenceValue_FunctionVariable
       value: 
-      objectReference: {fileID: 11400000, guid: 4fbc702852572e94199dc482a0ee3c33, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 4412284428161751536, guid: 9421c08f19a8ce84d88eba68c0c06789, type: 3}
       propertyPath: FeedbacksList.Array.data[2].Sfx
       value: 
@@ -7474,7 +7482,7 @@ MonoBehaviour:
   DetectionMode: 0
   Shape: 0
   Sphere:
-    Radius: 100
+    Radius: 5
   Box:
     HalfExtents: {x: 0.5, y: 0.5, z: 0.5}
   Capsule:
@@ -7525,7 +7533,7 @@ MonoBehaviour:
       value: 1
   BlocksLineOfSight:
     serializedVersion: 2
-    m_Bits: 1582152
+    m_Bits: 1056840
   IgnoreTriggerColliders: 1
   PointSamplingMethod: 0
   TestLOSTargetsOnly: 0
@@ -7661,8 +7669,15 @@ MonoBehaviour:
     EnableInstanceOptions: 0
     InstanceName: 
     InstancePath: IntermediateProperties
-    ConstantValue: 6
+    ConstantValue: 3
     Variable: {fileID: 0}
+  _upgradeChainProjectilesHoming:
+    ReferenceTypeSelector: 1
+    ConstantValue: 0
+    ReferenceValue_BoolVariable: {fileID: 11400000, guid: 08cd01b40d75c6441bd0c872a7e76871, type: 2}
+    ReferenceValue_FloatVariable: {fileID: 0}
+    ReferenceValue_IntVariable: {fileID: 0}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _projectileDriver: {fileID: 2326288652511882299}
   _rangeSensor: {fileID: 421923539923554733}
   _losSensor: {fileID: 1295005678580404969}

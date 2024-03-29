@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts;
 using BML.Scripts.Utils;
 using Micosmo.SensorToolkit;
@@ -14,6 +15,7 @@ namespace Projectile
     public class Chainable : MonoBehaviour
     {
         [SerializeField] private IntReference _upgradeChainProjectilesCount;
+        [SerializeField] private SafeBoolValueReference _upgradeChainProjectilesHoming;
         [SerializeField] private ProjectileDriver _projectileDriver;
         [SerializeField] private RangeSensor _rangeSensor;
         [SerializeField] private LOSSensor _losSensor;
@@ -22,7 +24,6 @@ namespace Projectile
         [SerializeField] private UnityEvent _onChainFailure;
 
         private int remainingChains;
-        private Vector3 debugChainTarget;
 
         private void Start()
         {
@@ -38,7 +39,7 @@ namespace Projectile
 
         private bool TryChainInternal(Collider hitCollider)
         {
-            if (remainingChains < 1)
+            if (!_upgradeChainProjectilesHoming.Value || remainingChains < 1)
                 return false;
             
             //Ignore collisions and range detection with enemy already hit
@@ -70,27 +71,28 @@ namespace Projectile
                 return false;
 
             var target = detections[0];
-            var targetCollider = target.GetComponent<Collider>();            
+            var targetCollider = target.GetComponent<Collider>();
+            var homingTarget = target.GetComponent<ProjectileHomingTarget>()?.HomingTarget;
+
+            if (homingTarget == null)
+            {
+                homingTarget = target.transform;
+                Debug.LogWarning($"No ProjectileHomingTarget target found, defaulting to: {homingTarget.transform.name}");
+            }
             
-            var targetPosition = targetCollider.GetRealWorldCenter();
-            debugChainTarget = targetPosition;
+            // var targetPosition = targetCollider.GetRealWorldCenter();
 
             Debug.Log($"{targetCollider.transform.position} " +
                       $"| {targetCollider.GetRealWorldCenter()}");
 
             //Redirect Projectile at target
-            var dirToTarget = targetPosition - transform.position;
+            var dirToTarget = homingTarget.position - transform.position;
             _projectileDriver.Redirect(dirToTarget);
-            _projectileDriver.EnableHoming(true, target.transform, _redirectLayer);
+            _projectileDriver.EnableHoming(true, homingTarget, _redirectLayer);
 
             Debug.Log($"Done: {rb.position}");
             remainingChains--;
             return true;
-        }
-
-        private void OnDrawGizmos()
-        {
-            DrawBasics.Line(transform.position, debugChainTarget, Color.green, .05f);
         }
     }
 }

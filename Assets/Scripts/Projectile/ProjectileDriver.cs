@@ -219,6 +219,7 @@ namespace BML.Scripts
         private void ApplyVelocity()
         {
             rb.velocity = moveDirection * speed;
+            // rb.velocity = Vector3.zero;
         }
 
         #endregion
