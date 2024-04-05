@@ -37,6 +37,9 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             => Mathf.RoundToInt((Source.PlayerDistanceDelta + Target.PlayerDistanceDelta) / 2f);
         [ShowInInspector] public float DirectPlayerDistance
             => Mathf.Min(Source.DirectPlayerDistance, Target.DirectPlayerDistance);
+        [ShowInInspector] public bool PlayerMapped { get; set; }
+        [ShowInInspector] public bool PlayerMappedAdjacent { get; set; }
+        [ShowInInspector] public bool PlayerMappedAllAdjacent { get; set; }
         [ShowInInspector] 
         public bool PlayerVisited
         {
@@ -99,6 +102,9 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             var verticalComponent = edgeDir.y;
             SteepnessAngle = Mathf.Rad2Deg * Mathf.Atan2(verticalComponent, horizontalComponent);
 
+            PlayerMapped = false;
+            PlayerMappedAdjacent = false;
+            PlayerMappedAllAdjacent = false;
             PlayerVisited = false;
             PlayerVisitedAdjacent = false;
             PlayerVisitedAllAdjacent = false;

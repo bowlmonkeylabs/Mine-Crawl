@@ -17,9 +17,9 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 38f386e05e25e3d4cb2b2f211cd6f035, type: 2}
-    - {fileID: 11400000, guid: f9d5719e9c3b2f0418be534010f41e5e, type: 2}
     - {fileID: 11400000}
-    - {fileID: 11400000, guid: 755f221cc10445145a014f1a50c8467b, type: 2}
+    - {fileID: 11400000, guid: 326a581a607f1f44c9328fd04ec35cdf, type: 2}
+    - {fileID: 11400000, guid: b6de383c28abf7140884a2f8b0a68a48, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -63,13 +63,13 @@ MonoBehaviour:
         BML.Scripts]], mscorlib
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 7
-      Data: 3|BML.Scripts.Player.Items.ItemEffects.AddResourceItemEffect, BML.Scripts
+      Data: 3|BML.Scripts.Player.Items.ItemEffects.StatIncreaseItemEffect, BML.Scripts
     - Name: _trigger
       Entry: 3
-      Data: 11
+      Data: 0
     - Name: _useActivationLimit
       Entry: 5
       Data: false
@@ -84,16 +84,16 @@ MonoBehaviour:
       Data: 
     - Name: _useActivationChance
       Entry: 5
-      Data: true
+      Data: false
     - Name: _minActivationChance
       Entry: 4
-      Data: 0.2
+      Data: 0
     - Name: _playerLuckStat
-      Entry: 10
-      Data: 1
+      Entry: 6
+      Data: 
     - Name: _luckForMaxActivationChance
       Entry: 3
-      Data: 20
+      Data: 0
     - Name: _recurringTimerForTrigger
       Entry: 6
       Data: 
@@ -102,13 +102,91 @@ MonoBehaviour:
       Data: 
     - Name: ParentItem
       Entry: 10
+      Data: 1
+    - Name: UsePercentageIncrease
+      Entry: 5
+      Data: false
+    - Name: IsTemporaryStatIncrease
+      Entry: 5
+      Data: false
+    - Name: TemporaryStatIncreaseTime
+      Entry: 4
+      Data: 0
+    - Name: FloatStat
+      Entry: 6
+      Data: 
+    - Name: IntStat
+      Entry: 10
       Data: 2
-    - Name: _resource
+    - Name: StatIncreaseAmount
+      Entry: 3
+      Data: 2
+    - Name: StatIncreasePercent
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 4|BML.Scripts.Player.Items.ItemEffects.StatIncreaseItemEffect, BML.Scripts
+    - Name: _trigger
+      Entry: 3
+      Data: 0
+    - Name: _useActivationLimit
+      Entry: 5
+      Data: false
+    - Name: _remainingActivations
+      Entry: 6
+      Data: 
+    - Name: _useActivationCooldownTimer
+      Entry: 5
+      Data: false
+    - Name: _activationCooldownTimer
+      Entry: 6
+      Data: 
+    - Name: _useActivationChance
+      Entry: 5
+      Data: false
+    - Name: _minActivationChance
+      Entry: 4
+      Data: 0
+    - Name: _playerLuckStat
+      Entry: 6
+      Data: 
+    - Name: _luckForMaxActivationChance
+      Entry: 3
+      Data: 0
+    - Name: _recurringTimerForTrigger
+      Entry: 6
+      Data: 
+    - Name: _recurringTimerForTriggerCondition
+      Entry: 6
+      Data: 
+    - Name: ParentItem
+      Entry: 10
+      Data: 1
+    - Name: UsePercentageIncrease
+      Entry: 5
+      Data: false
+    - Name: IsTemporaryStatIncrease
+      Entry: 5
+      Data: false
+    - Name: TemporaryStatIncreaseTime
+      Entry: 4
+      Data: 0
+    - Name: FloatStat
+      Entry: 6
+      Data: 
+    - Name: IntStat
       Entry: 10
       Data: 3
-    - Name: _addAmount
+    - Name: StatIncreaseAmount
       Entry: 3
-      Data: 1
+      Data: 2
+    - Name: StatIncreasePercent
+      Entry: 4
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -118,12 +196,13 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  _name: Mining 3.1
-  _effectDescription: 20% chance to heal from mining. Increases with luck stat
-  _storeDescription: The rocks give you life
+  _name: Extraction
+  _effectDescription: x2 Xp from ores
+  _storeDescription: 
   _useIconColor: 1
   _iconColor: {r: 0.1981132, g: 0.019624421, b: 0.019624421, a: 1}
-  _icon: {fileID: 21300000, guid: 5e515f14f7a5d614fa7ed5c8f596eae5, type: 3}
+  _icon: {fileID: 21300000, guid: 82e967c92069f7d43a80de68a8e63564, type: 3}
   PassiveStackableTreeStartNode: {fileID: 7395606790405979272, guid: 21df0c8f4e7486b4c8b29c4e86b50133, type: 2}
   _objectPrefab: {fileID: 0}
   _itemType: 1
+  slotTypeFilter: 0

@@ -22,6 +22,7 @@ namespace BML.Scripts.Player.Items
         OnPickaxeKillEnemy = 9,
         OnPickaxeMineHit = 10,
         OnPickaxeMineBreak = 11,
+        OnMoveTopSpeed = 12,
     }
     
     [Serializable]
@@ -71,7 +72,7 @@ namespace BML.Scripts.Player.Items
         [HideInInspector]
         public PlayerItem ParentItem;
         private bool _parentItemNotAssigned => ParentItem == null;
-        private string SteppedSeedKey => $"{ParentItem.Name}_{Trigger}_{ParentItem.ItemEffects.IndexOf(this)}";
+        protected string SteppedSeedKey => $"{ParentItem.Name}_{Trigger}_{ParentItem.ItemEffects.IndexOf(this)}";
 
         public bool ApplyEffect(bool isGodMode)
         {

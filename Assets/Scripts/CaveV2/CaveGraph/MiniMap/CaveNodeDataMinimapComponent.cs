@@ -86,7 +86,7 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
             {
                 color = MinimapController.MinimapParameters.VisitedColor;
             }
-            else if (caveNodeData.PlayerVisitedAdjacent)
+            else if (caveNodeData.PlayerVisitedAdjacent || caveNodeData.PlayerMapped)
             {
                 color = MinimapController.MinimapParameters.VisibleColor;
             }

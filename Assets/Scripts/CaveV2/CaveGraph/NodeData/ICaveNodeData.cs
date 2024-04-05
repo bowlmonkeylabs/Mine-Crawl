@@ -16,6 +16,9 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public int PlayerDistance { get; }
         [ShowInInspector] public int PlayerDistanceDelta { get; }
         [ShowInInspector] public float DirectPlayerDistance { get; }
+        [ShowInInspector] public bool PlayerMapped { get; set; }
+        [ShowInInspector] public bool PlayerMappedAdjacent { get; set; }
+        [ShowInInspector] public bool PlayerMappedAllAdjacent { get; set; }
         [ShowInInspector] public bool PlayerVisited { get; set; }
         [ShowInInspector] public bool PlayerVisitedAdjacent { get; set; }
         [ShowInInspector] public bool PlayerVisitedAllAdjacent { get; set; }

@@ -5,6 +5,8 @@ using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Managers;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.ItemTreeGraph;
+using BML.Scripts.Utils;
+using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 using XNode;
@@ -15,7 +17,7 @@ namespace BML.Scripts.Player.Items
     [Serializable]
     public class ItemGraphConnection
     {
-
+        public PlayerItem Item;
     }
 
     [CreateAssetMenu(fileName = "ItemTreeGraph", menuName = "BML/Graphs/ItemTreeGraph", order = 0)]
@@ -25,7 +27,6 @@ namespace BML.Scripts.Player.Items
         #region Inspector
         
         [SerializeField] private PlayerInventory _playerInventory;
-        [SerializeField] private IntVariable _maxSlottedTrees;
 
         #endregion
         
@@ -63,7 +64,8 @@ namespace BML.Scripts.Player.Items
         
         private static int MAX_ITEM_TREE_RECURSION_DEPTH = 99;
 
-        public void TraverseItemTree(ItemTreeGraphStartNode startNode, Action<ItemTreeGraphNode> nodeAction) {
+        public void TraverseItemTree(ItemTreeGraphStartNode startNode, Action<ItemTreeGraphNode> nodeAction) 
+        {
             var itemNodes = startNode.GetOutputPort("Start").GetConnections().Select(nodePort => nodePort.node);
             int depthCount = 0;
             while (itemNodes.Count() > 0 && depthCount <= MAX_ITEM_TREE_RECURSION_DEPTH)
@@ -81,62 +83,78 @@ namespace BML.Scripts.Player.Items
             }
         }
 
-        public List<PlayerItem> GetUnobtainedItemPool(bool updateStatusInGraphWhileTraversing = true) 
+        public List<PlayerItem> GetUnobtainedItemPool(int playerLevel, bool updateStatusInGraphWhileTraversing = true) 
         {
             var unobtainedItemPool = new List<PlayerItem>();
 
-            var startNodes = this.nodes.OfType<ItemTreeGraphStartNode>();
-            // var slottedStartNodes = startNodes.Where(node => (node as ItemTreeGraphStartNode).Slotted);
-            var slottedStartNodes = _playerInventory.PassiveStackableItemTrees.Items;
-            
-            if(slottedStartNodes.Count >= _maxSlottedTrees.Value) {
-                startNodes = slottedStartNodes;
-            }
+            List<ItemTreeGraphStartNode> startNodes;
 
-            foreach (var startNode in startNodes)
+            int numOpenTreeSlots = _playerInventory.PassiveStackableItemTrees.Slots.Where(slot => slot.Item == null && slot.Filter == SlotTypeFilter.None).Count(); // Tree slots with a filter applied are reserved for "ability choice" trees, so we need to exclude them here.
+
+            var choiceForThisLevel = nodes.OfType<ItemTreeGraphChoiceNode>()
+                .Where(choice => choice.Evaluated == false)
+                .FirstOrDefault(choice => choice.LevelRequirement <= playerLevel);
+            int slotsAvailableForChoice = _playerInventory.PassiveStackableItemTrees.Slots.Count(slot => slot.Filter != SlotTypeFilter.None);
+
+            if (choiceForThisLevel && slotsAvailableForChoice > 0)
             {
-                var nodesToCheck = new HashSet<ItemTreeGraphNode>(
-                    startNode.Outputs
-                        .First()
-                        .GetConnections().Where(nodePort => nodePort.IsInput).Select(nodePort => nodePort.node)
-                        .OfType<ItemTreeGraphNode>()
-                );
-
-                int depthCount = 0;
-                while (nodesToCheck.Count > 0 && depthCount <= MAX_ITEM_TREE_RECURSION_DEPTH)
-                {
-                    depthCount++;
-                    var nodesWithStatus = nodesToCheck.Select(node =>
-                        (node: node, playerHas: _playerInventory.PassiveStackableItems.Contains(node.Item)));
-                    
-                    var unobtainedNodes = nodesWithStatus.Where(node => !node.playerHas).ToList();
-                    unobtainedItemPool.AddRange(unobtainedNodes.Select(node => node.node.Item));
-                    foreach (var node in unobtainedNodes)
-                    {
-                        nodesToCheck.Remove(node.node);
-                    }
-
-                    var obtainedNodes = nodesWithStatus.Where(node => node.playerHas).ToList();
-                    var childrenOfObtainedNodes = obtainedNodes.SelectMany(node =>
-                            node.node.Outputs.First()
-                                .GetConnections()
-                                .Where(port => port.IsInput)
-                                .Select(port => port.node as ItemTreeGraphNode))
-                                .Where(node => node != null);
-                    foreach (var node in obtainedNodes)
-                    {
-                        nodesToCheck.Remove(node.node);
-                    }
-                    nodesToCheck.AddRange(childrenOfObtainedNodes);
-                }
-
-                if (depthCount >= MAX_ITEM_TREE_RECURSION_DEPTH)
-                {
-                    Debug.LogError("Exceeded max recursion depth when traversing item upgrade tree. Increase recursion limit or adjust item tree?");
-                }
+                startNodes = choiceForThisLevel
+                    .GetOutputPort("Choices")
+                    .GetConnections().Select(nodePort => (nodePort.node as ItemTreeGraphStartNode))
+                    .ToList();
             }
+            else if (numOpenTreeSlots == 0)
+            {
+                startNodes = _playerInventory.PassiveStackableItemTrees.Items;
+            }
+            else
+            {
+                var evaluatedChoices = this.nodes.OfType<ItemTreeGraphChoiceNode>()
+                    .Where(node => node.Evaluated)
+                    .Select(node => node.GetValue(node.GetOutputPort("Choices")) as ItemTreeGraphStartNode)
+                    .Where(startNode => startNode != null)
+                    .ToList();
+
+                var otherStartNodes = this.nodes.OfType<ItemTreeGraphStartNode>()
+                    .Where(node => !node.GetInputPort("Choices").IsConnected)
+                    .ToList();
+
+                startNodes = evaluatedChoices.Concat(otherStartNodes).ToList();
+            }
+
+            var nextAvailableTreeNodes = startNodes.SelectMany(startNode => GetAvailableItemsForStartNode(startNode, updateStatusInGraphWhileTraversing)); 
+            unobtainedItemPool.AddRange(nextAvailableTreeNodes);
             
             return unobtainedItemPool;
+        }
+        
+        private List<PlayerItem> GetAvailableItemsForStartNode(ItemTreeGraphStartNode startNode, bool updateStatusInGraphWhileTraversing = true)
+        {
+            var emptyList = new List<ItemTreeGraphNode>();
+            Func<ItemTreeGraphNode, IEnumerable<ItemTreeGraphNode>> getChildren = node =>
+            {
+                bool playerHas = _playerInventory.PassiveStackableItems.Items.Contains(node.Item);
+                if (updateStatusInGraphWhileTraversing)
+                {
+                    node.Obtained = playerHas;
+                }
+                if (playerHas)
+                {
+                    var children = node
+                        .GetOutputPort("To")
+                        .GetConnections()
+                        .Select(port => port.node as ItemTreeGraphNode);
+                    return children;
+                }
+                return emptyList;
+            };
+            return startNode
+                .GetOutputPort("Start")
+                .GetConnections()
+                .SelectMany(port => BfsUtils.BreadthFirstSearch<ItemTreeGraphNode>(port.node as ItemTreeGraphNode, getChildren).leafNodes)
+                .Where(node => !node.Obtained)
+                .Select(node => node.Item)
+                .ToList();
         }
 
         public void MarkItemAsObtained(PlayerItem item) 
@@ -184,6 +202,17 @@ namespace BML.Scripts.Player.Items
         {
             treeStartNode.Slotted = _playerInventory.PassiveStackableItemTrees.Contains(treeStartNode);
             treeStartNode.NumberOfObtainedItemsInTree = _playerInventory.PassiveStackableItems.Count(item => item.PassiveStackableTreeStartNode == treeStartNode);
+            
+            // if has choices, mark as evaluated and mark what choice was made
+            var choicesPort = treeStartNode.GetInputPort("Choices");
+            if (choicesPort.IsConnected)
+            {
+                foreach (var port in choicesPort.GetConnections())
+                {
+                    var startNode = (port.node as ItemTreeGraphChoiceNode);
+                    startNode.MarkEvaluated(treeStartNode);
+                }
+            } 
         }
 
         public ItemTreeGraphStartNode GetTreeStartNodeForItem(PlayerItem item) {
@@ -211,18 +240,26 @@ namespace BML.Scripts.Player.Items
                 .ToList();
         }
         
+        [Button]
+        public void UpdateAllTreeStartNodes() 
+        {
+            var startNodes = nodes.OfType<ItemTreeGraphStartNode>();
+            foreach (var itemTreeGraphStartNode in startNodes)
+            {
+                itemTreeGraphStartNode.PropagateUpdateToConnected();
+            }
+        }
+        
         public event IResettableScriptableObject.OnResetScriptableObject OnReset;
 
-        public void ResetScriptableObject() {
-            nodes.ForEach(node => {
-                if(node is ItemTreeGraphNode) {
-                    (node as ItemTreeGraphNode).Obtained = false;
-                }
-                if(node is ItemTreeGraphStartNode) {
-                    (node as ItemTreeGraphStartNode).Slotted = false;
-                }
-            });
-            
+        public void ResetScriptableObject() 
+        {
+            Debug.Log("Resetting ItemTreeGraph");
+            var resettableNodes = this.nodes.OfType<IResettableScriptableObject>();
+            foreach (var node in resettableNodes)
+            {
+                node.ResetScriptableObject();
+            }
             OnReset?.Invoke();
         }
     }

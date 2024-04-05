@@ -41,6 +41,9 @@ namespace BML.Scripts.Player
 		[Tooltip("Outputted Velocity")]
 		[SerializeField, FoldoutGroup("Player")] Vector3Reference CurrentVelocityOut;
 
+        [Space(10)]
+        [SerializeField, FoldoutGroup("Player")] private BoolVariable PlayerMovingAtTopSpeed;
+
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
 		[SerializeField, FoldoutGroup("Player")] float JumpHeight = 1.2f;
@@ -64,12 +67,22 @@ namespace BML.Scripts.Player
 		[SerializeField, FoldoutGroup("Knockback")] float KnockbackDuration = .2f;
 		[SerializeField, FoldoutGroup("Knockback")] AnimationCurve KnockbackHorizontalForceCurve;
 
+        [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Dash Enabled")] private BoolVariable DashEnabled;
 		[SerializeField, FoldoutGroup("Dash"), Tooltip("Dash speed of the character in m/s")] private SafeFloatValueReference DashMaxSpeed;
 		[SerializeField, FoldoutGroup("Dash"), Tooltip("Dash speed of the character in m/s")] private CurveVariable DashSpeedCurve;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Dash duration, in seconds")] private SafeFloatValueReference DashTime;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Player Currently Dashing")] private BoolVariable DashActive;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Player Dash In Cooldown")] private BoolVariable DashInCooldown;
         [SerializeField, FoldoutGroup("Dash"), Tooltip("Dash Cooldown Length, in seconds")] private TimerVariable DashCooldownTimer;
+        [SerializeField, FoldoutGroup("Dash"), Tooltip("Is Dash Stun Enabled")] private BoolVariable DashStunEnabled;
+
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Is Sprint Enabled")] private BoolVariable SprintEnabled;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Is Player Currently Sprinting")] private BoolVariable SprintActive;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Sprint multiplier of move speed")] private SafeFloatValueReference SprintMultiplier;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Max Sprint duration timer")] private TimerVariable SprintTimer;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Sprint Cooldown Length, in seconds")] private TimerVariable SprintCooldownTimer;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Sprint recharge rate, in percentage per second")] private SafeFloatValueReference SprintRechargeRate;
+        [SerializeField, FoldoutGroup("Sprint"), Tooltip("Is Sprint Knockbak Enabled")] private BoolVariable SprintKnockbackEnabled;
 
 		[SerializeField, FoldoutGroup("RopeMovement")] private GameEvent _playerEnteredRopeEvent;
 		[SerializeField, FoldoutGroup("RopeMovement")] private BoolReference _isRopeMovementEnabled;
@@ -85,6 +98,9 @@ namespace BML.Scripts.Player
 		[SerializeField, FoldoutGroup("No Clip Mode")] private LayerMask noClipCollisionMask;
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
+
+        [SerializeField, FoldoutGroup("Movement Collision")] private float _collisionCooldown = .1f;
+		[SerializeField, FoldoutGroup("Movement Collision")] private LayerMask _enemyLayerMask;
 
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
 		[SerializeField, FoldoutGroup("Cinemachine")] GameObject CinemachineCameraTarget;
@@ -121,6 +137,9 @@ namespace BML.Scripts.Player
         //dash
         private float _startDashTime;
         private Vector3 _dashDirection;
+
+        //movement collisions
+        private float _lastCollidedTime = Mathf.NegativeInfinity;
 
 		private PlayerInput _playerInput;
 		private KinematicCharacterMotor _motor;
@@ -164,6 +183,7 @@ namespace BML.Scripts.Player
 			isNoClipEnabled.Subscribe(SetNoClip);
             _playerEnteredRopeEvent.Subscribe(OnPlayerEnteredRope);
             _playerRopePointStateChanged.Subscribe(OnPlayerRopePointStateChanged);
+            CurrentVelocityOut.Subscribe(CheckMoveTopSpeed);
 		}
 
 		private void OnDisable()
@@ -171,6 +191,7 @@ namespace BML.Scripts.Player
 			isNoClipEnabled.Unsubscribe(SetNoClip);
             _playerEnteredRopeEvent.Unsubscribe(OnPlayerEnteredRope);
             _playerRopePointStateChanged.Unsubscribe(OnPlayerRopePointStateChanged);
+            CurrentVelocityOut.Unsubscribe(CheckMoveTopSpeed);
 		}
 
 		private void Update()
@@ -182,6 +203,7 @@ namespace BML.Scripts.Player
 				percentToEndKnockback = (Time.time - knockbackStartTime) / KnockbackDuration;
 			}
 
+            CheckSprintTimers();
             CheckDashCooldown();
 		}
 
@@ -197,6 +219,7 @@ namespace BML.Scripts.Player
 		public void BeforeCharacterUpdate(float deltaTime)
 	    {
 	        // This is called before the motor does anything
+            CheckSprint();
             CheckDash();
 	        JumpAndGravity();
 	        GroundedCheck();
@@ -249,7 +272,12 @@ namespace BML.Scripts.Player
 		    }
 
 		    // set target speed based on move speed, sprint speed and if sprint is pressed
-		    float targetSpeed = (_input.dash && isNoClipEnabled.Value) ? (MoveSpeed.Value * noClipSprintMultiplier) : MoveSpeed.Value;
+            float targetSpeed = MoveSpeed.Value;
+            if(_input.movement && isNoClipEnabled.Value) {
+                targetSpeed = MoveSpeed.Value * noClipSprintMultiplier;
+            } else if(SprintActive.Value) {
+                targetSpeed = MoveSpeed.Value * SprintMultiplier.Value;
+            }
 
             if(!DashActive.Value || isNoClipEnabled.Value) {
                 // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
@@ -260,6 +288,12 @@ namespace BML.Scripts.Player
 
                 // a reference to the players current horizontal velocity
                 float currentHorizontalSpeed = currentVelocity.xoz().magnitude;
+
+                // If grounded, consider entire velocity as current speed (to account for sloped ground)
+                if (_motor.GroundingStatus.IsStableOnGround)
+                {
+	                currentHorizontalSpeed = currentVelocity.magnitude;
+                }
 
                 float speedOffset = 0.1f;
                 float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
@@ -326,6 +360,26 @@ namespace BML.Scripts.Player
 	        ref HitStabilityReport hitStabilityReport)
 	    {
             // This is called when the motor's movement logic detects a hit
+
+            // if(_lastCollidedTime + _collisionCooldown > Time.time) {
+            //     return;
+            // }
+
+            if(hitCollider.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+                var hitInfo = new HitInfo(DamageType.Player_Contact_Dash, 0, hitCollider.transform.position - transform.position, hitPoint);
+
+                if(DashActive.Value && DashStunEnabled.Value) {
+                    hitInfo.DamageType = DamageType.Player_Contact_Dash;
+                    hitCollider.gameObject.GetComponent<Damageable>().TakeDamage(hitInfo);
+                }
+
+                if(SprintActive.Value && SprintKnockbackEnabled.Value) {
+                    hitInfo.DamageType = DamageType.Player_Contact_Sprint;
+                    hitCollider.gameObject.GetComponent<Damageable>().TakeDamage(hitInfo);
+                }
+            }
+
+            _lastCollidedTime = Time.time; 
 	    }
 
 	    public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint,
@@ -516,9 +570,25 @@ namespace BML.Scripts.Player
         private Vector3 GetInputDirection() {
             return (_input.move.y * _mainCamera.transform.forward.xoz().normalized + _input.move.x * _mainCamera.transform.right.xoz().normalized).normalized;
         }
+
+        private void CheckSprint() {
+            if(!SprintEnabled.Value || isNoClipEnabled.Value) {
+                return;
+            }
+
+            if(!SprintCooldownTimer.IsActive && _input.movement && !Mathf.Approximately(_input.move.magnitude, 0)) {
+                SprintActive.Value = true;
+            } else {
+                SprintActive.Value = false;
+            }
+        }
         
         private void CheckDash() {
-            if(!DashActive.Value && !isNoClipEnabled.Value && !DashCooldownTimer.IsActive && _input.dash) {
+            if(!DashEnabled.Value) {
+                return;
+            }
+
+            if(!DashActive.Value && !isNoClipEnabled.Value && !DashCooldownTimer.IsActive && _input.movement) {
                 ExitRopeMovement();
                 _currentGravity = 0f;
                 DashActive.Value = true;
@@ -534,6 +604,33 @@ namespace BML.Scripts.Player
                 _currentGravity = Gravity;
                 DashCooldownTimer.RestartTimer();
                 DashInCooldown.Value = true;
+            }
+        }
+
+        private void CheckSprintTimers() {
+            SprintTimer.UpdateTime();
+            SprintCooldownTimer.UpdateTime();
+
+            if(SprintActive.Value) {
+                SprintTimer.StartTimer();
+            }
+
+            if(SprintTimer.IsActive && !SprintActive.Value) {
+                SprintTimer.StopTimer();
+                float inc = (SprintRechargeRate.Value / 100f) * SprintTimer.Duration;
+                SprintTimer.AddTime(inc * Time.fixedDeltaTime, false);
+                if(SprintTimer.RemainingTime == SprintTimer.Duration) {
+                    SprintTimer.ResetTimer();
+                }
+            }
+
+            if(SprintCooldownTimer.IsFinished && SprintTimer.IsFinished) {
+                SprintTimer.ResetTimer();
+                SprintCooldownTimer.ResetTimer();
+            }
+
+            if(SprintTimer.IsFinished && !SprintCooldownTimer.IsActive) {
+                SprintCooldownTimer.RestartTimer();
             }
         }
 
@@ -614,6 +711,15 @@ namespace BML.Scripts.Player
 				_motor.CollidableLayers = orignalCollisionMask;
 			}
 		}
+
+        private void CheckMoveTopSpeed() {
+            var lateralSpeed = CurrentVelocityOut.Value.xoz().magnitude;
+            var maxSpeedWithTolerance = MoveSpeed.Value - 1;
+            var isMovingAtTopSpeed = Mathf.Approximately(lateralSpeed, maxSpeedWithTolerance) || lateralSpeed >= maxSpeedWithTolerance;
+            if(isMovingAtTopSpeed != PlayerMovingAtTopSpeed.Value) {
+                PlayerMovingAtTopSpeed.Value = isMovingAtTopSpeed;
+            }
+        }
 
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 		{

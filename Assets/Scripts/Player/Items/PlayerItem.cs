@@ -21,9 +21,22 @@ namespace BML.Scripts.Player.Items
         Consumable = 4,
     }
 
+    [Flags]
+    public enum SlotTypeFilter
+    {
+        None = 0,
+        
+        Torch = 1 << 0,
+        Rope = 1 << 1,
+        Bomb = 1 << 2,
+        
+        AbilityMovement = 1 << 5,
+        AbilitySecondaryAttack = 1 << 6,
+    }
+
     [InlineEditor()]
     [CreateAssetMenu(fileName = "PlayerItem", menuName = "BML/Player/PlayerItem", order = 0)]
-    public class PlayerItem : SerializedScriptableObject, IResettableScriptableObject
+    public class PlayerItem : SerializedScriptableObject, IResettableScriptableObject, IHasSlotType<SlotTypeFilter>
     {
         #region Inspector
         
@@ -45,6 +58,8 @@ namespace BML.Scripts.Player.Items
         private Dictionary<PlayerResource, int> _itemCost = new Dictionary<PlayerResource, int>();
         
         [SerializeField, FoldoutGroup("Effect")] private ItemType _itemType = ItemType.PassiveStackable;
+        [FormerlySerializedAs("_slotType")] [SerializeField, FoldoutGroup("Effect")] private SlotTypeFilter slotTypeFilter = SlotTypeFilter.None;
+        public SlotTypeFilter SlotTypeFilter => slotTypeFilter;
         [SerializeField, FoldoutGroup("Effect")]
         // [HideReferenceObjectPicker]
         [OnValueChanged("OnItemEffectsChangedInInspector")]

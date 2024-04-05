@@ -15,6 +15,7 @@ namespace BML.Scripts.Tasks
     {
         [SerializeField] private SharedVector3 KnockBackDirection;
         [SerializeField] private SharedFloat KnockbackTime;
+        [SerializeField] private float defaultKnockbackTime = 0.2f;
         [SerializeField] private SharedFloat KnockbackMaxSpeed;
         [SerializeField] private SharedFloat KnockbackMinSpeed;
         [SerializeField] private SharedFloat KnockbackVerticalSpeed;
@@ -56,6 +57,7 @@ namespace BML.Scripts.Tasks
                 return TaskStatus.Running;
             }
 
+            KnockbackTime.Value = defaultKnockbackTime;
             return TaskStatus.Success;
         }
 

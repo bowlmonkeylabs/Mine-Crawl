@@ -19,6 +19,5 @@ namespace BML.Scripts.Player.Items.Store
         {
             _tryOpenMerchantWithInventory.Raise(this);
         }
-        
     }
 }

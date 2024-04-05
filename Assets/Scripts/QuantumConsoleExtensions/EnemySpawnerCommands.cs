@@ -2,7 +2,9 @@
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.SceneReferences;
 using BML.ScriptableObjectCore.Scripts.Variables;
+using BML.Scripts.Pathfinding;
 using QFSW.QC;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace BML.Scripts.QuantumConsoleExtensions
@@ -82,6 +84,23 @@ namespace BML.Scripts.QuantumConsoleExtensions
             }
         }
         
+        #endregion
+
+        #region Enemy
+
+        [Command("freeze", "Freezes all enemies instantly.")]
+        private string Freeze(bool freeze = true)
+        {
+            var aiScripts = FindObjectsOfType<BMLAIPath>();
+            foreach (var aiScript in aiScripts)
+            {
+                aiScript.enabled = !freeze;
+                aiScript.maxSpeed = freeze ? 0f : -1f;
+            }
+
+            return $"{aiScripts.Length} enemies {(freeze ? "frozed" : "Unfrozed")}";
+        }
+
         #endregion
 
         #region Worm commands

@@ -354,7 +354,7 @@ namespace BML.Scripts
             }
 
             // Check against current enemy cap
-            bool reachedGlobalSpawnCap = _currentEnemyCount.Value >= _enemySpawnerParams.SpawnCap;
+            bool reachedGlobalSpawnCap = _currentEnemyCount.Value >= Mathf.FloorToInt(_enemySpawnerParams.SpawnCap.Value);
             bool anySpawnPointsIgnoreGlobalCap =
                 _activeSpawnPointsByTag.Any(kv => kv.Value.Any(spawnPoint => spawnPoint.IgnoreGlobalSpawnCap));
             UpdateEnemyCount();
@@ -468,7 +468,7 @@ namespace BML.Scripts
 
                     foreach (var spawnPoint in immediateSpawnPoints)
                     {            
-                        bool reachedGlobalSpawnCap = _currentEnemyCount.Value >= _enemySpawnerParams.SpawnCap;
+                        bool reachedGlobalSpawnCap = _currentEnemyCount.Value >= _enemySpawnerParams.SpawnCap.Value;
                         if (reachedGlobalSpawnCap && !spawnPoint.IgnoreGlobalSpawnCap)
                         {
                             continue;

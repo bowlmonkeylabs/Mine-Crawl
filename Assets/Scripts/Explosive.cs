@@ -135,10 +135,10 @@ namespace BML.Scripts
                     if(knockbackable != null) {
                         if (_customizeKnockback)
                         {
-                            knockbackable.SetKnockback(hitInfo, _knockbackTime.Value);
-                        } else {
-                            knockbackable.SetKnockback(hitInfo);
+                            hitInfo.KnockbackTime = _knockbackTime.Value;
                         }
+                        
+                        knockbackable.SetKnockback(hitInfo);
                     }
                 }
                 

@@ -1,6 +1,7 @@
 namespace BML.Scripts {
     public enum DamageType
     {
+        None = 0,
         Player_Pickaxe = 1 << 0,
         Player_Bomb = 1 << 1,
         Enemy_Slime_Contact = 1 << 2,
@@ -18,5 +19,7 @@ namespace BML.Scripts {
         Enemy_Worm = 1 << 14,
         Player_Projectile = 1 << 15,
         Player_FireBomb = 1 << 16,
+        Player_Contact_Dash = 1 << 17,
+        Player_Contact_Sprint = 1 << 18
     }
 }

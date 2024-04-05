@@ -75,7 +75,7 @@ namespace BML.Scripts
 		{
 			if (!_ignoreTriggerColliders && _stickOnFirstCollision && !_stuck && _stickyLayerMask.MMContains(collider.gameObject))
 			{
-				Debug.Log($"OnTriggerEnter: {this.name} hit {collider.name}");
+				// Debug.Log($"OnTriggerEnter: {this.name} hit {collider.name}");
 				this.StickToCollider(collider);
 			}
 		}
@@ -84,7 +84,7 @@ namespace BML.Scripts
 		{
 			if (_stickOnFirstCollision && !_stuck && _stickyLayerMask.MMContains(collision.gameObject))
 			{
-				Debug.Log($"OnCollisionEnter: {this.name} hit {collision.collider.name}");
+				// Debug.Log($"OnCollisionEnter: {this.name} hit {collision.collider.name}");
                 this.StickToCollider(collision.collider);
 			}
 		}
@@ -113,7 +113,7 @@ namespace BML.Scripts
 
         private void StickToCollider(Collider collider)
         {
-	        Debug.Log($"Stuck! {this.name} to {collider.name}");
+	        // Debug.Log($"Stuck! {this.name} to {collider.name}");
 	        _stuck = true;
 	        if (_stickWithParentConstraint)
 	        {
@@ -138,7 +138,7 @@ namespace BML.Scripts
         private void Unstick()
         {
 	        if (!_stuck) return;
-	        Debug.Log($"Unstuck! {this.name}");
+	        // Debug.Log($"Unstuck! {this.name}");
 
 	        if (_stickWithParentConstraint)
 	        {

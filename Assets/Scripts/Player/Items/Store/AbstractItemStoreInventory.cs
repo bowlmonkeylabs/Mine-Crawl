@@ -37,6 +37,10 @@ namespace BML.Scripts.Player.Items.Store
 
         [SerializeField] private ItemPoolBehavior _buyBehavior;
 
+        [Tooltip("When using ReplaceItem or ReplaceAll, this will ensure that the replacement item is different from the item being replaced (when possible). This may not be possible if they are not enough unique items left in the pool.")] 
+        [SerializeField, ShowIf("@_buyBehavior == ItemPoolBehavior.ReplaceItem || _buyBehavior == ItemPoolBehavior.ReplaceAll")]
+        private bool _guaranteeReplacementIsDifferent = true;
+
         [SerializeField, Tooltip("This event is needed in order to update the stepped seed at the start of each level the player visits.")] private GameEvent _onAfterGenerateLevelObjects;
 
         #endregion
@@ -116,14 +120,27 @@ namespace BML.Scripts.Player.Items.Store
         private void ReplaceItem(int index)
         {
             var itemPool = GetItemPoolRandomized(false);
+            if (!_guaranteeReplacementIsDifferent)
+            {
+                _availableItems.RemoveAt(index);
+            }
             var replacementItem = itemPool.Except(_availableItems).FirstOrDefault();
             _availableItems[index] = replacementItem;
         }
 
         private void ReplaceAllItems()
         {
-            _availableItems = GetItemPoolRandomized(true).Take(_numAvailableItems).ToList();
-            // TODO what to do if _availableItems.Length < _numAvailableItems ?? not enough items left in the pool
+            List<PlayerItem> itemPool = GetItemPoolRandomized(true);
+            if (_guaranteeReplacementIsDifferent && _availableItems != null)
+            {
+                var reducedItemPool = itemPool.Except(_availableItems).ToList();
+                if (reducedItemPool.Count >= _numAvailableItems)
+                {
+                    itemPool = reducedItemPool;
+                }
+            }
+            
+            _availableItems = itemPool.Take(_numAvailableItems).ToList();
         }
 
         protected void OnItemPoolUpdated()
@@ -181,11 +198,17 @@ namespace BML.Scripts.Player.Items.Store
         #region Get Item Pool
 
         protected abstract IEnumerable<PlayerItem> GetItemPool();
+        
+        protected virtual bool SkipRandomizeItemPool => false;
 
         protected List<PlayerItem> GetItemPoolRandomized(bool updateSeed = false)
         {
             var itemPool = GetItemPool();
-            
+            if (SkipRandomizeItemPool)
+            {
+                return itemPool.ToList();
+            }
+
             if (updateSeed)
             {
                 SeedManager.Instance.UpdateSteppedSeed(SteppedSeedKey);

@@ -20,7 +20,8 @@ namespace BML.Scripts.Player.Items
         [SerializeField, FoldoutGroup("Player")] private Transform _mainCamera;
         [SerializeField, FoldoutGroup("Player")] private BoolVariable _inGodMode;
         [SerializeField, FoldoutGroup("Player")] private BoolVariable _inDash;
-
+        [SerializeField, FoldoutGroup("Player")] private BoolVariable _playerMovingAtTopSpeed;
+        
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSwingPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private DynamicGameEvent _onSwingPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe Events")] private GameEvent _onSweepPickaxe;
@@ -36,26 +37,14 @@ namespace BML.Scripts.Player.Items
         
         [SerializeField, FoldoutGroup("Throwable")] private TransformSceneReference ThrowableContainer;
 
-        private List<PlayerItem> PassiveItems 
-        {
-            get
-            {
-                var items = new List<PlayerItem>(_playerInventory.PassiveStackableItems.Items);
-                items.AddRange(_playerInventory.PassiveItems.Items);
-                return items;
-            }
-        }
-        
-        private List<PlayerItem> AllItems 
-        {
-            get 
-            {
-                var items = new List<PlayerItem>(_playerInventory.PassiveStackableItems.Items);
-                items.AddRange(_playerInventory.PassiveItems.Items);
-                items.AddRange(_playerInventory.ActiveItems.Items);
-                return items;
-            }
-        }
+        private IEnumerable<PlayerItem> AllPassiveItems =>
+            _playerInventory.PassiveStackableItems.Items
+                .Concat(_playerInventory.PassiveItems.Items);
+
+        private IEnumerable<PlayerItem> AllItems =>
+            this.AllPassiveItems
+                // .Concat(_playerInventory.ConsumableItems.Items) // we are purposefully excluding consumables?
+                .Concat(_playerInventory.ActiveItems);
 
         private Vector3 _pickaxeHitPosition = Vector3.negativeInfinity;
 
@@ -86,6 +75,7 @@ namespace BML.Scripts.Player.Items
             _playerInventory.ConsumableItems.OnItemRemoved += Unapply_OnAcquired;
 
             _inDash.Subscribe(OnInDashChange);
+            _playerMovingAtTopSpeed.Subscribe(OnPlayerMovingAtTopSpeed);
             
             _onSwingPickaxe.Subscribe(Apply_Passives_OnPickaxeSwing);
             _onSwingPickaxeHit.Subscribe(Apply_Passives_OnPickaxeSwingHit);
@@ -119,6 +109,7 @@ namespace BML.Scripts.Player.Items
             _playerInventory.ConsumableItems.OnItemRemoved -= Unapply_OnAcquired;
 
             _inDash.Unsubscribe(OnInDashChange);
+            _playerMovingAtTopSpeed.Unsubscribe(OnPlayerMovingAtTopSpeed);
 
             _onSwingPickaxe.Unsubscribe(Apply_Passives_OnPickaxeSwing);
             _onSwingPickaxeHit.Unsubscribe(Apply_Passives_OnPickaxeSwingHit);
@@ -192,6 +183,20 @@ namespace BML.Scripts.Player.Items
             if (enteringDash)
             {
                 Apply_Passives_OnDash();
+            }
+        }
+
+        private void OnPlayerMovingAtTopSpeed(bool prevPlayerMovingAtTopSpeed, bool currPlayerMovingAtTopSpeed) {
+            bool isPlayerMovingAtTopSpeed = (!prevPlayerMovingAtTopSpeed && currPlayerMovingAtTopSpeed);
+            bool wasPlayerMovingAtTopSpeed = (prevPlayerMovingAtTopSpeed && !currPlayerMovingAtTopSpeed);
+            if (isPlayerMovingAtTopSpeed)
+            {
+                Apply_Passives_OnPlayerMoveAtTopSpeed();
+                return;
+            }
+
+            if(wasPlayerMovingAtTopSpeed) {
+                UnApply_Passives_OnPlayerMoveAtTopSpeed();
             }
         }
 
@@ -375,51 +380,59 @@ namespace BML.Scripts.Player.Items
         #region Passive and Passive stackable item effects
         
         private void Apply_Passives_OnAcquired() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnAcquired, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnAcquired, true);
         }
 
         private void Unapply_Passives_OnAcquired() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnAcquired, false);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnAcquired, false);
         }
 
         private void Apply_Passives_OnDash() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnDash, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnDash, true);
+        }
+
+        private void Apply_Passives_OnPlayerMoveAtTopSpeed() {
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnMoveTopSpeed, true);
+        }
+
+        private void UnApply_Passives_OnPlayerMoveAtTopSpeed() {
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnMoveTopSpeed, false);
         }
         
         private void Apply_Passives_OnPickaxeSwing() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSwing, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeSwing, true);
         }
         
         private void Apply_Passives_OnPickaxeSwingHit(object previousValue, object hitPosition) {
             _pickaxeHitPosition = (Vector3) hitPosition;
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSwingHit, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeSwingHit, true);
             _pickaxeHitPosition = Vector3.negativeInfinity;
         }
         
         private void Apply_Passives_OnPickaxeSwingCrit(object previousValue, object hitPosition) {
             _pickaxeHitPosition = (Vector3) hitPosition;
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSwingCrit, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeSwingCrit, true);
             _pickaxeHitPosition = Vector3.negativeInfinity;
         }
         
         private void Apply_Passives_OnPickaxeSweep() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSweep, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeSweep, true);
         }
         
         private void Apply_Passives_OnPickaxeSweepHit() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeSweepHit, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeSweepHit, true);
         }
         
         private void Apply_Passives_OnPickaxeKillEnemy() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeKillEnemy, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeKillEnemy, true);
         }
 
         private void Apply_Passives_OnPickaxeMineHit() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeMineHit, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeMineHit, true);
         }
 
         private void Apply_Passives_OnPickaxeMineBreak() {
-            ApplyOrUnApplyEffectsForTrigger(PassiveItems, ItemEffectTrigger.OnPickaxeMineBreak, true);
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnPickaxeMineBreak, true);
         }
 
         #endregion
@@ -491,9 +504,14 @@ namespace BML.Scripts.Player.Items
                 else if (itemEffect is ThrowItemEffect asThrowItemEffect)
                 {
                     asThrowItemEffect.PrimeEffect(MainCameraRef.Value.transform);
-                } else if (itemEffect is TeleportItemEffect asTeleportItemEffect)
+                } 
+                else if (itemEffect is TeleportItemEffect asTeleportItemEffect)
                 {
                     asTeleportItemEffect.PrimeEffect(_playerController);
+                }
+                else if (itemEffect is AddToPlayerInventoryItemEffect asAddToPlayerInventoryItemEffect)
+                {
+                    asAddToPlayerInventoryItemEffect.PrimeEffect(_playerInventory);
                 }
                 
                 itemEffect.ApplyEffect(_inGodMode.Value);

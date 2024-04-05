@@ -11,14 +11,12 @@ namespace BML.Scripts.Player.Items.Mushroom
         public void SetMushroomItem(PlayerItem mushroomItem)
         {
             _mushroomItem = mushroomItem as MushroomItem;
-            Debug.Log("SetMushroomItem: " + _mushroomItem.name);
             UpdateMushroomItem();
         }
 
         public void SetMushroomItem(MushroomItem mushroomItem)
         {
             _mushroomItem = mushroomItem;
-            Debug.Log("SetMushroomItem: " + _mushroomItem.name);
             UpdateMushroomItem();
         }
         

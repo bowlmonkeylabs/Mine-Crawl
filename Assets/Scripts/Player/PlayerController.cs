@@ -42,34 +42,46 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _interactMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _enemyMask;
+        [SerializeField, FoldoutGroup("Pickaxe")] private BoolVariable _pickaxeThrowEnabled;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoxCollider _sweepCollider;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
-        [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSweepCooldown;
+        [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeThrowCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _pickaxeDamage;
-        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepDamage;
-        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _swingCritChance;
-        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepCritChance;
-        [SerializeField, FoldoutGroup("Pickaxe")] private int _critDamageMultiplier = 2;
         [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSwingPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe")] private DynamicGameEvent _onSwingPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe")] private DynamicGameEvent _onSwingPickaxeCrit;
-        [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSweepPickaxe;
-        [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSweepPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
-        [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _sweepDamageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startSwingPickaxeFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _missSwingFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitTerrainFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitEnemyFeedback;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepReadyFeedback;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startSweepFeedback;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitFeedbacks;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepSuccessHitFeedbacks;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitEnemyFeedback;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingCritFeedbacks;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepCritFeedbacks;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepCritInstanceFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startPickaxeThrowFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startPickaxeReceiveFeedbacks;
+
+
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private BoolVariable _sweepEnabled;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private BoolVariable _doubleSweepEnabled;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private DamageType _sweepDamageType;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private TimerReference _pickaxeSweepCooldown;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private SafeFloatValueReference _sweepDamage;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private SafeFloatValueReference _sweepKnockbackTime;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private GameEvent _onSweepPickaxe;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private GameEvent _onSweepPickaxeHit;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private MMF_Player _sweepReadyFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private MMF_Player _startSweepFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private MMF_Player _sweepHitFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private MMF_Player _sweepSuccessHitFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private MMF_Player _sweepHitEnemyFeedback;
+
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private BoolVariable _enableSwingCrits;
+        [SerializeField, FoldoutGroup("Pickaxe Crit"), Range(0, 1)] private float _minSwingCritChance;
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private IntVariable _playerLuckStat;
+        [SerializeField, FoldoutGroup("Pickaxe Crit"), Range(0, 20)] private int _luckLevelForMaxSwingCritChance;
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private int _critDamageMultiplier = 2;
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private MMF_Player _swingCritFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private MMF_Player _sweepCritFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe Crit")] private MMF_Player _sweepCritInstanceFeedbacks;
 
         [SerializeField, FoldoutGroup("Dash")] private BoolReference _isDashActive;
         [SerializeField, FoldoutGroup("Dash")] private SafeFloatValueReference _postDashInvincibilityTime;
@@ -105,7 +117,13 @@ namespace BML.Scripts.Player
         private InputAction primaryAction;
         private InputAction secondaryAction;
         private bool secondaryInputHeld = false;
+        private bool pickaxeHeld = true;
         private PickaxeInteractionReceiver hoveredInteractionReceiver = null;
+        private int doubleSweepCount = 0;
+
+        private float SwingCritActivationChance => !_enableSwingCrits.Value
+            ? 0f
+            : (_minSwingCritChance + ((float)_playerLuckStat.Value / _luckLevelForMaxSwingCritChance) * (1 - _minSwingCritChance));
 
         #endregion
 
@@ -116,13 +134,15 @@ namespace BML.Scripts.Player
             _isGodModeEnabled.Subscribe(SetGodMode);
             _combatTimer.SubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.SubscribeFinished(SweepReadyFeedbacks);
+            _pickaxeThrowCooldown.SubscribeFinished(StartPickaxeReceiveFeedbacks);
             _tryHeal.Subscribe(Heal);
             _tryHealTemporary.Subscribe(HealTemporary);
             _isDashActive.Subscribe(OnDashSetActive);
             _playerExperience.Subscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
             _onReceivePickup.Subscribe(ReceivePickupDynamic);
             _playerInventory.OnAnyPlayerItemReplaced += DropItemFromInventory;
-            
+            _playerInventory.OnAnyPlayerItemOverflowed += DropItemFromInventory;
+
             SetGodMode();
             primaryAction = playerInput.actions.FindAction("Primary");
             secondaryAction = playerInput.actions.FindAction("Secondary");
@@ -133,23 +153,26 @@ namespace BML.Scripts.Player
             _isGodModeEnabled.Unsubscribe(SetGodMode);
             _combatTimer.UnsubscribeFinished(SetNotInCombat);
             _pickaxeSweepCooldown.UnsubscribeFinished(SweepReadyFeedbacks);
+            _pickaxeThrowCooldown.UnsubscribeFinished(StartPickaxeReceiveFeedbacks);
             _tryHeal.Unsubscribe(Heal);
             _tryHealTemporary.Unsubscribe(HealTemporary);
             _isDashActive.Unsubscribe(OnDashSetActive);
             _playerExperience.Unsubscribe(TryIncrementCurrentLevelAndAvailableUpdateCount);
             _onReceivePickup.Unsubscribe(ReceivePickupDynamic);
             _playerInventory.OnAnyPlayerItemReplaced -= DropItemFromInventory;
+            _playerInventory.OnAnyPlayerItemOverflowed -= DropItemFromInventory;
         }
 
         private void Update()
         {
             if (primaryAction.IsPressed()) TrySwingPickaxe();
-            if (secondaryAction.IsPressed()) TryUseSweep();
+            if (secondaryAction.IsPressed()) TryUsePickaxeSecondary();
             HandleHover();
             HandleReticleScaling();
             _combatTimer.UpdateTime(!_anyEnemiesEngaged.Value ? _safeCombatTimerDecayMultiplier : 1f);
             _pickaxeSwingCooldown.UpdateTime();
             _pickaxeSweepCooldown.UpdateTime();
+            _pickaxeThrowCooldown.UpdateTime();
         }
 
         #endregion
@@ -164,7 +187,7 @@ namespace BML.Scripts.Player
         
         private void TrySwingPickaxe()
         {
-            if (_pickaxeSwingCooldown.IsStarted && !_pickaxeSwingCooldown.IsFinished)
+            if (_pickaxeSwingCooldown.IsStarted && !_pickaxeSwingCooldown.IsFinished || !pickaxeHeld)
             {
                 return;
             }
@@ -239,10 +262,11 @@ namespace BML.Scripts.Player
             float damage = _pickaxeDamage.Value;
 
             Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
-            bool isCrit = Random.value < _swingCritChance.Value;
-
+            bool isCrit = Random.value < SwingCritActivationChance;
+            
             if (isCrit)
             {
+                Debug.Log(SwingCritActivationChance);
                 damage *= _critDamageMultiplier;
                 _swingCritFeedbacks.PlayFeedbacks(hit.point);
                 _onSwingPickaxeCrit.Raise(hit.point);
@@ -255,17 +279,40 @@ namespace BML.Scripts.Player
         {
             _interactDistance.Value = dist;
         }
+
+        private void TryUsePickaxeSecondary() {
+            TryUseSweep();
+            TryUsePickaxeThrow();
+        }
         
         private void TryUseSweep()
         {
+            if(!_sweepEnabled.Value) {
+                return;
+            }
+
+            if(_startSweepFeedback.IsPlaying) {
+                return;
+            }
+
             if (_pickaxeSweepCooldown.IsStarted && !_pickaxeSweepCooldown.IsFinished)
             {
                 return;
             }
-            
+
             _startSweepFeedback.PlayFeedbacks();
-            _pickaxeSweepCooldown.RestartTimer();
-            _pickaxeSwingCooldown.RestartTimer();
+            
+            if(_doubleSweepEnabled.Value) {
+                doubleSweepCount += 1;
+                if(doubleSweepCount >= 2) {
+                    _pickaxeSweepCooldown.RestartTimer();
+                    _pickaxeSwingCooldown.RestartTimer();
+                    doubleSweepCount = 0;
+                }
+            } else {
+                _pickaxeSweepCooldown.RestartTimer();
+                _pickaxeSwingCooldown.RestartTimer();
+            }
         }
         
         // To be called by anim
@@ -277,7 +324,7 @@ namespace BML.Scripts.Player
                 _interactMask, QueryTriggerInteraction.Ignore);
             
             _onSweepPickaxe.Raise();
-
+            
             if (hitColliders.Length < 1)
             {
                 _missSwingFeedback.PlayFeedbacks();
@@ -286,11 +333,11 @@ namespace BML.Scripts.Player
             
             _sweepSuccessHitFeedbacks.PlayFeedbacks();
             _onSweepPickaxeHit.Raise();
-
+            
             // HashSet to prevent duplicates
             HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)> interactionReceivers =
                 new HashSet<(PickaxeInteractionReceiver receiver, Vector3 colliderCenter)>();
-
+            
             bool isEnemyHit = false;
             foreach (var hitCollider in hitColliders)
             {
@@ -302,19 +349,19 @@ namespace BML.Scripts.Player
                 
                 interactionReceivers.Add((interactionReceiver, hitCollider.bounds.center));
             }
-
+            
             if (isEnemyHit)
             {
                 _sweepHitEnemyFeedback.PlayFeedbacks();
             }
             
-            Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
-            bool isCrit = Random.value < _sweepCritChance.Value;
-            if (isCrit)
-            {
-                _sweepCritFeedbacks.PlayFeedbacks();
-            }
-
+            // Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));
+            // bool isCrit = false;
+            // if (isCrit)
+            // {
+            //     _sweepCritFeedbacks.PlayFeedbacks();
+            // }
+            
             foreach (var (interactionReceiver, colliderCenter) in interactionReceivers)
             {
                 var hitPos = interactionReceiver.transform.position;
@@ -331,25 +378,59 @@ namespace BML.Scripts.Player
                     if (hit.collider.gameObject == interactionReceiver.gameObject)
                     {
                         hitPos = hit.point;
-                        if (isCrit)
-                        {
-                            _sweepCritInstanceFeedbacks.AllowSameFramePlay();
-                            _sweepCritInstanceFeedbacks.PlayFeedbacks(hitPos, 1f);
-                        }
-                        else
-                        {
-                            _sweepHitFeedbacks.AllowSameFramePlay();
-                            _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
-                        }
+                        _sweepHitFeedbacks.AllowSameFramePlay();
+                        _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        // if (isCrit)
+                        // {
+                        //     _sweepCritInstanceFeedbacks.AllowSameFramePlay();
+                        //     _sweepCritInstanceFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        // }
+                        // else
+                        // {
+                        //     _sweepHitFeedbacks.AllowSameFramePlay();
+                        //     _sweepHitFeedbacks.PlayFeedbacks(hitPos, 1f);
+                        // }
                         break;
                     }
                 }
-
-                int damage = Mathf.FloorToInt(_sweepDamage.Value) * (isCrit ? _critDamageMultiplier : 1);
+            
+                // int damage = Mathf.FloorToInt(_sweepDamage.Value) * (isCrit ? _critDamageMultiplier : 1);
+                int damage = Mathf.FloorToInt(_sweepDamage.Value);
                 HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, damage, _mainCamera.forward, 
                     hitPos);
+                pickaxeHitInfo.KnockbackTime = _sweepKnockbackTime.Value;
                 interactionReceiver.ReceiveSecondaryInteraction(pickaxeHitInfo);
             }
+        }
+
+        private void TryUsePickaxeThrow()
+        {
+            if(!_pickaxeThrowEnabled.Value) {
+                return;
+            }
+
+            if (!pickaxeHeld)
+            {
+                return;
+            }
+            
+            _startPickaxeThrowFeedbacks.PlayFeedbacks();
+            _pickaxeThrowCooldown.RestartTimer();
+        }
+
+        public void DoPickaxeThrow()
+        {
+            pickaxeHeld = false;
+        }
+
+        private void StartPickaxeReceiveFeedbacks()
+        {
+            _startPickaxeReceiveFeedbacks.PlayFeedbacks();
+        }
+
+        public void ReceivePickaxe()
+        {
+            pickaxeHeld = true;
         }
 
         private void SweepReadyFeedbacks()
@@ -423,7 +504,12 @@ namespace BML.Scripts.Player
 
         private void DropItemFromInventory(PlayerItem prevItem, PlayerItem newItem)
         {
-            _inventoryItemDropper.SpawnItemPickup(prevItem);
+            DropItemFromInventory(prevItem);
+        }
+        
+        private void DropItemFromInventory(PlayerItem item)
+        {
+            _inventoryItemDropper.SpawnItemPickup(item);
         }
         
         #endregion

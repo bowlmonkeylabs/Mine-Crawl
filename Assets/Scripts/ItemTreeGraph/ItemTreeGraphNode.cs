@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BML.ScriptableObjectCore.Scripts.Managers;
 using BML.Scripts.Player.Items;
 using Sirenix.OdinInspector;
 using UnityEditor;
@@ -10,11 +11,11 @@ using XNode;
 
 namespace BML.Scripts.ItemTreeGraph 
 { 
-    public class ItemTreeGraphNode : Node 
+    public class ItemTreeGraphNode : Node, IResettableScriptableObject
     {
         [Input(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection From;
         [Output(connectionType = ConnectionType.Multiple, typeConstraint = TypeConstraint.Strict)] public ItemGraphConnection To;
-        
+
         [ShowInInspector, ReadOnly, Required]
         public ItemTreeGraphStartNode TreeStartNode;
         
@@ -61,7 +62,15 @@ namespace BML.Scripts.ItemTreeGraph
         // Return the correct value of an output port when requested
         public override object GetValue(NodePort port)
         {
-            return Item;
+            switch (port.fieldName)
+            {
+                case "To":
+                    if (To == null) To = new ItemGraphConnection();
+                    To.Item = this.Item;
+                    return To;
+                default:
+                    return null;
+            }
         }
 
         public void PropagateUpdateToConnected(ItemTreeGraphStartNode treeStartNode)
@@ -86,6 +95,17 @@ namespace BML.Scripts.ItemTreeGraph
                 }
             }
         }
+
+        #region IResettableScriptableObject
+
+        public void ResetScriptableObject()
+        {
+            Obtained = false;
+        }
+
+        public event IResettableScriptableObject.OnResetScriptableObject OnReset;
+        
+        #endregion
         
     }
 }

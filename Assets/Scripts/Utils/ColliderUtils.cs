@@ -78,5 +78,30 @@ namespace BML.Scripts.Utils
 
             return min.hitInfo;
         }
+
+        public static Vector3 GetRealWorldCenter(this Collider collider)
+        {
+            Vector3 targetColliderWorldCenter;
+            
+            if (collider is BoxCollider)
+            {
+                targetColliderWorldCenter = collider.transform.TransformPoint((collider as BoxCollider).center);
+            }
+            else if (collider is SphereCollider)
+            {
+                targetColliderWorldCenter = collider.transform.TransformPoint((collider as SphereCollider).center);
+            }
+            else if (collider is CapsuleCollider)
+            {
+                targetColliderWorldCenter = collider.transform.TransformPoint((collider as CapsuleCollider).center);
+            }
+            else
+            {
+                // For other types of colliders, use the bounds
+                targetColliderWorldCenter = collider.bounds.center;
+            }
+            
+            return targetColliderWorldCenter;
+        }
     }
 }

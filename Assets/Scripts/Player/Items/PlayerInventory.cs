@@ -21,45 +21,63 @@ namespace BML.Scripts.Player.Items
     {
         #region Inspector
 
-        [SerializeField, FoldoutGroup("Player dependency")] private BoolVariable _isPlayerGodMode;
+        [SerializeField, FoldoutGroup("Player settings")] private BoolVariable _isPlayerGodMode;
+        
+        [Tooltip("The inventory that the player will start with. This is only used when the player inventory is reset.")]
+        [SerializeField, FoldoutGroup("Player settings")] private PlayerInventory _startingInventory;
         
         private const float PROPERTY_SPACING = 20;
         
         #region Resources
 
         [SerializeField]
-        [BoxGroup("Resources"), InlineProperty, HideLabel]
+        [TabGroup("Resources", order: 4f), InlineProperty, HideLabel]
         [PropertySpace(SpaceAfter = PROPERTY_SPACING)]
-        public ItemSlotType<PlayerResource> Resources;
+        public ItemSlotType<PlayerResource, SlotTypeFilter> Resources;
         
         #endregion
 
         #region Player items
+
+        [Button("Update"), PropertyOrder(-1)]
+        internal void OnSlotsChangedInInspector()
+        {
+            PassiveStackableItemTrees.OnSlotsChangedInInspector();
+            PassiveStackableItems.OnSlotsChangedInInspector();
+            PassiveItems.OnSlotsChangedInInspector();
+            ActiveItems.OnSlotsChangedInInspector();
+            ConsumableItems.OnSlotsChangedInInspector();
+        }
         
         [SerializeField]
-        [BoxGroup("Passive Stackable Trees"), InlineProperty, HideLabel]
+        [TabGroup("Upgrades"), InlineProperty, HideLabel]
+        [Title("Passive stackable item trees")]
         [PropertySpace(SpaceAfter = PROPERTY_SPACING)]
-        public ItemSlotType<ItemTreeGraphStartNode> PassiveStackableItemTrees;
+        public ItemSlotType<ItemTreeGraphStartNode, SlotTypeFilter> PassiveStackableItemTrees;
         
         [SerializeField]
-        [BoxGroup("Passive Stackable Items"), InlineProperty, HideLabel]
+        [TabGroup("Upgrades"), InlineProperty, HideLabel]
+        [Title("Passive stackable items")]
         [PropertySpace(SpaceAfter = PROPERTY_SPACING)]
-        public ItemSlotType<PlayerItem> PassiveStackableItems;
+        public ItemSlotType<PlayerItem, SlotTypeFilter> PassiveStackableItems;
         
         [SerializeField]
-        [BoxGroup("Passive Items"), InlineProperty, HideLabel]
+        [TabGroup("Other", order: 3f), InlineProperty, HideLabel]
+        [Title("Passive items")]
         [PropertySpace(SpaceAfter = PROPERTY_SPACING)]
-        public ItemSlotType<PlayerItem> PassiveItems;
+        public ItemSlotType<PlayerItem, SlotTypeFilter> PassiveItems;
 
         [SerializeField]
-        [BoxGroup("Active Items"), InlineProperty, HideLabel]
+        [TabGroup("Active items", order: 0f), InlineProperty, HideLabel]
+        [Title("Active items")]
         [PropertySpace(SpaceAfter = PROPERTY_SPACING)]
-        public ItemSlotType<PlayerItem> ActiveItems;
+        public ItemSlotType<PlayerItem, SlotTypeFilter> ActiveItems;
 
         [SerializeField]
-        [BoxGroup("Consumable Items"), InlineProperty, HideLabel]
+        [TabGroup("Other"), InlineProperty, HideLabel]
+        [Title("Consumable items")]
         [PropertySpace(SpaceAfter = PROPERTY_SPACING)]
-        public ItemSlotType<PlayerItem> ConsumableItems;
+        public ItemSlotType<PlayerItem, SlotTypeFilter> ConsumableItems;
         
         [NonSerialized]
         public Queue<PlayerItem> OnAcquiredConsumableQueue = new Queue<PlayerItem>();
@@ -76,7 +94,18 @@ namespace BML.Scripts.Player.Items
             switch (item.Type)
             {
                 case ItemType.PassiveStackable:
-                    return true;
+                    bool hasTree = PassiveStackableItemTrees.Contains(item.PassiveStackableTreeStartNode);
+                    if (!hasTree)
+                    {
+                        (bool canAddTree, _) = PassiveStackableItemTrees.CheckIfCanAddItem(item.PassiveStackableTreeStartNode, ignoreReplacementCooldown);
+                        hasTree = canAddTree;
+                    }
+                    if (hasTree)
+                    {
+                        (bool canAdd, _) = PassiveStackableItems.CheckIfCanAddItem(item, ignoreReplacementCooldown);
+                        return canAdd;
+                    }
+                    return false;
                     break;
                 case ItemType.Passive:
                     return PassiveItems.CheckIfCanAddItem(item, ignoreReplacementCooldown).canAdd;
@@ -122,7 +151,7 @@ namespace BML.Scripts.Player.Items
             item.ItemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount -= entry.Value);
         }
 
-        public bool TryAddItem(PlayerItem item, bool ignoreReplacementCooldown = false)
+        public bool TryAddItem(PlayerItem item, bool ignoreReplacementCooldown = false, bool dropOverflow = false)
         {
             bool didAdd = false;
             
@@ -132,29 +161,31 @@ namespace BML.Scripts.Player.Items
                     bool hasTree = PassiveStackableItemTrees.Contains(item.PassiveStackableTreeStartNode);
                     if (!hasTree)
                     {
-                        bool didAddTree = PassiveStackableItemTrees.TryAddItem(item.PassiveStackableTreeStartNode, ignoreReplacementCooldown);
+                        bool didAddTree = PassiveStackableItemTrees.TryAddItem(item.PassiveStackableTreeStartNode, ignoreReplacementCooldown, dropOverflow);
                         hasTree = didAddTree;
                     }
                     if (hasTree)
                     {
-                        didAdd = PassiveStackableItems.TryAddItem(item, ignoreReplacementCooldown);
+                        didAdd = PassiveStackableItems.TryAddItem(item, ignoreReplacementCooldown, dropOverflow);
                     }
                     break;
                 case ItemType.Passive:
-                    didAdd = PassiveItems.TryAddItem(item, ignoreReplacementCooldown);
+                    didAdd = PassiveItems.TryAddItem(item, ignoreReplacementCooldown, dropOverflow);
                     break;
                 case ItemType.Active:
-                    didAdd = ActiveItems.TryAddItem(item, ignoreReplacementCooldown);
+                    didAdd = ActiveItems.TryAddItem(item, ignoreReplacementCooldown, dropOverflow);
                     break;
                 case ItemType.Consumable:
                     // TODO what to do if it gets queued, but fails to get added to the inventory?
-                    OnAcquiredConsumableQueue.Enqueue(item);
                     didAdd = true;
                     bool anyEffectsOtherThanOnAcquire = item.ItemEffects.Any(e => e.Trigger != ItemEffectTrigger.OnAcquired);
                     if (anyEffectsOtherThanOnAcquire)
                     {
-                        // didAdd = ConsumableItems.TryAddItem(item, ignoreReplacementCooldown);
-                        ConsumableItems.TryAddItem(item, ignoreReplacementCooldown);
+                        didAdd = ConsumableItems.TryAddItem(item, ignoreReplacementCooldown, dropOverflow);
+                    }
+                    if (didAdd)
+                    {
+                        OnAcquiredConsumableQueue.Enqueue(item);
                     }
                     break;
             }
@@ -193,16 +224,19 @@ namespace BML.Scripts.Player.Items
 
         public void ResetScriptableObject()
         {
+            this.PassiveStackableItems.ForEach(p => p?.ResetScriptableObject());
+            this.PassiveItems.ForEach(p => p?.ResetScriptableObject());
             this.ActiveItems.ForEach(p => p?.ResetScriptableObject());
             this.ConsumableItems.ForEach(p => p?.ResetScriptableObject());
-            this.PassiveItems.ForEach(p => p?.ResetScriptableObject());
-            this.PassiveStackableItems.ForEach(p => p?.ResetScriptableObject());
-
-            this.ActiveItems.Clear();
-            this.ConsumableItems.Clear();
-            this.PassiveItems.Clear();
-            this.PassiveStackableItems.Clear();
-            this.PassiveStackableItemTrees.Clear();
+            
+            if (_startingInventory != null)
+            {
+                this.PassiveStackableItemTrees.ResetToDefault(_startingInventory.PassiveStackableItemTrees);
+                this.PassiveStackableItems.ResetToDefault(_startingInventory.PassiveStackableItems);
+                this.PassiveItems.ResetToDefault(_startingInventory.PassiveItems);
+                this.ActiveItems.ResetToDefault(_startingInventory.ActiveItems);
+                this.ConsumableItems.ResetToDefault(_startingInventory.ConsumableItems);
+            }
 
             OnReset?.Invoke();
         }
@@ -216,18 +250,22 @@ namespace BML.Scripts.Player.Items
             PassiveStackableItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
             PassiveStackableItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
             PassiveStackableItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
-            
-            ActiveItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
-            ActiveItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
-            ActiveItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
+            PassiveStackableItems.OnItemOverflowed += InvokeOnAnyPlayerItemOverflowed;
 
             PassiveItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
             PassiveItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
             PassiveItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
+            PassiveItems.OnItemOverflowed += InvokeOnAnyPlayerItemOverflowed;
+            
+            ActiveItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
+            ActiveItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
+            ActiveItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
+            ActiveItems.OnItemOverflowed += InvokeOnAnyPlayerItemOverflowed;
 
             ConsumableItems.OnItemAdded += InvokeOnAnyPlayerItemAdded;
             ConsumableItems.OnItemRemoved += InvokeOnAnyPlayerItemRemoved;
             ConsumableItems.OnItemReplaced += InvokeOnAnyPlayerItemReplaced;
+            ConsumableItems.OnItemOverflowed += InvokeOnAnyPlayerItemOverflowed;
         }
 
         private void OnDisable()
@@ -235,18 +273,22 @@ namespace BML.Scripts.Player.Items
             PassiveStackableItems.OnItemAdded -= InvokeOnAnyPlayerItemAdded;
             PassiveStackableItems.OnItemRemoved -= InvokeOnAnyPlayerItemRemoved;
             PassiveStackableItems.OnItemReplaced -= InvokeOnAnyPlayerItemReplaced;
+            PassiveStackableItems.OnItemOverflowed -= InvokeOnAnyPlayerItemOverflowed;
             
             PassiveItems.OnItemAdded -= InvokeOnAnyPlayerItemAdded;
             PassiveItems.OnItemRemoved -= InvokeOnAnyPlayerItemRemoved;
             PassiveItems.OnItemReplaced -= InvokeOnAnyPlayerItemReplaced;
+            PassiveItems.OnItemOverflowed -= InvokeOnAnyPlayerItemOverflowed;
             
             ActiveItems.OnItemAdded -= InvokeOnAnyPlayerItemAdded;
             ActiveItems.OnItemRemoved -= InvokeOnAnyPlayerItemRemoved;
             ActiveItems.OnItemReplaced -= InvokeOnAnyPlayerItemReplaced;
+            ActiveItems.OnItemOverflowed -= InvokeOnAnyPlayerItemOverflowed;
             
             ConsumableItems.OnItemAdded -= InvokeOnAnyPlayerItemAdded;
             ConsumableItems.OnItemRemoved -= InvokeOnAnyPlayerItemRemoved;
             ConsumableItems.OnItemReplaced -= InvokeOnAnyPlayerItemReplaced;
+            ConsumableItems.OnItemOverflowed -= InvokeOnAnyPlayerItemOverflowed;
         }
 
         #endregion
@@ -260,9 +302,10 @@ namespace BML.Scripts.Player.Items
         public delegate void OnPlayerItemReplaced(PlayerItem item);
         // public delegate void OnPlayerItemChanged();
 
-        public event ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem> OnAnyPlayerItemAdded;
-        public event ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem> OnAnyPlayerItemRemoved;
-        public event ItemSlotType<PlayerItem>.OnSlotItemReplaced<PlayerItem> OnAnyPlayerItemReplaced;
+        public event ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged<PlayerItem> OnAnyPlayerItemAdded;
+        public event ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged<PlayerItem> OnAnyPlayerItemRemoved;
+        public event ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemReplaced<PlayerItem> OnAnyPlayerItemReplaced;
+        public event ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged<PlayerItem> OnAnyPlayerItemOverflowed;
         // public event OnPlayerItemChanged OnAnyPlayerItemChangedInInspector;     // When changes happen through the inspector, we don't know which specific item changed
 
         private void InvokeOnAnyPlayerItemAdded(PlayerItem item)
@@ -279,11 +322,16 @@ namespace BML.Scripts.Player.Items
         {
             OnAnyPlayerItemReplaced?.Invoke(oldItem, newItem);
         }
+        
+        private void InvokeOnAnyPlayerItemOverflowed(PlayerItem item)
+        {
+            OnAnyPlayerItemOverflowed?.Invoke(item);
+        }
 
-        [NonSerialized] private Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem>> _itemOnInventoryItemUpdatedCallbacks 
-            = new Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem>>();
-        [NonSerialized] private Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem>.OnSlotItemChanged> _itemOnInventoryUpdatedCallbacks 
-            = new Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem>.OnSlotItemChanged>();
+        [NonSerialized] private Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged<PlayerItem>> _itemOnInventoryItemUpdatedCallbacks 
+            = new Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged<PlayerItem>>();
+        [NonSerialized] private Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged> _itemOnInventoryUpdatedCallbacks 
+            = new Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged>();
         [NonSerialized] private Dictionary<(PlayerItem, Action), OnAmountChanged> _itemOnCostAmountChangedCalledbacks 
             = new Dictionary<(PlayerItem, Action), OnAmountChanged>();
         [NonSerialized] private Dictionary<(PlayerItem, Action), OnUpdate> _itemOnGodModeChangedCallbacks 
@@ -360,10 +408,10 @@ namespace BML.Scripts.Player.Items
             {
                 UnsubscribeOnPickupabilityChanged(item, callback);
             }
-            ItemSlotType<PlayerItem>.OnSlotItemChanged<PlayerItem> onInventoryItemUpdated = (PlayerItem playerItem) => callback();
+            ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged<PlayerItem> onInventoryItemUpdated = (PlayerItem playerItem) => callback();
             _itemOnInventoryItemUpdatedCallbacks[(item, callback)] = onInventoryItemUpdated;
 
-            ItemSlotType<PlayerItem>.OnSlotItemChanged onInventoryUpdated = () => callback();
+            ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged onInventoryUpdated = () => callback();
             _itemOnInventoryUpdatedCallbacks[(item, callback)] = onInventoryUpdated;
 
             switch (item.Type)
@@ -399,7 +447,7 @@ namespace BML.Scripts.Player.Items
                 return;
             }
 
-            ItemSlotType<PlayerItem>.OnSlotItemChanged onInventoryUpdated = _itemOnInventoryUpdatedCallbacks[(item, callback)];
+            ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged onInventoryUpdated = _itemOnInventoryUpdatedCallbacks[(item, callback)];
             
             switch (item.Type)
             {

@@ -26,7 +26,7 @@ namespace BML.Scripts.Player
 		public Vector2 lookScaleMouse = new Vector2(0.005f, 0.005f);
 		public Vector2 lookScaleGamepad = new Vector2(12.5f, 12.5f);
 		public bool jump;
-		public bool dash;
+		public bool movement;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -270,9 +270,9 @@ namespace BML.Scripts.Player
 			jump = value.isPressed;
 		}
 
-		public void OnDash(InputValue value)
+		public void OnMovement(InputValue value)
 		{
-			DashInput(value.isPressed);
+			MovementInput(value.isPressed);
 		}
 		
 		public void OnPause()
@@ -462,9 +462,9 @@ namespace BML.Scripts.Player
 			_mouseInput.Value = look;
 		}
 
-		public void DashInput(bool newDashState)
+		public void MovementInput(bool isMovementPressed)
 		{
-			dash = newDashState;
+			movement = isMovementPressed;
 		}
 
 		public void OnFreezeTime()
