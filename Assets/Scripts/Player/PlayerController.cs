@@ -42,34 +42,37 @@ namespace BML.Scripts.Player
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _interactMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _terrainMask;
         [SerializeField, FoldoutGroup("Pickaxe")] private LayerMask _enemyMask;
-        [SerializeField, FoldoutGroup("Pickaxe")] private BoolVariable _sweepEnabled;
-        [SerializeField, FoldoutGroup("Pickaxe")] private BoolVariable _doubleSweepEnabled;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoolVariable _pickaxeThrowEnabled;
         [SerializeField, FoldoutGroup("Pickaxe")] private BoxCollider _sweepCollider;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSwingCooldown;
-        [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeSweepCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private TimerReference _pickaxeThrowCooldown;
         [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _pickaxeDamage;
-        [SerializeField, FoldoutGroup("Pickaxe")] private SafeFloatValueReference _sweepDamage;
         [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSwingPickaxe;
         [SerializeField, FoldoutGroup("Pickaxe")] private DynamicGameEvent _onSwingPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe")] private DynamicGameEvent _onSwingPickaxeCrit;
-        [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSweepPickaxe;
-        [SerializeField, FoldoutGroup("Pickaxe")] private GameEvent _onSweepPickaxeHit;
         [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _damageType;
-        [SerializeField, FoldoutGroup("Pickaxe")] private DamageType _sweepDamageType;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startSwingPickaxeFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _swingHitFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _missSwingFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitTerrainFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _hitEnemyFeedback;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepReadyFeedback;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startSweepFeedback;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitFeedbacks;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepSuccessHitFeedbacks;
-        [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _sweepHitEnemyFeedback;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startPickaxeThrowFeedbacks;
         [SerializeField, FoldoutGroup("Pickaxe")] private MMF_Player _startPickaxeReceiveFeedbacks;
+
+
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private BoolVariable _sweepEnabled;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private BoolVariable _doubleSweepEnabled;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private DamageType _sweepDamageType;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private TimerReference _pickaxeSweepCooldown;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private SafeFloatValueReference _sweepDamage;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private SafeFloatValueReference _sweepKnockbackTime;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private GameEvent _onSweepPickaxe;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private GameEvent _onSweepPickaxeHit;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private MMF_Player _sweepReadyFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private MMF_Player _startSweepFeedback;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private MMF_Player _sweepHitFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private MMF_Player _sweepSuccessHitFeedbacks;
+        [SerializeField, FoldoutGroup("Pickaxe Sweep")] private MMF_Player _sweepHitEnemyFeedback;
 
         [SerializeField, FoldoutGroup("Pickaxe Crit")] private BoolVariable _enableSwingCrits;
         [SerializeField, FoldoutGroup("Pickaxe Crit"), Range(0, 1)] private float _minSwingCritChance;
@@ -395,6 +398,7 @@ namespace BML.Scripts.Player
                 int damage = Mathf.FloorToInt(_sweepDamage.Value);
                 HitInfo pickaxeHitInfo = new HitInfo(_sweepDamageType, damage, _mainCamera.forward, 
                     hitPos);
+                pickaxeHitInfo.KnockbackTime = _sweepKnockbackTime.Value;
                 interactionReceiver.ReceiveSecondaryInteraction(pickaxeHitInfo);
             }
         }
