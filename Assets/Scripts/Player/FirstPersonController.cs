@@ -289,6 +289,12 @@ namespace BML.Scripts.Player
                 // a reference to the players current horizontal velocity
                 float currentHorizontalSpeed = currentVelocity.xoz().magnitude;
 
+                // If grounded, consider entire velocity as current speed (to account for sloped ground)
+                if (_motor.GroundingStatus.IsStableOnGround)
+                {
+	                currentHorizontalSpeed = currentVelocity.magnitude;
+                }
+
                 float speedOffset = 0.1f;
                 float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
