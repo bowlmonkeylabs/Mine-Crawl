@@ -189,6 +189,7 @@ GameObject:
   - component: {fileID: 4869132406244976780}
   - component: {fileID: 2444245679264073225}
   - component: {fileID: 7334368126768161504}
+  - component: {fileID: 2298955317432627989}
   m_Layer: 10
   m_Name: PassiveAudioSource
   m_TagString: Untagged
@@ -204,7 +205,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2811686866275157431}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.77, y: 1.56, z: -0.11}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1160763847974310929}
@@ -229,9 +230,9 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 0
   MinDistance: 3
-  MaxDistance: 40
+  MaxDistance: 80
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -241,7 +242,7 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.15
+      time: 0.075
       value: 1
       inSlope: -0.45916
       outSlope: -0.45916
@@ -250,14 +251,14 @@ AudioSource:
       inWeight: 0
       outWeight: 0.38531405
     - serializedVersion: 3
-      time: 0.3483383
+      time: 0.17416918
       value: 0.3180008
-      inSlope: -1.8472868
-      outSlope: -1.8472868
+      inSlope: -1.0004529
+      outSlope: -1.0004529
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.45023367
-      outWeight: 0.112936065
+      inWeight: 0.9190022
+      outWeight: 0.090730794
     - serializedVersion: 3
       time: 1
       value: 0
@@ -328,6 +329,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _source: {fileID: 2444245679264073225}
+--- !u!114 &2298955317432627989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2811686866275157431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1669899cff014d718c59ae2287865a4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _anchor: {fileID: 1160763847974310929}
+  _audioSource: {fileID: 2444245679264073225}
+  _caveGenComponentGameObjectSceneReference: {fileID: 11400000, guid: 70c332354ecbb9c46bf117bd4c575bab, type: 2}
+  _onAfterUpdatePlayerDistance: {fileID: 11400000, guid: 496effc107f1db1489fa660bbddac939, type: 2}
 --- !u!1 &3188523386600664249
 GameObject:
   m_ObjectHideFlags: 0

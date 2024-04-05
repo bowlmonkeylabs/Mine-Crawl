@@ -435,12 +435,13 @@ namespace BML.Scripts.CaveV2
                 // Calculate distance from main path
                 // This is intentionally done twice; the second run is the "real" result, this first run is just for the generation algorithm to reference. 
                 {
-                    var mainPathVertices = shortestPathFromStartToEndList
+                    var mainPathNodes = shortestPathFromStartToEndList
                         .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target })
-                        .Distinct();
-                    caveGraph.FloodFillDistance(mainPathVertices, (node, dist) => node.MainPathDistance = dist);
+                        .Distinct()
+                        .Concat<ICaveNodeData>(shortestPathFromStartToEndList);
+                    caveGraph.FloodFillDistance(mainPathNodes, (node, dist) => node.MainPathDistance = dist);
 
-                    this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
+                    this.MaxMainPathDistance = caveGraph.AllNodes.Max(e => e.MainPathDistance);
                 }
                 
                 if (shortestPathFromStartToEndList != null)
@@ -657,7 +658,7 @@ namespace BML.Scripts.CaveV2
                     var objectiveVertices = new List<CaveNodeData> { caveGraph.StartNode };
                     caveGraph.FloodFillDistance(objectiveVertices, (node, dist) => node.StartDistance = dist);
 
-                    this.MaxStartDistance = caveGraph.Vertices.Max(e => e.StartDistance);
+                    this.MaxStartDistance = caveGraph.AllNodes.Max(e => e.StartDistance);
                 }
                 
                 // Calculate distance from objective
@@ -665,18 +666,19 @@ namespace BML.Scripts.CaveV2
                     var objectiveVertices = new List<CaveNodeData> { caveGraph.EndNode };
                     caveGraph.FloodFillDistance(objectiveVertices, (node, dist) => node.ObjectiveDistance = dist);
 
-                    this.MaxObjectiveDistance = caveGraph.Vertices.Max(e => e.ObjectiveDistance);
+                    this.MaxObjectiveDistance = caveGraph.AllNodes.Max(e => e.ObjectiveDistance);
                 }
 
                 // Calculate distance from main path
                 // This is intentionally done twice; the second run is the "real" result, the first run is just for the generation algorithm to reference. 
                 {
-                    var mainPathVertices = caveGraph.MainPath
-                        .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target})
-                        .Distinct();
-                    caveGraph.FloodFillDistance(mainPathVertices, (node, dist) => node.MainPathDistance = dist);
+                    var mainPathNodes = caveGraph.MainPath
+                        .SelectMany(e => new List<CaveNodeData> { e.Source, e.Target })
+                        .Distinct()
+                        .Concat<ICaveNodeData>(caveGraph.MainPath);
+                    caveGraph.FloodFillDistance(mainPathNodes, (node, dist) => node.MainPathDistance = dist);
 
-                    this.MaxMainPathDistance = caveGraph.Vertices.Max(e => e.MainPathDistance);
+                    this.MaxMainPathDistance = caveGraph.AllNodes.Max(e => e.MainPathDistance);
                 }
             }
 
@@ -799,7 +801,7 @@ namespace BML.Scripts.CaveV2
 
         private Coroutine _coroutinePlayerInfluence;
         
-        public void UpdatePlayerDistance(IEnumerable<CaveNodeData> playerOccupiedNodes)
+        public void UpdatePlayerDistance(IEnumerable<ICaveNodeData> playerOccupiedNodes)
         {
             if (!IsGenerated) return;
             
@@ -811,15 +813,13 @@ namespace BML.Scripts.CaveV2
                     node.PlayerDistance = dist;
                 });
 
-            if (_caveGraph.Vertices.Any())
+            if (_caveGraph.AllNodes.Any())
             {
-                this.MaxPlayerDistance = _caveGraph.Vertices.Max(node => node.PlayerDistance);
-                this.CurrentMaxPlayerObjectiveDistance = _caveGraph.Vertices
-                    .Where(node => node.PlayerDistance == 0)
-                    .Max(node => node.ObjectiveDistance);
+                this.MaxPlayerDistance = _caveGraph.AllNodes.Max(node => node.PlayerDistance);
+                this.CurrentMaxPlayerObjectiveDistance = playerOccupiedNodes.Max(node => node.ObjectiveDistance);
 
                 var playerLocalPosition = WorldToLocal(_playerSceneReference.Value.position);
-                foreach (var caveNodeData in _caveGraph.Vertices)
+                foreach (var caveNodeData in _caveGraph.AllNodes)
                 {
                     caveNodeData.DirectPlayerDistance = Vector3.Distance(playerLocalPosition, caveNodeData.LocalPosition);
                 }
@@ -1035,6 +1035,7 @@ namespace BML.Scripts.CaveV2
                 var debugComponent = newGameObject.AddComponent<CaveNodeConnectionDataDebugComponent>();
                 debugComponent.CaveNodeConnectionData = caveNodeConnectionData;
                 debugComponent.CaveGenerator = this;
+                debugComponent.InnerRenderer = shapeLineComponent;
 #if UNITY_EDITOR
                 UnityEditorInternal.ComponentUtility.MoveComponentUp(debugComponent);
 #endif

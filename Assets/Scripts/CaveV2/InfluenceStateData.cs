@@ -8,8 +8,9 @@ namespace BML.Scripts.CaveV2
     [CreateAssetMenu(fileName = "InfluenceStateData", menuName = "BML/Cave Gen/InfluenceStateData", order = 0)]
     public class InfluenceStateData : ScriptableObject
     {
-        public Dictionary<Collider, CaveNodeData> _currentNodes;
-        public Dictionary<Collider, CaveNodeConnectionData> _currentNodeConnections;
+        public Dictionary<Collider, CaveNodeData> _currentNodes; // TODO remove?
+        public Dictionary<Collider, CaveNodeConnectionData> _currentNodeConnections; // TODO remove?
+        public Dictionary<Collider, ICaveNodeData> _current;
 
         #region Unity Lifecycle
 
@@ -24,6 +25,7 @@ namespace BML.Scripts.CaveV2
         {
             _currentNodes = new Dictionary<Collider, CaveNodeData>();
             _currentNodeConnections = new Dictionary<Collider, CaveNodeConnectionData>();
+            _current = new Dictionary<Collider, ICaveNodeData>();
         }
     }
 }

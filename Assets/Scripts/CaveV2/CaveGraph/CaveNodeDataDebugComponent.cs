@@ -36,13 +36,13 @@ namespace BML.Scripts.CaveV2.CaveGraph
             switch (colorScheme)
             {
                 case CaveGenComponentV2.GizmoColorScheme.PlayerVisited:
-                    if (CaveNodeData.PlayerOccupied) color = CaveGenerator.DebugNodeColor_Occupied;
-                    else if (CaveNodeData.PlayerVisited) color = CaveGenerator.DebugNodeColor_Visited;
+                    if (caveNodeData.PlayerOccupied) color = CaveGenerator.DebugNodeColor_Occupied;
+                    else if (caveNodeData.PlayerVisited) color = CaveGenerator.DebugNodeColor_Visited;
                     else color = CaveGenerator.DebugNodeColor_Default;
                     break;
                 case CaveGenComponentV2.GizmoColorScheme.MainPath:
-                    if (CaveNodeData.MainPathDistance == 0) color = CaveGenerator.DebugNodeColor_MainPath;
-                    else if (CaveNodeData.ObjectiveDistance == 0) color = CaveGenerator.DebugNodeColor_End;
+                    if (caveNodeData.MainPathDistance == 0) color = CaveGenerator.DebugNodeColor_MainPath;
+                    else if (caveNodeData.ObjectiveDistance == 0) color = CaveGenerator.DebugNodeColor_End;
                     else color = CaveGenerator.DebugNodeColor_Default;
                     break;
                 case CaveGenComponentV2.GizmoColorScheme.MainPathDistance:

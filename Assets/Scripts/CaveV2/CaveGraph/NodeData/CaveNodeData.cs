@@ -13,6 +13,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
     public class CaveNodeData : ICaveNodeData
     {
         // Fundamental properties
+        [ShowInInspector] public bool IsNode => true;
+        [ShowInInspector] public bool IsConnection => false;
         [ShowInInspector] public Vector3 LocalPosition { get; private set; }
         [ShowInInspector] public float Scale { get; set; }
         [ShowInInspector] public CaveNodeType NodeType { get; set; }
@@ -81,10 +83,12 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             Scale = scale;
 
             MainPathDistance = -1;
+            StartDistance = -1;
             ObjectiveDistance = -1;
             PlayerDistance = -1;
             PlayerDistanceDelta = 0;
             DirectPlayerDistance = -1;
+            
             PlayerMapped = false;
             PlayerMappedAdjacent = false;
             PlayerMappedAllAdjacent = false;

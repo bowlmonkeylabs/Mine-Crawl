@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using BML.ScriptableObjectCore.Scripts.SceneReferences;
+using BML.Scripts.CaveV2;
 using MoreMountains.Tools;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace BML.Scripts.MMFFeedbacks
 {
@@ -30,7 +34,15 @@ namespace BML.Scripts.MMFFeedbacks
         /// whether or not the pool can expand (create new audiosources on demand). In a perfect world you'd want to avoid this, and have a sufficiently big pool, to avoid costly runtime creations.
         [Tooltip("whether or not the pool can expand (create new audiosources on demand). In a perfect world you'd want to avoid this, and have a sufficiently big pool, to avoid costly runtime creations.")]
         public bool PoolCanExpand = true;
-        
+
+        [Tooltip("If enabled, location of sounds will be overridden such that the player perceives them as travelling through the connected cave, rather than hearing them through the walls.")]
+        public bool EnableCaveSound = true;
+        [ShowIf("$EnableCaveSound"), Required] public TransformSceneReference PlayerTransform;
+        [FormerlySerializedAs("CaveGenerator")]
+        [SerializeField, LabelText("Cave Generator")] [ShowIf("$EnableCaveSound"), Required] 
+        private GameObjectSceneReference _caveGenComponentGameObjectSceneReference;
+        private CaveGenComponentV2 _caveGenerator => _caveGenComponentGameObjectSceneReference.CachedComponent as CaveGenComponentV2;
+
         protected MMSoundManagerAudioPool _pool;
         protected GameObject _tempAudioSourceGameObject;
         protected MMSoundManagerSound _sound;
@@ -75,6 +87,22 @@ namespace BML.Scripts.MMFFeedbacks
         
         #endregion
         
+        #region Augment "cave sounds"
+
+        public MMSoundManagerPlayOptions AugmentAsCaveSound(MMSoundManagerPlayOptions options)
+        {
+            var (localPosition, volume, customRolloffCurve, maxDistance) = _caveGenerator.CaveGraph.AugmentAsCaveSound(options.Location, options.Volume, options.CustomRolloffCurve, options.MaxDistance);
+            
+            options.Location = _caveGenerator.LocalToWorld(localPosition);
+            options.Volume = volume;
+            options.CustomRolloffCurve = customRolloffCurve;
+            options.MaxDistance = maxDistance;
+
+            return options;
+        }
+        
+        #endregion
+        
         #region PlaySound
 
         /// <summary>
@@ -85,6 +113,11 @@ namespace BML.Scripts.MMFFeedbacks
         /// <returns></returns>
         public virtual AudioSource PlaySound(AudioClip audioClip, MMSoundManagerPlayOptions options)
         {
+            if (EnableCaveSound)
+            {
+                options = AugmentAsCaveSound(options);
+            }
+            
             return PlaySound(audioClip, options.MmSoundManagerTrack, options.Location,
                 options.Loop, options.Volume, options.ID,
                 options.Fade, options.FadeInitialVolume, options.FadeDuration, options.FadeTween,
@@ -189,7 +222,7 @@ namespace BML.Scripts.MMFFeedbacks
             audioSource.rolloffMode = rolloffMode;
             audioSource.minDistance = minDistance;
             audioSource.maxDistance = maxDistance;
-            audioSource.time = playbackTime; 
+            audioSource.time = playbackTime;
             
             // track and volume ---------------------------------------------------------------------------------
             
