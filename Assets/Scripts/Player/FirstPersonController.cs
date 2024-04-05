@@ -708,7 +708,8 @@ namespace BML.Scripts.Player
 
         private void CheckMoveTopSpeed() {
             var lateralSpeed = CurrentVelocityOut.Value.xoz().magnitude;
-            var isMovingAtTopSpeed = Mathf.Approximately(lateralSpeed, MoveSpeed.Value) || lateralSpeed >= MoveSpeed.Value;
+            var maxSpeedWithTolerance = MoveSpeed.Value - 1;
+            var isMovingAtTopSpeed = Mathf.Approximately(lateralSpeed, maxSpeedWithTolerance) || lateralSpeed >= maxSpeedWithTolerance;
             if(isMovingAtTopSpeed != PlayerMovingAtTopSpeed.Value) {
                 PlayerMovingAtTopSpeed.Value = isMovingAtTopSpeed;
             }

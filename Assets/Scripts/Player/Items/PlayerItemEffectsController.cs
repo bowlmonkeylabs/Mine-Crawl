@@ -75,6 +75,7 @@ namespace BML.Scripts.Player.Items
             _playerInventory.ConsumableItems.OnItemRemoved += Unapply_OnAcquired;
 
             _inDash.Subscribe(OnInDashChange);
+            _playerMovingAtTopSpeed.Subscribe(OnPlayerMovingAtTopSpeed);
             
             _onSwingPickaxe.Subscribe(Apply_Passives_OnPickaxeSwing);
             _onSwingPickaxeHit.Subscribe(Apply_Passives_OnPickaxeSwingHit);
@@ -108,6 +109,7 @@ namespace BML.Scripts.Player.Items
             _playerInventory.ConsumableItems.OnItemRemoved -= Unapply_OnAcquired;
 
             _inDash.Unsubscribe(OnInDashChange);
+            _playerMovingAtTopSpeed.Unsubscribe(OnPlayerMovingAtTopSpeed);
 
             _onSwingPickaxe.Unsubscribe(Apply_Passives_OnPickaxeSwing);
             _onSwingPickaxeHit.Unsubscribe(Apply_Passives_OnPickaxeSwingHit);
@@ -181,6 +183,20 @@ namespace BML.Scripts.Player.Items
             if (enteringDash)
             {
                 Apply_Passives_OnDash();
+            }
+        }
+
+        private void OnPlayerMovingAtTopSpeed(bool prevPlayerMovingAtTopSpeed, bool currPlayerMovingAtTopSpeed) {
+            bool isPlayerMovingAtTopSpeed = (!prevPlayerMovingAtTopSpeed && currPlayerMovingAtTopSpeed);
+            bool wasPlayerMovingAtTopSpeed = (prevPlayerMovingAtTopSpeed && !currPlayerMovingAtTopSpeed);
+            if (isPlayerMovingAtTopSpeed)
+            {
+                Apply_Passives_OnPlayerMoveAtTopSpeed();
+                return;
+            }
+
+            if(wasPlayerMovingAtTopSpeed) {
+                UnApply_Passives_OnPlayerMoveAtTopSpeed();
             }
         }
 
@@ -373,6 +389,14 @@ namespace BML.Scripts.Player.Items
 
         private void Apply_Passives_OnDash() {
             ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnDash, true);
+        }
+
+        private void Apply_Passives_OnPlayerMoveAtTopSpeed() {
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnMoveTopSpeed, true);
+        }
+
+        private void UnApply_Passives_OnPlayerMoveAtTopSpeed() {
+            ApplyOrUnApplyEffectsForTrigger(AllPassiveItems, ItemEffectTrigger.OnMoveTopSpeed, false);
         }
         
         private void Apply_Passives_OnPickaxeSwing() {
