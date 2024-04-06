@@ -219,7 +219,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
 
                 if (next == null)
                 {
-                    Debug.Log("No available next node in path!");
+                    Debug.LogWarning("No available next node in path!");
                     return (false, path);
                     break;
                 }
@@ -227,13 +227,13 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 // next = toCheckNext.First();
                 if (path.Contains(next))
                 {
-                    Debug.Log("Path contains a cycle!");
+                    Debug.LogWarning("Path contains a cycle!");
                     return (false, path);
                     break;
                 }
             }
 
-            Debug.Log("No available next node in path!");
+            Debug.LogWarning("No available next node in path!");
             return (false, path);
         }
 
@@ -253,7 +253,6 @@ namespace BML.Scripts.CaveV2.CaveGraph
             // TODO this doesn't account for there being multiple paths to the player. does it matter?
             var (success, path) = this.ShortestPathToPlayer(room); // TODO check success?
             var pathList = path.ToList();
-            Debug.Log($"path: {(success ? "" : "FAILED")} {pathList.Count()} {string.Join(",", pathList.Select(n => (n is CaveNodeData ? "Node" : (n is CaveNodeConnectionData ? "Connection" : ""))))}");
             var caveDistance = pathList.Count;
             var newRoomPathList = pathList.TakeWhile(caveNode => caveNode.PlayerDistance >= 1).ToList();
             var newRoom = newRoomPathList.Last();
@@ -304,9 +303,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
             var rolloffAtNewRoom = customRolloffCurve.Evaluate(curveTime);
             var slopeAtNewRoom = (customRolloffCurve.Evaluate(curveTime + 0.02f) - rolloffAtNewRoom) / 0.02f;
             var volumeAtNewRoom = rolloffAtNewRoom * volume;
-
-            Debug.Log($"(Cave distance: {caveDistance}) (World distance: {worldSpacePathLength}) (New source distance: {newRoomDistanceFromSource}) (Curve time {curveTime}) (Rolloff: {rolloffAtNewRoom}) (Volume: {volumeAtNewRoom})");
-
+            
             var newKeys = RasterizeAnimationCurve(customRolloffCurve).keys
                 .Where(key => key.time >= curveTime)
                 .Select(key => new Keyframe(key.time - curveTime, key.value, key.inTangent, key.outTangent, key.inWeight, key.outWeight))
@@ -316,9 +313,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
             var newCustomRolloffCurve = new AnimationCurve(newKeys);
             var newMaxDistance = maxDistance - newRoomDistanceFromSource;
             // var newMaxDistance = maxDistance;
-
-            Debug.Log($"(New keys {newKeys.Length})");
-
+            
             return (newLocalPosition, volume, newCustomRolloffCurve, newMaxDistance);
         }
         
