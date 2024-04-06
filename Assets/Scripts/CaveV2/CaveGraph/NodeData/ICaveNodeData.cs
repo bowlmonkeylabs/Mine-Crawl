@@ -9,13 +9,17 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
 {
     public interface ICaveNodeData
     {
+        [ShowInInspector] public bool IsNode { get; }
+        [ShowInInspector] public bool IsConnection { get; }
+        // Fundamental properties
+        [ShowInInspector] public Vector3 LocalPosition { get; }
         // Calculated properties
-        [ShowInInspector] public int MainPathDistance { get; }
-        [ShowInInspector] public int StartDistance { get; }
-        [ShowInInspector] public int ObjectiveDistance { get; }
-        [ShowInInspector] public int PlayerDistance { get; }
-        [ShowInInspector] public int PlayerDistanceDelta { get; }
-        [ShowInInspector] public float DirectPlayerDistance { get; }
+        [ShowInInspector] public int MainPathDistance { get; set; }
+        [ShowInInspector] public int StartDistance { get; set; }
+        [ShowInInspector] public int ObjectiveDistance { get; set; }
+        [ShowInInspector] public int PlayerDistance { get; set; }
+        [ShowInInspector] public int PlayerDistanceDelta { get; set; }
+        [ShowInInspector] public float DirectPlayerDistance { get; set; }
         [ShowInInspector] public bool PlayerMapped { get; set; }
         [ShowInInspector] public bool PlayerMappedAdjacent { get; set; }
         [ShowInInspector] public bool PlayerMappedAllAdjacent { get; set; }

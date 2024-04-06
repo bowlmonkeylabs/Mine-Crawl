@@ -114,7 +114,7 @@ namespace BML.Script.MMFFeedbacks.Editor
                 _masterVolume = _settingsSO.GetTrackVolume(MMSoundManager.MMSoundManagerTracks.Master);
                 _musicVolume = _settingsSO.GetTrackVolume(MMSoundManager.MMSoundManagerTracks.Music);
                 _sfxVolume = _settingsSO.GetTrackVolume(MMSoundManager.MMSoundManagerTracks.Sfx);
-                _uiVolume = _settingsSO.GetTrackVolume(MMSoundManager.MMSoundManagerTracks.UI);    
+                _uiVolume = _settingsSO.GetTrackVolume(MMSoundManager.MMSoundManagerTracks.UI);
             }
 
             serializedObject.Update();

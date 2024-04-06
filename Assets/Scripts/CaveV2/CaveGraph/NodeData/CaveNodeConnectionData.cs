@@ -15,6 +15,9 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
     public class CaveNodeConnectionData : IEdge<CaveNodeData>, ICaveNodeData
     {
         // Fundamental properties
+        [ShowInInspector] public bool IsNode => false;
+        [ShowInInspector] public bool IsConnection => true;
+        [ShowInInspector] public Vector3 LocalPosition => (Source.LocalPosition + Target.LocalPosition) / 2f;
         [ShowInInspector] public CaveNodeData Source { get; private set; }
         [ShowInInspector] public CaveNodeData Target { get; private set; }
         [ShowInInspector] public float Radius { get; set; }
@@ -25,18 +28,12 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
         [ShowInInspector] public CaveNodeConnectionPort TargetConnectionPort { get; set; }
         
         // Calculated properties
-        [ShowInInspector] public int MainPathDistance 
-            => Mathf.Min(Source.MainPathDistance, Target.MainPathDistance);
-        [ShowInInspector] public int StartDistance 
-            => Mathf.Min(Source.StartDistance, Target.StartDistance);
-        [ShowInInspector] public int ObjectiveDistance 
-            => Mathf.Min(Source.ObjectiveDistance, Target.ObjectiveDistance);
-        [ShowInInspector] public int PlayerDistance 
-            => Mathf.Min(Source.PlayerDistance, Target.PlayerDistance);
-        [ShowInInspector] public int PlayerDistanceDelta
-            => Mathf.RoundToInt((Source.PlayerDistanceDelta + Target.PlayerDistanceDelta) / 2f);
-        [ShowInInspector] public float DirectPlayerDistance
-            => Mathf.Min(Source.DirectPlayerDistance, Target.DirectPlayerDistance);
+        [ShowInInspector] public int MainPathDistance { get; set; }
+        [ShowInInspector] public int StartDistance { get; set; }
+        [ShowInInspector] public int ObjectiveDistance { get; set; }
+        [ShowInInspector] public int PlayerDistance { get; set; }
+        [ShowInInspector] public int PlayerDistanceDelta { get; set; }
+        [ShowInInspector] public float DirectPlayerDistance { get; set; }
         [ShowInInspector] public bool PlayerMapped { get; set; }
         [ShowInInspector] public bool PlayerMappedAdjacent { get; set; }
         [ShowInInspector] public bool PlayerMappedAllAdjacent { get; set; }
@@ -102,6 +99,13 @@ namespace BML.Scripts.CaveV2.CaveGraph.NodeData
             var verticalComponent = edgeDir.y;
             SteepnessAngle = Mathf.Rad2Deg * Mathf.Atan2(verticalComponent, horizontalComponent);
 
+            MainPathDistance = -1;
+            StartDistance = -1;
+            ObjectiveDistance = -1;
+            PlayerDistance = -1;
+            PlayerDistanceDelta = 0;
+            DirectPlayerDistance = -1;
+            
             PlayerMapped = false;
             PlayerMappedAdjacent = false;
             PlayerMappedAllAdjacent = false;
