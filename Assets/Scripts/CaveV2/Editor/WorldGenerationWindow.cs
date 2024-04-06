@@ -13,6 +13,7 @@ namespace BML.Scripts.CaveV2.Editor
         private CaveGenComponentV2 _caveGenerator => FindObjectOfType<CaveGenComponentV2>();
         private CaveGraphMudBunRenderer _mudBunRenderer => FindObjectOfType<CaveGraphMudBunRenderer>();
         private LevelObjectSpawner _levelObjectSpawner => FindObjectOfType<LevelObjectSpawner>();
+        private EnemySpawnManager _enemySpawnManager => FindObjectOfType<EnemySpawnManager>();
         
         [MenuItem("Window/BML  c(･o･)ɔ  c(･o･)ɔ  c(･o･)ɔ/World Generation")]
         private static void OpenWindow()
@@ -107,6 +108,14 @@ namespace BML.Scripts.CaveV2.Editor
         public void DestroyLevelObjects()
         {
             _levelObjectSpawner.DestroyLevelObjects();
+        }
+        
+        [TitleGroup("Enemy Spawn Manager"), Button("Select")]
+        private void SelectEnemySpawnManagerButton()
+        {
+            var go = _enemySpawnManager?.gameObject;
+            if (go == null) Debug.LogError($"No enemy spawn manager component found.");
+            Selection.activeGameObject = go;
         }
 
         [InlineEditor]
