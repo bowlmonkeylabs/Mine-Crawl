@@ -215,7 +215,7 @@ namespace BML.Scripts
                    || (isExitChallengeActive && isCurrentRoom);
         }
 
-        private void CacheActiveSpawnPoints()
+        public void CacheActiveSpawnPoints()
         {
             _activeSpawnPointsByTag = new Dictionary<string, List<EnemySpawnPoint>>();
             foreach (var kv in _allSpawnPointsByTag)

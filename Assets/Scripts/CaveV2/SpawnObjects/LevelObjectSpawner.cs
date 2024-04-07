@@ -220,7 +220,7 @@ namespace BML.Scripts.CaveV2.SpawnObjects
                 caveNodeConnectionData.LevelObjectSpawnPoints.Clear();
 
                 var childEnemySpawnPoints = caveNodeConnectionData.GameObject
-                    .GetComponentsInChildren<EnemySpawnPoint>()
+                    .GetComponentsInChildren<EnemySpawnPoint>(true)
                     .ToList();
                 
                 caveNodeConnectionData.EnemySpawnPoints.AddRange(childEnemySpawnPoints);
