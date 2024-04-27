@@ -61,6 +61,12 @@ namespace BML.ScriptableObjectCore.Scripts.Events
                 listeners[i].OnEventRaised();
             }
         }
+        
+        public override void Reset()
+        {
+            OnUpdate = null;
+            listeners.Clear();
+        }
 
         
     }

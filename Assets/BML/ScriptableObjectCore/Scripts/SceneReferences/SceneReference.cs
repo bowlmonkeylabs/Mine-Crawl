@@ -69,10 +69,13 @@ namespace BML.ScriptableObjectCore.Scripts.SceneReferences
         
         private void OnDisable()
         {
+            Reset();
+        }
+        
+        public override void Reset()
+        {
             OnUpdate = null;
             OnUpdateDelta = null;
-            //Undo.DestroyObjectImmediate(this);
-            //AssetDatabase.SaveAssets();
         }
 
     }
