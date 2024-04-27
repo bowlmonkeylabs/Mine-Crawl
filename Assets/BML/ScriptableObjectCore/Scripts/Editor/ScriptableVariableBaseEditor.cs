@@ -5,7 +5,7 @@ using BML.ScriptableObjectCore.Scripts.Variables;
 using Sirenix.OdinInspector.Editor;
 using UnityEngine;
 
-namespace BML.ScriptableObjectCoreEditor
+namespace BML.ScriptableObjectCore.Editor
 {
     // Decompiled with JetBrains decompiler
     // Type: Raskulls.ScriptableSystemEditor.ScriptableVariableBaseEditor

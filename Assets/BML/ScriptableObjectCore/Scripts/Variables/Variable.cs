@@ -150,7 +150,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 
         // [Button]
         // [HorizontalGroup("Buttons")]
-        public virtual void Reset()
+        public override void Reset()
         {
             if (enableLogs) Debug.Log($"Reset {this.name} (Runtime value {runtimeValue})");
             
@@ -158,6 +158,11 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             runtimeValue = defaultValue;
             this.OnUpdateDelta?.Invoke(prevValue, runtimeValue);
             this.OnUpdate?.Invoke();
+#if UNITY_EDITOR
+            string fullPath = AssetDatabase.GetAssetPath(this);
+            ScriptableObjectResetOnEnterPlaymode.RegisterVariableToReset(fullPath);
+            Debug.Log("Registering " + fullPath);
+#endif
         }
 
         public bool Save(string folderPath, string name = "")

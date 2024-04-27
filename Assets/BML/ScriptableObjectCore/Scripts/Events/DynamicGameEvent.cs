@@ -70,6 +70,13 @@ namespace BML.ScriptableObjectCore.Scripts.Events
         
             previous = obj;
         }
+        
+        public override void Reset()
+        {
+            OnUpdate = null;
+            listeners.Clear();
+            previous = null;
+        }
     }
 }
 
