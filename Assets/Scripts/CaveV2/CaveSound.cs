@@ -65,7 +65,7 @@ namespace BML.Scripts.CaveV2
 
         private void UpdateCaveSound()
         {
-            Debug.Log($"updating cave sound ({this.gameObject.name})");
+            // Debug.Log($"updating cave sound ({this.gameObject.name})");
             
             var (localPosition, volume, rolloffCurve, maxDistance) = _caveGenerator.CaveGraph.AugmentAsCaveSound(_anchor.position, _initialVolume, _initialCustomRolloffCurve, _initialMaxDistance);
             var newWorldPosition = _caveGenerator.LocalToWorld(localPosition);
