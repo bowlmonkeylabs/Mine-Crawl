@@ -804,7 +804,7 @@ namespace BML.Scripts.CaveV2
         {
             if (!IsGenerated || !playerOccupiedNodes.Any()) return;
             
-            Debug.Log(playerOccupiedNodes.Count());
+            // Debug.Log(playerOccupiedNodes.Count());
             _caveGraph.FloodFillDistance(
                 playerOccupiedNodes,
                 (node, dist) =>
