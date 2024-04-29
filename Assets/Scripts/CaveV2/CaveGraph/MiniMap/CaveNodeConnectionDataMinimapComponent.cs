@@ -78,8 +78,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
             
             Color newColor = new Color(color.r, color.g, color.b, alphaOverride ?? color.a);
             return newColor;
-            color.a = (alphaOverride ?? color.a);
-            return color;
+            // color.a = (alphaOverride ?? color.a);
+            // return color;
         }
 
         /// <summary>

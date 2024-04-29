@@ -103,7 +103,10 @@ namespace BML.Scripts.ItemTreeGraph
             Obtained = false;
         }
 
+        // disable warning about unused event
+        #pragma warning disable 67
         public event IResettableScriptableObject.OnResetScriptableObject OnReset;
+        #pragma warning restore 67
         
         #endregion
         

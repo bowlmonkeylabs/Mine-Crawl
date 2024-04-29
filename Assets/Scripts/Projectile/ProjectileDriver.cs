@@ -30,10 +30,6 @@ namespace BML.Scripts
         private bool _showHomingParameters => (_enableHoming.Value || !_enableHoming.UseConstant || _enableHomingOnDeflect.Value || !_enableHomingOnDeflect.UseConstant);
         [SerializeField]
         private SafeBoolValueReference _enableHomingOnDeflect;
-        [HorizontalGroup("EnableHomingAxes"), ShowIf("_showHomingParameters")] [SerializeField] 
-        private bool _enableHorizontalHoming = true;
-        [HorizontalGroup("EnableHomingAxes"), ShowIf("_showHomingParameters")] [SerializeField] 
-        private bool _enableVerticalHoming = true;
         [FoldoutGroup("Homing", true), ShowIf("_showHomingParameters")] [SerializeField, Range(0f, 1f), OnValueChanged("UpdateCurvability"), Tooltip("Leave curvability set to 0 if you want to manually tweak the homing PID parameters.")] 
         private float _curvability;
         private bool _doUseCurvability => _curvability > 0;

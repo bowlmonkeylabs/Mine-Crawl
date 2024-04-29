@@ -116,7 +116,7 @@ namespace BML.Scripts.Player
 
         private InputAction primaryAction;
         private InputAction secondaryAction;
-        private bool secondaryInputHeld = false;
+        // private bool secondaryInputHeld = false;
         private bool pickaxeHeld = true;
         private PickaxeInteractionReceiver hoveredInteractionReceiver = null;
         private int doubleSweepCount = 0;

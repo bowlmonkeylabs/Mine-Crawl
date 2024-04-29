@@ -26,7 +26,7 @@ namespace BML.Scripts.Pathfinding
                 
                 IsPathPossible =  PathUtilities.IsPathPossible(node1, node2);
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
                 IsPathPossible = false;
             }

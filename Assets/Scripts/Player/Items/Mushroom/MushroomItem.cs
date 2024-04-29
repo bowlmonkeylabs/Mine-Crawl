@@ -54,7 +54,8 @@ namespace BML.Scripts.Player.Items.Mushroom
         
         #region IResettableScriptableObject
         
-        public event IResettableScriptableObject.OnResetScriptableObject OnReset;
+        // Required by IResettableScriptableObject, but already defined in base class PlayerItem
+        // public event IResettableScriptableObject.OnResetScriptableObject OnReset;
 
         public new void ResetScriptableObject()
         {

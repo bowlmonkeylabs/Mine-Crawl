@@ -106,13 +106,10 @@ namespace BML.Scripts.Player.Items
                         return canAdd;
                     }
                     return false;
-                    break;
                 case ItemType.Passive:
                     return PassiveItems.CheckIfCanAddItem(item, ignoreReplacementCooldown).canAdd;
-                    break;
                 case ItemType.Active:
                     return ActiveItems.CheckIfCanAddItem(item, ignoreReplacementCooldown).canAdd;
-                    break;
                 case ItemType.Consumable:
                     // Allow pickup if the item grants ANY resources that the player has room to hold
                     // TODO this CanAddResource check should really be implemented on the inventory
@@ -130,7 +127,6 @@ namespace BML.Scripts.Player.Items
                         return ConsumableItems.CheckIfCanAddItem(item, ignoreReplacementCooldown).canAdd;
                     }
                     return false;
-                    break;
             }
 
             return false;
