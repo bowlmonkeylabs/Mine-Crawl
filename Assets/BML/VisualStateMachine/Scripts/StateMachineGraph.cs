@@ -80,7 +80,7 @@ public class StateMachineGraph : NodeGraph
         startNodes.ForEach(s => s.OnApplictionExit());
     }
 
-    public void OnDestroy()
+    public new void OnDestroy()
     {
         base.OnDestroy();
         currentStates.ForEach(s => s.OnDestroy());

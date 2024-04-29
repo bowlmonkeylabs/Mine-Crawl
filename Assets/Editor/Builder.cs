@@ -119,7 +119,7 @@ namespace BML.Build
                     argValue = args[argValueIndex];
                     try {
                         buildTarget = Enum.Parse(typeof(BuildTarget), argValue) as BuildTarget?;
-                    } catch (Exception e) {
+                    } catch (Exception _) {
                         throw new ArgumentException("Failed to parse build target");
                     }
                     if (!buildTarget.HasValue) throw new ArgumentException("Invalid build target");
@@ -131,7 +131,7 @@ namespace BML.Build
                     BuildOptions? option = null;
                     try {
                         option = Enum.Parse(typeof(BuildOptions), argValue) as BuildOptions?;
-                    } catch (Exception e) {
+                    } catch (Exception _) {
                         throw new ArgumentException("Failed to parse build option");
                     }
                     if (!option.HasValue) throw new ArgumentException("Invalid build target");

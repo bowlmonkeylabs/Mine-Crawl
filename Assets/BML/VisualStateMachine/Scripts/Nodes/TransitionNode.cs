@@ -34,7 +34,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private string Description;
 
     [Tooltip("Unity Events that are raised when this transition is applied")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [Required]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.85f, .85f, .95f)]
@@ -42,7 +42,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<UnityEvent> RaiseOnTransitionUnityEvents = new List<UnityEvent>();
 
     [Tooltip("Game Events that are raised when this transition is applied")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [Required]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.85f, .85f, .95f)]
@@ -50,7 +50,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<GameEvent> RaiseOnTransitionEvents = new List<GameEvent>();
 
     [Tooltip("Transition only valid if ANY 1 or more of these states are active in respective state machine")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [Required]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.88f, 1f, .95f)]
@@ -58,7 +58,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<StateNode> ValidStartStates = new List<StateNode>();
 
     [Tooltip("Transition only valid if NONE of these states are active in respective state machine")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [Required]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.88f, 1f, .95f)]
@@ -66,7 +66,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<StateNode> InvalidStartStates = new List<StateNode>();
 
     [Tooltip("Transition only valid if ALL of these Bool condition are met")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.9f, .95f, 1f)]
     [HideIf("$collapsed")]
@@ -76,7 +76,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<BoolCondition> BoolConditions = new List<BoolCondition>();
 
     [Tooltip("Transition only valid if ALL of these Trigger condition are met")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.9f, .95f, 1f)]
     [HideIf("$collapsed")]
@@ -85,7 +85,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<TriggerCondition> TriggerConditions = new List<TriggerCondition>();
 
     [Tooltip("Transition only valid if ALL of these Float condition are met")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.9f, .95f, 1f)]
     [HideIf("$collapsed")]
@@ -95,7 +95,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<FloatCondition> FloatConditions = new List<FloatCondition>();
 
     [Tooltip("Transition only valid if ALL of these Int condition are met")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.9f, .95f, 1f)]
     [HideIf("$collapsed")]
@@ -105,7 +105,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<IntCondition> IntConditions = new List<IntCondition>();
 
     [Tooltip("Transition only valid if ALL of these Int condition are met")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.9f, .95f, 1f)]
     [HideIf("$collapsed")]
@@ -114,7 +114,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<TimerCondition> TimerConditions = new List<TimerCondition>();
 
     [Tooltip("Transition only valid if ALL of these Vector2 condition are met")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.9f, .95f, 1f)]
     [HideIf("$collapsed")]
@@ -124,7 +124,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<Vector2Condition> Vector2Conditions = new List<Vector2Condition>();
 
     [Tooltip("Transition only valid if ALL of these Vector3 condition are met")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.9f, .95f, 1f)]
     [HideIf("$collapsed")]
@@ -134,7 +134,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<Vector3Condition> Vector3Conditions = new List<Vector3Condition>();
 
     [Tooltip("Transition only valid if ALL of these GameEvent condition are met")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.9f, .95f, 1f)]
     [HideIf("$collapsed")]
@@ -144,7 +144,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<GameEventCondition> GameEventConditions = new List<GameEventCondition>();
 
     [Tooltip("Transition only valid if ALL of these DynamicGameEvent condition are met")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.9f, .95f, 1f)]
     [HideIf("$collapsed")]
@@ -154,7 +154,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [SerializeField] private List<DynamicGameEventCondition> DynamicGameEventConditions = new List<DynamicGameEventCondition>();
 
     [Tooltip("Transition only valid if ALL of these DynamicGameEvent condition are met")]
-    [ListDrawerSettings(Expanded = true, DraggableItems = false)]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, DraggableItems = false)]
     [PropertySpace(SpaceBefore = 0, SpaceAfter = 10)]
     [GUIColor(.9f, .95f, 1f)]
     [HideIf("$collapsed")]

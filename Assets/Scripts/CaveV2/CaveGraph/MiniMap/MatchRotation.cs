@@ -38,15 +38,6 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         {
             if (_clearLocalRotationOnDisable)
             {
-                // if (_coroutineResetRotation != null)
-                // {
-                //     StopCoroutine(_coroutineResetRotation);
-                // }
-                //
-                // if (ApplicationUtils.IsPlaying_EditorSafe)
-                // {
-                //     _coroutineResetRotation = StartCoroutine(CoroutineResetRotation());
-                // }
                 transform.localRotation = Quaternion.identity;
             }
         }
@@ -95,28 +86,40 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
                 }
             }
         }
-
-        private Coroutine _coroutineResetRotation;
-        private IEnumerator CoroutineResetRotation()
-        {
-            if (_target.Value != null && _transform.Value != null)
-            {
-                Quaternion targetRotation = Quaternion.identity;
-                Quaternion newRotation = _transform.Value.localRotation;
-                while (newRotation != targetRotation)
-                {
-                    newRotation = Quaternion.RotateTowards(
-                        _transform.Value.localRotation, 
-                        targetRotation, _maxDegreesDelta
-                    );
-                    _transform.Value.localRotation = newRotation;
-                    yield return null;
-                }
-            }
-
-            _coroutineResetRotation = null;
-
-        }
+        
+        // Commented out because it's not used, but it's a good example of how to reset rotation
+        // public void ResetRotation()
+        // {
+        //     if (_coroutineResetRotation != null)
+        //     {
+        //         StopCoroutine(_coroutineResetRotation);
+        //     }
+        //     if (ApplicationUtils.IsPlaying_EditorSafe)
+        //     {
+        //         _coroutineResetRotation = StartCoroutine(CoroutineResetRotation());
+        //     }
+        // }
+        //
+        // private Coroutine _coroutineResetRotation;
+        // private IEnumerator CoroutineResetRotation()
+        // {
+        //     if (_target.Value != null && _transform.Value != null)
+        //     {
+        //         Quaternion targetRotation = Quaternion.identity;
+        //         Quaternion newRotation = _transform.Value.localRotation;
+        //         while (newRotation != targetRotation)
+        //         {
+        //             newRotation = Quaternion.RotateTowards(
+        //                 _transform.Value.localRotation, 
+        //                 targetRotation, _maxDegreesDelta
+        //             );
+        //             _transform.Value.localRotation = newRotation;
+        //             yield return null;
+        //         }
+        //     }
+        //
+        //     _coroutineResetRotation = null;
+        // }
         
     }
 }

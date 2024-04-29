@@ -99,8 +99,8 @@ namespace BML.Scripts.Player
 
         [SerializeField, FoldoutGroup("GodMode")] private BoolVariable _isGodModeEnabled;
 
-        [SerializeField, FoldoutGroup("Movement Collision")] private float _collisionCooldown = .1f;
-		[SerializeField, FoldoutGroup("Movement Collision")] private LayerMask _enemyLayerMask;
+        // [SerializeField, FoldoutGroup("Movement Collision")] private float _collisionCooldown = .1f;
+		// [SerializeField, FoldoutGroup("Movement Collision")] private LayerMask _enemyLayerMask;
 
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
 		[SerializeField, FoldoutGroup("Cinemachine")] GameObject CinemachineCameraTarget;

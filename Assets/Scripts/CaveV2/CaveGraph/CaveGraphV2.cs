@@ -94,7 +94,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
         {
             if (!AllNodes.Any()) return (null, null);
             
-            bool foundExactRoom = false;
+            // bool foundExactRoom = false; // commented out because it is not used, but still correct code
             (ICaveNodeData nodeData, float sqlDistanceToPoint, Vector3 closestPoint) closestRoomInfo 
                 = (null, sqlDistanceToPoint: Mathf.Infinity, closestPoint: Vector3.zero);
 
@@ -113,7 +113,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
                     (isInCollider, closestPoint) = collider.IsPointInsideCollider(position);
                     if (isInCollider)
                     {
-                        foundExactRoom = true;
+                        // foundExactRoom = true;
                         closestRoomInfo.nodeData = nodeData;
                         closestRoomInfo.closestPoint = position;
                         closestRoomInfo.sqlDistanceToPoint = 0;
@@ -196,7 +196,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 if (next.PlayerDistance == 0)
                 {
                     return (true, path);
-                    break;
+                    // break;
                 }
 
                 if (next is CaveNodeData node)
@@ -210,7 +210,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 {
                     bool sourceFirst = connection.Source.PlayerDistance < connection.Target.PlayerDistance;
                     var first = (sourceFirst ? connection.Source : connection.Target);
-                    var second = (sourceFirst ? connection.Target : connection.Source);
+                    // var second = (sourceFirst ? connection.Target : connection.Source);
                     // toCheckNext.Clear();
                     // if (!path.Contains(first) && first.PlayerDistance <= next.PlayerDistance) toCheckNext.Add(first);
                     // if (!path.Contains(second) && second.PlayerDistance <= next.PlayerDistance) toCheckNext.Add(second);
@@ -221,7 +221,7 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 {
                     Debug.LogWarning("No available next node in path!");
                     return (false, path);
-                    break;
+                    // break;
                 }
 
                 // next = toCheckNext.First();
@@ -229,12 +229,12 @@ namespace BML.Scripts.CaveV2.CaveGraph
                 {
                     Debug.LogWarning("Path contains a cycle!");
                     return (false, path);
-                    break;
+                    // break;
                 }
             }
 
-            Debug.LogWarning("No available next node in path!");
-            return (false, path);
+            // Debug.LogWarning("No available next node in path!");
+            // return (false, path);
         }
 
         public (Vector3 localPosition, float volume, AnimationCurve customRolloffCurve, float maxDistance) AugmentAsCaveSound(Vector3 position, float volume, AnimationCurve customRolloffCurve, float maxDistance)

@@ -53,7 +53,7 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
         }
 
         [InlineProperty, AssetsOnly]
-        [ListDrawerSettings(Expanded = true)]
+        [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true)]
         [InfoBox("Empty", visibleIfMemberName: "@Drops.Length == 0 && Key != LootTableKey.Nothing", infoMessageType: InfoMessageType.Warning)]
         [InfoBox("Not empty?", visibleIfMemberName: "@Drops.Length > 0 && Key == LootTableKey.Nothing", infoMessageType: InfoMessageType.Warning)]
         [HideIf("@Key == LootTableKey.Nothing")]
@@ -100,10 +100,9 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             var lootTableEntry = Entries.Options.FirstOrDefault(entry => entry.Value.Key == key);
             if (lootTableEntry == null)
             {
-#warning throw or log?
                 // Debug.LogError($"No loot table entry found for {key}.");
+                // return;
                 throw new Exception($"No loot table entry found for {key}.");
-                return;
             }
 
             var prevWeight = lootTableEntry.Weight;

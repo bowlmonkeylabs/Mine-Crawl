@@ -3,9 +3,11 @@ using BML.ScriptableObjectCore.Scripts.CustomAttributes;
 using BML.ScriptableObjectCore.Scripts.Utils;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace BML.ScriptableObjectCore.Scripts.Variables
 {
@@ -175,7 +177,14 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
             if (enableLogs) Debug.Log($"OnEnable {this.name}");
             
             hideFlags = HideFlags.DontUnloadUnusedAsset;
+#if UNITY_EDITOR
+            if (UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Reset();
+            }
+#else
             Reset();
+#endif
         }
 
         private void OnDisable()

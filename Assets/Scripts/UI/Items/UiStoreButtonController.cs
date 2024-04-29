@@ -9,8 +9,6 @@ using UnityEngine.Serialization;
 
 namespace BML.Scripts.UI.Items
 {
-    public delegate void OnInteractibilityChanged();
-
     public class UiStoreButtonController : MonoBehaviour
     {
         #region Inspector
@@ -46,8 +44,6 @@ namespace BML.Scripts.UI.Items
         #endregion
 
         #region Public interface
-
-        public event OnInteractibilityChanged OnInteractibilityChanged;
         
         /// <summary>
         /// 

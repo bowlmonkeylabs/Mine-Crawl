@@ -81,7 +81,6 @@ namespace BML.Scripts.UI.Items
                 {
                     case ItemSource.PlayerItem:
                         return _item;
-                        break;
                     default:
                     case ItemSource.PlayerInventory:
                         switch (_inventoryItemType)
@@ -97,9 +96,7 @@ namespace BML.Scripts.UI.Items
                                 return GetSlotHelper(_playerInventory.ConsumableItems);
                             default:
                                 return null;
-                                break;
                         }
-                        break;
                 }
             }
             set
@@ -128,7 +125,10 @@ namespace BML.Scripts.UI.Items
         [TitleGroup("UI"), SerializeField] private Image _imageIcon;
         
         [TitleGroup("UI"), SerializeField] private MMF_Player _itemChangedFeedbacks;
+        // Disable warning for unused field
+        #pragma warning disable 414
         [TitleGroup("UI"), ShowInInspector, ReadOnly] private ItemEffectTimerDisplayMode _timerDisplayMode;
+        #pragma warning restore 414
         [TitleGroup("UI"), SerializeField] private UiTimerImageController _timerImageController;
         [TitleGroup("UI"), SerializeField] private UiTextIntFormatter _remainingCountTextController;
         [TitleGroup("UI"), SerializeField] private MMF_Player _remainingCountIncrementFeedbacks;

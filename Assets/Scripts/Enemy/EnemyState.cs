@@ -49,8 +49,6 @@ namespace BML.Scripts.Enemy
         public bool IsPlayerInLoS { get => isPlayerInLoS; set => isPlayerInLoS = value; }
 
         public int DistanceToPlayer => distanceToPlayer;
-
-        private float lastUpdateTime = Mathf.NegativeInfinity;
         
         private Dictionary<Collider, ICaveNodeData> _currentNodes;
 

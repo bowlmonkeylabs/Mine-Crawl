@@ -16,7 +16,7 @@ namespace BML.VisualStateMachine.Scripts.Nodes
     [ValidateInput("ValidateInput",
         "You added a SubStateProcessorNode to the list! Do you want infinite loop?")]
     [HideIf("$collapsed")] [LabelWidth(LABEL_WIDTH)] [SerializeField] [PropertyOrder(1)]
-    [ListDrawerSettings(Expanded = true, IsReadOnly = true)] [Sirenix.OdinInspector.ReadOnly]
+    [ListDrawerSettings(ShowFoldout = true, DefaultExpandedState = true, IsReadOnly = true)] [Sirenix.OdinInspector.ReadOnly]
     protected List<StateNode> subStates = new List<StateNode>();
 
     public List<StateNode> SubStates => subStates;

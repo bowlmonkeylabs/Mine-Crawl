@@ -81,7 +81,6 @@ namespace BML.Scripts.CaveV2
 
         [TitleGroup("Torches")]
         [SerializeField] private DynamicGameEvent _onTorchPlaced;
-        [SerializeField] private float _torchInfluenceUpdatePeriod = 1f;
         [SerializeField] private FloatVariable _torchAreaCoverage;
         [Button]
         private void RecalculateTorchRequirementDebug()
