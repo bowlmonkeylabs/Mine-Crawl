@@ -457,7 +457,7 @@ GameObject:
   - component: {fileID: 4348729967358701529}
   - component: {fileID: 1190134599995909673}
   m_Layer: 0
-  m_Name: ItemStoreController
+  m_Name: ItemStoreController_UpgradeStore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 999025f9ed6c4c03b6dc726dc934e31c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enableLogs: 0
+  _enableLogs: 1
   _storeInventory: {fileID: 1190134599995909673}
   _onOpenStoreInventory: {fileID: 0}
   _tryPurchaseEvent: {fileID: 11400000, guid: 55866cc2117789d43af4b6db2f26f0ef, type: 2}
@@ -520,6 +520,7 @@ MonoBehaviour:
   _storeId: 1
   _numAvailableItems: 3
   _buyBehavior: 3
+  _guaranteeReplacementIsDifferent: 1
   _onAfterGenerateLevelObjects: {fileID: 11400000, guid: 6b14c457b3e8a0446918006e4929ed06, type: 2}
   _playerLevel:
     ReferenceTypeSelector: 1
@@ -1221,7 +1222,7 @@ GameObject:
   - component: {fileID: 5895518985195771841}
   - component: {fileID: 6337804492094676961}
   m_Layer: 0
-  m_Name: StoreMenuController
+  m_Name: StoreMenuController_UpgradeStore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1258,6 +1259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 038741ae6f594b89a868860619e23517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enableLogs: 1
   _root: {fileID: 4064137793203584478}
   _defaultSelected: {fileID: 0}
   _defaultSelectedFallback: {fileID: 996323411250592069}
