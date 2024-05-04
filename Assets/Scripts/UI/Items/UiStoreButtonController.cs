@@ -26,6 +26,9 @@ namespace BML.Scripts.UI.Items
 
         [SerializeField] private PlayerItem _itemToPurchase;
         public PlayerItem ItemToPurchase => _itemToPurchase;
+        
+        public delegate void _OnInteractableChanged();
+        public event _OnInteractableChanged OnInteractableChanged;
 
         private bool _enableLogs => ParentItemStoreController?.EnableLogs ?? false;
         
@@ -95,6 +98,7 @@ namespace BML.Scripts.UI.Items
             if (!_button.SafeIsUnityNull() && _button.interactable != canBuyItem)
             {
                 _button.interactable = canBuyItem;
+                OnInteractableChanged?.Invoke();
             }
         }
 

@@ -34,6 +34,7 @@ namespace BML.Scripts.UI.Items
         [SerializeField, FoldoutGroup("UI Refs")] private bool _navHorizontal = true;
         [SerializeField, FoldoutGroup("UI Refs"), LabelText("@(_navHorizontal ? \"Button Nav Up\" : \"Button Nav Left\")")] private Button _buttonNavLeft;
         [SerializeField, FoldoutGroup("UI Refs"), LabelText("@(_navHorizontal ? \"Button Nav Down\" : \"Button Nav Right\")")] private Button _buttonNavRight;
+        [SerializeField, FoldoutGroup("UI Refs")] private bool _navIncludeNonInteractable = false;
         
         #endregion
 
@@ -54,6 +55,7 @@ namespace BML.Scripts.UI.Items
         {
             if (_storeInventory != null)
             {
+                // SetNavigationOrder();
                 _storeInventory.OnAvailableItemsChanged += UpdateStoreFromInventory;
             }
         }
@@ -68,6 +70,7 @@ namespace BML.Scripts.UI.Items
 
         private void OnDestroy()
         {
+            ClearButtonList();
             _onOpenStoreInventory?.Unsubscribe(OnOpenStoreInventoryDynamic);
         }
 
@@ -109,7 +112,7 @@ namespace BML.Scripts.UI.Items
 
         private void PopulateButtonList()
         {
-            _storeItemButtons.Clear();
+            ClearButtonList();
             
             for (int i = 0; i < _storeButtonsListContainer.childCount; i++)
             {
@@ -122,9 +125,19 @@ namespace BML.Scripts.UI.Items
 
                 var buttonController = buttonTransform.GetComponent<UiStoreButtonController>();
                 buttonController.ParentItemStoreController = this; // Ideally we should remember to assign this in the inspector, so we can remove this when we're done working on it. We only really need this code if we bring back dynamic shop button addition.
-                    
+                buttonController.OnInteractableChanged += SetNavigationOrder;
+                
                 _storeItemButtons.Add(buttonController);
             }
+        }
+
+        private void ClearButtonList()
+        {
+            foreach (var button in _storeItemButtons)
+            {
+                button.OnInteractableChanged -= SetNavigationOrder;
+            }
+            _storeItemButtons.Clear();
         }
 
         private void UpdateStoreFromInventory()
@@ -207,7 +220,7 @@ namespace BML.Scripts.UI.Items
                 }
             }
             
-            SetNavigationOrder();
+            SetNavigationOrder(false, _navIncludeNonInteractable);
         }
         
         public void SelectDefault()
@@ -227,10 +240,13 @@ namespace BML.Scripts.UI.Items
             }
         }
 
+        private void SetNavigationOrder()
+        {
+            SetNavigationOrder(false, _navIncludeNonInteractable);
+        }
+
         private void SetNavigationOrder(bool includeInactive = false, bool includeNonInteractable = false)
         {
-            if (_enableLogs) Debug.Log($"SetNavigationOrder ({(this.SafeIsUnityNull() ? "null" : this?.gameObject?.name)})");
-            
             var filteredButtons = _storeItemButtons
                 .Where(b =>
                     !b.SafeIsUnityNull()
@@ -274,6 +290,8 @@ namespace BML.Scripts.UI.Items
                 //     (includeInactive || b.gameObject.activeSelf) 
                 //     && (includeNonInteractable || b.Button.IsInteractable()))?.Button.navigation.selectOnUp.name);
             }
+            
+            if (_enableLogs) Debug.Log($"SetNavigationOrder ({(this.SafeIsUnityNull() ? "null" : this?.gameObject?.name)}) ({filteredButtons.Count} buttons)");
         }
 
         #endregion
