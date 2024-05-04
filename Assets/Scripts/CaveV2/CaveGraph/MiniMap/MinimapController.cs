@@ -63,13 +63,13 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
         private void OnEnable()
         {
             MinimapParameters.OpenMapOverlay.Subscribe(UpdateMinimapOverlay);
-            _moveInput.Subscribe(OnMove);
+            // _moveInput.Subscribe(OnMove);
         }
 
         private void OnDisable()
         {
             MinimapParameters.OpenMapOverlay.Unsubscribe(UpdateMinimapOverlay);
-            _moveInput.Unsubscribe(OnMove);
+            // _moveInput.Unsubscribe(OnMove);
         }
 
         private void FixedUpdate()
@@ -105,41 +105,43 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
 
         private void OnMove()
         {
-            if (MinimapParameters.OpenMapOverlay.Value && _moveInput.Value != Vector2.zero)
-            {
-                if (_moveOffset == null)
-                {
-                    _moveOffset = Vector3.zero;
-                }
-                
-                var caveGenComponent = _caveGenerator.CachedComponent as CaveGenComponentV2;
-                var bounds = caveGenComponent?.CaveGenBounds;
-
-                float offsetFactor = 0f;
-                if (bounds != null)
-                {
-                    offsetFactor = Mathf.Clamp01(_moveOffset.Value.magnitude / bounds.Value.extents.Max() * 2f);
-                }
-
-                var m = 100f;
-                var multiplier = FloatUtils.RemapRange(offsetFactor, 0, 1, 0f, m);
-                _moveOffset += (_camera.transform.rotation * _moveInput.Value.xoy()).xoz().normalized 
-                               * (Time.unscaledDeltaTime * m);
-                var centeringForce = (-_moveOffset.Value).normalized * (Time.unscaledDeltaTime * multiplier);
-                _moveOffset += centeringForce;
-                if (bounds != null)
-                {
-                    _moveOffset = Vector3.ClampMagnitude(_moveOffset.Value, bounds.Value.extents.magnitude * 2 / 5);
-                }
-            }
-            else if (_moveOffset != Vector3.zero && _moveOffset != null)
-            {
-                _moveOffset = Vector3.Lerp(_moveOffset.Value, Vector3.zero, 0.1f);
-            }
-            else
-            {
-                _moveOffset = null;
-            }
+            // Disabled this because I'm not sure the map is big enough for it to be useful. As it is it's kind of confusing to use. The code is left here for reference. 
+            
+            // if (MinimapParameters.OpenMapOverlay.Value && _moveInput.Value != Vector2.zero)
+            // {
+            //     if (_moveOffset == null)
+            //     {
+            //         _moveOffset = Vector3.zero;
+            //     }
+            //     
+            //     var caveGenComponent = _caveGenerator.CachedComponent as CaveGenComponentV2;
+            //     var bounds = caveGenComponent?.CaveGenBounds;
+            //
+            //     float offsetFactor = 0f;
+            //     if (bounds != null)
+            //     {
+            //         offsetFactor = Mathf.Clamp01(_moveOffset.Value.magnitude / bounds.Value.extents.Max() * 2f);
+            //     }
+            //
+            //     var m = 100f;
+            //     var multiplier = FloatUtils.RemapRange(offsetFactor, 0, 1, 0f, m);
+            //     _moveOffset += (_camera.transform.rotation * _moveInput.Value.xoy()).xoz().normalized 
+            //                    * (Time.unscaledDeltaTime * m);
+            //     var centeringForce = (-_moveOffset.Value).normalized * (Time.unscaledDeltaTime * multiplier);
+            //     _moveOffset += centeringForce;
+            //     if (bounds != null)
+            //     {
+            //         _moveOffset = Vector3.ClampMagnitude(_moveOffset.Value, bounds.Value.extents.magnitude * 2 / 5);
+            //     }
+            // }
+            // else if (_moveOffset != Vector3.zero && _moveOffset != null)
+            // {
+            //     _moveOffset = Vector3.Lerp(_moveOffset.Value, Vector3.zero, 0.1f);
+            // }
+            // else
+            // {
+            //     _moveOffset = null;
+            // }
         }
 
         private void UpdateMinimapTransform()
