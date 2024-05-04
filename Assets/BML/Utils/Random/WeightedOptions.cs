@@ -80,10 +80,7 @@ namespace BML.Utils.Random
             if (Mathf.Approximately(SumLockedWeights, 1f)) return true;
             if (SumLockedWeights > 1)
             {
-#warning throw or log?
                 throw new Exception("Sum of locked weights already exceeds 1; unable to normalize.");
-                Debug.LogError("Sum of locked weights already exceeds 1; unable to normalize.");
-                return false;
             }
 
             float sumUnlockedWeights = SumWeights - SumLockedWeights;
