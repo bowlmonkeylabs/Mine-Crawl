@@ -9,6 +9,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -133,7 +134,12 @@ namespace BML.Scripts.UI.Items
             {
                 throw new Exception("Not enough buttons to display all the available items.");
             }
+            
+            // Cache current selected before we change the active state of any buttons
+            var lastSelected = EventSystem.current.currentSelectedGameObject;
+            var lastSelectedButtonController = (lastSelected != null ? _storeItemButtons.FirstOrDefault(b => b != null && !b.SafeIsUnityNull() && b.gameObject == lastSelected) : null);
 
+            // Assign new items to buttons and update active state
             for (int i = 0; i < _storeItemButtons.Count; i++)
             {
                 var buttonController = _storeItemButtons[i];
@@ -152,11 +158,62 @@ namespace BML.Scripts.UI.Items
                 }
             }
             
+            // Attempt to restore selection
+            if (lastSelected == null)
+            { 
+                // If none was selected, select default
+                SelectDefault();
+            }
+            else if (!lastSelected.activeSelf || !(lastSelectedButtonController?.Button.IsInteractable() ?? true))
+            { 
+                // If last selected is now inactive or not interactable, try to select next best.
+                // Favor not choosing the cancel button, if possible.
+                Selectable check = null;
+                
+                if (_navHorizontal)
+                {
+                    check = lastSelectedButtonController.Button.navigation.selectOnLeft;
+                    if (
+                        (_cancelButton != null && check == _cancelButton) 
+                        || check == null 
+                        || !check.gameObject.activeSelf 
+                        || !check.IsInteractable()
+                    ) {
+                        check = lastSelectedButtonController.Button.navigation.selectOnRight;
+                    }
+                }
+                else
+                {
+                    check = lastSelectedButtonController.Button.navigation.selectOnUp;
+                    if (
+                        (_cancelButton != null && check == _cancelButton) 
+                        || check == null 
+                        || !check.gameObject.activeSelf 
+                        || !check.IsInteractable()
+                    ) {
+                        check = lastSelectedButtonController.Button.navigation.selectOnDown;
+                    }
+                }
+                
+                if (check != null && check.gameObject.activeSelf && check.IsInteractable())
+                {
+                    if (_enableLogs) Debug.Log($"Selecting next button: {check.name}");
+                    
+                    check.Select();
+                }
+                else
+                {
+                    SelectDefault();
+                }
+            }
+            
             SetNavigationOrder();
         }
         
         public void SelectDefault()
         {
+            if (_enableLogs) Debug.Log($"SelectDefault ({this.gameObject.name})");
+            
             var firstUsableButtonController = _storeItemButtons
                 ?.FirstOrDefault(button => button.Button.gameObject.activeSelf && button.Button.IsInteractable());
             var firstUsableButton = firstUsableButtonController?.Button ?? _cancelButton;
@@ -169,15 +226,10 @@ namespace BML.Scripts.UI.Items
                 }
             }
         }
-        
-        private void SetNavigationOrder()
-        {
-            this.SetNavigationOrder(false, true);
-        }
 
         private void SetNavigationOrder(bool includeInactive = false, bool includeNonInteractable = false)
         {
-            if (_enableLogs) Debug.Log($"SetNavigationOrder ({this.gameObject.name})");
+            if (_enableLogs) Debug.Log($"SetNavigationOrder ({this?.gameObject?.name})");
             
             var filteredButtons = _storeItemButtons
                 .Where(b =>
