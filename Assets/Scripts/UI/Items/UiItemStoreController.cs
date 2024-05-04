@@ -229,7 +229,7 @@ namespace BML.Scripts.UI.Items
 
         private void SetNavigationOrder(bool includeInactive = false, bool includeNonInteractable = false)
         {
-            if (_enableLogs) Debug.Log($"SetNavigationOrder ({this?.gameObject?.name})");
+            if (_enableLogs) Debug.Log($"SetNavigationOrder ({(this.SafeIsUnityNull() ? "null" : this?.gameObject?.name)})");
             
             var filteredButtons = _storeItemButtons
                 .Where(b =>
