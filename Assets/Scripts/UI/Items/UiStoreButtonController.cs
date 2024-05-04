@@ -89,7 +89,7 @@ namespace BML.Scripts.UI.Items
         
         public void UpdateInteractable()
         {
-            if (_enableLogs) Debug.Log($"UpdateInteractable ({_button.gameObject.name})");
+            if (_enableLogs) Debug.Log($"UpdateInteractable ({(_button.SafeIsUnityNull() ? "null" : _button.gameObject.name)})");
 
             bool canBuyItem = _itemToPurchase != null && _playerInventory.CheckIfCanBuy(_itemToPurchase, true);
             if (!_button.SafeIsUnityNull() && _button.interactable != canBuyItem)
