@@ -425,40 +425,30 @@ namespace BML.Scripts.Player
 			{
 				//For analog movement, dont interpolate linearly
 				rotSpeed *= AnalogMovementCurve.Evaluate(_input.lookUnscaled.magnitude);
-				
-				float dummy = 0f;
-				float rotSpeedAccelerated;
-
-				//Accelerate to higher values but stop immediately
-				if (rotSpeed > previouRotSpeed)
-					rotSpeedAccelerated = Mathf.SmoothDamp(previouRotSpeed, rotSpeed, ref dummy, lookAcceleration);
-				else
-					rotSpeedAccelerated = rotSpeed;
-				
-				//Debug.Log($"prev: {previouRotSpeed} | target: {String.Format("{0:0.00}", rotSpeed)}");
-
-				rotSpeed = rotSpeedAccelerated;
-				previouRotSpeed = rotSpeedAccelerated;
+			}
+			
+			float dummy = 0f;
+			float rotSpeedAccelerated;
+			// Accelerate to higher values but stop immediately
+			if (rotSpeed > previouRotSpeed)
+			{
+				rotSpeedAccelerated = Mathf.SmoothDamp(
+					previouRotSpeed, 
+					rotSpeed, 
+					ref dummy, 
+					lookAcceleration,
+					Mathf.Infinity,
+					Time.unscaledDeltaTime
+				);
 			}
 			else
 			{
-				float dummy = 0f;
-				float rotSpeedAccelerated;
-
-				//Accelerate to higher values but stop immediately
-				if (rotSpeed > previouRotSpeed)
-				{
-					rotSpeedAccelerated = Mathf.SmoothDamp(previouRotSpeed, rotSpeed, ref dummy, 
-						lookAcceleration, Mathf.Infinity, Time.unscaledDeltaTime);
-				}
-				else
-				{
-					rotSpeedAccelerated = rotSpeed;
-				}
-
-				rotSpeed = rotSpeedAccelerated;
-				previouRotSpeed = rotSpeedAccelerated;
+				rotSpeedAccelerated = rotSpeed;
 			}
+			
+			//Debug.Log($"prev: {previouRotSpeed} | target: {String.Format("{0:0.00}", rotSpeed)}");
+			rotSpeed = rotSpeedAccelerated;
+			previouRotSpeed = rotSpeedAccelerated;
 
 			if (Mathf.Approximately(0f, _input.look.magnitude))
 				previouRotSpeed = 0f;
