@@ -10215,10 +10215,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   _isGodModeEnabled: {fileID: 11400000, guid: c3845ac29ad76214893f2b304a42dcef, type: 2}
-  _collisionCooldown: 0.1
-  _enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 1024
   CinemachineCameraTarget: {fileID: 7730667928466908283}
   TopClamp: 89
   BottomClamp: -89
@@ -10708,9 +10704,9 @@ MonoBehaviour:
   health: {fileID: 1905872712608776435}
   healthTemporary: {fileID: 6164536746581849819}
   _damageable:
-  - _damageTypesPreview: Player_Bomb, Enemy_Sentinel_Projectile, Ore_Explosive, Enemy_Bomb_Explosion,
+  - _damageTypesPreview: Enemy_Sentinel_Projectile, Ore_Explosive, Enemy_Bomb_Explosion,
       Trap_Stalactite
-    _damageType: 10386
+    _damageType: 10384
     _damageModifierType: 2
     _damageMultiplier:
       ReferenceTypeSelector: 0
@@ -10736,6 +10732,69 @@ MonoBehaviour:
       RoundingBehavior: 0
       ReferenceValue_FloatVariable: {fileID: 0}
       ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6318842967923595271}
+          m_TargetAssemblyTypeName: BML.Scripts.Player.FirstPersonController, BML.Scripts
+          m_MethodName: Knockback
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 4112429824577967131}
+          m_TargetAssemblyTypeName: BML.Scripts.Player.PlayerController, BML.Scripts
+          m_MethodName: SetInCombat
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  - _damageTypesPreview: Player_Bomb
+    _damageType: 2
+    _damageModifierType: 2
+    _damageMultiplier:
+      ReferenceTypeSelector: 0
+      ConstantValue: 1
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageResistance:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageOverride:
+      ReferenceTypeSelector: 1
+      ConstantValue: 2
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 11400000, guid: 64d889f7174f20f41859f5f5f1014a68, type: 2}
       ReferenceValue_BoolVariable: {fileID: 0}
       ReferenceValue_FunctionVariable: {fileID: 0}
       ReferenceValue_EvaluateCurveVariable: {fileID: 0}
