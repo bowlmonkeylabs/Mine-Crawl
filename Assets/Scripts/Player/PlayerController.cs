@@ -120,6 +120,7 @@ namespace BML.Scripts.Player
         private bool pickaxeHeld = true;
         private PickaxeInteractionReceiver hoveredInteractionReceiver = null;
         private int doubleSweepCount = 0;
+        private bool sweepFinished = false;
 
         private float SwingCritActivationChance => !_enableSwingCrits.Value
             ? 0f
@@ -300,10 +301,16 @@ namespace BML.Scripts.Player
                 return;
             }
 
+            if(_doubleSweepEnabled.Value && !sweepFinished && doubleSweepCount == 1) {
+                return;
+            }
+
             _startSweepFeedback.PlayFeedbacks();
             
             if(_doubleSweepEnabled.Value) {
                 doubleSweepCount += 1;
+                sweepFinished = false;
+                
                 if(doubleSweepCount >= 2) {
                     _pickaxeSweepCooldown.RestartTimer();
                     _pickaxeSwingCooldown.RestartTimer();
@@ -325,6 +332,8 @@ namespace BML.Scripts.Player
             
             _onSweepPickaxe.Raise();
             
+            sweepFinished = true;
+
             if (hitColliders.Length < 1)
             {
                 _missSwingFeedback.PlayFeedbacks();
