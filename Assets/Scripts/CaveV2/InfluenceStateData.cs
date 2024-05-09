@@ -32,7 +32,6 @@ namespace BML.Scripts.CaveV2
             _currentNodes = new Dictionary<Collider, CaveNodeData>();
             _currentNodeConnections = new Dictionary<Collider, CaveNodeConnectionData>();
             _current = new Dictionary<Collider, ICaveNodeData>();
-            Debug.Log("Reset InfluenceStateData");
             OnReset?.Invoke();
         }
 

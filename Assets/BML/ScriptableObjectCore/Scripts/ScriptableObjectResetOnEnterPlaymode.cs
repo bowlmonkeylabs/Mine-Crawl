@@ -21,16 +21,12 @@ namespace BML.ScriptableObjectCore.Scripts
             _variablesToReset = new HashSet<string> {};
             
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-            Debug.Log($"OnProjectLoadedInEditor: ScriptableObjectInitializer");
-            
         }
-#endif
-#if UNITY_EDITOR
+
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                Debug.Log("Resetting Scriptable Variables on Enter Playmode");
                 foreach (string path in _variablesToReset)
                 {
                     ScriptableVariableBase variableBase = AssetDatabase.LoadAssetAtPath<ScriptableVariableBase>(path);
