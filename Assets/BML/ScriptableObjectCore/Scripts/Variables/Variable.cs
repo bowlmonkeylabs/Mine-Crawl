@@ -5,9 +5,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.Serialization;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 
 namespace BML.ScriptableObjectCore.Scripts.Variables
 {

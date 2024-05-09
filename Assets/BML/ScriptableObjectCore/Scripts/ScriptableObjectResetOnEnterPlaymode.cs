@@ -1,12 +1,6 @@
 using System.Collections.Generic;
-using BML.ScriptableObjectCore.Scripts;
-using BML.ScriptableObjectCore.Scripts.Variables;
 using UnityEngine;
-
-#if UNITY_EDITOR
-using BML.ScriptableObjectCore.Scripts.Utils;
 using UnityEditor;
-#endif
 
 namespace BML.ScriptableObjectCore.Scripts
 {
