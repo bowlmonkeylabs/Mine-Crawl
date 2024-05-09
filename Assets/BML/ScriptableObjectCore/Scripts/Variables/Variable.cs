@@ -163,7 +163,6 @@ namespace BML.ScriptableObjectCore.Scripts.Variables
 #if UNITY_EDITOR
             string fullPath = AssetDatabase.GetAssetPath(this);
             ScriptableObjectResetOnEnterPlaymode.RegisterVariableToReset(fullPath);
-            Debug.Log("Registering " + fullPath);
 #endif
         }
 
