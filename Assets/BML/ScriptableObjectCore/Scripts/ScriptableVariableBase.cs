@@ -9,7 +9,9 @@ namespace BML.ScriptableObjectCore.Scripts
         [InfoBox("Logging is enabled for this scriptable object", InfoMessageType.Warning, visibleIfMemberName:"enableLogs")]
         [SerializeField, HideInInlineEditors, GUIColor("_colorEnableLogs")] protected bool enableLogs;
 
-        // Method is virtual but REQUIRED on all children
+        /// <summary>
+        /// Method is virtual but REQUIRED on all children.
+        /// </summary>
         public virtual void Reset() { }
     }
 }
