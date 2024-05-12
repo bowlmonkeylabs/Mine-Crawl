@@ -60,7 +60,7 @@ namespace BML.Scripts.Player.Items.Store
 
         private void OnDestroy()
         {
-            _onAfterGenerateLevelObjects.Subscribe(RefreshStoreForLevel);
+            _onAfterGenerateLevelObjects.Unsubscribe(RefreshStoreForLevel);
         }
 
         #endregion
