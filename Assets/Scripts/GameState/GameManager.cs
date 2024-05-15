@@ -55,6 +55,7 @@ namespace BML.Scripts
             _currentLevel.Reset();
             //open first level
             _levels.Levels[_currentLevel.Value].Open();
+            SeedManager.Instance.ResetSteppedSeeds();
         }
 
         public void QuitGame()

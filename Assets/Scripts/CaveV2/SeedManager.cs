@@ -29,8 +29,12 @@ namespace BML.Scripts.CaveV2
         protected override void Awake() 
         {
             base.Awake();
+
+            if(this == _instance)
+            {
+                InitializeSeed();
+            }
             
-            InitializeSeed();
         }
 
         public bool LockSeed
@@ -44,11 +48,6 @@ namespace BML.Scripts.CaveV2
         }
 
         private void TryInitSteppedSeed(string key) {
-            if(baseSteppedSeed != Seed) {
-                steppedSeeds.Clear();
-                baseSteppedSeed = Seed;
-            }
-
             if(!steppedSeeds.ContainsKey(key)) {
                 int step = key.Select((c, i) => ((int) c) * i).Sum();
                 steppedSeeds.Add(key, baseSteppedSeed + step);
@@ -69,13 +68,18 @@ namespace BML.Scripts.CaveV2
             steppedSeeds[key] += 1;
         }
 
+        public void ResetSteppedSeeds() {
+            if(!_retrySameSeed.Value) {
+                _seedHistory.UpdateRandomSeed();
+            }
+            steppedSeeds.Clear();
+            baseSteppedSeed = _seedHistory.Seed;
+        }
+
         private void InitializeSeed() {
             if(!seedInitialized) {
-                if(!_retrySameSeed.Value) {
-                    _seedHistory.UpdateRandomSeed();
-                }
-                
-                seedInitialized = true;
+                _seedHistory.UpdateRandomSeed();
+               seedInitialized = true;
             }
         }
     }
