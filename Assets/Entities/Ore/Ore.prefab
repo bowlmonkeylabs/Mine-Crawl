@@ -1460,8 +1460,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e04cd80442130c41a74a36c671de6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _oreCollider: {fileID: 771399382741072669}
-  _health: {fileID: 7664960571339365045}
+  _mineableCollider: {fileID: 771399382741072669}
+  _critMarkerHealth: {fileID: 7664960571339365045}
   _critMarker: {fileID: 2238584893062115824}
   _critMarkerMinMaxAngle: {x: 15, y: 36.391033}
   _critMarkerSurfaceOffset: 0.05
@@ -3915,7 +3915,19 @@ MonoBehaviour:
         m_Calls: []
     _onDeath:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 153246123016432436}
+          m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
+          m_MethodName: LaunchAndInstantiate
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 2593184574423224280, guid: 031888ecd2537c742b2ebfda7fc8fa7d, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - _damageTypesPreview: Player_FireBomb
     _damageType: 65536
     _damageModifierType: 2
@@ -3966,7 +3978,19 @@ MonoBehaviour:
         m_Calls: []
     _onDeath:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 153246123016432436}
+          m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
+          m_MethodName: LaunchAndInstantiate
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 2593184574423224280, guid: 031888ecd2537c742b2ebfda7fc8fa7d, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - _damageTypesPreview: Trap_Spike
     _damageType: 4096
     _damageModifierType: 2

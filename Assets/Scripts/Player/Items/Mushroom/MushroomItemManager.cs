@@ -36,9 +36,12 @@ namespace BML.Scripts.Player.Items.Mushroom
 
         private void RandomizeMushroomVisuals()
         {
-            SeedManager.Instance.GetSteppedSeed("MushroomItemManager");
+            var steppedSeed = SeedManager.Instance.GetSteppedSeed("MushroomItemManager");
+            Random.InitState(steppedSeed);
+            
             var randomlyOrderedVisuals = _mushroomItemVisuals
                 .OrderBy(v => Random.value).ToList();
+            
             for (int i = 0; i < _mushroomItems.Count; i++)
             {
                 // Reset "is known" (because the items are scriptable objects, they can't reset on their own)

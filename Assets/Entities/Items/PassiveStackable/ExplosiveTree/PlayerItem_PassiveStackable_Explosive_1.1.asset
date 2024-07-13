@@ -19,7 +19,9 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 38f386e05e25e3d4cb2b2f211cd6f035, type: 2}
     - {fileID: 11400000, guid: f9d5719e9c3b2f0418be534010f41e5e, type: 2}
     - {fileID: 11400000}
-    - {fileID: 11400000, guid: 7a5e287407f4b8f4bb6ecb25e26f68df, type: 2}
+    - {fileID: 11400000, guid: 5bf360c9532f6b14f9b89b3bdc506f88, type: 2}
+    - {fileID: 8097470616027808229, guid: 403e8b8ea52f6ce4caab8a3ff49a1ae1, type: 3}
+    - {fileID: 11400000, guid: eddf651308826cd46a3e62a45a34c7cd, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -66,7 +68,7 @@ MonoBehaviour:
       Data: 1
     - Name: 
       Entry: 7
-      Data: 3|BML.Scripts.Player.Items.ItemEffects.AddResourceItemEffect, BML.Scripts
+      Data: 3|BML.Scripts.Player.Items.ItemEffects.SpawnPickupItemEffect, BML.Scripts
     - Name: _trigger
       Entry: 3
       Data: 11
@@ -103,12 +105,49 @@ MonoBehaviour:
     - Name: ParentItem
       Entry: 10
       Data: 2
-    - Name: _resource
+    - Name: Item
       Entry: 10
       Data: 3
-    - Name: _addAmount
+    - Name: BasePickupPrefab
+      Entry: 10
+      Data: 4
+    - Name: ThrowForce
+      Entry: 7
+      Data: 4|BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences.SafeFloatValueReference,
+        ScriptableObjectSystem
+    - Name: ReferenceTypeSelector
       Entry: 3
-      Data: 1
+      Data: 0
+    - Name: ConstantValue
+      Entry: 4
+      Data: 6
+    - Name: ReferenceValue_FloatVariable
+      Entry: 6
+      Data: 
+    - Name: ReferenceValue_IntVariable
+      Entry: 6
+      Data: 
+    - Name: ReferenceValue_EvaluateCurveVariable
+      Entry: 6
+      Data: 
+    - Name: ReferenceValue_BoolVariable
+      Entry: 6
+      Data: 
+    - Name: ReferenceValue_FunctionVariable
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Container
+      Entry: 10
+      Data: 5
+    - Name: _pickupDelaySetting
+      Entry: 4
+      Data: 1.5
+    - Name: _onlyOneAtATime
+      Entry: 5
+      Data: false
     - Name: 
       Entry: 8
       Data: 
