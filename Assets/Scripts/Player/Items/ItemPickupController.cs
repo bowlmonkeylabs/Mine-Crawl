@@ -23,6 +23,8 @@ namespace BML.Scripts.Player.Items
         [NonSerialized] private ItemVisualController _itemVisualController;
 
         [SerializeField] private Transform _pickupVisualParent;
+        
+        [SerializeField] private Rigidbody _pickupRigidbody;
 
         [SerializeField] private Timer _pickupDelayTimer;
         [SerializeField] private MMF_Player _idleFeedbacks;
@@ -36,6 +38,8 @@ namespace BML.Scripts.Player.Items
         #endregion
         
         #region Public interface
+        
+        public Rigidbody PickupRigidbody => _pickupRigidbody;
 
         public void SetItem(PlayerItem item)
         {
