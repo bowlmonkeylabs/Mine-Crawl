@@ -139,7 +139,7 @@ namespace BML.Scripts.Player.Items
 
         public bool CheckIfCanBuy(PlayerItem item, bool ignoreReplacementCooldown = false)
         {
-            return CheckIfCanAffordItem(item) && CheckIfCanAddItem(item);
+            return CheckIfCanAffordItem(item) && CheckIfCanAddItem(item, ignoreReplacementCooldown);
         }
 
         public void DeductCosts(PlayerItem item)
