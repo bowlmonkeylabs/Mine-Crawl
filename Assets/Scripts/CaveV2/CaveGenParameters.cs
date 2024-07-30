@@ -92,6 +92,9 @@ namespace BML.Scripts.CaveV2
         [TitleGroup("Graph processing")]
         public bool RemoveOrphanNodes = true;
 
+        [TitleGroup("IsBoss")]
+        public bool IsBoss = false;
+
         #endregion
 
         #region Buttons

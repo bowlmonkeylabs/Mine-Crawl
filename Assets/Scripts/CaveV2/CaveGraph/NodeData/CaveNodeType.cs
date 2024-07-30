@@ -9,6 +9,7 @@
         Start = 4,
         End = 5,
         Merchant = 6,
-        Challenge = 7
+        Challenge = 7,
+        Boss = 8
     }
 }

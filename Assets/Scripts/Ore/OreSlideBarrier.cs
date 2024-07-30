@@ -24,7 +24,8 @@ namespace BML.Scripts
             transform.position = new Vector3(transform.position.x, transform.position.y - 5, transform.position.z);
 
             var caveNodeConnectionData = _spawnedObjectCaveNodeData.CaveNode as CaveNodeConnectionData;
-            var challegeRoomCaveNode = caveNodeConnectionData.Source.NodeType == CaveNodeType.Challenge ? caveNodeConnectionData.Source : caveNodeConnectionData.Target;
+            var sourceIsChallengeOrBoss = caveNodeConnectionData.Source.NodeType == CaveNodeType.Challenge || caveNodeConnectionData.Source.NodeType == CaveNodeType.Boss;
+            var challegeRoomCaveNode = sourceIsChallengeOrBoss ? caveNodeConnectionData.Source : caveNodeConnectionData.Target;
             _challengeRoom = challegeRoomCaveNode.GameObject.GetComponent<ChallengeRoom>();
             _challengeRoom._onChallengeStarted += OnChallengeStarted;
         }

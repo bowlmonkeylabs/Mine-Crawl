@@ -61,6 +61,8 @@ namespace BML.Scripts.CaveV2.CaveGraph.Minimap
                     return RelativeScale_Medium;
                 case CaveNodeType.Merchant:
                     return RelativeScale_Medium;
+                case CaveNodeType.Boss:
+                    return RelativeScale_Large;
             }
         }
 

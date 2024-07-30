@@ -210,7 +210,7 @@ namespace BML.Scripts.CaveV2
                 if (EnableLogs) Debug.Log($"Level Object Spawner: No player assigned");
             }
             
-            _caveGraph = GenerateCaveGraph(_caveGenParams, CaveGenBounds);
+            _caveGraph = !_caveGenParams.IsBoss ? GenerateCaveGraph(_caveGenParams, CaveGenBounds) : GenerateBossCaveGraph(_caveGenParams, CaveGenBounds);
             IsGenerated = true;
             
             GenerateCaveGraphDebugObjects();
@@ -278,6 +278,63 @@ namespace BML.Scripts.CaveV2
             _levelObjectSpawner.DestroyLevelObjects();
             _decorObjectSpawner.DestroyDecor();
             
+        }
+
+        private CaveGraphV2 GenerateBossCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)
+        {
+            Random.InitState(SeedManager.Instance.GetSteppedSeed("CaveGraph"));
+            
+            if (_enableLogs) Debug.Log($"Generating boos level ({SeedManager.Instance.GetSteppedSeed("CaveGraph")})");
+
+            var caveGraph = new CaveGraphV2();
+
+            var poissonBoundsWithPadding = caveGenParams.GetBoundsWithPadding(bounds, CaveGenParameters.PaddingType.Inner);
+
+            // Generate start node position
+            var startBounds = new Bounds(
+                poissonBoundsWithPadding.center + (poissonBoundsWithPadding.extents / 2),
+                poissonBoundsWithPadding.extents / 2);
+            var startPosition = RandomUtils.RandomInBounds(startBounds) + startBounds.center;
+            startPosition = poissonBoundsWithPadding.max - poissonBoundsWithPadding.extents / 4;
+            var startNode = new CaveNodeData(poissonBoundsWithPadding.center + new Vector3(40, 0, 0), 1f, _torchAreaCoverage);
+            startNode.NodeType = CaveNodeType.Start;
+            caveGraph.AddVertex(startNode);
+            caveGraph.StartNode = startNode;
+            
+            // Generate end node position
+            var endBounds = new Bounds(
+                poissonBoundsWithPadding.center - (poissonBoundsWithPadding.extents / 2),
+                poissonBoundsWithPadding.extents / 2);
+            var endPosition = RandomUtils.RandomInBounds(endBounds) + endBounds.center;
+            endPosition = poissonBoundsWithPadding.min + poissonBoundsWithPadding.extents / 4;
+            var endNode = new CaveNodeData(poissonBoundsWithPadding.center - new Vector3(40, 0, 0), 1f, _torchAreaCoverage);
+            endNode.NodeType = CaveNodeType.End;
+            caveGraph.AddVertex(endNode);
+            caveGraph.EndNode = endNode;
+
+            // Generate main node position
+            var mainNode = new CaveNodeData(poissonBoundsWithPadding.center, 1f, _torchAreaCoverage);
+            mainNode.NodeType = CaveNodeType.Boss;
+            caveGraph.AddVertex(mainNode);
+
+            var startToMain = new CaveNodeConnectionData(startNode, mainNode, Math.Max(startNode.Scale, mainNode.Scale));
+            startToMain.IsBlocked = true;
+            var mainToEnd = new CaveNodeConnectionData(mainNode, endNode, Math.Max(endNode.Scale, mainNode.Scale));
+            mainToEnd.IsBlocked = true;
+
+            caveGraph.AddEdge(startToMain);
+            caveGraph.AddEdge(mainToEnd);
+
+            var mainPathNodes = new List<ICaveNodeData>() {startNode, mainNode, endNode};
+            caveGraph.FloodFillDistance(mainPathNodes, (node, dist) => node.MainPathDistance = dist);
+
+            this.MaxMainPathDistance = caveGraph.AllNodes.Max(e => e.MainPathDistance);
+
+            caveGraph.MainPath = caveGraph.Edges.ToList();
+
+            caveGraph.MerchantNode = null;
+
+            return caveGraph;
         }
         
         private CaveGraphV2 GenerateCaveGraph(CaveGenParameters caveGenParams, Bounds bounds)
