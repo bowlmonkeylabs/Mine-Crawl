@@ -19425,6 +19425,509 @@ MonoBehaviour:
         ResetEvents:
           m_PersistentCalls:
             m_Calls: []
+--- !u!1 &4872296606400800512
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8717570537992247036}
+  - component: {fileID: 6358930869499526543}
+  m_Layer: 10
+  m_Name: PhaseChangeFeedbacks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8717570537992247036
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4872296606400800512}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7124837277011475664}
+  m_RootOrder: 18
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6358930869499526543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4872296606400800512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Feedbacks: []
+  InitializationMode: 2
+  SafeMode: 3
+  Direction: 0
+  AutoChangeDirectionOnEnd: 0
+  AutoPlayOnStart: 0
+  AutoPlayOnEnable: 0
+  ForceTimescaleMode: 0
+  ForcedTimescaleMode: 1
+  DurationMultiplier: 1
+  RandomizeDuration: 0
+  RandomDurationMultiplier: {x: 0.5, y: 1.5}
+  DisplayFullDurationDetails: 0
+  PlayerTimescaleMode: 1
+  OnlyPlayIfWithinRange: 0
+  RangeCenter: {fileID: 0}
+  RangeDistance: 5
+  UseRangeFalloff: 0
+  RangeFalloff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RemapRangeFalloff: {x: 0, y: 1}
+  IgnoreRangeEvents: 0
+  CooldownDuration: 0
+  InitialDelay: 0
+  CanPlay: 1
+  CanPlayWhileAlreadyPlaying: 1
+  ChanceToPlay: 100
+  FeedbacksIntensity: 1
+  Events:
+    TriggerMMFeedbacksEvents: 0
+    TriggerUnityEvents: 1
+    OnPlay:
+      m_PersistentCalls:
+        m_Calls: []
+    OnPause:
+      m_PersistentCalls:
+        m_Calls: []
+    OnResume:
+      m_PersistentCalls:
+        m_Calls: []
+    OnRevert:
+      m_PersistentCalls:
+        m_Calls: []
+    OnComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  DebugActive: 0
+  FeedbacksList:
+  - id: 0
+  - id: 1
+  - id: 2
+  KeepPlayModeChanges: 0
+  PerformanceMode: 0
+  ForceStopFeedbacksOnDisable: 1
+  references:
+    version: 1
+    00000000:
+      type: {class: BMLSoundManagerSound, ns: BML.Scripts.MMFFeedbacks, asm: BML.Scripts}
+      data:
+        Active: 1
+        UniqueID: 1827379545
+        Label: BMLSoundManager Sound
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        Owner: {fileID: 6358930869499526543}
+        DebugActive: 0
+        useSettingsReference: 0
+        BmlSoundManagerSettings: {fileID: 0}
+        Sfx: {fileID: 8300000, guid: d6010da746f4e33449363d83db5821c7, type: 3}
+        RandomSfx: []
+        TestPlayButton:
+          ButtonText: Debug Play Sound
+        TestStopButton:
+          ButtonText: Debug Stop Sound
+        MinVolume: 0.7
+        MaxVolume: 0.7
+        MinPitch: 1
+        MaxPitch: 1
+        PlaybackTime: {x: 0, y: 0}
+        MmSoundManagerTrack: 0
+        ID: 0
+        AudioGroup: {fileID: 0}
+        RecycleAudioSource: {fileID: 0}
+        Loop: 0
+        Persistent: 0
+        LimitConsecutivePlays: 0
+        MaxConsecutivePlays: 3
+        StopSoundOnFeedbackStop: 0
+        PauseSoundWhenPauseGame: 1
+        Fade: 0
+        FadeInitialVolume: 0
+        FadeDuration: 1
+        FadeTween:
+          MMTweenDefinitionType: 0
+          MMTweenCurve: 9
+          Curve:
+            serializedVersion: 2
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 0
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 0
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          Initialized: 0
+        SoloSingleTrack: 0
+        SoloAllTracks: 0
+        AutoUnSoloOnEnd: 0
+        PanStereo: 0
+        SpatialBlend: 0
+        BypassEffects: 0
+        BypassListenerEffects: 0
+        BypassReverbZones: 0
+        Priority: 128
+        ReverbZoneMix: 1
+        DopplerLevel: 1
+        Spread: 0
+        RolloffMode: 0
+        UseCustomRolloffCurve: 0
+        CustomRolloffCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        MinDistance: 1
+        MaxDistance: 500
+    00000001:
+      type: {class: MMF_CinemachineImpulse, ns: MoreMountains.FeedbacksForThirdParty, asm: MoreMountains.Feedbacks.Cinemachine}
+      data:
+        Active: 1
+        UniqueID: -1957255426
+        Label: Cinemachine Impulse
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        Owner: {fileID: 6358930869499526543}
+        DebugActive: 0
+        m_ImpulseDefinition:
+          m_ImpulseChannel: 1
+          m_RawSignal: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+          m_AmplitudeGain: 2.5
+          m_FrequencyGain: 0.25
+          m_RepeatMode: 0
+          m_Randomize: 1
+          m_TimeEnvelope:
+            m_AttackShape:
+              serializedVersion: 2
+              m_Curve:
+              - serializedVersion: 3
+                time: 0
+                value: 0
+                inSlope: 1
+                outSlope: 1
+                tangentMode: 34
+                weightedMode: 0
+                inWeight: 0
+                outWeight: 0
+              - serializedVersion: 3
+                time: 1
+                value: 1
+                inSlope: 1
+                outSlope: 1
+                tangentMode: 34
+                weightedMode: 0
+                inWeight: 0
+                outWeight: 0
+              m_PreInfinity: 2
+              m_PostInfinity: 2
+              m_RotationOrder: 4
+            m_DecayShape:
+              serializedVersion: 2
+              m_Curve:
+              - serializedVersion: 3
+                time: 0
+                value: 1
+                inSlope: -1.7060142
+                outSlope: -1.7060142
+                tangentMode: 34
+                weightedMode: 0
+                inWeight: 0
+                outWeight: 0.33333334
+              - serializedVersion: 3
+                time: 0.4488075
+                value: 0.23432803
+                inSlope: -1.0655717
+                outSlope: -1.0655717
+                tangentMode: 34
+                weightedMode: 0
+                inWeight: 0.33333334
+                outWeight: 0.33333334
+              - serializedVersion: 3
+                time: 1
+                value: 0
+                inSlope: -0.18189965
+                outSlope: -0.18189965
+                tangentMode: 0
+                weightedMode: 0
+                inWeight: 0.13902886
+                outWeight: 0
+              m_PreInfinity: 2
+              m_PostInfinity: 2
+              m_RotationOrder: 4
+            m_AttackTime: 0.1
+            m_SustainTime: 1
+            m_DecayTime: 0.5
+            m_ScaleWithImpact: 1
+            m_HoldForever: 0
+          m_ImpactRadius: 99999
+          m_DirectionMode: 0
+          m_DissipationMode: 2
+          m_DissipationDistance: 50
+          m_PropagationSpeed: 343
+        Velocity: {x: 0, y: 1.5, z: 0}
+        ClearImpulseOnStop: 0
+    00000002:
+      type: {class: MMF_Events, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks}
+      data:
+        Active: 1
+        UniqueID: -970334330
+        Label: Unity Events
+        ChannelMode: 0
+        Channel: 0
+        MMChannelDefinition: {fileID: 0}
+        Chance: 100
+        DisplayColor: {r: 0, g: 0, b: 0, a: 1}
+        Timing:
+          TimescaleMode: 0
+          ExcludeFromHoldingPauses: 0
+          ContributeToTotalDuration: 1
+          InitialDelay: 0
+          CooldownDuration: 0
+          InterruptsOnStop: 1
+          NumberOfRepeats: 0
+          RepeatForever: 0
+          DelayBetweenRepeats: 1
+          MMFeedbacksDirectionCondition: 0
+          PlayDirection: 0
+          ConstantIntensity: 0
+          UseIntensityInterval: 0
+          IntensityIntervalMin: 0
+          IntensityIntervalMax: 0
+          Sequence: {fileID: 0}
+          TrackID: 0
+          Quantized: 0
+          TargetBPM: 120
+        AutomatedTargetAcquisition:
+          Mode: 0
+          ChildIndex: 0
+        RandomizeOutput: 0
+        RandomMultiplier: {x: 0.8, y: 1}
+        RandomizeDuration: 0
+        RandomDurationMultiplier: {x: 0.5, y: 2}
+        UseRange: 0
+        RangeDistance: 5
+        UseRangeFalloff: 0
+        RangeFalloff:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        RemapRangeFalloff: {x: 0, y: 1}
+        Owner: {fileID: 6358930869499526543}
+        DebugActive: 0
+        PlayEvents:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 11400000, guid: 171ca609259d198498140da98e0d8b74, type: 2}
+              m_TargetAssemblyTypeName: BML.ScriptableObjectCore.Scripts.Events.DynamicGameEvent,
+                ScriptableObjectSystem
+              m_MethodName: Raise
+              m_Mode: 5
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: The boss grows strong!
+                m_BoolArgument: 0
+              m_CallState: 2
+        StopEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        InitializationEvents:
+          m_PersistentCalls:
+            m_Calls: []
+        ResetEvents:
+          m_PersistentCalls:
+            m_Calls: []
 --- !u!1 &4916911873885529487
 GameObject:
   m_ObjectHideFlags: 0
@@ -23796,6 +24299,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onHealthChange.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
@@ -23892,6 +24399,22 @@ PrefabInstance:
       value: Launch
       objectReference: {fileID: 0}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onHealthChange.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onHealthChange.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7952458032594214803}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onHealthChange.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onHealthChange.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnHealthChanged
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: BML.Scripts.EnemySpawnable, BML.Scripts
       objectReference: {fileID: 0}
@@ -23936,6 +24459,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2593184574423224280, guid: 031888ecd2537c742b2ebfda7fc8fa7d, type: 3}
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onHealthChange.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BML.Scripts.Enemy.BossController, BML.Scripts
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
@@ -23958,6 +24485,10 @@ PrefabInstance:
     - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: _onDeath.m_PersistentCalls.m_Calls.Array.data[5].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+      propertyPath: _onHealthChange.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2157732797319386836, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: m_RootOrder
@@ -24147,39 +24678,39 @@ PrefabInstance:
         or Explode"},"ID":54,"Name":"Random Selector","Instant":true,"Int32seed":0,"BooleanuseSeed":false,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-90.4728,264.8203)","Comment":"Shoot"},"ID":55,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.ParallelSelector","NodeData":{"Offset":"(-80,140)"},"ID":56,"Name":"Parallel
         Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BML.Scripts.Tasks.LookAtTransform","NodeData":{"Offset":"(-80.26996,137.0271)"},"ID":57,"Name":"Look
         At Transform","Instant":true,"SharedTransform_targetRotateTransform":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"TransformSceneReference_targetLookRef":17,"SharedTransform_targetLook":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"Boolean_horizontalOnly":true,"Boolean_keepRunning":true},{"Type":"BehaviorDesigner.Runtime.Tasks.Wait","NodeData":{"Offset":"(66.39672,137.0271)"},"ID":58,"Name":"Wait","Instant":true,"SharedFloatwaitTime":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1},"SharedBoolrandomWait":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedFloatrandomWaitMin":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1},"SharedFloatrandomWaitMax":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(126.84211,139.473663)","Comment":"Fire
-        Projectile Feedbacks"},"ID":59,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":18},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(280.157257,281.363464)","Comment":"Explode"},"ID":60,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(0.204082489,122.523178)","Comment":"Explode
-        Activate Feedbacks"},"ID":61,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":19},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}}]}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(1010.04742,213.644165)","Comment":"Strafe
-        and Resume"},"ID":62,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.RandomSelector","NodeData":{"Offset":"(-3.414795,273.218872)","Comment":"Strafe"},"ID":63,"Name":"Random
+        Projectile Feedbacks"},"ID":59,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":18},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(419.0461,281.363464)","Comment":"Explode"},"ID":60,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.Math.IntComparison","NodeData":{"Offset":"(-109.985596,144.711914)","Comment":"Phase
+        > 2"},"ID":61,"Name":"Int Comparison","Instant":true,"Operationoperation":"GreaterThan","SharedIntinteger1":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":"Phase","IsShared":true,"Int32mValue":0},"SharedIntinteger2":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":null,"Int32mValue":2}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(50.20408,136.412064)","Comment":"Explode
+        Activate Feedbacks"},"ID":62,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":19},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}}]}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(1176.71436,213.644165)","Comment":"Strafe
+        and Resume"},"ID":63,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.RandomSelector","NodeData":{"Offset":"(-3.414795,273.218872)","Comment":"Strafe"},"ID":64,"Name":"Random
         Selector","Instant":true,"Int32seed":0,"BooleanuseSeed":false,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(-63.9486732,139.112976)","Comment":"Strafe
-        Left"},"ID":64,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BMLAIDestinationSetter"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"SetTarget"},"SharedVariableparameter1":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null,"TransformmValue":20}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(74.90576,139.112976)","Comment":"Strafe
-        Right"},"ID":65,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BMLAIDestinationSetter"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"SetTarget"},"SharedVariableparameter1":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null,"TransformmValue":21}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.SetPropertyValue","NodeData":{"Offset":"(219.419373,274.544678)","Comment":"Resume
-        AI Path"},"ID":66,"Name":"Set Property Value","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BML.Scripts.Pathfinding.BMLAIPath"},"SharedStringpropertyName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"isStopped"},"SharedVariablepropertyValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.SetSharedBool","NodeData":{"Offset":"(394.738922,275.869934)","Comment":"!WaitedShootDelay"},"ID":67,"Name":"Set
+        Left"},"ID":65,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BMLAIDestinationSetter"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"SetTarget"},"SharedVariableparameter1":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null,"TransformmValue":20}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(74.90576,139.112976)","Comment":"Strafe
+        Right"},"ID":66,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BMLAIDestinationSetter"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"SetTarget"},"SharedVariableparameter1":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null,"TransformmValue":21}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.SetPropertyValue","NodeData":{"Offset":"(219.419373,274.544678)","Comment":"Resume
+        AI Path"},"ID":67,"Name":"Set Property Value","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BML.Scripts.Pathfinding.BMLAIPath"},"SharedStringpropertyName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"isStopped"},"SharedVariablepropertyValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.SetSharedBool","NodeData":{"Offset":"(394.738922,275.869934)","Comment":"!WaitedShootDelay"},"ID":68,"Name":"Set
         Shared Bool","Instant":true,"SharedBooltargetValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedBooltargetVariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"WaitedShootDelay","IsShared":true,"BooleanmValue":false}}]}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(2300.02,269.5799)","Comment":"Slash
-        Player"},"ID":68,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-262.2727,198.636353)","Comment":"IsPlayerInSlashTrigger"},"ID":69,"Name":"Compare
+        Player"},"ID":69,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-262.2727,198.636353)","Comment":"IsPlayerInSlashTrigger"},"ID":70,"Name":"Compare
         Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInSlashTrigger","IsShared":true,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true}},{"Type":"BehaviorDesigner.Runtime.Tasks.SetPropertyValue","NodeData":{"Offset":"(-70.1170044,196.695557)","Comment":"Stop
-        AI Path"},"ID":70,"Name":"Set Property Value","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BML.Scripts.Pathfinding.BMLAIPath"},"SharedStringpropertyName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"isStopped"},"SharedVariablepropertyValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true}},{"Type":"BehaviorDesigner.Runtime.Tasks.Wait","NodeData":{"Offset":"(113.556549,204.858887)"},"ID":71,"Name":"Wait","Instant":true,"SharedFloatwaitTime":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":0.5},"SharedBoolrandomWait":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedFloatrandomWaitMin":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1},"SharedFloatrandomWaitMax":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(273.760742,195.6753)","Comment":"Slash"},"ID":72,"Name":"Invoke
-        Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":22},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.Wait","NodeData":{"Offset":"(424.8772,197.804932)"},"ID":73,"Name":"Wait","Instant":true,"SharedFloatwaitTime":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":0.5},"SharedBoolrandomWait":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedFloatrandomWaitMin":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1},"SharedFloatrandomWaitMax":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(3096.50513,298.10376)","Comment":"Seen
-        Player"},"ID":74,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.StackedConditional","NodeData":{"Offset":"(-151.49939,172.731689)","Comment":"!HasSeenPlayer\nIsPlayerInLoS"},"ID":75,"Name":"Stacked
+        AI Path"},"ID":71,"Name":"Set Property Value","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BML.Scripts.Pathfinding.BMLAIPath"},"SharedStringpropertyName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"isStopped"},"SharedVariablepropertyValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true}},{"Type":"BehaviorDesigner.Runtime.Tasks.Wait","NodeData":{"Offset":"(113.556549,204.858887)"},"ID":72,"Name":"Wait","Instant":true,"SharedFloatwaitTime":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":0.5},"SharedBoolrandomWait":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedFloatrandomWaitMin":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1},"SharedFloatrandomWaitMax":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(273.760742,195.6753)","Comment":"Slash"},"ID":73,"Name":"Invoke
+        Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":22},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.Wait","NodeData":{"Offset":"(424.8772,197.804932)"},"ID":74,"Name":"Wait","Instant":true,"SharedFloatwaitTime":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":0.5},"SharedBoolrandomWait":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedFloatrandomWaitMin":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1},"SharedFloatrandomWaitMax":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(3096.50513,298.10376)","Comment":"Seen
+        Player"},"ID":75,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.StackedConditional","NodeData":{"Offset":"(-151.49939,172.731689)","Comment":"!HasSeenPlayer\nIsPlayerInLoS"},"ID":76,"Name":"Stacked
         Conditional","Instant":true,"Conditional[]conditionals":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","Value":{"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"HasSeenPlayer","IsShared":true,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","Value":{"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInLoS","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsPlayerInLoS","PropertyMappingOwner":23,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true}}}],"ComparisonTypecomparisonType":"Sequence","BooleangraphLabel":false},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(94.0550842,181.302734)","Comment":"Seen
-        Player Feedbacks"},"ID":76,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":24},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.SetSharedBool","NodeData":{"Offset":"(337.217041,174.579834)","Comment":"HasSeenPlayer
-        = true"},"ID":77,"Name":"Set Shared Bool","Instant":true,"SharedBooltargetValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedBooltargetVariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"HasSeenPlayer","IsShared":true,"BooleanmValue":false}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(3786.476,296.666656)","Comment":"Seek
-        Player"},"ID":78,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.BehaviorTreeReference","NodeData":{"Offset":"(-102.015823,185.71431)","Comment":"Seek
-        Player"},"ID":79,"Name":"Behavior Tree Reference","Instant":true,"ExternalBehavior[]externalBehaviors":[25],"SharedNamedVariable[]variables":[],"Booleancollapsed":false},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(147.562759,180.95076)","Comment":"Set
-        Dest to Player"},"ID":80,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BMLAIDestinationSetter"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"ResetTargetToReference"}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(4336.555,302.389526)","Comment":"Aim
-        At player"},"ID":81,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.StackedConditional","NodeData":{"Offset":"(-112.17041,184.1178)","Comment":"IsPlayerInFireTrigger\nIsAlerted\n!WaitedShootDelay"},"ID":82,"Name":"Stacked
+        Player Feedbacks"},"ID":77,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null,"GameObjectmValue":24},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.SetSharedBool","NodeData":{"Offset":"(337.217041,174.579834)","Comment":"HasSeenPlayer
+        = true"},"ID":78,"Name":"Set Shared Bool","Instant":true,"SharedBooltargetValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedBooltargetVariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"HasSeenPlayer","IsShared":true,"BooleanmValue":false}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(3786.476,296.666656)","Comment":"Seek
+        Player"},"ID":79,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.BehaviorTreeReference","NodeData":{"Offset":"(-102.015823,185.71431)","Comment":"Seek
+        Player"},"ID":80,"Name":"Behavior Tree Reference","Instant":true,"ExternalBehavior[]externalBehaviors":[25],"SharedNamedVariable[]variables":[],"Booleancollapsed":false},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(147.562759,180.95076)","Comment":"Set
+        Dest to Player"},"ID":81,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BMLAIDestinationSetter"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"ResetTargetToReference"}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(4336.555,302.389526)","Comment":"Aim
+        At player"},"ID":82,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.StackedConditional","NodeData":{"Offset":"(-112.17041,184.1178)","Comment":"IsPlayerInFireTrigger\nIsAlerted\n!WaitedShootDelay"},"ID":83,"Name":"Stacked
         Conditional","Instant":true,"Conditional[]conditionals":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","Value":{"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInFireTrigger","IsShared":true,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true}}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","Value":{"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":26,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true}}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","Value":{"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"WaitedShootDelay","IsShared":true,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}}}],"ComparisonTypecomparisonType":"Sequence","BooleangraphLabel":false},{"Type":"BML.Scripts.Tasks.LookAtTransform","NodeData":{"Offset":"(90.98749,195.370941)","Comment":"Look
-        at player"},"ID":83,"Name":"Look At Transform","Instant":true,"SharedTransform_targetRotateTransform":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"TransformSceneReference_targetLookRef":27,"SharedTransform_targetLook":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"Boolean_horizontalOnly":true,"Boolean_keepRunning":true}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(4925.825,273.697662)","Comment":"Set
-        Alerted"},"ID":84,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-193.4412,264.021667)","Comment":"!IsAlerted"},"ID":85,"Name":"Compare
-        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":28,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":false}},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(1.89509773,257.44043)"},"ID":86,"Name":"Selector","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-170,220)","Comment":"In
-        Alert Trigger & LoS"},"ID":87,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-82.4999847,167.5)","Comment":"IsInsideAlertTrigger"},"ID":88,"Name":"Compare
-        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsInsideAlertTrigger","IsShared":true,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(105.676147,166.48645)","Comment":"IsPlayerInLoS"},"ID":89,"Name":"Compare
-        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInLoS","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsPlayerInLoS","PropertyMappingOwner":29,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.HasReceivedEvent","NodeData":{"Offset":"(135.10643,220)","Comment":"SetAlerted"},"ID":90,"Name":"Has
+        at player"},"ID":84,"Name":"Look At Transform","Instant":true,"SharedTransform_targetRotateTransform":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"TransformSceneReference_targetLookRef":27,"SharedTransform_targetLook":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"Boolean_horizontalOnly":true,"Boolean_keepRunning":true}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(4925.825,273.697662)","Comment":"Set
+        Alerted"},"ID":85,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-193.4412,264.021667)","Comment":"!IsAlerted"},"ID":86,"Name":"Compare
+        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":28,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":false}},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(1.89509773,257.44043)"},"ID":87,"Name":"Selector","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-170,220)","Comment":"In
+        Alert Trigger & LoS"},"ID":88,"Name":"Sequence","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(-82.4999847,167.5)","Comment":"IsInsideAlertTrigger"},"ID":89,"Name":"Compare
+        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsInsideAlertTrigger","IsShared":true,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.CompareSharedBool","NodeData":{"Offset":"(105.676147,166.48645)","Comment":"IsPlayerInLoS"},"ID":90,"Name":"Compare
+        Shared Bool","Instant":true,"SharedBoolvariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInLoS","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsPlayerInLoS","PropertyMappingOwner":29,"BooleanmValue":false},"SharedBoolcompareTo":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.HasReceivedEvent","NodeData":{"Offset":"(135.10643,220)","Comment":"SetAlerted"},"ID":91,"Name":"Has
         Received Event","Instant":true,"SharedStringeventName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"SetAlerted"}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(204.832275,259.320679)","Comment":"Set
-        Dest to Player"},"ID":91,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BMLAIDestinationSetter"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"ResetTargetToReference"}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(411.4631,261.0868)","Comment":"Alerted
-        Fedback"},"ID":92,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":"","GameObjectmValue":30},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.SetSharedBool","NodeData":{"Offset":"(579.8013,260.30777)","Comment":"IsAlerted
-        = True"},"ID":93,"Name":"Set Shared Bool","Instant":true,"SharedBooltargetValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true},"SharedBooltargetVariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":31,"BooleanmValue":false}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(5857.155,284.786377)","Comment":"Stay
-        Idle"},"ID":94,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Idle","NodeData":{"Offset":"(-3.536396,248.374847)"},"ID":95,"Name":"Idle","Instant":true}]}]}]}]},"DetachedTasks":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(1073.334,2299.99878)","Comment":"Explode"},"ID":96,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None"},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(1318.995,2360.30859)","Comment":"Stop
-        and Look "},"ID":97,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None"}],"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":32,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedVector3","Name":"KnockbackDirection","IsShared":true,"Vector3mValue":"(0,0,0)"},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsKnockedback","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsInsideAlertTrigger","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"LoSOrigin","IsShared":true,"TransformmValue":33},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInLoS","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsPlayerInLoS","PropertyMappingOwner":34,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"KnockingBack","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPathPossible","IsShared":true,"PropertyMapping":"BML.Scripts.Pathfinding.BMLAIPath/IsPathPossible","PropertyMappingOwner":35,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInSlashTrigger","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"HasSeenPlayer","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"KnockbackTime","IsShared":true,"SinglemValue":0.2},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"StunTime","IsShared":true,"SinglemValue":2},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"WaitedShootDelay","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInFireTrigger","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"ShootDelay","IsShared":true,"SinglemValue":3}]}'
+        Dest to Player"},"ID":92,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":null},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"BMLAIDestinationSetter"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"ResetTargetToReference"}},{"Type":"BehaviorDesigner.Runtime.Tasks.InvokeMethod","NodeData":{"Offset":"(411.4631,261.0868)","Comment":"Alerted
+        Fedback"},"ID":93,"Name":"Invoke Method","Instant":true,"SharedGameObjecttargetGameObject":{"Type":"BehaviorDesigner.Runtime.SharedGameObject","Name":"","GameObjectmValue":30},"SharedStringcomponentName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"MoreMountains.Feedbacks.MMF_Player"},"SharedStringmethodName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":"","StringmValue":"PlayFeedbacks"}},{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.SharedVariables.SetSharedBool","NodeData":{"Offset":"(579.8013,260.30777)","Comment":"IsAlerted
+        = True"},"ID":94,"Name":"Set Shared Bool","Instant":true,"SharedBooltargetValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"","BooleanmValue":true},"SharedBooltargetVariable":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":31,"BooleanmValue":false}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(5857.155,284.786377)","Comment":"Stay
+        Idle"},"ID":95,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Idle","NodeData":{"Offset":"(-3.536396,248.374847)"},"ID":96,"Name":"Idle","Instant":true}]}]}]}]},"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsAlerted","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsAlerted","PropertyMappingOwner":32,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedVector3","Name":"KnockbackDirection","IsShared":true,"Vector3mValue":"(0,0,0)"},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsKnockedback","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsInsideAlertTrigger","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"LoSOrigin","IsShared":true,"TransformmValue":33},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInLoS","IsShared":true,"PropertyMapping":"BML.Scripts.Enemy.EnemyState/IsPlayerInLoS","PropertyMappingOwner":34,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"KnockingBack","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPathPossible","IsShared":true,"PropertyMapping":"BML.Scripts.Pathfinding.BMLAIPath/IsPathPossible","PropertyMappingOwner":35,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInSlashTrigger","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"HasSeenPlayer","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"KnockbackTime","IsShared":true,"SinglemValue":0.2},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"StunTime","IsShared":true,"SinglemValue":2},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"WaitedShootDelay","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"IsPlayerInFireTrigger","IsShared":true,"BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"ShootDelay","IsShared":true,"SinglemValue":3},{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":"Phase","IsShared":true,"Int32mValue":0}]}'
       objectReference: {fileID: 0}
     - target: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
       propertyPath: mBehaviorSource.mTaskData.fieldSerializationData.unityObjects.Array.size
@@ -24346,6 +24877,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2994263931833974615 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7568311360931372815, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 4649342346283212888}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3200890545608526732 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7849229647211621332, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
@@ -24357,27 +24893,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &8381395337079953114 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3807083870472402562, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
-  m_PrefabInstance: {fileID: 4649342346283212888}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5313193139379848267 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
-  m_PrefabInstance: {fileID: 4649342346283212888}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2994263931833974615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &2994263931833974615 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7568311360931372815, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
-  m_PrefabInstance: {fileID: 4649342346283212888}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4029499569665501323 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8605922287346256083, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
@@ -24389,6 +24904,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5313193139379848267 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 664713299843294227, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 4649342346283212888}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2994263931833974615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d126ea3a59c2c144acee767a06eed81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &8381395337079953114 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3807083870472402562, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
+  m_PrefabInstance: {fileID: 4649342346283212888}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7124837277011475664 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2478468508831095944, guid: 5e5e72975584f5049bc0e445a185fa69, type: 3}
@@ -24608,6 +25139,24 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7952458032594214803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2994263931833974615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78e662dd7e594c2b8dd0029dba455757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _behaviorTree: {fileID: 4029499569665501323}
+  _health: {fileID: 5313193139379848267}
+  _phaseCount: 3
+  _activateSentinelsPhase: 2
+  _phaseChangeFeedback: {fileID: 6358930869499526543}
+  _activateSentinelsEvent: {fileID: 11400000, guid: 87d2426e78e8888429ccd37db2b6980d, type: 2}
 --- !u!114 &8303469727697486100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24990,14 +25539,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b4ea991852d6984aab98759fa8d4ebb, type: 3}
---- !u!1 &4720968562291040014 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 196072, guid: 0b4ea991852d6984aab98759fa8d4ebb, type: 3}
-  m_PrefabInstance: {fileID: 4720968562291122918}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4720968562290744388 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 425634, guid: 0b4ea991852d6984aab98759fa8d4ebb, type: 3}
+  m_PrefabInstance: {fileID: 4720968562291122918}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4720968562291040014 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 196072, guid: 0b4ea991852d6984aab98759fa8d4ebb, type: 3}
   m_PrefabInstance: {fileID: 4720968562291122918}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6139412661953387886

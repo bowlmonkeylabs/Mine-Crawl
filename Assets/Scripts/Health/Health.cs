@@ -77,6 +77,10 @@ namespace BML.Scripts
 
         public int MaxHealth => _hasMaxHealth ? _maxHealthReference.Value : 999;
 
+        public int EffectiveMaxHealth => _hasMaxHealth ? _maxHealthReference.Value : startingHealth;
+
+        public float HealthFactor => (float) (EffectiveMaxHealth - Value) / EffectiveMaxHealth;
+
         #endregion
         
         #region Unity Lifecycle
