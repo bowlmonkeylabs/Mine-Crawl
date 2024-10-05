@@ -781,7 +781,7 @@ namespace BML.Scripts.CaveV2
                         }
                     }
                     
-                    if(allEdgesNotTowardStartBlocked) {
+                    if(allEdgesNotTowardStartBlocked && caveGenParams.SpawnChallengeRooms) {
                         nodeA.NodeType = CaveNodeType.Challenge;
                     }
                 }

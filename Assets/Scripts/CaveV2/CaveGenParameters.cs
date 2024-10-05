@@ -92,6 +92,9 @@ namespace BML.Scripts.CaveV2
         [TitleGroup("Graph processing")]
         public bool RemoveOrphanNodes = true;
 
+        [TitleGroup("Room Options")]
+        public bool SpawnChallengeRooms = true;
+
         #endregion
 
         #region Buttons
