@@ -385,7 +385,7 @@ jobs:
           ls ./build
 
       - name: Upload build artifact 📦
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.set-build-version.outputs.buildName }}
           path: build/${{ matrix.targetPlatform }}
