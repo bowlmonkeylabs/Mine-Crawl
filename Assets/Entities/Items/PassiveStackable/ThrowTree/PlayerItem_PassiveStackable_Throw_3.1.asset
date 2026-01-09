@@ -18,7 +18,7 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 38f386e05e25e3d4cb2b2f211cd6f035, type: 2}
     - {fileID: 11400000}
-    - {fileID: 11400000, guid: 08cd01b40d75c6441bd0c872a7e76871, type: 2}
+    - {fileID: 11400000, guid: d1a627217dd4f334a830a1aba9535055, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -65,7 +65,7 @@ MonoBehaviour:
       Data: 1
     - Name: 
       Entry: 7
-      Data: 3|BML.Scripts.Player.Items.ItemEffects.SetBoolVariableItemEffect, BML.Scripts
+      Data: 3|BML.Scripts.Player.Items.ItemEffects.StatIncreaseItemEffect, BML.Scripts
     - Name: _trigger
       Entry: 3
       Data: 0
@@ -102,9 +102,27 @@ MonoBehaviour:
     - Name: ParentItem
       Entry: 10
       Data: 1
-    - Name: BoolVariable
+    - Name: UsePercentageIncrease
+      Entry: 5
+      Data: false
+    - Name: IsTemporaryStatIncrease
+      Entry: 5
+      Data: false
+    - Name: TemporaryStatIncreaseTime
+      Entry: 4
+      Data: 0
+    - Name: FloatStat
+      Entry: 6
+      Data: 
+    - Name: IntStat
       Entry: 10
       Data: 2
+    - Name: StatIncreaseAmount
+      Entry: 3
+      Data: 2
+    - Name: StatIncreasePercent
+      Entry: 4
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -115,9 +133,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   _name: Rubber Pick
-  _effectDescription: 'Bounce to another enemy
-
-'
+  _effectDescription: +2 Throw Speed
   _storeDescription: 
   _useIconColor: 1
   _iconColor: {r: 0.745283, g: 0.5920996, b: 0, a: 1}
