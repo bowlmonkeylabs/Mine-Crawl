@@ -1025,10 +1025,72 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - _damageTypesPreview: Player_Bomb, Enemy_Sentinel_Projectile, Enemy_Mimic_Projectile,
-      Ore_Explosive, Enemy_Snake_Projectile, Enemy_Bomb_Explosion, Trap_Stalactite,
-      Enemy_Worm
-    _damageType: 27090
+  - _damageTypesPreview: Player_Bomb
+    _damageType: 2
+    _damageModifierType: 2
+    _damageMultiplier:
+      ReferenceTypeSelector: 0
+      ConstantValue: 1
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageResistance:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageOverride:
+      ReferenceTypeSelector: 0
+      ConstantValue: 9999
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8438481402473190015}
+          m_TargetAssemblyTypeName: BML.Scripts.OreShaderController, BML.Scripts
+          m_MethodName: UpdateShaderOnPickaxeInteract
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4557105596666079112}
+          m_TargetAssemblyTypeName: BML.Scripts.RigidBodyLauncher, BML.Scripts
+          m_MethodName: LaunchAndInstantiate
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 2593184574423224280, guid: 031888ecd2537c742b2ebfda7fc8fa7d, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - _damageTypesPreview: Enemy_Sentinel_Projectile, Enemy_Mimic_Projectile, Ore_Explosive,
+      Enemy_Snake_Projectile, Enemy_Bomb_Explosion, Trap_Stalactite, Enemy_Worm
+    _damageType: 27088
     _damageModifierType: 0
     _damageMultiplier:
       ReferenceTypeSelector: 0
