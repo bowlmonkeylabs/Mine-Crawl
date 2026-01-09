@@ -215,6 +215,8 @@ namespace BML.Scripts.CaveV2
             
             GenerateCaveGraphDebugObjects();
             GenerateCaveGraphMinimapObjects();
+
+            SetAllMapped();
             
             OnAfterGenerate?.Invoke();
         }
