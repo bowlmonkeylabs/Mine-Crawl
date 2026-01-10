@@ -1,9 +1,11 @@
 using System;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
+using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.CaveV2;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using MoreMountains.Feedbacks;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Player.Items
@@ -53,6 +55,10 @@ namespace BML.Scripts.Player.Items
         [SerializeField, ShowIf("@this.Trigger == ItemEffectTrigger.RecurringTimer")] 
         [Tooltip("The recurring timer only runs while this is true.")] 
         private SafeBoolValueReference _recurringTimerForTriggerCondition;
+
+        [SerializeField] private bool _doPrintDialogueOnApply;
+        [SerializeField, ShowIf("_doPrintDialogueOnApply")] private DynamicGameEvent _printDialogueEvent;
+        [SerializeField, ShowIf("_doPrintDialogueOnApply")] private string _printDialogueString;
 
         #endregion
 
@@ -110,7 +116,14 @@ namespace BML.Scripts.Player.Items
                 _remainingActivations.Value -= 1;
             }
 
-            return ApplyEffectInternal();
+            bool appliedSuccessfully =  ApplyEffectInternal();
+
+            if(appliedSuccessfully && _doPrintDialogueOnApply)
+            {
+                _printDialogueEvent.Raise(_printDialogueString);
+            }
+
+            return appliedSuccessfully;
         }
         
         protected abstract bool ApplyEffectInternal();

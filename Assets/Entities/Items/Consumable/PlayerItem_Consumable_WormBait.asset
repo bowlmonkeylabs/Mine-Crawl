@@ -17,6 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 4b1dac39812948140ba362034f3a17f7, type: 2}
+    - {fileID: 11400000, guid: 171ca609259d198498140da98e0d8b74, type: 2}
     - {fileID: 11400000}
     - {fileID: 2249430486495901417, guid: 7f92ffe6437ed6846bca39fbb67dd3d0, type: 3}
     SerializedBytesString: 
@@ -99,12 +100,21 @@ MonoBehaviour:
     - Name: _recurringTimerForTriggerCondition
       Entry: 6
       Data: 
-    - Name: ParentItem
+    - Name: _doPrintDialogueOnApply
+      Entry: 5
+      Data: true
+    - Name: _printDialogueEvent
       Entry: 10
       Data: 1
-    - Name: Prefab
+    - Name: _printDialogueString
+      Entry: 1
+      Data: That should distract whatever is out there...
+    - Name: ParentItem
       Entry: 10
       Data: 2
+    - Name: Prefab
+      Entry: 10
+      Data: 3
     - Name: ThrowForce
       Entry: 7
       Data: 4|BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences.SafeFloatValueReference,
@@ -136,6 +146,9 @@ MonoBehaviour:
     - Name: Container
       Entry: 6
       Data: 
+    - Name: _onlyOneAtATime
+      Entry: 5
+      Data: false
     - Name: 
       Entry: 8
       Data: 
@@ -154,3 +167,4 @@ MonoBehaviour:
   PassiveStackableTreeStartNode: {fileID: 0}
   _objectPrefab: {fileID: 0}
   _itemType: 4
+  slotTypeFilter: 0
