@@ -501,6 +501,10 @@ namespace BML.Scripts.Player.Items
                 {
                     asFireProjectileItemEffect.PrimeEffect(MainCameraRef.Value.transform);
                 }
+                else if (itemEffect is SpawnPickupItemEffect asSpawnPickupItemEffect)
+                {
+                    asSpawnPickupItemEffect.PrimeEffect(MainCameraRef.Value.transform);
+                }
                 else if (itemEffect is ThrowItemEffect asThrowItemEffect)
                 {
                     asThrowItemEffect.PrimeEffect(MainCameraRef.Value.transform);
