@@ -39,12 +39,12 @@ namespace BML.Scripts.Player.Items.ItemEffects
             {
                 return false;
             }
-            
+
             // Calculate throw
             var throwDir = _firePoint.forward;
             // TODO make throw juicier. have throw angle affect the resulting object rotation/spin? potentially you place when the ground is in range, but throw when it's further away?
             var throwForce = throwDir * ThrowForce.Value;
-            
+
             // Instantiate pickup
             var newGameObject = GameObjectUtils.SafeInstantiate(true, BasePickupPrefab, Container?.Value);
             newGameObject.transform.SetPositionAndRotation(_firePoint.position, _firePoint.rotation);
@@ -56,9 +56,9 @@ namespace BML.Scripts.Player.Items.ItemEffects
                 {
                     itemPickupController.SetPickupDelay(_pickupDelay.Value);
                 }
+                itemPickupController.PickupRigidbody.AddForce(throwForce, ForceMode.Impulse);
+                _lastThrown = itemPickupController;
             }
-            itemPickupController.PickupRigidbody.AddForce(throwForce, ForceMode.Impulse);
-            _lastThrown = itemPickupController;
             
             return true;
         }
