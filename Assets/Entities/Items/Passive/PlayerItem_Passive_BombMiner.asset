@@ -10,15 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0699a69989f2e77499221b13d2694b0b, type: 3}
-  m_Name: PlayerItem_Consumable_Bomb
+  m_Name: PlayerItem_Passive_BombMiner
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 11400000, guid: 1c477d863c44c914290e8c75672bff55, type: 2}
-    - {fileID: 11400000}
-    - {fileID: 11400000, guid: 7a5e287407f4b8f4bb6ecb25e26f68df, type: 2}
+    - {fileID: 11400000, guid: 4b1dac39812948140ba362034f3a17f7, type: 2}
+    - {fileID: 11400000, guid: f9d5719e9c3b2f0418be534010f41e5e, type: 2}
+    - {fileID: 11400000, guid: 2fa6c7e95b93efb449f455f05f2c3b84, type: 2}
+    - {fileID: 11400000, guid: 013f7670350d2cc4eb8dcbc4bc738b5d, type: 2}
+    - {fileID: 8097470616027808229, guid: 403e8b8ea52f6ce4caab8a3ff49a1ae1, type: 3}
+    - {fileID: 11400000, guid: eddf651308826cd46a3e62a45a34c7cd, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -46,7 +49,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 3
-      Data: 5
+      Data: 3
     - Name: 
       Entry: 8
       Data: 
@@ -65,10 +68,10 @@ MonoBehaviour:
       Data: 1
     - Name: 
       Entry: 7
-      Data: 3|BML.Scripts.Player.Items.ItemEffects.AddResourceItemEffect, BML.Scripts
+      Data: 3|BML.Scripts.Player.Items.ItemEffects.SpawnPickupItemEffect, BML.Scripts
     - Name: _trigger
       Entry: 3
-      Data: 0
+      Data: 11
     - Name: _useActivationLimit
       Entry: 5
       Data: false
@@ -83,16 +86,16 @@ MonoBehaviour:
       Data: 
     - Name: _useActivationChance
       Entry: 5
-      Data: false
+      Data: true
     - Name: _minActivationChance
       Entry: 4
-      Data: 0
+      Data: 0.25
     - Name: _playerLuckStat
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 1
     - Name: _luckForMaxActivationChance
       Entry: 3
-      Data: 0
+      Data: 10
     - Name: _recurringTimerForTrigger
       Entry: 6
       Data: 
@@ -101,13 +104,50 @@ MonoBehaviour:
       Data: 
     - Name: ParentItem
       Entry: 10
-      Data: 1
-    - Name: _resource
-      Entry: 10
       Data: 2
-    - Name: _addAmount
-      Entry: 3
+    - Name: Item
+      Entry: 10
       Data: 3
+    - Name: BasePickupPrefab
+      Entry: 10
+      Data: 4
+    - Name: ThrowForce
+      Entry: 7
+      Data: 4|BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences.SafeFloatValueReference,
+        ScriptableObjectSystem
+    - Name: ReferenceTypeSelector
+      Entry: 3
+      Data: 0
+    - Name: ConstantValue
+      Entry: 4
+      Data: 6
+    - Name: ReferenceValue_FloatVariable
+      Entry: 6
+      Data: 
+    - Name: ReferenceValue_IntVariable
+      Entry: 6
+      Data: 
+    - Name: ReferenceValue_EvaluateCurveVariable
+      Entry: 6
+      Data: 
+    - Name: ReferenceValue_BoolVariable
+      Entry: 6
+      Data: 
+    - Name: ReferenceValue_FunctionVariable
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Container
+      Entry: 10
+      Data: 5
+    - Name: _pickupDelaySetting
+      Entry: 4
+      Data: 1.5
+    - Name: _onlyOneAtATime
+      Entry: 5
+      Data: false
     - Name: 
       Entry: 8
       Data: 
@@ -117,13 +157,13 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  _name: Bombs
-  _effectDescription: +3 Bombs
-  _storeDescription: 
-  _useIconColor: 0
-  _iconColor: {r: 0, g: 0, b: 0, a: 0}
+  _name: Bomb Miner
+  _effectDescription: 25% chance to get a bomb from mining. Increases with luck stat
+  _storeDescription: (Replaces your current PASSIVE item)
+  _useIconColor: 1
+  _iconColor: {r: 0.5, g: 0.3105325, b: 0.1768868, a: 1}
   _icon: {fileID: 21300000, guid: 8bdf31d5100336446b0115b4002a8a31, type: 3}
   PassiveStackableTreeStartNode: {fileID: 0}
   _objectPrefab: {fileID: 0}
-  _itemType: 4
+  _itemType: 2
   slotTypeFilter: 0
