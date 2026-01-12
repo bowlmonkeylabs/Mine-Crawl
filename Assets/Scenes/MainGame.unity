@@ -3733,6 +3733,7 @@ GameObject:
   - component: {fileID: 1660056001}
   - component: {fileID: 1660056000}
   - component: {fileID: 7827654733262303228}
+  - component: {fileID: 1660056002}
   m_Layer: 0
   m_Name: '{GameManager}'
   m_TagString: Untagged
@@ -3792,6 +3793,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1660056002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660055999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c46e1ec643a1e7a4da559d92f1e184f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameScore: {fileID: 11400000, guid: 99a01ce8451a9d14da586390a94e6bc6, type: 2}
+  _onEnemyKilled: {fileID: 11400000, guid: 27655ba7f3ad5234e9ec5c21a9e2abd5, type: 2}
+  _enemyKilledScore: 100
+  _levelChange: {fileID: 11400000, guid: 7f8d4f2c9c6fd684bbf73dbc02ca2aad, type: 2}
+  _currentLevel: {fileID: 11400000, guid: 558bd132c53dd3d4994086f82c53d6f0, type: 2}
+  _wormSpawnTimers:
+  - {fileID: 11400000, guid: 6ce90ebfc6beece4cb0d32bfa065bc41, type: 2}
+  - {fileID: 11400000, guid: 6c38be07b6870a449984a68209aa5acb, type: 2}
+  _timeRemainingScorePerSec: 100
+  _rareOreCount: {fileID: 11400000, guid: 4aeaf25be48b2b544a06b963e7101d44, type: 2}
+  _rareOreScore: 1000
+  _commonOreCount: {fileID: 11400000, guid: 0165294fceb10994cb9d1f8669a4d72c, type: 2}
+  _commonOreScore: 100
 --- !u!1 &1671949704
 GameObject:
   m_ObjectHideFlags: 0
@@ -6664,6 +6690,10 @@ PrefabInstance:
     - target: {fileID: 7746343501835621964, guid: 54aa09e24ea6dc84f85b5feb44f0173b, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374061035529686352, guid: 54aa09e24ea6dc84f85b5feb44f0173b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8409212159101953270, guid: 54aa09e24ea6dc84f85b5feb44f0173b, type: 3}
       propertyPath: m_IsActive
