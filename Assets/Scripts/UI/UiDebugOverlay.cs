@@ -31,6 +31,7 @@ namespace BML.Scripts.UI
         [SerializeField] private IntensityResponseStateData _intensityResponse;
         [SerializeField] private TimerVariable _wormSpawnTimer;
         [SerializeField] private TimerVariable _wormMaxStrengthTimer;
+        [SerializeField] private IntVariable _gameScore;
 
         private float _peakIntensityScore = 0;
         private EnemySpawnerParams enemySpawnParams => (_enemySpawnerRef.CachedComponent as EnemySpawnManager)?.EnemySpawnerParams;
@@ -68,6 +69,7 @@ Any Enemies Engaged: {this.FormatBool(_anyEnemiesEngaged.Value)}
 Combat Timer: {_playerCombatTimer.RemainingTime}
 Swing: (DPS: {(_swingDamage.Value / _statPickaxeSwingSpeed.Value).ToString("0.00")}) (Crit Chance: {_statSwingCritChance.Value * 100f}%)
 Sweep: (DPS: {(_sweepDamage.Value / _statPickaxeSweepSpeed.Value).ToString("0.00")})
+Score: {_gameScore.Value}
 ";
 
             Color intensityResponseColor;
