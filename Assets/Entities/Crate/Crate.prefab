@@ -46,6 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lootTable: {fileID: 11400000, guid: 1bd030f687e527248a9a914b3b437947, type: 2}
+  _onPeek:
+    m_PersistentCalls:
+      m_Calls: []
   _onDrop:
     m_PersistentCalls:
       m_Calls:
@@ -589,6 +592,7 @@ GameObject:
   - component: {fileID: 7272182294046666579}
   - component: {fileID: 3167673576595891160}
   - component: {fileID: 2553781691738969728}
+  - component: {fileID: 2006856191480243949}
   m_Layer: 6
   m_Name: Interactable
   m_TagString: Untagged
@@ -649,7 +653,7 @@ MonoBehaviour:
   _onPickaxeInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 726453894563559700}
+      - m_Target: {fileID: 2006856191480243949}
         m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
@@ -664,7 +668,7 @@ MonoBehaviour:
   _onPickaxeSecondaryInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 726453894563559700}
+      - m_Target: {fileID: 2006856191480243949}
         m_TargetAssemblyTypeName: BML.Scripts.Damageable, BML.Scripts
         m_MethodName: TakeDamage
         m_Mode: 0
@@ -680,6 +684,66 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _onUnHoverInteract:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2006856191480243949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4476494237034547082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 800975339513592663}
+  healthTemporary: {fileID: 0}
+  _damageable:
+  - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
+      Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile, Player_Pickaxe_Secondary,
+      Enemy_Bomb_Explosion, Trap_Spike, Trap_Stalactite, Enemy_Worm, Player_Projectile,
+      Player_FireBomb, Player_Contact_Dash, Player_Contact_Sprint
+    _damageType: 523731
+    _damageModifierType: 3
+    _damageMultiplier:
+      ReferenceTypeSelector: 0
+      ConstantValue: 1
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageResistance:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageOverride:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls: []
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
+  _onDamage:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &5942222485609726588
@@ -2460,7 +2524,6 @@ GameObject:
   m_Component:
   - component: {fileID: 656154946133458817}
   - component: {fileID: 800975339513592663}
-  - component: {fileID: 726453894563559700}
   m_Layer: 0
   m_Name: Crate
   m_TagString: Untagged
@@ -2577,65 +2640,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   _onRevive:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &726453894563559700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8017202658528004842}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2fe64b9028caa84a8a9952a1342dbbd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 800975339513592663}
-  healthTemporary: {fileID: 0}
-  _damageable:
-  - _damageTypesPreview: Player_Pickaxe, Player_Bomb, Enemy_Sentinel_Projectile,
-      Enemy_Mimic_Projectile, Ore_Explosive, Enemy_Snake_Projectile, Player_Pickaxe_Secondary,
-      Enemy_Bomb_Explosion, Trap_Spike, Trap_Stalactite, Enemy_Worm, Player_Projectile
-    _damageType: 64979
-    _damageModifierType: 3
-    _damageMultiplier:
-      ReferenceTypeSelector: 0
-      ConstantValue: 1
-      RoundingBehavior: 0
-      ReferenceValue_FloatVariable: {fileID: 0}
-      ReferenceValue_IntVariable: {fileID: 0}
-      ReferenceValue_BoolVariable: {fileID: 0}
-      ReferenceValue_FunctionVariable: {fileID: 0}
-      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-    _damageResistance:
-      ReferenceTypeSelector: 0
-      ConstantValue: 0
-      RoundingBehavior: 0
-      ReferenceValue_FloatVariable: {fileID: 0}
-      ReferenceValue_IntVariable: {fileID: 0}
-      ReferenceValue_BoolVariable: {fileID: 0}
-      ReferenceValue_FunctionVariable: {fileID: 0}
-      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-    _damageOverride:
-      ReferenceTypeSelector: 0
-      ConstantValue: 0
-      RoundingBehavior: 0
-      ReferenceValue_FloatVariable: {fileID: 0}
-      ReferenceValue_IntVariable: {fileID: 0}
-      ReferenceValue_BoolVariable: {fileID: 0}
-      ReferenceValue_FunctionVariable: {fileID: 0}
-      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
-    _onDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onFailDamage:
-      m_PersistentCalls:
-        m_Calls: []
-    _onDeath:
-      m_PersistentCalls:
-        m_Calls: []
-  _onDamage:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &8225753328225539317
