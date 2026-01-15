@@ -30,6 +30,7 @@ namespace BML.Scripts
         [SerializeField] private MMF_Player _explosionCueFeedbacks;
 
         [SerializeField] private UnityEvent _onActivate;
+        [SerializeField] private UnityEvent _onBeforeExplosion;
         [SerializeField] private UnityEvent _onExplosion;
 
         private bool isActive;
@@ -92,6 +93,8 @@ namespace BML.Scripts
 
         private void Explode()
         {
+            _onBeforeExplosion.Invoke();
+
             //NOTE: This will damage player and enemies on a per-collider basis.
             //      Does not check if multiple colliders belong to same entity.
 

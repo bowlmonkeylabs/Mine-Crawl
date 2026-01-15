@@ -417,7 +417,7 @@ MonoBehaviour:
     Height: 1
   DetectsOnLayers:
     serializedVersion: 2
-    m_Bits: 525504
+    m_Bits: 1574080
   IgnoreTriggerColliders: 1
   pulseRoutine:
     Mode:
@@ -658,7 +658,7 @@ MonoBehaviour:
     ReferenceValue_FunctionVariable: {fileID: 0}
   _shortFuseTime:
     ReferenceTypeSelector: 0
-    ConstantValue: 0.5
+    ConstantValue: 0.1
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_EvaluateCurveVariable: {fileID: 0}
@@ -1135,12 +1135,12 @@ MonoBehaviour:
   _applyForceOnAwake: 0
   _initialForce: {x: 0, y: 0, z: 0}
   _initialForceMode: 0
-  _stickOnFirstCollision: 0
+  _stickOnFirstCollision: 1
   _stickWithParentConstraint: 1
   _parentConstraint: {fileID: 4063704671212139839}
   _stickyLayerMask:
     serializedVersion: 2
-    m_Bits: 533576
+    m_Bits: 134751304
   _ignoreTriggerColliders: 1
   _onStick:
     m_PersistentCalls:
@@ -1181,7 +1181,70 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: {fileID: 8859659215968451363}
   healthTemporary: {fileID: 0}
-  _damageable: []
+  _damageable:
+  - _damageTypesPreview: Player_Bomb, Ore_Explosive, Enemy_Bomb_Explosion, Player_FireBomb
+    _damageType: 67714
+    _damageModifierType: 2
+    _damageMultiplier:
+      ReferenceTypeSelector: 0
+      ConstantValue: 1
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageResistance:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _damageOverride:
+      ReferenceTypeSelector: 0
+      ConstantValue: 0
+      RoundingBehavior: 0
+      ReferenceValue_FloatVariable: {fileID: 0}
+      ReferenceValue_IntVariable: {fileID: 0}
+      ReferenceValue_BoolVariable: {fileID: 0}
+      ReferenceValue_FunctionVariable: {fileID: 0}
+      ReferenceValue_EvaluateCurveVariable: {fileID: 0}
+    _onDamage:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6547181720418726278}
+          m_TargetAssemblyTypeName: BML.Scripts.BombController, BML.Scripts
+          m_MethodName: ActivateShortFuse
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    _onFailDamage:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6547181720418726278}
+          m_TargetAssemblyTypeName: BML.Scripts.BombController, BML.Scripts
+          m_MethodName: ActivateShortFuse
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    _onDeath:
+      m_PersistentCalls:
+        m_Calls: []
   _onDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -1199,7 +1262,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _useHealthVariable: 0
   _healthReference: {fileID: 0}
-  _health: 0
+  _health: 1
   _hasMaxHealth: 0
   _maxHealthReference:
     ReferenceTypeSelector: 0
