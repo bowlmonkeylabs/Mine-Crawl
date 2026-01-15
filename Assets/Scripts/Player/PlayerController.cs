@@ -736,5 +736,33 @@ namespace BML.Scripts.Player
         
         #endregion
 
+        #region Item Spawning
+
+        public void SpawnObjectInView(LayerMask raycastLayerMask, bool instanceAsPrefab, GameObject prefab, Transform parent = null)
+        {
+            // Raycast from the camera forward to find spawn position
+            Physics.Raycast(
+                _mainCamera.position, 
+                _mainCamera.forward, 
+                out RaycastHit hitInfo, 
+                100f, 
+                raycastLayerMask, 
+                QueryTriggerInteraction.Ignore
+            );
+
+            if (!hitInfo.collider)
+            {
+                Debug.LogError("No valid surface found to spawn the item.");
+                return;
+            }
+
+            var newGameObject = GameObjectUtils.SafeInstantiate(instanceAsPrefab, prefab, parent);
+            newGameObject.transform.position = hitInfo.point;
+            // Set the rotation to align with the hit normal as 'up' direction
+            newGameObject.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+        }
+
+        #endregion
+
     }
 }
