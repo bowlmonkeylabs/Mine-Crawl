@@ -21,6 +21,12 @@ namespace BML.Scripts {
 
         public void TakeDamage(HitInfo hitInfo)
         {
+            if (this.enabled == false || health.IsDead)
+            {
+                Debug.Log($"Damageable {gameObject.name} is disabled or dead, skipping damage from {hitInfo}");
+                return;
+            }
+
             foreach(DamageableItem di in _damageable){
                 if(di.DamageType.HasFlag(hitInfo.DamageType)) {
                     var damageResult = di.ApplyDamage(hitInfo);

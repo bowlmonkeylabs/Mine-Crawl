@@ -238,6 +238,8 @@ namespace BML.Scripts
         
         private void Death(HitInfo hitInfo)
         {
+            if (this.enabled == false) return;
+
             _onDeathHitInfo.Invoke(hitInfo);
             _onDeath.Invoke();
             OnDeath?.Invoke();
