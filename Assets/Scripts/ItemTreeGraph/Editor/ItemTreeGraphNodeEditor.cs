@@ -73,8 +73,10 @@ namespace BML.Scripts.ItemTreeGraph.Editor
             Color tint;
             ItemTreeGraphNode nodeAsItemGraphNode = target as ItemTreeGraphNode;
             
-            if (nodeAsItemGraphNode.Obtained)
+            if (nodeAsItemGraphNode.ObtainedMax)
                 tint = new Color(40f/255f, 128f/255f, 70f/255f, 1f);
+            else if (nodeAsItemGraphNode.Obtained)
+                tint = new Color(60f/255f, 100f/255f, 65f/255f, 1f);
             else
                 tint = new Color(110f/255f, 60/255f, 60f/255f, 1f);
 

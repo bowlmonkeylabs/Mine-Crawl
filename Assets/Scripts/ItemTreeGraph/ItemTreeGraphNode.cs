@@ -18,10 +18,15 @@ namespace BML.Scripts.ItemTreeGraph
 
         [ShowInInspector, ReadOnly, Required]
         public ItemTreeGraphStartNode TreeStartNode;
-        
+
+        public bool Obtained => ObtainedCount > 0;
+        public bool ObtainedMax => ObtainedLimit > 0 && ObtainedCount >= ObtainedLimit;
+
         [ShowInInspector, NonSerialized, ReadOnly]
         // this status is cached here at runtime for UI purposes, but this should not be referenced or relied upon for other purpoes; PlayerInventory is the source of truth.
-        public bool Obtained = false;
+        public int ObtainedCount = 0;
+        
+        public int ObtainedLimit = 1; // <=0 means no limit
         
         public PlayerItem Item;
 
@@ -100,7 +105,7 @@ namespace BML.Scripts.ItemTreeGraph
 
         public void ResetScriptableObject()
         {
-            Obtained = false;
+            ObtainedCount = 0;
         }
 
         // disable warning about unused event
