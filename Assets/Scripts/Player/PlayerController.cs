@@ -251,6 +251,7 @@ namespace BML.Scripts.Player
             else if (hit.collider.gameObject.IsInLayerMask(_enemyMask))
             {
                 _hitEnemyFeedback.PlayFeedbacks();
+                SetInCombat();
             }
 
             _swingHitFeedbacks.transform.position = hit.point;
@@ -362,6 +363,7 @@ namespace BML.Scripts.Player
             if (isEnemyHit)
             {
                 _sweepHitEnemyFeedback.PlayFeedbacks();
+                SetInCombat();
             }
             
             // Random.InitState(SeedManager.Instance.GetSteppedSeed("PickaxeSwing"));

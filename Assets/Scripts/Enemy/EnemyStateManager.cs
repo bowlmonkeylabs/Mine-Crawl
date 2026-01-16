@@ -70,6 +70,7 @@ namespace BML.Scripts.Enemy
         {
             Enemies.Add(payload.EnemyState);
             payload.EnemyState.OnAggroStateChanged += OnEnemyAggroStateChanged;
+            OnEnemyAggroStateChanged();
         }
         
         private void OnEnemyRemovedDynamic(object prev, object curr)
@@ -81,6 +82,7 @@ namespace BML.Scripts.Enemy
         {
             Enemies.Remove(payload.EnemyState);
             payload.EnemyState.OnAggroStateChanged -= OnEnemyAggroStateChanged;
+            OnEnemyAggroStateChanged();
         }
 
         #endregion

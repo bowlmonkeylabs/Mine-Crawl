@@ -1093,6 +1093,52 @@ MonoBehaviour:
   nameOverride: Open menu if upgrades available
   tooltipOverride: 
   target: {fileID: 8467243466658682374}
+--- !u!1 &6840967079284487087
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 294814301782750614}
+  - component: {fileID: 379229497122613755}
+  m_Layer: 0
+  m_Name: NameContainer(EditorOnly)
+  m_TagString: EditorOnly
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &294814301782750614
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6840967079284487087}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8649190723781439685}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &379229497122613755
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6840967079284487087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 190d9e9918d0aaf48a103a2bb6995059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameOverride: Combat state listener
+  tooltipOverride: 
+  target: {fileID: 3056094419400518971}
 --- !u!1 &8388526986875821939
 GameObject:
   m_ObjectHideFlags: 0
@@ -1304,6 +1350,7 @@ GameObject:
   - component: {fileID: 8649190723781439685}
   - component: {fileID: 8649190723781439674}
   - component: {fileID: 5895518985195771841}
+  - component: {fileID: 3056094419400518971}
   - component: {fileID: 6337804492094676961}
   - component: {fileID: 8467243466658682374}
   m_Layer: 0
@@ -1325,6 +1372,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3269745893224122796}
+  - {fileID: 294814301782750614}
   m_Father: {fileID: 8649190723377008977}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1472,6 +1520,57 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &3056094419400518971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8649190723781439684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bac3452c3d166594f8e8494b57ab1162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoolVariables:
+  - {fileID: 11400000, guid: d14b9ee14bf2cde49a3a03f3e19ba4b3, type: 2}
+  FloatVariables: []
+  IntVariables: []
+  Vector2Variables: []
+  Vector3Variables: []
+  FunctionVariables: []
+  OnIncrease:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6337804492094676961}
+        m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
+          StateMachine
+        m_MethodName: TryRaise
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDecrease:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8467243466658682374}
+        m_TargetAssemblyTypeName: BML.VisualStateMachine.Scripts.Events.ConditionalEvent,
+          StateMachine
+        m_MethodName: TryRaise
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &6337804492094676961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1544,10 +1643,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d9de05a2e70424e8718c7cf216b134, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conditionPreview: '- ! Game_ Menu Is Open_ Upgrade Store
+  conditionPreview: '- ! Game_ Menu Is Open_ A N Y
 
-    -  Player_ Upgrades
-    Available  >  < Const>0
+    - ! Player_ In Combat
+
+    - 
+    Player_ Upgrades Available  >  < Const>0
 
 '
   StateMachines: []
@@ -1560,7 +1661,21 @@ MonoBehaviour:
       InstanceName: 
       InstancePath: IntermediateProperties
       ConstantValue: 0
-      Variable: {fileID: 11400000, guid: b097147d192343940aca02f32a439f21, type: 2}
+      Variable: {fileID: 11400000, guid: 61da9144b637d0f4695d0e6fcb4ab9a2, type: 2}
+    value:
+      UseConstant: 1
+      EnableInstanceOptions: 0
+      InstanceName: 
+      InstancePath: IntermediateProperties
+      ConstantValue: 0
+      Variable: {fileID: 0}
+  - targetParameter:
+      UseConstant: 0
+      EnableInstanceOptions: 0
+      InstanceName: 
+      InstancePath: IntermediateProperties
+      ConstantValue: 0
+      Variable: {fileID: 11400000, guid: d14b9ee14bf2cde49a3a03f3e19ba4b3, type: 2}
     value:
       UseConstant: 1
       EnableInstanceOptions: 0
@@ -3056,11 +3171,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
---- !u!1 &844638565079868952 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6497956022634779252, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
-  m_PrefabInstance: {fileID: 5878783971230217324}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &844638565079868955 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6497956022634779255, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
@@ -3077,6 +3187,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &844638565079868952 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6497956022634779252, guid: b18c9d6c81420a446abdcabb20d0872b, type: 3}
+  m_PrefabInstance: {fileID: 5878783971230217324}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6818380118413538443
 MonoBehaviour:
   m_ObjectHideFlags: 0
