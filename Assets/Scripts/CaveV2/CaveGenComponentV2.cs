@@ -1082,9 +1082,29 @@ namespace BML.Scripts.CaveV2
         {
             if (EnableLogs) Debug.Log("Cave Graph: Generating minimap objects");
 
-            if (!_generateMinimap || _minimapObjectsContainer?.Value == null || !IsGenerated || _caveGraph == null)
+            if (!_generateMinimap)
             {
-                if (EnableLogs) Debug.LogError("Minimap failed to generate!");
+                if (EnableLogs) Debug.Log("Minimap generation disabled.");
+                return;
+            }
+            if (_minimapObjectsContainer?.Value == null)
+            {
+                if (EnableLogs)
+                {
+                    if (ApplicationUtils.IsPlaying_EditorSafe)
+                    {
+                        Debug.LogError("Minimap failed to generate! Minimap objects container is null.");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Minimap generation skipped! Minimap objects container is not set (updating in edit mode is not supported).");
+                    }
+                }
+                return;
+            }
+            if (!IsGenerated || _caveGraph == null)
+            {
+                if (EnableLogs) Debug.LogError($"Minimap failed to generate! Cave graph is not generated.");
                 return;
             }
 
