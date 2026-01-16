@@ -176,7 +176,7 @@ namespace BML.Scripts.CaveV2
         public void GenerateCaveGraphButton()
         {
             _retryDepth = 0;
-            SeedManager.Instance.UpdateRandomSeed();
+            SeedManager.Instance.UpdateRandomSeed(true, true);
             GenerateCaveGraph();
         }
         
@@ -235,7 +235,7 @@ namespace BML.Scripts.CaveV2
             }
             else
             {
-                SeedManager.Instance.UpdateRandomSeed(false);
+                SeedManager.Instance.UpdateRandomSeed(false, true);
                 GenerateCaveGraph();
             }
         }
@@ -256,7 +256,7 @@ namespace BML.Scripts.CaveV2
             }
             else
             {
-                SeedManager.Instance.UpdateRandomSeed(false);
+                SeedManager.Instance.UpdateRandomSeed(false, true);
                 return GenerateCaveGraph(_caveGenParams, CaveGenBounds);
             }
         }
