@@ -133,10 +133,11 @@ namespace BML.Scripts.Player.Items
             var emptyList = new List<ItemTreeGraphNode>();
             Func<ItemTreeGraphNode, IEnumerable<ItemTreeGraphNode>> getChildren = node =>
             {
-                bool playerHas = _playerInventory.PassiveStackableItems.Items.Contains(node.Item);
+                int obtainedCount = _playerInventory.GetItemCount(node.Item);
+                bool playerHas = obtainedCount > 0;
                 if (updateStatusInGraphWhileTraversing)
                 {
-                    node.Obtained = playerHas;
+                    node.ObtainedCount = obtainedCount;
                 }
                 if (playerHas)
                 {
@@ -152,7 +153,7 @@ namespace BML.Scripts.Player.Items
                 .GetOutputPort("Start")
                 .GetConnections()
                 .SelectMany(port => BfsUtils.BreadthFirstSearch<ItemTreeGraphNode>(port.node as ItemTreeGraphNode, getChildren).leafNodes)
-                .Where(node => !node.Obtained)
+                .Where(node => !node.ObtainedMax)
                 .Select(node => node.Item)
                 .ToList();
         }
@@ -180,15 +181,15 @@ namespace BML.Scripts.Player.Items
                 if (itemTreeGraphNode.TreeStartNode == null)
                     continue;
                 
-                bool isObtained = _playerInventory.PassiveStackableItems.Contains(itemTreeGraphNode.Item);
-                itemTreeGraphNode.Obtained = isObtained;
-                itemTreeGraphNode.TreeStartNode.NumberOfObtainedItemsInTree += isObtained ? 1 : 0;
+                int obtainedCount = _playerInventory.GetItemCount(itemTreeGraphNode.Item);
+                itemTreeGraphNode.ObtainedCount = obtainedCount;
+                itemTreeGraphNode.TreeStartNode.NumberOfObtainedItemsInTree += obtainedCount;
             }
         }
         public void UpdateTreeFromInventory(ItemTreeGraphNode itemNode)
         {
-            bool isObtained = _playerInventory.PassiveStackableItems.Contains(itemNode.Item);
-            itemNode.Obtained = isObtained;
+            int obtainedCount = _playerInventory.GetItemCount(itemNode.Item);
+            itemNode.ObtainedCount = obtainedCount;
             
             var treeStartNode = itemNode.TreeStartNode ?? GetTreeStartNodeForItem(itemNode.Item);
             UpdateTreeFromInventory(treeStartNode);

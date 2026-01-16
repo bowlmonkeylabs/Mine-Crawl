@@ -237,6 +237,28 @@ namespace BML.Scripts.Player.Items
             OnReset?.Invoke();
         }
 
+        public int GetItemCount(PlayerItem item)
+        {
+            int count = 0;
+            switch (item.Type)
+            {
+                case ItemType.PassiveStackable:
+                    count = PassiveStackableItems.Count(i => i == item);
+                    break;
+                case ItemType.Passive:
+                    count = PassiveItems.Count(i => i == item);
+                    break;
+                case ItemType.Active:
+                    count = ActiveItems.Count(i => i == item);
+                    break;
+                case ItemType.Consumable:
+                    count = ConsumableItems.Count(i => i == item);
+                    break;
+            }
+
+            return count;
+        }
+
         #endregion
         
         #region Unity lifecycle
