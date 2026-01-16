@@ -53,8 +53,10 @@ namespace BML.Scripts.CaveV2 {
             if (LockSeed) return false;
                 
             if (logSeedHist) LogSeedHist();
-            
+
+            Random.InitState(_seed);
             _seed = Random.Range(Int32.MinValue, Int32.MaxValue);
+            Random.InitState(_seed);
 
             return true;
         }
