@@ -43,7 +43,8 @@ namespace BML.Scripts.Player.Items.ItemEffects
             
             // Instantiate throwable
             var newGameObject = GameObjectUtils.SafeInstantiate(true, Prefab.gameObject, Container?.Value);
-            newGameObject.transform.SetPositionAndRotation(_firePoint.position, _firePoint.rotation);
+            // newGameObject.transform.SetPositionAndRotation(_firePoint.position, _firePoint.rotation);
+            newGameObject.transform.position = _firePoint.position;
             var throwable = newGameObject.GetComponentInChildren<Throwable>();
             throwable.DoThrow(throwForce);
             _lastThrown = throwable;
