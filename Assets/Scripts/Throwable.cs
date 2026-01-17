@@ -27,6 +27,7 @@ namespace BML.Scripts
         [SerializeField, ShowIf("_stickOnFirstCollision")] private LayerMask _stickyLayerMask;
         [SerializeField, ShowIf("_stickOnFirstCollision")] private bool _ignoreTriggerColliders = true;
         [FormerlySerializedAs("_onGrounded")] [SerializeField, ShowIf("_stickOnFirstCollision")]private UnityEvent _onStick;
+		[SerializeField, ShowIf("_stickOnFirstCollision")] private UnityEvent<HitInfo> _onStickHitInfo;
 
         #endregion
         
@@ -76,7 +77,7 @@ namespace BML.Scripts
 			if (!_ignoreTriggerColliders && _stickOnFirstCollision && !_stuck && _stickyLayerMask.MMContains(collider.gameObject))
 			{
 				// Debug.Log($"OnTriggerEnter: {this.name} hit {collider.name}");
-				this.StickToCollider(collider);
+				this.StickToCollider(collider, _rigidbody.velocity.normalized, collider.ClosestPoint(this.transform.position));
 			}
 		}
 
@@ -85,7 +86,7 @@ namespace BML.Scripts
 			if (_stickOnFirstCollision && !_stuck && _stickyLayerMask.MMContains(collision.gameObject))
 			{
 				// Debug.Log($"OnCollisionEnter: {this.name} hit {collision.collider.name}");
-                this.StickToCollider(collision.collider);
+                this.StickToCollider(collision.collider, collision.relativeVelocity.normalized, collision.GetContact(0).point);
 			}
 		}
 
@@ -150,7 +151,7 @@ namespace BML.Scripts
 			// Debug.Log($"Throwable.DoThrow: force={directionalForce}, upDot={upDot}, torque={torque}");
         }
 
-        private void StickToCollider(Collider collider)
+        private void StickToCollider(Collider collider, Vector3 hitDirection, Vector3 hitPosition)
         {
 	        // Debug.Log($"Stuck! {this.name} to {collider.name}");
 	        _stuck = true;
@@ -176,6 +177,7 @@ namespace BML.Scripts
 		        _rigidbody.isKinematic = true;
 	        }
 	        _onStick.Invoke();
+			_onStickHitInfo.Invoke(new HitInfo(DamageType.None, 0, hitDirection, hitPosition));
         }
 
         private void Unstick()

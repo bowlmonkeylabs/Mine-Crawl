@@ -11,6 +11,7 @@ namespace BML.Scripts
         [SerializeField] private LayerMask _ceilingMask;
         [SerializeField] private int _maxDistance = 100;
         [SerializeField] private Collider _collider;
+        [SerializeField] private Transform _colliderScaleTransform;
         [SerializeField] private GameObject _ladderPointPrefab;
         [SerializeField] private LayerMask _playerLayerMask;
         [SerializeField] private string _playerTag;
@@ -38,23 +39,33 @@ namespace BML.Scripts
             
             RaycastHit hit;
             
-            var scalingTransform = _collider.transform;
+            var scalingTransform = _colliderScaleTransform;
+
+            var margin = 0.1f;
             
             var colliderBottom = _collider.bounds.center - _collider.bounds.extents.oyo();
             if(Physics.Raycast(colliderBottom, Vector3.up, out hit, _maxDistance, _ceilingMask)) {
-                float distToHitPoint = Vector3.Distance(hit.point, colliderBottom);
-                float scalingFactor = distToHitPoint / 2;
+                float baseDistToHitPoint = Vector3.Distance(hit.point, colliderBottom);
+                float distToHitPoint = baseDistToHitPoint * (1 + 2 * margin);
+                float colliderScalingFactor = distToHitPoint / 2;
 
-                scalingTransform.localScale = scalingTransform.localScale.xoz() + new Vector3(0, scalingFactor, 0);
-                transform.position = colliderBottom + new Vector3(0, scalingFactor, 0);
+                var ropePointBottomPosition = colliderBottom;
+                var colliderBottomPosition = colliderBottom - new Vector3(0, margin * baseDistToHitPoint, 0);
+                var ropePointTopPosition = colliderBottom + baseDistToHitPoint * Vector3.up;
+                // var colliderTopPosition = colliderBottomPosition + distToHitPoint * Vector3.up;
+
+                _collider.transform.localScale = _collider.transform.localScale.xoz() + new Vector3(0, 1, 0); // Reset collider scale y to 1 before adjusting.
+                scalingTransform.localScale = scalingTransform.localScale.xoz() + new Vector3(0, colliderScalingFactor, 0);
+                this.transform.position = colliderBottomPosition;
 
                 scalingTransform.rotation = Quaternion.identity;
                 
                 var topPoint = GameObjectUtils.SafeInstantiate(true, _ladderPointPrefab, transform.parent);
-                topPoint.transform.SetPositionAndRotation(transform.position + new Vector3(0, scalingFactor, 0), Quaternion.identity);
+                topPoint.transform.SetPositionAndRotation(ropePointTopPosition, Quaternion.identity);
                 topPoint.tag = "RopeTop";
+
                 var bottomPoint = GameObjectUtils.SafeInstantiate(true, _ladderPointPrefab, transform.parent);
-                bottomPoint.transform.SetPositionAndRotation(transform.position - new Vector3(0, scalingFactor, 0), Quaternion.identity);
+                bottomPoint.transform.SetPositionAndRotation(ropePointBottomPosition, Quaternion.identity);
                 bottomPoint.tag = "RopeBottom";
 
                 IsDeployed = true;
