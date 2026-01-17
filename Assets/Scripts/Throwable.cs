@@ -93,12 +93,25 @@ namespace BML.Scripts
         {
 	        if (_stickOnFirstCollision && _stuck && _stickWithParentConstraint)
 	        {
-		        var constraintSource = _parentConstraint.GetSource(0);
-		        if (constraintSource.sourceTransform.SafeIsUnityNull())
-		        {
-			        // the thing previously attached is gone, so we should unstick
-			        Unstick();
-		        }
+				bool sourceIsNull = false;
+				if (_parentConstraint.sourceCount == 0)
+				{
+					sourceIsNull = true;
+				}
+				else
+				{
+					var constraintSource = _parentConstraint.GetSource(0);
+					if (constraintSource.sourceTransform.SafeIsUnityNull())
+					{
+						sourceIsNull = true;
+					}
+				}
+
+				if (sourceIsNull)
+				{
+					// the thing previously attached is gone, so we should unstick
+					Unstick();
+				}
 	        } 
         }
 
@@ -117,15 +130,19 @@ namespace BML.Scripts
 	        _stuck = true;
 	        if (_stickWithParentConstraint)
 	        {
-		        var colliderTransform = collider.transform;
+				var colliderTransform = collider.transform;
 		        var constraintSource = new ConstraintSource
 		        {
 			        sourceTransform = colliderTransform,
 			        weight = 1f,
 		        };
-		        var offset = (this.transform.position - colliderTransform.position);
+				var translationOffset = colliderTransform.InverseTransformPoint(this.transform.position);
+				var rotationOffset = Quaternion.Inverse(colliderTransform.rotation) * this.transform.rotation;
+
+				_parentConstraint.translationAtRest = this.transform.position;
 		        _parentConstraint.AddSource(constraintSource);
-		        _parentConstraint.SetTranslationOffset(0, offset);
+		        _parentConstraint.SetTranslationOffset(0, translationOffset);
+				_parentConstraint.SetRotationOffset(0, rotationOffset.eulerAngles);
 		        _parentConstraint.constraintActive = true;
 	        }
 	        else
@@ -142,8 +159,11 @@ namespace BML.Scripts
 
 	        if (_stickWithParentConstraint)
 	        {
-		        _parentConstraint.constraintActive = false;
-		        _parentConstraint.RemoveSource(0);    
+				_parentConstraint.constraintActive = false;
+				if (_parentConstraint.sourceCount > 0)
+				{
+					_parentConstraint.RemoveSource(0);
+				}
 	        }
 	        else
 	        {
