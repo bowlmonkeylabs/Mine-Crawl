@@ -122,6 +122,32 @@ namespace BML.Scripts
         public void DoThrow(Vector3 directionalForce)
         {
 	        _rigidbody.AddForce(directionalForce, ForceMode.Impulse);
+
+			// Calculate torque based on throw direction.
+			var upDot = Vector3.Dot(directionalForce.normalized, Vector3.up);
+			var torque = Vector3.zero;
+			if (upDot < -0.1f)
+			{
+				// Light wobble when thrown downwards
+				var torqueMagnitude = directionalForce.magnitude * (Mathf.Abs(upDot) - 0.1f) * 0.05f;
+				torque = UnityEngine.Random.onUnitSphere * torqueMagnitude;
+			}
+			else if (upDot < 0.75f)
+			{
+				// Moderate wobble when thrown more horizontally
+				var torqueMagnitude = directionalForce.magnitude * (1f - Mathf.Abs(upDot)) * 0.1f;
+				torque = UnityEngine.Random.onUnitSphere * torqueMagnitude;
+			}
+			else
+			{
+				// Strong end-over-end spin when lobbed overhead
+				var torqueMagnitude = directionalForce.magnitude * ((upDot - 0.75f) / 0.25f) * 0.5f;
+				torque = this.transform.right * torqueMagnitude;
+			}
+
+			_rigidbody.AddTorque(torque, ForceMode.Impulse);
+
+			// Debug.Log($"Throwable.DoThrow: force={directionalForce}, upDot={upDot}, torque={torque}");
         }
 
         private void StickToCollider(Collider collider)

@@ -460,7 +460,8 @@ namespace BML.Scripts.Player
             
             // Instantiate throwable
             var newGameObject = GameObjectUtils.SafeInstantiate(true, prefabToThrow, container);
-            newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
+            // newGameObject.transform.SetPositionAndRotation(_mainCamera.transform.position, _mainCamera.transform.rotation);
+            newGameObject.transform.position = _mainCamera.transform.position;
             var throwable = newGameObject.GetComponentInChildren<Throwable>();
             throwable.DoThrow(throwForce);
         }
