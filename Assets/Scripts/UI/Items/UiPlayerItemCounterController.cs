@@ -69,7 +69,7 @@ namespace BML.Scripts.UI.Items
 
         private PlayerItem GetSlotHelper(ItemSlotType<PlayerItem, SlotTypeFilter> itemSlotType)
         {
-            if (itemSlotType == null || _inventoryItemSlotIndex >= itemSlotType.ItemCount)
+            if (itemSlotType == null || _inventoryItemSlotIndex >= itemSlotType.SlotCount)
             {
                 return null;
             }
@@ -110,10 +110,10 @@ namespace BML.Scripts.UI.Items
             }
         }
 
-        public void SetDisplayPassiveStackableTreeSlotFromInventory(int passiveStackableTreeSlotIndex)
+        public void SetDisplayItemFromPlayerInventory(ItemType inventoryItemType, int inventoryItemSlotIndex)
         {
-            _inventoryItemType = ItemType.PassiveStackable;
-            _inventoryItemSlotIndex = passiveStackableTreeSlotIndex;
+            _inventoryItemType = inventoryItemType;
+            _inventoryItemSlotIndex = inventoryItemSlotIndex;
             _itemSource = ItemSource.PlayerInventory;
         }
 
@@ -359,8 +359,13 @@ namespace BML.Scripts.UI.Items
         private void UpdateAssignedItem()
         {
             var item = Item;
-            if (item == null && (_isStoreDisplay || (_inventoryItemType == ItemType.PassiveStackable && _inventoryItemSlotIndex >= _playerInventory.PassiveStackableItemTrees.SlotCount)))
-            {
+            if (item == null && (
+                    _isStoreDisplay || (
+                        _itemSource == ItemSource.PlayerInventory && 
+                        _inventoryItemSlotIndex >= _playerInventory.GetDisplaySlotCount(_inventoryItemType)
+                    )
+                )
+            ) {
                 _uiRoot.SetActive(false);
                 return;
             }

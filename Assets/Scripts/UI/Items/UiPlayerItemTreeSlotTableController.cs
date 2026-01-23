@@ -11,14 +11,14 @@ namespace BML.Scripts.UI.Items
         #region Inspector
 
         [SerializeField] private PlayerInventory _playerInventory;
-        [SerializeField] private ItemType _itemType = ItemType.PassiveStackable;
+        [SerializeField] private ItemType _inventoryItemType = ItemType.PassiveStackable;
 
         [SerializeField, AssetsOnly] private GameObject _uiPlayerItemCounterPrefab;
         [SerializeField] private RectTransform _uiTableRoot;
         [SerializeField] private bool _generateAtRuntime = false;
 
         private bool GenerateAtRuntime => _generateAtRuntime
-            && _itemType != ItemType.PassiveStackable;
+            && _inventoryItemType != ItemType.PassiveStackable;
         // Disabled for PassiveStackable now, since we decided to have a fixed number of slots in the UI.
         // Generate in the editor via the button below if needed.;
 
@@ -71,7 +71,7 @@ namespace BML.Scripts.UI.Items
                 var uiPlayerItemCounterController = childTransform.GetComponentInChildren<UiPlayerItemCounterController>();
                 if (uiPlayerItemCounterController != null)
                 {
-                    uiPlayerItemCounterController.SetDisplayPassiveStackableTreeSlotFromInventory(i);
+                    uiPlayerItemCounterController.SetDisplayItemFromPlayerInventory(_inventoryItemType, i);
                 }
             }
         }

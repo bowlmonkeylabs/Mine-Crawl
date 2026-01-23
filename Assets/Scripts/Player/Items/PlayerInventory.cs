@@ -48,6 +48,12 @@ namespace BML.Scripts.Player.Items
             ActiveItems.OnSlotsChangedInInspector();
             ConsumableItems.OnSlotsChangedInInspector();
         }
+
+        [Button("Reset to default"), PropertyOrder(-1)]
+        private void ResetSlotsToDefaultInInspector()
+        {
+            ResetScriptableObject(false);
+        }
         
         [SerializeField]
         [TabGroup("Upgrades"), InlineProperty, HideLabel]
@@ -220,10 +226,18 @@ namespace BML.Scripts.Player.Items
 
         public void ResetScriptableObject()
         {
-            this.PassiveStackableItems.ForEach(p => p?.ResetScriptableObject());
-            this.PassiveItems.ForEach(p => p?.ResetScriptableObject());
-            this.ActiveItems.ForEach(p => p?.ResetScriptableObject());
-            this.ConsumableItems.ForEach(p => p?.ResetScriptableObject());
+            ResetScriptableObject(true);
+        }
+
+        public void ResetScriptableObject(bool callItemReset = true)
+        {
+            if (callItemReset)
+            {
+                this.PassiveStackableItems.ForEach(p => p?.ResetScriptableObject());
+                this.PassiveItems.ForEach(p => p?.ResetScriptableObject());
+                this.ActiveItems.ForEach(p => p?.ResetScriptableObject());
+                this.ConsumableItems.ForEach(p => p?.ResetScriptableObject());    
+            }
             
             if (_startingInventory != null)
             {
@@ -235,6 +249,28 @@ namespace BML.Scripts.Player.Items
             }
 
             OnReset?.Invoke();
+        }
+
+        public int GetDisplaySlotCount(ItemType itemType)
+        {
+            int slotCount = 0;
+            switch (itemType)
+            {
+                case ItemType.PassiveStackable:
+                    slotCount = PassiveStackableItemTrees.SlotCount;
+                    break;
+                case ItemType.Passive:
+                    slotCount = PassiveItems.SlotCount;
+                    break;
+                case ItemType.Active:
+                    slotCount = ActiveItems.SlotCount;
+                    break;
+                case ItemType.Consumable:
+                    slotCount = ConsumableItems.SlotCount;
+                    break;
+            }
+
+            return slotCount;
         }
 
         public int GetItemCount(PlayerItem item)
