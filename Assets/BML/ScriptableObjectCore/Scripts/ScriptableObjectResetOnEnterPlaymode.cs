@@ -7,6 +7,8 @@ namespace BML.ScriptableObjectCore.Scripts
     public static class ScriptableObjectResetOnEnterPlaymode
     {
         private static HashSet<string> _variablesToReset;
+
+        private static bool _skipResetOnEnterPlaymode = false;
         
 #if UNITY_EDITOR
         [InitializeOnLoadMethod]
@@ -19,7 +21,7 @@ namespace BML.ScriptableObjectCore.Scripts
 
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
-            if (state == PlayModeStateChange.EnteredPlayMode)
+            if (state == PlayModeStateChange.EnteredPlayMode && !_skipResetOnEnterPlaymode)
             {
                 foreach (string path in _variablesToReset)
                 {
@@ -46,6 +48,11 @@ namespace BML.ScriptableObjectCore.Scripts
 #if UNITY_EDITOR
             _variablesToReset.Remove(path);
 #endif
+        }
+
+        public static void SkipResetOnEnterPlaymode(bool skip)
+        {
+            _skipResetOnEnterPlaymode = skip;
         }
     }
 }

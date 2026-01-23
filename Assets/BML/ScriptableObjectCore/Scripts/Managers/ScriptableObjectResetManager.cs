@@ -24,6 +24,7 @@ namespace BML.ScriptableObjectCore.Scripts.Managers
         public void Start()
         {
             ResetValues(ResetOnStartVariableContainer, ResetOnStartResettableScriptableObjects);
+            ScriptableObjectResetOnEnterPlaymode.SkipResetOnEnterPlaymode(true);
         }
 
         private void OnEnable()
