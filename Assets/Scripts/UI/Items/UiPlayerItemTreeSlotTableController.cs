@@ -11,9 +11,16 @@ namespace BML.Scripts.UI.Items
         #region Inspector
 
         [SerializeField] private PlayerInventory _playerInventory;
+        [SerializeField] private ItemType _itemType = ItemType.PassiveStackable;
 
         [SerializeField, AssetsOnly] private GameObject _uiPlayerItemCounterPrefab;
-        [SerializeField] private RectTransform _uiTableRoot; 
+        [SerializeField] private RectTransform _uiTableRoot;
+        [SerializeField] private bool _generateAtRuntime = false;
+
+        private bool GenerateAtRuntime => _generateAtRuntime
+            && _itemType != ItemType.PassiveStackable;
+        // Disabled for PassiveStackable now, since we decided to have a fixed number of slots in the UI.
+        // Generate in the editor via the button below if needed.;
 
         #endregion
 
@@ -21,29 +28,33 @@ namespace BML.Scripts.UI.Items
 
         private void OnEnable()
         {
-            // GenerateTreeSlotsTable();
-            // TODO do we need to do this on generate? the slots should be dynamically referencing the inventory anyway.
-
-            _playerInventory.PassiveStackableItems.OnItemAdded += OnPassiveStackableItemAdded;
-            _playerInventory.PassiveStackableItems.OnItemRemoved += OnPassiveStackabkeItemRemoved;
+            if (GenerateAtRuntime)
+            {
+                GenerateTreeSlotsTable();
+                _playerInventory.PassiveStackableItems.OnItemAdded += OnPassiveStackableItemAdded;
+                _playerInventory.PassiveStackableItems.OnItemRemoved += OnPassiveStackableItemRemoved;
+            }
         }
         
         private void OnDisable()
         {
-            _playerInventory.PassiveStackableItems.OnItemAdded -= OnPassiveStackableItemAdded;
-            _playerInventory.PassiveStackableItems.OnItemRemoved -= OnPassiveStackabkeItemRemoved;
+            if (GenerateAtRuntime)
+            {
+                _playerInventory.PassiveStackableItems.OnItemAdded -= OnPassiveStackableItemAdded;
+                _playerInventory.PassiveStackableItems.OnItemRemoved -= OnPassiveStackableItemRemoved;
+            }
         }
 
         #endregion
 
         private void OnPassiveStackableItemAdded(PlayerItem playerItem)
         {
-            // GenerateTreeSlotsTable();
+            GenerateTreeSlotsTable();
         }
 
-        private void OnPassiveStackabkeItemRemoved(PlayerItem playerItem)
+        private void OnPassiveStackableItemRemoved(PlayerItem playerItem)
         {
-            // GenerateTreeSlotsTable();
+            GenerateTreeSlotsTable();
         }
 
         [Button]

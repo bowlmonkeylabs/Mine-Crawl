@@ -53,7 +53,11 @@ namespace BML.Scripts.Player.Items
         private void Start()
         {
             // This needs to run AFTER ScriptableObjectResetManager, which runs on Start (early)
-            this.Apply_Passives_OnAcquired();
+            foreach (var item in AllItems)
+            {
+                Apply_OnAcquired(item);
+            }
+            this.Apply_Consumable_OnAcquired(); // Consumables are not included in 'AllItems'.
         }
 
         private void OnEnable()

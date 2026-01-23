@@ -41,6 +41,9 @@ namespace BML.Scripts.UI.Items
         }
         [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerItem")] private PlayerItem _item;
 
+        // [ShowInInspector, ReadOnly]
+        // private string _debugIdentifier => $"[UiPlayerItemCounterController: Source={_itemSource}, ItemType={_inventoryItemType}, SlotIndex={_inventoryItemSlotIndex}]";
+
         [SerializeField] private bool _isStoreDisplay = false;
 
         [ShowInInspector,
@@ -53,7 +56,7 @@ namespace BML.Scripts.UI.Items
                 if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
                 {
                     if (_playerInventory == null || _inventoryItemSlotIndex >=
-                        _playerInventory.PassiveStackableItemTrees.ItemCount)
+                        _playerInventory.PassiveStackableItemTrees.SlotCount)
                     {
                         return null;
                     }
@@ -180,7 +183,8 @@ namespace BML.Scripts.UI.Items
                         _playerInventory.ConsumableItems.OnAnyItemChangedInInspector += OnConsumableItemListChangedInInspector;
                         break;
                 }
-                
+
+                _playerInventory.OnReset += OnPlayerInventoryReset;
                 // _playerInventory.OnAnyPlayerItemChangedInInspector += UpdateAssignedItem;
             }
             
@@ -221,6 +225,7 @@ namespace BML.Scripts.UI.Items
                         break;
                 }
             
+                _playerInventory.OnReset -= OnPlayerInventoryReset;
                 // _playerInventory.OnAnyPlayerItemChangedInInspector -= UpdateAssignedItem;
             }
             
@@ -332,6 +337,15 @@ namespace BML.Scripts.UI.Items
         private void OnPassiveStackableItemTreeChangedInInspector()
         {
             if (_itemSource == ItemSource.PlayerInventory && _inventoryItemType == ItemType.PassiveStackable)
+            {
+                UpdateAssignedItem();
+            }
+        }
+
+        private void OnPlayerInventoryReset()
+        {
+            // Since the inventory reset may be triggered on exiting playmode in the editor, we need to make sure this gameObject still exists before continuing.
+            if (gameObject != null)
             {
                 UpdateAssignedItem();
             }

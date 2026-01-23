@@ -302,7 +302,10 @@ namespace BML.Scripts.Player.Items
             _preserveOrder = defaultValues._preserveOrder;
             
             _slotsLimit.Value = defaultValues._slotsLimit.Value;
-            _slots.SetLength(_slotsLimit.Value);
+
+            bool hasLimit = _slotsLimit.Value > 0;
+            int startingSlotCount = hasLimit ? _slotsLimit.Value : defaultValues._slots.Count;
+            _slots.SetLength(startingSlotCount);
             for (int i = 0; i < _slots.Count; i++)
             {
                 _slots[i].ResetToDefault(defaultValues._slots[i]);
