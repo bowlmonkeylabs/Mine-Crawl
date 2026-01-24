@@ -23,7 +23,7 @@ namespace MoreMountains.Feedbacks
         public override bool EvaluateRequiresSetup() => 
             (BoundRenderers == null || BoundRenderers.Count == 0 || BoundRenderers.Any(r => r == null));
         public override string RequiredTargetText => (BoundRenderers != null
-            ? String.Join(",", BoundRenderers.Select(r => r.name))
+            ? String.Join(",", BoundRenderers.Select(r => r ? r.name : ""))
             : "");
         public override string RequiresSetupText => "This feedback requires that a BoundRenderer be set to be able to work properly. You can set one below.";
         #endif
