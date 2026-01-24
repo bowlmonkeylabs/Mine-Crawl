@@ -22,21 +22,21 @@ namespace BML.Scripts.UI.Items
         [SerializeField] private int _maxItemsToShow = 4;
         [SerializeField] private MMF_Player _showBannerFeedbacks;
 
-        [NonSerialized, ShowInInspector, ReadOnly]
-        private List<string> _recentItems = new List<string>();
-
         #region Unity lifecycle
 
         private void OnEnable()
         {
+            ClearBanner();
             _playerInventory.OnAnyPlayerItemAdded += DisplayItemOnBanner;
             _onItemDiscovered.Subscribe(OnItemDiscoveredDynamic);
+            _isAnyMenuOpen.Subscribe(OnAnyMenuOpenChanged);
         }
 
         private void OnDisable()
         {
             _playerInventory.OnAnyPlayerItemAdded -= DisplayItemOnBanner;
             _onItemDiscovered.Unsubscribe(OnItemDiscoveredDynamic);
+            _isAnyMenuOpen.Unsubscribe(OnAnyMenuOpenChanged);
         }
 
         #endregion
@@ -49,6 +49,12 @@ namespace BML.Scripts.UI.Items
         private void OnItemDiscovered(PlayerItem item)
         {
             DisplayItemOnBanner(item);
+        }
+
+        private void OnAnyMenuOpenChanged(bool prev, bool curr)
+        {
+            // Show or hide the banner based on whether any menu is open.
+            _text.gameObject.SetActive(!curr);
         }
 
         #region UI control
@@ -64,18 +70,7 @@ namespace BML.Scripts.UI.Items
                 return;
             }
 
-            _recentItems.Add(item.Name);
-
-            // Show newest item first in the list
-            // Show up to _maxItemsToShow items
-            // Show an ellipsis if there are more items than we can show
-            var itemsToShow = _recentItems.Skip(Mathf.Max(0, _recentItems.Count - _maxItemsToShow)).Reverse().ToList();
-            if (_recentItems.Count > _maxItemsToShow)
-            {
-                itemsToShow.Add("...");
-            }
-
-            _text.text = string.Join("\n", itemsToShow);
+            _text.text = item.Name;
 
             _showBannerFeedbacks.StopFeedbacks();
             _showBannerFeedbacks.PlayFeedbacks();
@@ -83,7 +78,6 @@ namespace BML.Scripts.UI.Items
 
         public void ClearBanner()
         {
-            _recentItems.Clear();
             _text.text = "";
         }
         
