@@ -46,7 +46,7 @@ namespace BML.Scripts.Player
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
-		[SerializeField, FoldoutGroup("Player")] float JumpHeight = 1.2f;
+		[SerializeField, FoldoutGroup("Player")] FloatReference JumpHeight;
 		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
 		[SerializeField, FoldoutGroup("Player")] float Gravity = -15.0f;
 		[SerializeField, FoldoutGroup("Player")] float _terminalVelocity = 53.0f;
@@ -487,7 +487,7 @@ namespace BML.Scripts.Player
                     ExitRopeMovement();
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_motor.ForceUnground();
-					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					_verticalVelocity = Mathf.Sqrt(JumpHeight.Value * -2f * Gravity);
 					
 					IsJumpingUp.Value = true;
 				}
