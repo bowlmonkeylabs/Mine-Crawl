@@ -9,6 +9,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -29,12 +30,14 @@ namespace BML.Scripts.UI.Items
 
         [SerializeField, FoldoutGroup("UI Refs")] private BoolVariable _isStoreMenuOpen;
         [SerializeField, FoldoutGroup("UI Refs")] private Transform _storeButtonsListContainer;
+        [SerializeField, FoldoutGroup("UI Refs")] private UiStoreItemDetailController _storeItemDetailController;
         [SerializeField, FoldoutGroup("UI Refs")] private TMP_Text _storeCallToActionText;
         [SerializeField, FoldoutGroup("UI Refs")] private Button _cancelButton;
         [SerializeField, FoldoutGroup("UI Refs")] private bool _navHorizontal = true;
         [SerializeField, FoldoutGroup("UI Refs"), LabelText("@(_navHorizontal ? \"Button Nav Up\" : \"Button Nav Left\")")] private Button _buttonNavLeft;
         [SerializeField, FoldoutGroup("UI Refs"), LabelText("@(_navHorizontal ? \"Button Nav Down\" : \"Button Nav Right\")")] private Button _buttonNavRight;
         [SerializeField, FoldoutGroup("UI Refs")] private bool _navIncludeNonInteractable = false;
+        [SerializeField, FoldoutGroup("UI Refs")] private UnityEvent<PlayerItem> _onBuyItem;
         
         #endregion
 
@@ -140,7 +143,9 @@ namespace BML.Scripts.UI.Items
             _storeItemButtons.Clear();
         }
 
-        private void UpdateStoreFromInventory()
+        private string _debugPrefix => $"UiItemStoreController ({this.gameObject.name}): ";
+
+        public void UpdateStoreFromInventory()
         {
             bool isStoreInventoryDefined = (_storeInventory != null && _storeInventory.AvailableItems != null);
             if (isStoreInventoryDefined && _storeInventory.AvailableItems.Count > _storeItemButtons.Count)
@@ -151,6 +156,13 @@ namespace BML.Scripts.UI.Items
             // Cache current selected before we change the active state of any buttons
             var lastSelected = EventSystem.current.currentSelectedGameObject;
             var lastSelectedButtonController = (lastSelected != null ? _storeItemButtons.FirstOrDefault(b => b != null && !b.SafeIsUnityNull() && b.gameObject == lastSelected) : null);
+            if (lastSelectedButtonController == null)
+            {
+                // If the last selected isn't one of our buttons, don't try to restore it later.
+                lastSelected = null;
+            }
+            // Clear selection to avoid weirdness when changing active state
+            EventSystem.current.SetSelectedGameObject(null);
 
             // Assign new items to buttons and update active state
             for (int i = 0; i < _storeItemButtons.Count; i++)
@@ -219,6 +231,12 @@ namespace BML.Scripts.UI.Items
                     SelectDefault();
                 }
             }
+            else
+            {
+                // Restore last selected
+                lastSelectedButtonController?.Button?.Select();
+                lastSelectedButtonController.SetStoreItemToSelected();
+            }
             
             SetNavigationOrder(false, _navIncludeNonInteractable);
         }
@@ -227,15 +245,31 @@ namespace BML.Scripts.UI.Items
         {
             if (_enableLogs) Debug.Log($"SelectDefault ({this.gameObject.name})");
             
-            var firstUsableButtonController = _storeItemButtons
-                ?.FirstOrDefault(button => button.Button.gameObject.activeSelf && button.Button.IsInteractable());
-            var firstUsableButton = firstUsableButtonController?.Button ?? _cancelButton;
-            if (firstUsableButton != null)
+            // var firstUsableButtonController = _storeItemButtons
+            //     ?.FirstOrDefault(button => button.Button.gameObject.activeSelf && button.Button.IsInteractable());
+            // var firstUsableButton = firstUsableButtonController?.Button ?? _cancelButton;
+            // if (firstUsableButton != null)
+            // {
+            //     firstUsableButton.Select();
+            //     if (firstUsableButtonController != null)
+            //     {
+            //         firstUsableButtonController.SetStoreItemToSelected();
+            //     }
+            // }
+
+            // Instead of first, select middle button
+            var usableButtons = _storeItemButtons
+                ?.Where(button => button != null && !button.SafeIsUnityNull() && button.Button.gameObject.activeSelf && button.Button.IsInteractable())
+                .ToList();
+            var middleIndex = usableButtons.Count / 2;
+            var middleUsableButtonController = (usableButtons.Count > 0 ? usableButtons[middleIndex] : null);
+            var middleUsableButton = middleUsableButtonController?.Button ?? _cancelButton;
+            if (middleUsableButton != null)
             {
-                firstUsableButton.Select();
-                if (firstUsableButtonController != null)
+                middleUsableButton.Select();
+                if (middleUsableButtonController != null)
                 {
-                    firstUsableButtonController.SetStoreItemToSelected();
+                    middleUsableButtonController.SetStoreItemToSelected();
                 }
             }
         }
@@ -305,9 +339,31 @@ namespace BML.Scripts.UI.Items
                 Item = item,
                 DidPurchaseCallback = (didPurchase) =>
                 {
-                    _storeInventory.BuyItem(item);
+                    if (!didPurchase)
+                    {
+                        return;
+                    }
+
+                    _storeItemDetailController.ClearSelectedStoreItem();
+
+                    var boughtItem = _storeInventory.BuyItem(item);
+
+                    _onBuyItem?.Invoke(boughtItem);
                 },
             });
+
+            // TODO async return bought item?
+        }
+
+        public void SetDisableInteractableAllButtons(bool disableInteractable)
+        {
+            foreach (var button in _storeItemButtons)
+            {
+                if (!button.SafeIsUnityNull())
+                {
+                    button.SetDisableInteractable(disableInteractable);
+                }
+            }
         }
 
         #endregion

@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 
 namespace BML.Scripts.UI
 {
-    public class UiEventHandler : MonoBehaviour, ISubmitHandler, ICancelHandler, IPointerEnterHandler, ISelectHandler
+    public class UiEventHandler : MonoBehaviour, ISubmitHandler, ICancelHandler, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
     {
         #region Inspector
         private static string GetGroupHeaderString(string groupTitle, GameObject propagateTarget, UnityEvent fireEvent)
@@ -45,8 +45,18 @@ namespace BML.Scripts.UI
         [SerializeField] private UnityEvent _onPointerEnter;
         private IPointerEnterHandler pointerEnterHandler;
         
+        private string onPointerExitGroupTitle => GetGroupHeaderString("On Pointer Exit", PropagatePointerExit, _onPointerExit);
+        [FormerlySerializedAs("_propagatePointerExit")]
+        [FoldoutGroup("$onPointerExitGroupTitle", expanded: false), LabelText("Propagate Handler")]
+        [SerializeField] public GameObject PropagatePointerExit;
+        [FoldoutGroup("$onPointerExitGroupTitle"), HideLabel]
+        [SerializeField] private UnityEvent _onPointerExit;
+        private IPointerExitHandler pointerExitHandler;
+        
         
         #endregion
+
+        private string _debugIdentifier => $"[UiEventHandler: GameObject={gameObject.name}]";
         
         #region Unity lifecycle
         private void Awake()
@@ -64,6 +74,11 @@ namespace BML.Scripts.UI
             if (PropagatePointerEnter != null)
             {
                 pointerEnterHandler = PropagatePointerEnter?.GetComponent<IPointerEnterHandler>();
+            }
+
+            if (PropagatePointerExit != null)
+            {
+                pointerExitHandler = PropagatePointerExit?.GetComponent<IPointerExitHandler>();
             }
         }
         #endregion
@@ -96,12 +111,23 @@ namespace BML.Scripts.UI
             _onPointerEnter?.Invoke();
             pointerEnterHandler?.OnPointerEnter(eventData);
         }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            _onPointerExit?.Invoke();
+            pointerExitHandler?.OnPointerExit(eventData);
+        }
         
         #endregion
 
         public void OnSelect(BaseEventData eventData)
         {
             _onPointerEnter?.Invoke();
+        }
+
+        public void OnDeselect(BaseEventData eventData)
+        {
+            _onPointerExit?.Invoke();
         }
     }
 }

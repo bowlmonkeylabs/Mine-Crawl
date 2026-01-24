@@ -89,15 +89,24 @@ namespace BML.Scripts.UI.Items
         #endregion
 
         #region UI control
+
+        private bool _disableInteractable = false;
+
+        public void SetDisableInteractable(bool disableInteractable)
+        {
+            _disableInteractable = disableInteractable;
+            UpdateInteractable();
+        }
         
         public void UpdateInteractable()
         {
             if (_enableLogs) Debug.Log($"UpdateInteractable ({(_button.SafeIsUnityNull() ? "null" : _button.gameObject.name)})");
 
             bool canBuyItem = _itemToPurchase != null && _playerInventory.CheckIfCanBuy(_itemToPurchase, true);
-            if (!_button.SafeIsUnityNull() && _button.interactable != canBuyItem)
+            bool shouldBeInteractable = !_disableInteractable && canBuyItem;
+            if (!_button.SafeIsUnityNull() && _button.interactable != shouldBeInteractable)
             {
-                _button.interactable = canBuyItem;
+                _button.interactable = shouldBeInteractable;
                 OnInteractableChanged?.Invoke();
             }
         }

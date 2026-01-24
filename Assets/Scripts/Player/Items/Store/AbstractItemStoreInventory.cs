@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Events;
 using BML.Scripts.CaveV2;
+using BML.Scripts.Player.Items;
+using BML.Scripts.UI.Items;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace BML.Scripts.Player.Items.Store
@@ -70,14 +73,17 @@ namespace BML.Scripts.Player.Items.Store
         public StoreId StoreId => _storeId;
         public List<PlayerItem> AvailableItems => _availableItems;
 
-        public void BuyItem(PlayerItem item)
+        public PlayerItem BuyItem(PlayerItem item)
         {
             var itemIndex = _availableItems.IndexOf(item);
-            BuyItem(itemIndex);
+            return BuyItem(itemIndex);
         }
 
-        public void BuyItem(int index)
+        public PlayerItem BuyItem(int index)
         {
+            PlayerItem boughtItem = _availableItems[index];
+
+            bool didAvailableItemsChange = false;
             switch (_buyBehavior)
             {
                 default:
@@ -86,18 +92,24 @@ namespace BML.Scripts.Player.Items.Store
                     break;
                 case ItemPoolBehavior.RemoveItem:
                     RemoveItem(index);
-                    OnAvailableItemsChanged?.Invoke();
+                    didAvailableItemsChange = true;
                     break;
                 case ItemPoolBehavior.ReplaceItem:
                     ReplaceItem(index);
-                    OnAvailableItemsChanged?.Invoke();
+                    didAvailableItemsChange = true;
                     break;
                 case ItemPoolBehavior.ReplaceAll:
                     ReplaceAllItems();
-                    OnAvailableItemsChanged?.Invoke();
+                    didAvailableItemsChange = true;
                     break;
             }
-            
+
+            if (didAvailableItemsChange)
+            {
+                OnAvailableItemsChanged?.Invoke();
+            }
+
+            return boughtItem;
         }
 
         #endregion

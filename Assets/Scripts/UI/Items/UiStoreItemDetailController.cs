@@ -12,6 +12,7 @@ namespace BML.Scripts.UI.Items
 {
     public class UiStoreItemDetailController : MonoBehaviour
     {
+        [SerializeField] private RectTransform _uiRoot;
         [SerializeField] private TMPro.TMP_Text _itemTitleText;
         // [SerializeField] private Image _itemImage;
         [SerializeField] private TMPro.TMP_Text _itemEffectText;
@@ -30,6 +31,8 @@ namespace BML.Scripts.UI.Items
         }
 
         private void SetDetails(string itemLabel, Sprite itemIcon, string itemEffectDescription, string itemStoreDescription) {
+            _uiRoot.gameObject.SetActive(true);
+
             _itemTitleText.text = itemLabel;
             // _itemImage.enabled = itemIcon != null;
             // _itemImage.sprite = itemIcon;
@@ -39,6 +42,8 @@ namespace BML.Scripts.UI.Items
 
         private void ClearDetails()
         {
+            _uiRoot.gameObject.SetActive(false);
+
             _itemTitleText.text = "";
             _itemEffectText.text = "";
             _itemBodyText.text = "";

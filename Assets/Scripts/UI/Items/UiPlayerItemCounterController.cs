@@ -41,8 +41,8 @@ namespace BML.Scripts.UI.Items
         }
         [SerializeField, OnValueChanged("UpdateAssignedItem"), ShowIf("@_itemSource == ItemSource.PlayerItem")] private PlayerItem _item;
 
-        // [ShowInInspector, ReadOnly]
-        // private string _debugIdentifier => $"[UiPlayerItemCounterController: Source={_itemSource}, ItemType={_inventoryItemType}, SlotIndex={_inventoryItemSlotIndex}]";
+        [ShowInInspector, ReadOnly]
+        private string _debugIdentifier => $"[UiPlayerItemCounterController: Source={_itemSource}, ItemType={_inventoryItemType}, SlotIndex={_inventoryItemSlotIndex}]";
 
         [SerializeField] private bool _isStoreDisplay = false;
 
@@ -107,6 +107,7 @@ namespace BML.Scripts.UI.Items
                 _item = value;
                 _itemSource = ItemSource.PlayerItem;
                 UpdateAssignedItem();
+                TryPlayItemChangedFeedbacks(value);
             }
         }
 
@@ -126,6 +127,7 @@ namespace BML.Scripts.UI.Items
 
         [FormerlySerializedAs("_root")] [TitleGroup("UI"), SerializeField] private GameObject _uiRoot;
         [TitleGroup("UI"), SerializeField] private Image _imageIcon;
+        [TitleGroup("UI"), SerializeField] private Shadow _iconShadow;
         
         [TitleGroup("UI"), SerializeField] private MMF_Player _itemChangedFeedbacks;
         // Disable warning for unused field
@@ -134,6 +136,7 @@ namespace BML.Scripts.UI.Items
         #pragma warning restore 414
         [TitleGroup("UI"), SerializeField] private UiTimerImageController _timerImageController;
         [TitleGroup("UI"), SerializeField] private UiTextIntFormatter _remainingCountTextController;
+        [TitleGroup("UI"), SerializeField] private Transform _remainingCountShadowTransform;
         [TitleGroup("UI"), SerializeField] private MMF_Player _remainingCountIncrementFeedbacks;
         [TitleGroup("UI"), SerializeField] private MMF_Player _remainingCountDecrementFeedbacks;
         [TitleGroup("UI"), SerializeField] private TMP_Text _bindingHintText;
@@ -374,6 +377,20 @@ namespace BML.Scripts.UI.Items
             _imageIcon.color = (item?.UseIconColor ?? false ? item.IconColor : Color.white);
             _imageIcon.gameObject.SetActive(item != null);
 
+            // Update shadow color to match icon color, but preserve existing brightness from inspector.
+            var targetShadowColor = ((item?.UseIconColor ?? false) ? item.IconColor : Color.black);
+
+            Vector3 existingShadowHsv;
+            Color.RGBToHSV(_iconShadow.effectColor, out existingShadowHsv.x, out existingShadowHsv.y, out existingShadowHsv.z);
+
+            Vector3 targetShadowHsv;
+            Color.RGBToHSV(targetShadowColor, out targetShadowHsv.x, out targetShadowHsv.y, out targetShadowHsv.z);
+
+            targetShadowHsv.z = existingShadowHsv.z; // Preserve existing value (brightness) from inspector
+
+            targetShadowColor = Color.HSVToRGB(targetShadowHsv.x, targetShadowHsv.y, targetShadowHsv.z); // Reconstruct color with preserved brightness
+            _iconShadow.effectColor = targetShadowColor;
+
             TimerVariable itemTimer = null;
             // 'Recurring Timer' will take priority display; if null, then 'Activation Cooldown Timer' will be shown. This works with our current requirements, but may need to change in the future.
             var recurringTimer = item?.ItemEffects
@@ -408,6 +425,7 @@ namespace BML.Scripts.UI.Items
             if (_isStoreDisplay)
             {
                 _remainingCountTextController.gameObject.SetActive(false);
+                _remainingCountShadowTransform.gameObject.SetActive(false);
             }
             else
             {
@@ -423,6 +441,7 @@ namespace BML.Scripts.UI.Items
                     if (remainingActivationsVariable == null)
                     {
                         _remainingCountTextController.gameObject.SetActive(false);
+                        _remainingCountShadowTransform.gameObject.SetActive(false);
                     }
                     else
                     {
@@ -430,6 +449,7 @@ namespace BML.Scripts.UI.Items
                         remainingActivationsVariable.Subscribe(OnCountValueChanged);
                         _remainingCountTextController.SetVariable(remainingActivationsVariable);
                         _remainingCountTextController.gameObject.SetActive(true);
+                        _remainingCountShadowTransform.gameObject.SetActive(true);
                     }
                 }
             }
