@@ -524,7 +524,8 @@ namespace BML.Scripts.Player
 			{
 				foreach (var actionsActionMap in playerInput.actions.actionMaps)
 				{
-					actionsActionMap.Disable();
+					if (!actionMapNames.Contains(actionsActionMap.name))
+						actionsActionMap.Disable();
 				}
 			}
 			
