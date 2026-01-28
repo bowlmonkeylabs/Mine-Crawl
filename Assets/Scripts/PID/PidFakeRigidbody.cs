@@ -38,7 +38,7 @@ namespace BML.Scripts.PID
         }
         [SerializeField] private MovementMode _movementMode = MovementMode.Rigidbody;
 
-        private bool _separateRotationAxes => _movementMode == MovementMode.Rigidbody;
+        [SerializeField] private bool _separateRotationAxes = false;
         
         private enum UpdateMethod
         {
@@ -315,6 +315,7 @@ namespace BML.Scripts.PID
                         break;
                 }
                 
+                // Calculate thrust
                 var thrustAlignment = 
                     Vector3.Project(_rb.velocity, targetDirection).magnitude / _rb.velocity.magnitude;
                 var velocityZero = Mathf.Clamp01(1 - (_rb.velocity.magnitude / 5f));
@@ -324,72 +325,90 @@ namespace BML.Scripts.PID
                     deltaTime
                 );
 
+                // Vars for _separateRotationAxes = false:
+                Vector3 axis = Vector3.zero;
+                float rotationCorrection = 0;
+                // Vars for _separateRotationAxes = true:
+                float xRotationCorrection = 0, yRotationCorrection = 0, zRotationCorrection = 0; // If _separateRotationAxes is true, use separate PID controllers for each axis.
+                // Calculate rotation
                 var localTargetDirection = cachedTransform.InverseTransformDirection(targetDirection);
-                if (_movementMode == MovementMode.Transform)
+                if (_separateRotationAxes)
                 {
-                    var axis = Vector3.Cross(Vector3.forward, localTargetDirection);
-                    var angleError = Vector3.SignedAngle(Vector3.forward, localTargetDirection, axis);
-                    
-                    var rotationCorrection = _rotationPIDController.GetOutput(
-                        0, 
-                        angleError, 
+                    var xError = Vector3.SignedAngle(localTargetDirection.oyz(), Vector3.forward, Vector3.right);
+                    xRotationCorrection = _rotationPIDController.GetOutput(
+                        xError,
+                        0,
                         deltaTime
                     );
+                    var yError = Vector3.SignedAngle(localTargetDirection.xoz(), Vector3.forward, Vector3.up);
+                    yRotationCorrection = _rotationYPIDController.GetOutput(
+                        yError,
+                        0,
+                        deltaTime
+                    );
+                    var perpendicular = Quaternion.Euler(-90, 0, 0) * localTargetDirection;
+                    var zError = Vector3.SignedAngle(perpendicular.xyo(), Vector3.up, Vector3.forward);
+                    zRotationCorrection = _rotationZPIDController.GetOutput(
+                        zError,
+                        0,
+                        deltaTime
+                    );
+                }
+                else
+                {
+                    axis = Vector3.Cross(Vector3.forward, localTargetDirection);
+                    var angleError = Vector3.SignedAngle(localTargetDirection, Vector3.forward, axis);
                     
+                    rotationCorrection = _rotationPIDController.GetOutput(
+                        angleError, 
+                        0, 
+                        deltaTime
+                    );
+                }
+
+                // Apply thrust and rotation forces
+                if (_movementMode == MovementMode.Rigidbody)
+                {
+                    if (_separateRotationAxes)
+                    {
+                        _rb.AddRelativeTorque(new Vector3(xRotationCorrection, yRotationCorrection, zRotationCorrection));
+                    }
+                    else
+                    {
+                        _rb.AddRelativeTorque(axis * rotationCorrection);
+                    }
+
+                    _rb.AddRelativeForce(Vector3.forward * thrustCorrection);
+                }
+                else if (_movementMode == MovementMode.Transform)
+                {
+                    Quaternion newRotation;
+                    if (_separateRotationAxes)
+                    {
+                        // TODO this isn't right. but isn't needed at the moment.
+                        newRotation = Quaternion.Euler(
+                            cachedTransform.eulerAngles.x + xRotationCorrection * deltaTime,
+                            cachedTransform.eulerAngles.y + yRotationCorrection * deltaTime,
+                            cachedTransform.eulerAngles.z + zRotationCorrection * deltaTime
+                        );
+                    }
+                    else
+                    {
+                        newRotation = Quaternion.RotateTowards(
+                            cachedTransform.rotation,
+                            targetRotation,
+                            rotationCorrection * deltaTime
+                        );
+                    }
+                
                     var newPosition = Vector3.MoveTowards(
                         cachedTransform.position, 
                         targetPosition, 
                         thrustCorrection * deltaTime
                     );
-                    var newRotation = Quaternion.RotateTowards(
-                        cachedTransform.rotation, 
-                        targetRotation, 
-                        rotationCorrection * deltaTime
-                    );
+
                     transform.SetPositionAndRotation(newPosition, newRotation);
                 }
-                else if (_movementMode == MovementMode.Rigidbody)
-                {
-                    // var xError = Vector3.SignedAngle(Vector3.forward, localTargetDirection.oyz(), Vector3.right);
-                    // var xCorrection = _rotationPIDController.GetOutput(
-                    //     xError,
-                    //     0,
-                    //     deltaTime
-                    // );
-                    // var yError = Vector3.SignedAngle(Vector3.forward, localTargetDirection.xoz(), Vector3.up);
-                    // var yCorrection = _rotationYPIDController.GetOutput(
-                    //     yError,
-                    //     0,
-                    //     deltaTime
-                    // );
-                    // var perpendicular = Quaternion.Euler(-90, 0, 0) * localTargetDirection;
-                    // var zError = Vector3.SignedAngle(Vector3.up, perpendicular.xyo(), Vector3.forward);
-                    // var zCorrection = _rotationZPIDController.GetOutput(
-                    //     zError,
-                    //     0,
-                    //     deltaTime
-                    // );
-                    // var torque = new Vector3(xCorrection, yCorrection, zCorrection);
-                    
-                    var axis = Vector3.Cross(Vector3.forward, localTargetDirection);
-                    var angleError = Vector3.SignedAngle(Vector3.forward, localTargetDirection, axis);
-                    
-                    var rotationCorrection = _rotationPIDController.GetOutput(
-                        0, 
-                        angleError, 
-                        deltaTime
-                    );
-
-                    // var localTargetRotation = Quaternion.LookRotation(localTargetDirection);
-                    // var newRotation = localTargetRotation * Quaternion.Inverse(_rb.transform.localRotation);
-                    // var torque = new Vector3(newRotation.x, newRotation.y, newRotation.z) * newRotation.w * deltaTime;
-                    _rb.AddRelativeTorque(axis * rotationCorrection);
-                    // _rb.angularVelocity = Vector3.zero;
-                
-                    var force = Vector3.forward * thrustCorrection;
-                    _rb.AddRelativeForce(force);
-                }
-
             }
         }
         
