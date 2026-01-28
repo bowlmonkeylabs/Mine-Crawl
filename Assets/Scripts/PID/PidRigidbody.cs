@@ -328,11 +328,11 @@ namespace BML.Scripts.PID
                 if (_movementMode == MovementMode.Transform)
                 {
                     var axis = Vector3.Cross(Vector3.forward, localTargetDirection);
-                    var angleError = Vector3.SignedAngle(Vector3.forward, localTargetDirection, axis);
+                    var angleError = Vector3.SignedAngle(localTargetDirection, Vector3.forward, axis);
                     
                     var rotationCorrection = _rotationPIDController.GetOutput(
-                        0, 
                         angleError, 
+                        0, 
                         deltaTime
                     );
                     
@@ -372,11 +372,11 @@ namespace BML.Scripts.PID
                     // var torque = new Vector3(xCorrection, yCorrection, zCorrection);
                     
                     var axis = Vector3.Cross(Vector3.forward, localTargetDirection);
-                    var angleError = Vector3.SignedAngle(Vector3.forward, localTargetDirection, axis);
+                    var angleError = Vector3.SignedAngle(localTargetDirection, Vector3.forward, axis);
                     
                     var rotationCorrection = _rotationPIDController.GetOutput(
-                        0, 
                         angleError, 
+                        0, 
                         deltaTime
                     );
 
