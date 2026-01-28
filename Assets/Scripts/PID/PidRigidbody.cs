@@ -383,7 +383,7 @@ namespace BML.Scripts.PID
                     // var localTargetRotation = Quaternion.LookRotation(localTargetDirection);
                     // var newRotation = localTargetRotation * Quaternion.Inverse(_rb.transform.localRotation);
                     // var torque = new Vector3(newRotation.x, newRotation.y, newRotation.z) * newRotation.w * deltaTime;
-                    _rb.AddRelativeTorque(axis * angleError);
+                    _rb.AddRelativeTorque(axis * rotationCorrection);
                     // _rb.angularVelocity = Vector3.zero;
                 
                     var force = Vector3.forward * thrustCorrection;
