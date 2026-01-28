@@ -150,7 +150,9 @@ namespace BML.Scripts.Player.Items
 
         public void DeductCosts(PlayerItem item)
         {
-            item.ItemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => entry.Key.PlayerAmount -= entry.Value);
+            item.ItemCost.ForEach((KeyValuePair<PlayerResource, int> entry) => {
+                entry.Key.PlayerAmount = Math.Max(0, entry.Key.PlayerAmount - entry.Value);
+            });
         }
 
         public bool TryAddItem(PlayerItem item, bool ignoreReplacementCooldown = false, bool dropOverflow = false)

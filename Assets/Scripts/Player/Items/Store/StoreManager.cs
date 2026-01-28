@@ -42,17 +42,14 @@ namespace BML.Scripts.Player.Items.Store
 
         private void TryPurchase(TryPurchaseEventPayload payload)
         {
-            if (!_isGodModeEnabled.Value)
+            bool canBuyItem = _playerInventory.CheckIfCanBuy(payload.Item, true);
+            if (!canBuyItem)
             {
-                bool canBuyItem = _playerInventory.CheckIfCanBuy(payload.Item, true);
-                if (!canBuyItem)
-                {
-                    _onStoreFailOpenEvent.Raise();
-                    return;
-                }
-            
-                _playerInventory.DeductCosts(payload.Item);
+                _onStoreFailOpenEvent.Raise();
+                return;
             }
+        
+            _playerInventory.DeductCosts(payload.Item);
 
             DoPurchase(payload.Item);
 

@@ -368,7 +368,7 @@ namespace BML.Scripts.Player
 			{
 				return;
 			}
-			if (!_isUpgradeStoreOpen.Value && _upgradesAvailable.Value <= 0 && !_isGodModeEnabled.Value)
+			if (!_isUpgradeStoreOpen.Value && _upgradesAvailable.Value <= 0)
 			{
 				return;
 			}
