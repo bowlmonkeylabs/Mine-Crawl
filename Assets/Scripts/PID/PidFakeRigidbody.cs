@@ -5,6 +5,7 @@ using BML.ScriptableObjectCore.Scripts.Variables.SafeValueReferences;
 using BML.Scripts.Compass;
 using BML.Scripts.ItemTreeGraph;
 using BML.Scripts.Utils;
+using Cinemachine.Utility;
 using DrawXXL;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -304,7 +305,8 @@ namespace BML.Scripts.PID
                     default:
                     case TargetMode.Direction:
                         targetDirection = targetPosition - transform.position;
-                        Vector3 rotationDirection = Vector3.RotateTowards(cachedTransformForward, targetDirection, 360, 0.00f);
+                        Vector3 rotationDirection = Vector3.RotateTowards(cachedTransformForward, targetDirection,
+                            360 * Mathf.Deg2Rad, 0.00f);
                         targetRotation = Quaternion.LookRotation(rotationDirection);
                         break;
                     case TargetMode.MatchRotation:
@@ -326,11 +328,11 @@ namespace BML.Scripts.PID
                 if (_movementMode == MovementMode.Transform)
                 {
                     var axis = Vector3.Cross(Vector3.forward, localTargetDirection);
-                    var angle = Vector3.SignedAngle(Vector3.forward, localTargetDirection, axis);
+                    var angleError = Vector3.SignedAngle(Vector3.forward, localTargetDirection, axis);
                     
                     var rotationCorrection = _rotationPIDController.GetOutput(
                         0, 
-                        angle, 
+                        angleError, 
                         deltaTime
                     );
                     
@@ -348,27 +350,41 @@ namespace BML.Scripts.PID
                 }
                 else if (_movementMode == MovementMode.Rigidbody)
                 {
-                    var xError = Vector3.SignedAngle(Vector3.forward, localTargetDirection.oyz(), Vector3.right);
-                    var xCorrection = _rotationPIDController.GetOutput(
-                        xError,
-                        0,
+                    // var xError = Vector3.SignedAngle(Vector3.forward, localTargetDirection.oyz(), Vector3.right);
+                    // var xCorrection = _rotationPIDController.GetOutput(
+                    //     xError,
+                    //     0,
+                    //     deltaTime
+                    // );
+                    // var yError = Vector3.SignedAngle(Vector3.forward, localTargetDirection.xoz(), Vector3.up);
+                    // var yCorrection = _rotationYPIDController.GetOutput(
+                    //     yError,
+                    //     0,
+                    //     deltaTime
+                    // );
+                    // var perpendicular = Quaternion.Euler(-90, 0, 0) * localTargetDirection;
+                    // var zError = Vector3.SignedAngle(Vector3.up, perpendicular.xyo(), Vector3.forward);
+                    // var zCorrection = _rotationZPIDController.GetOutput(
+                    //     zError,
+                    //     0,
+                    //     deltaTime
+                    // );
+                    // var torque = new Vector3(xCorrection, yCorrection, zCorrection);
+                    
+                    var axis = Vector3.Cross(Vector3.forward, localTargetDirection);
+                    var angleError = Vector3.SignedAngle(Vector3.forward, localTargetDirection, axis);
+                    
+                    var rotationCorrection = _rotationPIDController.GetOutput(
+                        0, 
+                        angleError, 
                         deltaTime
                     );
-                    var yError = Vector3.SignedAngle(Vector3.forward, localTargetDirection.xoz(), Vector3.up);
-                    var yCorrection = _rotationYPIDController.GetOutput(
-                        yError,
-                        0,
-                        deltaTime
-                    );
-                    var perpendicular = Quaternion.Euler(-90, 0, 0) * localTargetDirection;
-                    var zError = Vector3.SignedAngle(Vector3.up, perpendicular.xyo(), Vector3.forward);
-                    var zCorrection = _rotationZPIDController.GetOutput(
-                        zError,
-                        0,
-                        deltaTime
-                    );
-                    var torque = new Vector3(xCorrection, yCorrection, zCorrection);
-                    _rb.AddRelativeTorque(torque);
+
+                    // var localTargetRotation = Quaternion.LookRotation(localTargetDirection);
+                    // var newRotation = localTargetRotation * Quaternion.Inverse(_rb.transform.localRotation);
+                    // var torque = new Vector3(newRotation.x, newRotation.y, newRotation.z) * newRotation.w * deltaTime;
+                    _rb.AddRelativeTorque(axis * rotationCorrection);
+                    // _rb.angularVelocity = Vector3.zero;
                 
                     var force = Vector3.forward * thrustCorrection;
                     _rb.AddRelativeForce(force);
@@ -376,5 +392,25 @@ namespace BML.Scripts.PID
 
             }
         }
+        
+        #region Public interface
+
+        public Transform Target => _target.Value;
+
+        public bool HasTarget => _target != null && !_target.Value.SafeIsUnityNull();
+
+        public void SetRotationOutputMinMax(Vector2 minMax)
+        {
+            _rotationParameters.OutputMinMax = minMax;
+            _rotationYParameters.OutputMinMax = minMax;
+            _rotationZParameters.OutputMinMax = minMax;
+        }
+
+        public void SetTarget(Transform target)
+        {
+            _target.AssignConstantValue(target);
+        }
+
+        #endregion
     }
 }
