@@ -38,6 +38,8 @@ namespace BML.Scripts
         [FoldoutGroup("Homing"), ShowIf("_showHomingParameters")] [SerializeField] 
         private LayerMask _homingTargetAcquisitionLayerMask;
         [FoldoutGroup("Homing"), ShowIf("_showHomingParameters")] [SerializeField] 
+        private LayerMask _homingTargetBlockingLayerMask;
+        [FoldoutGroup("Homing"), ShowIf("_showHomingParameters")] [SerializeField] 
         private PidRigidbody _homingPid;
 
         #endregion
@@ -46,6 +48,11 @@ namespace BML.Scripts
 
         private Vector3 _positionLastFixedUpdate;
         private float _traveledDistance;
+        
+        private bool _isDeflected = false;
+
+        private string _debugIdAndStatus => $"ProjectileDriver ({gameObject.name}) [Deflected: {_isDeflected}] [Homing: {_enableHoming.Value}, HasTarget: {_homingPid.HasTarget}]";
+
         private void UpdateCurvability()
         {
             if (_doUseCurvability)
@@ -58,7 +65,6 @@ namespace BML.Scripts
                 _homingPid.SetRotationOutputMinMax(Vector2.zero);
             }
         }
-
         #region Unity lifecycle
 
         private void Start()
@@ -71,7 +77,7 @@ namespace BML.Scripts
             moveDirection = transform.forward;
             ApplyVelocity();
         }
-        
+
         private void FixedUpdate()
         {
             if (_doLimitRange)
@@ -94,33 +100,7 @@ namespace BML.Scripts
             
             if (_enableHoming.Value)
             {
-                // If no target is acquired yet, check for targets
-                if (!_homingPid.HasTarget)
-                {
-                    // Update target selection
-                    // TODO
-                    float checkDistance = _limitRange > 0 ? _limitRange : speed * 2;
-                    bool didHit = Physics.SphereCast(transform.position, 1f, transform.forward, out var hitInfo, checkDistance, _homingTargetAcquisitionLayerMask, QueryTriggerInteraction.Ignore);
-                    if (didHit)
-                    {
-                        // Prioritize homing directly to the transform of the hit collider; Because of the offset baked into the rigidbody of 'flying' enemies (e.g. Bats), homing to hitInfo.transform caused the projectile to target the enemy origin rather than the center of mass.
-                        var targetTransform = hitInfo.collider?.transform ?? hitInfo.rigidbody?.transform ?? hitInfo.transform;
-                        _homingPid.SetTarget(targetTransform);
-                    }
-                    else
-                    {
-                        bool didHit2 = Physics.SphereCast(transform.position, 3f, transform.forward, out var hitInfo2, checkDistance, _homingTargetAcquisitionLayerMask, QueryTriggerInteraction.Ignore);
-                        if (didHit2)
-                        {
-                            var targetTransform = hitInfo.collider?.transform ?? hitInfo.rigidbody?.transform ?? hitInfo.transform;
-                            _homingPid.SetTarget(targetTransform);
-                        }
-                        else
-                        {
-                        
-                        }
-                    }
-                }
+                TryAcquireHomingTarget(false);
                 
                 _homingPid.enabled = _homingPid.HasTarget;
                 moveDirection = transform.forward;
@@ -158,6 +138,7 @@ namespace BML.Scripts
 
         public void Deflect(HitInfo hitInfo)
         {
+            _isDeflected = true;
             gameObject.layer = LayerMask.NameToLayer(deflectLayer);
             if (_enableHomingOnDeflect.Value)
             {
@@ -220,6 +201,105 @@ namespace BML.Scripts
 
         #endregion
 
+        #region Homing utilities
+
+        private Transform GetHomingTargetFromHitInfo(RaycastHit hitInfo, bool createTempGameObject)
+        {
+            var hitTransform = hitInfo.collider?.transform ?? hitInfo.rigidbody?.transform ?? hitInfo.transform;
+
+            // Home to the center of mass or bounds center if possible
+            var targetPosition = (
+                hitInfo.collider != null ? hitInfo.collider.bounds.center :
+                hitInfo.rigidbody != null ? hitInfo.rigidbody.worldCenterOfMass :
+                (Vector3?) null
+            );
+
+            string hitPart = (hitInfo.rigidbody != null ? "Rigidbody" : (hitInfo.collider != null ? "Collider" : "Transform"));
+            string hitPartName = (hitInfo.rigidbody != null ? hitInfo.rigidbody.name : (hitInfo.collider != null ? hitInfo.collider.name : hitTransform.name));
+            // Debug.Log($"{_debugIdAndStatus} Acquired homing target: {hitTransform.name} at position {(targetPosition != null ? targetPosition.ToString() : "null")}, Hit part: ({hitPart}: {hitPartName})");
+
+            Transform targetTransform;
+            if (targetPosition != null && createTempGameObject)
+            {
+                var newTargetGameObject = new GameObject("Homing Target Temp").transform;
+                newTargetGameObject.parent = hitTransform;
+                newTargetGameObject.position = targetPosition.Value;
+
+                targetTransform = newTargetGameObject;
+            }
+            else
+            {
+                targetTransform = hitTransform;
+            }
+
+            return targetTransform;
+        }
+
+        private readonly float[] HOMING_TARGET_SPHERECAST_RADII = new float[] {1f, 3f, 7f};
+
+        /// <summary>
+        /// Look ahead of the projectile, in a progressively larger spherecast, to find a suitable homing target.
+        /// </summary>
+        /// <param name="replaceCurrentTarget">Whether to replace the current homing target if one exists.</param>
+        /// <returns>True if a homing target was acquired, false otherwise.</returns>
+        private bool TryAcquireHomingTarget(bool replaceCurrentTarget)
+        {
+            bool acquiredTarget = false;
+
+            if (!_homingPid.HasTarget || replaceCurrentTarget)
+            {
+                Debug.Log($"{_debugIdAndStatus} Trying to acquire homing target...");
+
+                float checkDistance = _limitRange > 0 ? _limitRange - _traveledDistance : speed * 2;
+                bool didHit = false;
+                for (int i = 0; i < HOMING_TARGET_SPHERECAST_RADII.Length; i++)
+                {
+                    float radius = HOMING_TARGET_SPHERECAST_RADII[i];
+                    didHit = Physics.SphereCast(
+                        transform.position, 
+                        radius, 
+                        transform.forward, 
+                        out var hitInfo, 
+                        checkDistance, 
+                        _homingTargetAcquisitionLayerMask, 
+                        QueryTriggerInteraction.Ignore
+                    );
+
+                    if (didHit)
+                    {
+                        Debug.Log($"{_debugIdAndStatus} SphereCast hit: {(hitInfo.collider != null ? hitInfo.collider.name : (hitInfo.rigidbody != null ? hitInfo.rigidbody.name : hitInfo.transform.name))} at position {hitInfo.point}");
+
+                        // Check for line of sight against blocking layers
+                        bool didHit2 = Physics.Linecast(
+                            transform.position, 
+                            hitInfo.point, 
+                            out var linecastHit, 
+                            _homingTargetBlockingLayerMask | _homingTargetAcquisitionLayerMask, 
+                            QueryTriggerInteraction.Ignore
+                        );
+                        if (didHit2)
+                        {
+                            // If not the same collider, then the line of sight is blocked
+                            if (linecastHit.collider != hitInfo.collider)
+                            {
+                                Debug.Log($"{_debugIdAndStatus} Line of sight to {(hitInfo.collider != null ? hitInfo.collider.name : (hitInfo.rigidbody != null ? hitInfo.rigidbody.name : hitInfo.transform.name))} is blocked by {linecastHit.collider.name}");
+                                continue;
+                            }
+                        }
+
+                        var targetTransform = GetHomingTargetFromHitInfo(hitInfo, true);
+                        _homingPid.SetTarget(targetTransform);
+                        acquiredTarget = true;
+                        Debug.Log($"{_debugIdAndStatus} Acquired homing target: {(targetTransform != null ? targetTransform.name : "null")}");
+                        break;
+                    }
+                }
+            }
+
+            return acquiredTarget;
+        }
+
+        #endregion
         
     }
 }
