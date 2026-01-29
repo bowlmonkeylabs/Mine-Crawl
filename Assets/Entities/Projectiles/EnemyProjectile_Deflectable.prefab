@@ -686,6 +686,7 @@ GameObject:
   - component: {fileID: 1177783034678346134}
   - component: {fileID: 6743264702026998152}
   - component: {fileID: 457132322767713185}
+  - component: {fileID: 3732976250420766456}
   - component: {fileID: 7129229188278478169}
   - component: {fileID: 3417364718587801173}
   - component: {fileID: 3078343749088893893}
@@ -765,7 +766,7 @@ MonoBehaviour:
   rb: {fileID: 6743264702026998152}
   speed: 7
   _limitRange: 0
-  _dragWhenRangeLimitExceeded: 3
+  _dragWhenRangeLimitExceeded: 0.9
   deflectLayer: EnemyProjectileDeflected
   mainCameraRef: {fileID: 11400000, guid: 4f3c154bd5d34bd4e8e4d93472fefad9, type: 2}
   _enableHoming:
@@ -782,33 +783,69 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_FunctionVariable: {fileID: 11400000, guid: b21ae9c3f2711234092346e4e041b099, type: 2}
-  _enableHorizontalHoming: 1
-  _enableVerticalHoming: 1
-  _curvability: 0.75
+  _curvability: 1
   _curvabilityToMinMaxOutput: {fileID: 11400000, guid: 12b810c11e26b36459fd26f8a38c38b2, type: 2}
   _homingTargetAcquisitionLayerMask:
     serializedVersion: 2
     m_Bits: 525312
-  _homingTarget:
+  _homingTargetBlockingLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  _homingPid: {fileID: 3732976250420766456}
+--- !u!114 &3732976250420766456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378267610489021164}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44bf1e89245e43e6b285c2978dfd81cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetMode: 0
+  _target:
     ReferenceTypeSelector: 0
     ReferenceValue_Transform: {fileID: 0}
     ReferenceValue_TransformSceneReference: {fileID: 0}
     ReferenceValue_GameObjectSceneReference: {fileID: 0}
-  _horizontalRotationPidParameters:
-    Kp: 0.01
-    Ki: 0
-    Kd: 0.1
-    IntegralSaturation: 3
-    OutputMinMax: {x: -0.5625, y: 0.5625}
-    DerivativeMethod: 0
-    DifferenceFunction: 0
-  _useSamePidParametersForVerticalRotation: 1
-  _verticalRotationPidParameters:
+  _doAlignToTargetOnEnable: 0
+  _movementMode: 0
+  _separateRotationAxes: 0
+  _updateMethod: 0
+  _useUnscaledTime: 0
+  _maxAngularVelocity: 20
+  _thrustParameters:
     Kp: 0
     Ki: 0
     Kd: 0
     IntegralSaturation: 0
     OutputMinMax: {x: 0, y: 0}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
+  _rotationParameters:
+    Kp: 0.3
+    Ki: 0
+    Kd: 0.1
+    IntegralSaturation: 0
+    OutputMinMax: {x: -1, y: 1}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
+  _rotationYParameters:
+    Kp: 0
+    Ki: 0
+    Kd: 0
+    IntegralSaturation: 0
+    OutputMinMax: {x: -1, y: 1}
+    DerivativeMethod: 0
+    DifferenceFunction: 0
+  _rotationZParameters:
+    Kp: 0
+    Ki: 0
+    Kd: 0
+    IntegralSaturation: 0
+    OutputMinMax: {x: -1, y: 1}
     DerivativeMethod: 0
     DifferenceFunction: 0
 --- !u!114 &7129229188278478169
@@ -1054,6 +1091,9 @@ MonoBehaviour:
   _explosionCueOffsetTime: 0.25
   _explosionCueFeedbacks: {fileID: 0}
   _onActivate:
+    m_PersistentCalls:
+      m_Calls: []
+  _onBeforeExplosion:
     m_PersistentCalls:
       m_Calls: []
   _onExplosion:

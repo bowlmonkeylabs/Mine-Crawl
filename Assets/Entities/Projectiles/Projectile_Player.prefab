@@ -495,12 +495,12 @@ MonoBehaviour:
   deflectLayer: EnemyProjectileDeflected
   mainCameraRef: {fileID: 11400000, guid: 4f3c154bd5d34bd4e8e4d93472fefad9, type: 2}
   _enableHoming:
-    ReferenceTypeSelector: 4
+    ReferenceTypeSelector: 1
     ConstantValue: 0
-    ReferenceValue_BoolVariable: {fileID: 11400000, guid: f65370991dc800f46af2e6467bdc3d1d, type: 2}
+    ReferenceValue_BoolVariable: {fileID: 11400000, guid: 85121883e19d612418ec2f8e6bf1951e, type: 2}
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
-    ReferenceValue_FunctionVariable: {fileID: 11400000, guid: b21ae9c3f2711234092346e4e041b099, type: 2}
+    ReferenceValue_FunctionVariable: {fileID: 0}
   _enableHomingOnDeflect:
     ReferenceTypeSelector: 0
     ConstantValue: 0
@@ -508,35 +508,15 @@ MonoBehaviour:
     ReferenceValue_FloatVariable: {fileID: 0}
     ReferenceValue_IntVariable: {fileID: 0}
     ReferenceValue_FunctionVariable: {fileID: 0}
-  _enableHorizontalHoming: 1
-  _enableVerticalHoming: 1
-  _curvability: 0.5
+  _curvability: 1
   _curvabilityToMinMaxOutput: {fileID: 11400000, guid: 12b810c11e26b36459fd26f8a38c38b2, type: 2}
   _homingTargetAcquisitionLayerMask:
     serializedVersion: 2
-    m_Bits: 1024
-  _homingTarget:
-    ReferenceTypeSelector: 0
-    ReferenceValue_Transform: {fileID: 0}
-    ReferenceValue_TransformSceneReference: {fileID: 11400000, guid: 3c3492e91b965ee4d82d2c05d11f03e1, type: 2}
-    ReferenceValue_GameObjectSceneReference: {fileID: 0}
-  _horizontalRotationPidParameters:
-    Kp: 0.01
-    Ki: 0
-    Kd: 0.1
-    IntegralSaturation: 3
-    OutputMinMax: {x: -0.25, y: 0.25}
-    DerivativeMethod: 0
-    DifferenceFunction: 0
-  _useSamePidParametersForVerticalRotation: 1
-  _verticalRotationPidParameters:
-    Kp: 0
-    Ki: 0
-    Kd: 0
-    IntegralSaturation: 0
-    OutputMinMax: {x: 0, y: 0}
-    DerivativeMethod: 0
-    DifferenceFunction: 0
+    m_Bits: 525312
+  _homingTargetBlockingLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  _homingPid: {fileID: 2192669226818948694}
 --- !u!114 &2192669226818948694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -555,8 +535,9 @@ MonoBehaviour:
     ReferenceValue_Transform: {fileID: 0}
     ReferenceValue_TransformSceneReference: {fileID: 0}
     ReferenceValue_GameObjectSceneReference: {fileID: 0}
-  _doAlignToTargetOnEnable: 1
+  _doAlignToTargetOnEnable: 0
   _movementMode: 0
+  _separateRotationAxes: 0
   _updateMethod: 0
   _useUnscaledTime: 0
   _maxAngularVelocity: 20
@@ -569,11 +550,11 @@ MonoBehaviour:
     DerivativeMethod: 0
     DifferenceFunction: 0
   _rotationParameters:
-    Kp: 0.01
+    Kp: 0.3
     Ki: 0
     Kd: 0.1
-    IntegralSaturation: 3
-    OutputMinMax: {x: -0.25, y: 0.25}
+    IntegralSaturation: 0
+    OutputMinMax: {x: -1, y: 1}
     DerivativeMethod: 0
     DifferenceFunction: 0
   _rotationYParameters:
@@ -581,7 +562,7 @@ MonoBehaviour:
     Ki: 0
     Kd: 0.1
     IntegralSaturation: 3
-    OutputMinMax: {x: -0.25, y: 0.25}
+    OutputMinMax: {x: -1, y: 1}
     DerivativeMethod: 0
     DifferenceFunction: 0
   _rotationZParameters:
@@ -589,7 +570,7 @@ MonoBehaviour:
     Ki: 0
     Kd: 0.1
     IntegralSaturation: 3
-    OutputMinMax: {x: -0.25, y: 0.25}
+    OutputMinMax: {x: -1, y: 1}
     DerivativeMethod: 0
     DifferenceFunction: 0
 --- !u!114 &2397865955889468302
