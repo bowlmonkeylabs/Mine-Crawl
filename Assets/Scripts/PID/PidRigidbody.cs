@@ -320,7 +320,7 @@ namespace BML.Scripts.PID
                     Vector3.Project(_rb.velocity, targetDirection).magnitude / _rb.velocity.magnitude;
                 var velocityZero = Mathf.Clamp01(1 - (_rb.velocity.magnitude / 5f));
                 float thrustCorrection = _thrustPIDController.GetOutput(
-                    0, 
+                    0, // TODO fix usage of error
                     targetDirection.magnitude * (thrustAlignment + velocityZero), 
                     deltaTime
                 );
