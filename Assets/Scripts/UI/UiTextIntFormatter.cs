@@ -13,6 +13,8 @@ namespace BML.Scripts.UI
         [SerializeField] private string _formatString = "P0";
         [FormerlySerializedAs("_variable")] [SerializeField] private IntReference _value;
 
+        public TMP_Text TmpText => _text;
+
         private void Awake()
         {
             UpdateText();

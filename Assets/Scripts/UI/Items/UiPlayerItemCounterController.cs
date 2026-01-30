@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using BML.ScriptableObjectCore.Scripts.Variables;
 using BML.Scripts.ItemTreeGraph;
+using BML.Scripts.Player;
 using BML.Scripts.Player.Items;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
@@ -355,6 +356,8 @@ namespace BML.Scripts.UI.Items
         }
         
         #endregion
+
+        #region UI control
         
         private static string ActiveItemBindingHint(int index) => $"<style=Player/UseActiveItem{index + 1}>";
         private static string ConsumableItemBindingHint(int index) => $"<style=Player/UseConsumableItem{index + 1}>";
@@ -421,6 +424,9 @@ namespace BML.Scripts.UI.Items
                 _timerImageController.SetTimerVariable(itemTimer);
                 _timerImageController.gameObject.SetActive(true);
             }
+
+            // Reset remaining count text color to white. We were seeing a bug (probably related to MMF_TMPColor feedbacks interpolating the color) where the count text vertex color was getting set to (0,0,0,0) (transparent, nothing) upon restarting. This is a hack to fix that. :)
+            _remainingCountTextController.TmpText.color = Color.white;
 
             if (_isStoreDisplay)
             {
@@ -507,6 +513,7 @@ namespace BML.Scripts.UI.Items
                     
                     _remainingCountTextController.gameObject.SetActive(true);
                     _remainingCountTextController.SetConstant(InventoryPassiveStackableTreeStartNode.NumberOfObtainedItemsInTree);
+                    _remainingCountShadowTransform.gameObject.SetActive(true);
                     
                     // Since we don't track what the previous value was, this is a hack to always play the 'increment' feedbacks; in normal gameplay, the # of passive stackable upgrades should only ever go up, I think...
                     OnCountValueChanged(InventoryPassiveStackableTreeStartNode.NumberOfObtainedItemsInTree, 
@@ -515,6 +522,7 @@ namespace BML.Scripts.UI.Items
                 else
                 {
                     _remainingCountTextController.gameObject.SetActive(false);
+                    _remainingCountShadowTransform.gameObject.SetActive(false);
                 }
             }
         }
@@ -526,6 +534,8 @@ namespace BML.Scripts.UI.Items
                 _itemChangedFeedbacks.PlayFeedbacks();
             }
         }
+
+        #endregion
         
     }
 }
