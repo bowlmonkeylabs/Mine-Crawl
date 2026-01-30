@@ -53,8 +53,15 @@ namespace BML.Scripts.UI.Items
 
         private void OnAnyMenuOpenChanged(bool prev, bool curr)
         {
-            // Show or hide the banner based on whether any menu is open.
-            _text.gameObject.SetActive(!curr);
+            if (curr)
+            {
+                // When a menu is opened, close the banner.
+                _showBannerFeedbacks.StopFeedbacks(); // Stopping the feedbacks will hide the banner.
+            }
+            else
+            {
+                // When a menu is closed, do nothing.
+            }
         }
 
         #region UI control
