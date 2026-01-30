@@ -123,10 +123,10 @@ namespace BML.Scripts.Player.Items
                         .Where(e => e.Trigger == ItemEffectTrigger.OnAcquired && e is AddResourceItemEffect)
                         .Any(e => (e as AddResourceItemEffect).CanAddResource());
                     // OR if the item has effects with any triggers other than OnAcquired
-                    var effectsNotOnAcquired = item.ItemEffects.Where(e => e.Trigger != ItemEffectTrigger.OnAcquired).ToList();
-                    if (canGrantAnyResourcesOnAcquired || effectsNotOnAcquired.Any())
+                    var anyEffectsNotOnAcquired = item.ItemEffects.Where(e => e.Trigger != ItemEffectTrigger.OnAcquired).Any();
+                    if (canGrantAnyResourcesOnAcquired || anyEffectsNotOnAcquired)
                     {
-                        if (canGrantAnyResourcesOnAcquired && !effectsNotOnAcquired.Any())
+                        if (canGrantAnyResourcesOnAcquired && !anyEffectsNotOnAcquired)
                         {
                             ignoreReplacementCooldown = true;
                         }
@@ -390,6 +390,8 @@ namespace BML.Scripts.Player.Items
             = new Dictionary<(PlayerItem, Action), ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged>();
         [NonSerialized] private Dictionary<(PlayerItem, Action), OnAmountChanged> _itemOnCostAmountChangedCalledbacks 
             = new Dictionary<(PlayerItem, Action), OnAmountChanged>();
+        [NonSerialized] private Dictionary<(PlayerItem, Action), OnAmountChanged> _itemOnValueAmountChangedCallbacks 
+            = new Dictionary<(PlayerItem, Action), OnAmountChanged>();
         [NonSerialized] private Dictionary<(PlayerItem, Action), OnUpdate> _itemOnGodModeChangedCallbacks 
             = new Dictionary<(PlayerItem, Action), OnUpdate>();
         
@@ -401,19 +403,6 @@ namespace BML.Scripts.Player.Items
             }
             OnAmountChanged onCostAmountChanged = () => callback();
             _itemOnCostAmountChangedCalledbacks[(item, callback)] = onCostAmountChanged;
-            
-            switch (item.Type)
-            {
-                case ItemType.PassiveStackable:
-                case ItemType.Passive:
-                case ItemType.Active:
-                    break;
-                case ItemType.Consumable:
-                    item.ItemEffects.Where(e => e is AddResourceItemEffect)
-                        .ForEach(e =>
-                            (e as AddResourceItemEffect).Resource.OnAmountChanged += onCostAmountChanged);
-                    break;
-            }
             
             SubscribeOnPickupabilityChanged(item, callback);
             
@@ -433,19 +422,6 @@ namespace BML.Scripts.Player.Items
             if (!keyExists)
             {
                 return;
-            }
-            
-            switch (item.Type)
-            {
-                case ItemType.PassiveStackable:
-                case ItemType.Passive:
-                case ItemType.Active:
-                    break;
-                case ItemType.Consumable:
-                    item.ItemEffects.Where(e => e is AddResourceItemEffect)
-                        .ForEach(e =>
-                            (e as AddResourceItemEffect).Resource.OnAmountChanged -= onCostAmountChanged);
-                    break;
             }
             
             UnsubscribeOnPickupabilityChanged(item, callback);
@@ -470,6 +446,9 @@ namespace BML.Scripts.Player.Items
             ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged onInventoryUpdated = () => callback();
             _itemOnInventoryUpdatedCallbacks[(item, callback)] = onInventoryUpdated;
 
+            OnAmountChanged onValueAmountChanged = () => callback();
+            _itemOnValueAmountChangedCallbacks[(item, callback)] = onValueAmountChanged;
+
             switch (item.Type)
             {
                 case ItemType.PassiveStackable:
@@ -491,6 +470,9 @@ namespace BML.Scripts.Player.Items
                     ConsumableItems.OnItemAdded += onInventoryItemUpdated;
                     ConsumableItems.OnItemRemoved += onInventoryItemUpdated;
                     ConsumableItems.OnReplacementCooldownTimerStartedOrFinished += onInventoryUpdated;
+                    item.ItemEffects.Where(e => e is AddResourceItemEffect)
+                        .ForEach(e =>
+                            (e as AddResourceItemEffect).Resource.OnAmountChanged += onValueAmountChanged);
                     break;
             }
         }
@@ -502,8 +484,9 @@ namespace BML.Scripts.Player.Items
             {
                 return;
             }
-
+            // If key exists for the first dictionary, assume it's in the others too.
             ItemSlotType<PlayerItem, SlotTypeFilter>.OnSlotItemChanged onInventoryUpdated = _itemOnInventoryUpdatedCallbacks[(item, callback)];
+            OnAmountChanged onValueAmountChanged = _itemOnValueAmountChangedCallbacks[(item, callback)];
             
             switch (item.Type)
             {
@@ -526,6 +509,9 @@ namespace BML.Scripts.Player.Items
                     ConsumableItems.OnItemAdded -= onInventoryItemUpdated;
                     ConsumableItems.OnItemRemoved -= onInventoryItemUpdated;
                     ConsumableItems.OnReplacementCooldownTimerStartedOrFinished -= onInventoryUpdated;
+                    item.ItemEffects.Where(e => e is AddResourceItemEffect)
+                        .ForEach(e =>
+                            (e as AddResourceItemEffect).Resource.OnAmountChanged -= onValueAmountChanged);
                     break;
             }
         }
