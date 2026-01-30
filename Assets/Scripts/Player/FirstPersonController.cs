@@ -566,11 +566,19 @@ namespace BML.Scripts.Player
                 return;
             }
 
-            if(!SprintCooldownTimer.IsActive && _input.movement && !Mathf.Approximately(_input.move.magnitude, 0)) {
-                SprintActive.Value = true;
-            } else {
-                SprintActive.Value = false;
-            }
+			if (Grounded)
+			{
+				// When grounded, sprinting responds directly to input.
+				if(!SprintCooldownTimer.IsActive && _input.movement && !Mathf.Approximately(_input.move.magnitude, 0)) {
+					SprintActive.Value = true;
+				} else {
+					SprintActive.Value = false;
+				}
+			}
+			else
+			{
+				// When not grounded, sprinting state is locked to whatever it was at/before the moment the player became ungrounded.
+			}
         }
         
         private void CheckDash() {
@@ -601,17 +609,27 @@ namespace BML.Scripts.Player
             SprintTimer.UpdateTime();
             SprintCooldownTimer.UpdateTime();
 
-            if(SprintActive.Value) {
+            if(SprintActive.Value && Grounded) {
                 SprintTimer.StartTimer();
             }
 
-            if(SprintTimer.IsActive && !SprintActive.Value) {
-                SprintTimer.StopTimer();
-                float inc = (SprintRechargeRate.Value / 100f) * SprintTimer.Duration;
-                SprintTimer.AddTime(inc * Time.fixedDeltaTime, false);
-                if(SprintTimer.RemainingTime == SprintTimer.Duration) {
-                    SprintTimer.ResetTimer();
-                }
+            if(SprintTimer.IsActive)
+			{
+				if (!Grounded)
+				{
+					// If not grounded, just pause the sprint energy timer.
+					SprintTimer.StopTimer();
+				}
+				else if (Grounded && !SprintActive.Value)
+				{
+					// If grounded and not sprinting, recharge sprint energy timer.
+					SprintTimer.StopTimer();
+					float inc = (SprintRechargeRate.Value / 100f) * SprintTimer.Duration;
+					SprintTimer.AddTime(inc * Time.fixedDeltaTime, false);
+					if(SprintTimer.RemainingTime == SprintTimer.Duration) {
+						SprintTimer.ResetTimer();
+					}
+				}
             }
 
             if(SprintCooldownTimer.IsFinished && SprintTimer.IsFinished) {
@@ -619,6 +637,7 @@ namespace BML.Scripts.Player
                 SprintCooldownTimer.ResetTimer();
             }
 
+			// Run sprint cooldown timer regardless of grounded state.
             if(SprintTimer.IsFinished && !SprintCooldownTimer.IsActive) {
                 SprintCooldownTimer.RestartTimer();
             }
