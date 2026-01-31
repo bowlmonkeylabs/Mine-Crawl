@@ -19,6 +19,7 @@ namespace BML.Scripts.QuantumConsoleExtensions
         [SerializeField] private Dictionary<string, PlayerItem> _knownItems;
         [SerializeField, ReadOnly] private string _listKnownItemsFormattedString;
 
+#if UNITY_EDITOR
         [Button("Catalog Item Assets")]
         private void CatalogKnownItems()
         {
@@ -50,6 +51,7 @@ namespace BML.Scripts.QuantumConsoleExtensions
             var itemNames = formattedNames.OrderBy(name => name);
             _listKnownItemsFormattedString = String.Join(", ", itemNames);
         }
+#endif
 
         [Command("list", "Lists all known items.")]
         private void ListItems()
