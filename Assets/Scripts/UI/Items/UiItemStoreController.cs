@@ -23,6 +23,8 @@ namespace BML.Scripts.UI.Items
         [SerializeField] private bool _enableLogs = false;
         public bool EnableLogs => _enableLogs;
 
+        private string _debugPrefix => $"[UiItemStoreController] ({this.gameObject.name}): ";
+
         [SerializeField, FoldoutGroup("Inventory")] private AbstractItemStoreInventory _storeInventory;
         [SerializeField, FoldoutGroup("Inventory"), Optional, InfoBox("OPTIONAL. See code for details.")] private DynamicGameEvent _onOpenStoreInventory;
 
@@ -89,6 +91,8 @@ namespace BML.Scripts.UI.Items
         
         private void OnOpenStoreInventory(AbstractItemStoreInventory storeInventory)
         {
+            if (_enableLogs) Debug.Log($"{_debugPrefix} OnOpenStoreInventory - StoreInventory: {(storeInventory != null ? storeInventory.name : "null")}");
+
             if (_storeInventory != null)
             {
                 _storeInventory.OnAvailableItemsChanged -= UpdateStoreFromInventory;
@@ -143,10 +147,10 @@ namespace BML.Scripts.UI.Items
             _storeItemButtons.Clear();
         }
 
-        private string _debugPrefix => $"UiItemStoreController ({this.gameObject.name}): ";
-
         public void UpdateStoreFromInventory()
         {
+            if (_enableLogs) Debug.Log($"{_debugPrefix} Updating store from inventory.");
+
             bool isStoreInventoryDefined = (_storeInventory != null && _storeInventory.AvailableItems != null);
             if (isStoreInventoryDefined && _storeInventory.AvailableItems.Count > _storeItemButtons.Count)
             {
@@ -243,8 +247,6 @@ namespace BML.Scripts.UI.Items
         
         public void SelectDefault()
         {
-            if (_enableLogs) Debug.Log($"SelectDefault ({this.gameObject.name})");
-            
             // var firstUsableButtonController = _storeItemButtons
             //     ?.FirstOrDefault(button => button.Button.gameObject.activeSelf && button.Button.IsInteractable());
             // var firstUsableButton = firstUsableButtonController?.Button ?? _cancelButton;
@@ -264,6 +266,9 @@ namespace BML.Scripts.UI.Items
             var middleIndex = usableButtons.Count / 2;
             var middleUsableButtonController = (usableButtons.Count > 0 ? usableButtons[middleIndex] : null);
             var middleUsableButton = middleUsableButtonController?.Button ?? _cancelButton;
+
+            if (_enableLogs) Debug.Log($"{_debugPrefix} SelectDefault - UsableButtonsCount: {usableButtons.Count}, MiddleIndex: {middleIndex}, MiddleUsableButton: {(middleUsableButton != null ? middleUsableButton.name : "null")}");
+
             if (middleUsableButton != null)
             {
                 middleUsableButton.Select();
@@ -325,7 +330,7 @@ namespace BML.Scripts.UI.Items
                 //     && (includeNonInteractable || b.Button.IsInteractable()))?.Button.navigation.selectOnUp.name);
             }
             
-            if (_enableLogs) Debug.Log($"SetNavigationOrder ({(this.SafeIsUnityNull() ? "null" : this?.gameObject?.name)}) ({filteredButtons.Count} buttons)");
+            if (_enableLogs) Debug.Log($"{_debugPrefix} SetNavigationOrder - IncludeInactive: {includeInactive}, IncludeNonInteractable: {includeNonInteractable}, FilteredButtonsCount: {filteredButtons.Count}");
         }
 
         #endregion
@@ -357,13 +362,21 @@ namespace BML.Scripts.UI.Items
 
         public void SetDisableInteractableAllButtons(bool disableInteractable)
         {
+            if (_enableLogs) Debug.Log($"{_debugPrefix} SetDisableInteractableAllButtons: {disableInteractable}");
+
             foreach (var button in _storeItemButtons)
             {
                 if (!button.SafeIsUnityNull())
                 {
+                    button.OnInteractableChanged -= SetNavigationOrder;
                     button.SetDisableInteractable(disableInteractable);
+                    button.OnInteractableChanged += SetNavigationOrder;
                 }
             }
+
+            // After changing all buttons, update navigation
+            SetNavigationOrder();
+            SelectDefault();
         }
 
         #endregion

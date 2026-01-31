@@ -31,6 +31,8 @@ namespace BML.Scripts.UI.Items
         public event _OnInteractableChanged OnInteractableChanged;
 
         private bool _enableLogs => ParentItemStoreController?.EnableLogs ?? false;
+
+        private string _debugPrefix => $"[UiStoreButtonController] ({this.gameObject.name}) (Button: {(_button.SafeIsUnityNull() ? "null" : _button.gameObject.name)}) (Item: {_itemToPurchase?.name ?? "null"})";
         
         #endregion
 
@@ -94,16 +96,26 @@ namespace BML.Scripts.UI.Items
 
         public void SetDisableInteractable(bool disableInteractable)
         {
-            _disableInteractable = disableInteractable;
-            UpdateInteractable();
+            // Determine if the new value is different from the current value
+            bool isChanged = (_disableInteractable != disableInteractable); // Check if new value is different
+
+            if (_enableLogs) Debug.Log($"{_debugPrefix} SetDisableInteractable: {disableInteractable}, isChanged: {isChanged}");
+
+            if (isChanged)
+            {
+                // Only update if the value for _disableInteractable actually changed (Other dependencies of UpdateInteractable will handle their own change detection)
+                _disableInteractable = disableInteractable;
+                UpdateInteractable();
+            }
         }
         
         public void UpdateInteractable()
         {
-            if (_enableLogs) Debug.Log($"UpdateInteractable ({(_button.SafeIsUnityNull() ? "null" : _button.gameObject.name)})");
-
             bool canBuyItem = _itemToPurchase != null && _playerInventory.CheckIfCanBuy(_itemToPurchase, true);
             bool shouldBeInteractable = !_disableInteractable && canBuyItem;
+
+            if (_enableLogs) Debug.Log($"{_debugPrefix} Updating interactable. DisableInteractable: {_disableInteractable}. CanBuyItem: {canBuyItem}. ShouldBeInteractable: {shouldBeInteractable}");
+
             if (!_button.SafeIsUnityNull() && _button.interactable != shouldBeInteractable)
             {
                 _button.interactable = shouldBeInteractable;
