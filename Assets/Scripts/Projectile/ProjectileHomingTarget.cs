@@ -1,7 +1,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Projectile
+namespace BML.Scripts
 {
     public class ProjectileHomingTarget : MonoBehaviour
     {
