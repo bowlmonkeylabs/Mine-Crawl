@@ -24,6 +24,7 @@ namespace BML.Scripts
         [SerializeField] private UnityEvent _onSucceedOpen;
         [SerializeField] private UnityEvent _onAllOpensUsed;
         [SerializeField] private UnityEvent _onFailOpen;
+        [SerializeField] private UnityEvent _onClose;
 
         private int _opensCount = 0;
 
@@ -31,22 +32,32 @@ namespace BML.Scripts
             this.setResourceLabelText();
         }
 
-        public void TryOpen() {
+        public void TryOpen() 
+        {
             int resourceCost = getCurrentResourceCost();
 
-            if(_resource.PlayerAmount >= resourceCost || _isGodMode.Value) {
-                if(!_isGodMode.Value) _resource.PlayerAmount -= resourceCost;
+            bool canAfford = _resource.PlayerAmount >= resourceCost || _isGodMode.Value;
+            if (canAfford)
+            {
+                _resource.PlayerAmount -= resourceCost; // Always subtract cost even in god mode for testing, but can always afford in god mode so wont prevent opening.
             
                 _opensCount++;
 
                 _onSucceedOpen.Invoke();
                 
-                if(_limitOpens && _opensCount >= _costPerOpen.Length) {
-                    this.gameObject.layer = LayerMask.NameToLayer("Default");
+                bool canOpenAgain = !_limitOpens || _opensCount < _costPerOpen.Length;
+                if (canOpenAgain)
+                {
+                    this.setResourceLabelText(); // Update label after opening to reflect new cost
+
+                    _onClose.Invoke(); // Invoke close event to allow for chest to be opened again
+                }
+                else
+                {
+                    this.gameObject.layer = LayerMask.NameToLayer("Default"); // Change layer so it cant be interacted with anymore
+
                     _onAllOpensUsed.Invoke();
                 }
-
-                this.setResourceLabelText();
                 
                 return;
             }
