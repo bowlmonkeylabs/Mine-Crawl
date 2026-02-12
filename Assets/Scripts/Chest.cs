@@ -15,6 +15,7 @@ namespace BML.Scripts
     {
         [SerializeField] private BoolVariable _isGodMode;
         [SerializeField] private PlayerResource _resource;
+        [SerializeField] private GameObject _resourceLabelRoot;
         [SerializeField] private TMP_Text _resourceLabelText;
 
         [SerializeField] private bool _limitOpens = true;
@@ -29,7 +30,7 @@ namespace BML.Scripts
         private int _opensCount = 0;
 
         void Awake() {
-            this.setResourceLabelText();
+            UpdateResourceLabel();
         }
 
         public void TryOpen() 
@@ -39,6 +40,9 @@ namespace BML.Scripts
             bool canAfford = _resource.PlayerAmount >= resourceCost || _isGodMode.Value;
             if (canAfford)
             {
+                // Disable chest interaction immediately. Will reset if/after close animation.
+                SetInteractable(false);
+
                 _resource.PlayerAmount -= resourceCost; // Always subtract cost even in god mode for testing, but can always afford in god mode so wont prevent opening.
             
                 _opensCount++;
@@ -48,14 +52,10 @@ namespace BML.Scripts
                 bool canOpenAgain = !_limitOpens || _opensCount < _costPerOpen.Length;
                 if (canOpenAgain)
                 {
-                    this.setResourceLabelText(); // Update label after opening to reflect new cost
-
                     _onClose.Invoke(); // Invoke close event to allow for chest to be opened again
                 }
                 else
                 {
-                    this.gameObject.layer = LayerMask.NameToLayer("Default"); // Change layer so it cant be interacted with anymore
-
                     _onAllOpensUsed.Invoke();
                 }
                 
@@ -65,10 +65,29 @@ namespace BML.Scripts
             _onFailOpen.Invoke();
         }
 
-        private void setResourceLabelText() {
+        public void SetInteractable(bool interactable)
+        {
+            // Change layer so it cant be interacted with anymore
+            var layerName = interactable ? "Interactable" : "Default";
+            gameObject.layer = LayerMask.NameToLayer(layerName);
+
+            // Hide label if not interactable. Label will be re-shown if chest becomes interactable again and cost is greater than 0.
+            UpdateResourceLabel(!interactable);
+        }
+
+        private void UpdateResourceLabel(bool forceHide = false)
+        {
             int resourceCost = getCurrentResourceCost();
 
-            _resourceLabelText.text = $"{resourceCost} {_resource.IconText}";
+            // Show label if cost is greater than 0. Hide if 0.
+            bool showLabel = resourceCost > 0;
+            _resourceLabelRoot.SetActive(showLabel);
+
+            // Update label if showing.
+            if (showLabel)
+            {
+                _resourceLabelText.text = $"{resourceCost} {_resource.IconText}";
+            }
         }
 
         private int getCurrentResourceCost() {

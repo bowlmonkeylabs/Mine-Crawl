@@ -842,7 +842,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8245307235031264562
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2101,6 +2101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isGodMode: {fileID: 11400000, guid: c3845ac29ad76214893f2b304a42dcef, type: 2}
   _resource: {fileID: 11400000, guid: 1c477d863c44c914290e8c75672bff55, type: 2}
+  _resourceLabelRoot: {fileID: 3139585433851077572}
   _resourceLabelText: {fileID: 2842920610634186469}
   _limitOpens: 1
   _resourceCost: 0
@@ -2122,19 +2123,7 @@ MonoBehaviour:
         m_CallState: 2
   _onAllOpensUsed:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3139585433851077572}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   _onFailOpen:
     m_PersistentCalls:
       m_Calls:
@@ -3496,4 +3485,19 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+  _onEnableInteractable:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5005311191334139073}
+        m_TargetAssemblyTypeName: BML.Scripts.Chest, BML.Scripts
+        m_MethodName: SetInteractable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2

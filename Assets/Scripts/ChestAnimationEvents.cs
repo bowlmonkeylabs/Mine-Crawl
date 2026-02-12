@@ -11,6 +11,7 @@ namespace BML.Scripts
     {
         [SerializeField] UnityEvent _onDispenseReward;
         [SerializeField] UnityEvent _onPlayCloseSound;
+        [SerializeField] UnityEvent _onEnableInteractable;
 
         /// <summary>
         /// Triggers at the moment in the chest opening animation when the reward should be dispensed to the player, allowing for the reward to be given at the correct time in the animation.
@@ -26,6 +27,14 @@ namespace BML.Scripts
         public void PlayCloseSound()
         {
             _onPlayCloseSound.Invoke();
+        }
+
+        /// <summary>
+        /// Triggers at the moment in the chest opening animation when the chest should become interactable again after opening/closing.
+        /// </summary>
+        public void EnableInteractable()
+        {
+            _onEnableInteractable.Invoke();
         }
     }
 }
